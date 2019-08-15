@@ -1,0 +1,30 @@
+apiVersion: "nais.io/v1alpha1"
+kind: "Application"
+metadata:
+  name: dittnav-proxy
+  namespace: default
+  labels:
+    team: personbruker
+spec:
+  image: 0.0.1
+  port: 8090
+  liveness:
+    path: /isAlive
+    initialDelay: 5
+  readiness:
+    path: /isReady
+    initialDelay: 5
+  replicas:
+    min: 1
+    max: 1
+  webproxy: true
+  ingresses:
+    - "https://dittnav-proxy.nais.oera-q.local"
+    - "https://dittnav-proxy.dev-sbs.nais.io"
+  resources:
+    limits:
+      cpu: 500m
+      memory: 512Mi
+    requests:
+      cpu: 200m
+      memory: 256Mi
