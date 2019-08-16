@@ -6,7 +6,7 @@ metadata:
   labels:
     team: personbruker
 spec:
-  image: 0.0.1
+  image: navikt/dittnav-proxy:0.0.4
   port: 8090
   liveness:
     path: /isAlive
