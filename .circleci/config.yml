@@ -1,0 +1,43 @@
+version: 2.1
+orbs:
+  nais: 'navikt/nais-deployment@1.1.1'
+
+jobs:
+  build:
+    docker:
+      - image: circleci/openjdk:11-jdk
+    steps:
+      - checkout
+      - restore_cache:
+          keys:
+            - v1-dependencies-{{ checksum "build.gradle.kts" }}
+            - v1-dependencies-
+      - run: gradle build
+      - save_cache:
+          paths:
+            - ~/.gradle
+          key: v1-dependencies-{{ checksum "build.gradle.kts" }}
+      - nais/docker-deploy:
+          image: navikt/dittnav-proxy
+
+workflows:
+  build-and-deploy-dev:
+    jobs:
+      - build:
+          context: NAIS deployment
+      - bekreft-til-dev:
+          type: approval
+          requires:
+            - build
+      - nais/deploy:
+          name: deploy-dev
+          context: NAIS deployment
+          image: navikt/dittnav-proxy
+          nais-template: nais-dev.yaml
+          build-and-push-docker-image: false
+          github-app-id: 34043
+          repo: navikt/dittnav-proxy
+          team: personbruker
+          environment: dev-sbs
+          requires:
+            - bekreft-til-dev
