@@ -4,9 +4,9 @@ metadata:
   name: dittnav-proxy
   namespace: default
   labels:
-    team: personbruker
+    team: {{team}}
 spec:
-  image: navikt/dittnav-proxy:0.0.4
+  image: {{version}}
   port: 8090
   liveness:
     path: /isAlive
@@ -14,6 +14,8 @@ spec:
   readiness:
     path: /isReady
     initialDelay: 5
+  prometheus:
+    path: /metrics
   replicas:
     min: 1
     max: 1
