@@ -41,7 +41,7 @@ dependencies {
 }
 
 application {
-    mainClassName = "no.nav.personbruker.dittnav.proxy.AppKt"
+    mainClassName = "no.nav.personbruker.dittnav.api.AppKt"
 }
 
 tasks.withType<Jar> {

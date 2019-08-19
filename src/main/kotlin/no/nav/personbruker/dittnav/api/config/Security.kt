@@ -1,4 +1,4 @@
-package no.nav.personbruker.dittnav.proxy.config
+package no.nav.personbruker.dittnav.api.config
 
 import com.auth0.jwk.JwkProvider
 import com.auth0.jwk.JwkProviderBuilder
@@ -11,7 +11,7 @@ import java.util.concurrent.TimeUnit
 fun JWTAuthenticationProvider.Configuration.setupOidcAuthentication(environment: Environment) {
     val jwkProvider = Security.initJwkProvider(environment.securityJwksUri)
     verifier(jwkProvider, environment.securityJwksIssuer)
-    realm = "dittnav-proxy"
+    realm = "dittnav-api"
     validate { credentials ->
         return@validate Security.validationLogicPerRequest(
             credentials,

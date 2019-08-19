@@ -1,4 +1,4 @@
-package no.nav.personbruker.dittnav.proxy.config
+package no.nav.personbruker.dittnav.api.config
 
 import java.net.URL
 

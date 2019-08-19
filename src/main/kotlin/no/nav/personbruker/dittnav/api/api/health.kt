@@ -1,4 +1,4 @@
-package no.nav.personbruker.dittnav.proxy.api
+package no.nav.personbruker.dittnav.api.api
 
 import io.ktor.application.call
 import io.ktor.http.ContentType
