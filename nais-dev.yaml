@@ -1,7 +1,7 @@
 apiVersion: "nais.io/v1alpha1"
 kind: "Application"
 metadata:
-  name: dittnav-proxy
+  name: dittnav-api
   namespace: default
   labels:
     team: {{team}}
@@ -21,8 +21,8 @@ spec:
     max: 1
   webproxy: true
   ingresses:
-    - "https://dittnav-proxy.nais.oera-q.local"
-    - "https://dittnav-proxy.dev-sbs.nais.io"
+    - "https://dittnav-api.nais.oera-q.local"
+    - "https://dittnav-api.dev-sbs.nais.io"
   resources:
     limits:
       cpu: 500m

@@ -1,1 +1,1 @@
-rootProject.name = "proxy"
+rootProject.name = "api"
