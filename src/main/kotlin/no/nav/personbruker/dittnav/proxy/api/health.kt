@@ -6,7 +6,7 @@ import io.ktor.response.respondText
 import io.ktor.routing.Routing
 import io.ktor.routing.get
 
-fun Routing.    healthApi() {
+fun Routing.healthApi() {
 
     val pingJsonResponse = """{"ping": "pong"}"""
 
