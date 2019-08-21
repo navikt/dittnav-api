@@ -1,9 +1,9 @@
-# DittNAV proxy
+# DittNAV api
 
-Proxy mellom dittnav-frontend og dittnav-api/dittnav-event-handler
+Proxy mellom dittnav-frontend og dittnav-legacy-api/dittnav-event-handler
 
 # Kom i gang
-1. Bygg dittnav-proxy ved å kjøre `gradle build`
+1. Bygg dittnav-api ved å kjøre `gradle build`
 2. Start appen ved å kjøre filen App.kt.
 
 # Henvendelser

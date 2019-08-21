@@ -1,6 +1,6 @@
 version: 2.1
 orbs:
-  nais: 'navikt/nais-deployment@1.1.1'
+  nais: 'navikt/nais-deployment@1.4.1'
 
 jobs:
   build:
@@ -18,7 +18,7 @@ jobs:
             - ~/.gradle
           key: v1-dependencies-{{ checksum "build.gradle.kts" }}
       - nais/docker-deploy:
-          image: navikt/dittnav-proxy
+          image: navikt/dittnav-api
 
 workflows:
   build-and-deploy-dev:
@@ -32,11 +32,11 @@ workflows:
       - nais/deploy:
           name: deploy-dev
           context: NAIS deployment
-          image: navikt/dittnav-proxy
+          image: navikt/dittnav-api
           nais-template: nais-dev.yaml
           build-and-push-docker-image: false
           github-app-id: 34043
-          repo: navikt/dittnav-proxy
+          repo: navikt/dittnav-api
           team: personbruker
           environment: dev-sbs
           requires:
