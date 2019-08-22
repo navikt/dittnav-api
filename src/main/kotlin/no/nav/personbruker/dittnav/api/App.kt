@@ -1,7 +1,9 @@
 package no.nav.personbruker.dittnav.api
 
 import no.nav.personbruker.dittnav.api.config.Server
+import no.nav.personbruker.dittnav.api.config.Environment
 
 fun main() {
-    Server.configure().start()
+    val environment = Environment()
+    Server.configure(environment).start()
 }
