@@ -36,6 +36,10 @@ dependencies {
     compile("io.ktor:ktor-server-netty:$ktorVersion")
     compile("io.ktor:ktor-auth:$ktorVersion")
     compile("io.ktor:ktor-auth-jwt:$ktorVersion")
+    compile("io.ktor:ktor-client-apache:$ktorVersion")
+    compile("io.ktor:ktor-client-json:$ktorVersion")
+    compile("io.ktor:ktor-client-serialization-jvm:$ktorVersion")
+    compile("io.ktor:ktor-client-gson:$ktorVersion")
     compile("ch.qos.logback:logback-classic:$logbackVersion")
     compile("net.logstash.logback:logstash-logback-encoder:$logstashVersion")
 }
