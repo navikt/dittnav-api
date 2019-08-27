@@ -17,7 +17,7 @@ import io.ktor.routing.get
 import org.json.simple.JSONObject
 import io.ktor.client.features.json.JsonFeature
 
-fun Route.ubehandledeMeldinger() {
+fun Route.ubehandledeMeldinger(dittNAVLegacyURL: String) {
     get("/meldinger/ubehandlede") {
         val authHeader = call.request.parseAuthorizationHeader()?.render()
         if (authHeader != null) {
@@ -27,7 +27,7 @@ fun Route.ubehandledeMeldinger() {
                 }
             }.use { client ->
                 client.request<JSONObject> {
-                    url("https://www-q0.nav.no/person/dittnav-legacy-api/meldinger/ubehandlede")
+                    url(dittNAVLegacyURL + "meldinger/ubehandlede")
                     method = HttpMethod.Get
                     header(Authorization, authHeader)
                 }

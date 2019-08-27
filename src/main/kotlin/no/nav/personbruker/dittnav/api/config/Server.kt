@@ -31,7 +31,7 @@ object Server {
             routing {
                 healthApi()
                 authenticate {
-                    ubehandledeMeldinger()
+                    ubehandledeMeldinger(environment.dittNAVLegacyURL)
                 }
             }
         }
