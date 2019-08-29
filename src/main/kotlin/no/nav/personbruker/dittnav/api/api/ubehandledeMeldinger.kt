@@ -3,9 +3,6 @@ package no.nav.personbruker.dittnav.api.api
 import io.ktor.application.call
 import io.ktor.auth.parseAuthorizationHeader
 import io.ktor.client.HttpClient
-import io.ktor.client.engine.apache.Apache
-import io.ktor.client.features.json.GsonSerializer
-import io.ktor.client.features.json.JsonFeature
 import io.ktor.client.request.header
 import io.ktor.client.request.request
 import io.ktor.client.request.url
@@ -17,13 +14,7 @@ import io.ktor.routing.Route
 import io.ktor.routing.get
 import org.json.simple.JSONObject
 
-private val httpClient = HttpClient(Apache) {
-    install(JsonFeature) {
-        serializer = GsonSerializer()
-    }
-}
-
-fun Route.ubehandledeMeldinger(dittNAVLegacyURL: String) {
+fun Route.ubehandledeMeldinger(httpClient: HttpClient, dittNAVLegacyURL: String) {
     get("/meldinger/ubehandlede") {
         val authHeader = call.request.parseAuthorizationHeader()?.render()
         if (authHeader != null) {

@@ -19,6 +19,7 @@ object Server {
 
     fun configure(environment: Environment): NettyApplicationEngine {
         DefaultExports.initialize()
+        val client = HttpClient().client
         val app = embeddedServer(Netty, port = portNumber) {
             install(DefaultHeaders)
 
@@ -31,7 +32,7 @@ object Server {
             routing {
                 healthApi()
                 authenticate {
-                    ubehandledeMeldinger(environment.dittNAVLegacyURL)
+                    ubehandledeMeldinger(client, environment.dittNAVLegacyURL)
                 }
             }
         }
