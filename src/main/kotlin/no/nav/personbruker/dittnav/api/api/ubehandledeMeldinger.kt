@@ -5,6 +5,7 @@ import io.ktor.auth.parseAuthorizationHeader
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.apache.Apache
 import io.ktor.client.features.json.GsonSerializer
+import io.ktor.client.features.json.JsonFeature
 import io.ktor.client.request.header
 import io.ktor.client.request.request
 import io.ktor.client.request.url
@@ -15,17 +16,18 @@ import io.ktor.response.respondText
 import io.ktor.routing.Route
 import io.ktor.routing.get
 import org.json.simple.JSONObject
-import io.ktor.client.features.json.JsonFeature
+
+private val httpClient = HttpClient(Apache) {
+    install(JsonFeature) {
+        serializer = GsonSerializer()
+    }
+}
 
 fun Route.ubehandledeMeldinger(dittNAVLegacyURL: String) {
     get("/meldinger/ubehandlede") {
         val authHeader = call.request.parseAuthorizationHeader()?.render()
         if (authHeader != null) {
-            val ubehandledeMeldinger = HttpClient(Apache){
-                install(JsonFeature) {
-                    serializer = GsonSerializer()
-                }
-            }.use { client ->
+            val ubehandledeMeldinger = httpClient.use { client ->
                 client.request<JSONObject> {
                     url(dittNAVLegacyURL + "meldinger/ubehandlede")
                     method = HttpMethod.Get

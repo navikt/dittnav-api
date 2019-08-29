@@ -15,8 +15,8 @@ fun getEnvVar(varName: String, defaultValue: String? = null): String {
 
 private fun getDittNAVLegacyUrl(): String {
     return when (System.getenv("NAIS_CLUSTER_NAME")) {
-        "dev-sbs" -> "https://www-q0.nav.no/person/dittnav-legacy-api/"
-        "prod-sbs" -> "https://www.nav.no/person/dittnav-legacy-api/"
-        else -> "https://dummyUrl.com/"
+        "dev-sbs" -> "https://dittnav-legacy-api-q0.nais.oera-q.local/person/dittnav-legacy-api/"
+        "prod-sbs" -> "https://dittnav-legacy-api.nais.oera.no/person/dittnav-legacy-api/"
+        else -> "https://dummyURL.com"
     }
 }
