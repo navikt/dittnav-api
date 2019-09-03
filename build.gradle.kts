@@ -4,11 +4,13 @@ val prometheusVersion = "0.6.0"
 val ktorVersion = "1.2.2"
 val logstashVersion = 5.2
 val logbackVersion = "1.2.3"
+val kotlinVersion = "1.3.50"
+val jacksonVersion = "2.9.9"
 
 plugins {
     // Apply the Kotlin JVM plugin to add support for Kotlin on the JVM.
-    kotlin("jvm").version("1.3.31")
-    kotlin("plugin.allopen").version("1.3.31")
+    kotlin("jvm").version("1.3.50")
+    kotlin("plugin.allopen").version("1.3.50")
 
     id("org.flywaydb.flyway") version("5.2.4")
 
@@ -42,6 +44,8 @@ dependencies {
     compile("io.ktor:ktor-client-gson:$ktorVersion")
     compile("ch.qos.logback:logback-classic:$logbackVersion")
     compile("net.logstash.logback:logstash-logback-encoder:$logstashVersion")
+    compile("com.fasterxml.jackson.datatype:jackson-datatype-jsr310:$jacksonVersion")
+    compile("io.ktor:ktor-jackson:$ktorVersion")
 }
 
 application {
