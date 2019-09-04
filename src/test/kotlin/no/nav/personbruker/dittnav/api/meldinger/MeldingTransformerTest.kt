@@ -6,10 +6,11 @@ import org.spekframework.spek2.style.specification.describe
 import kotlin.test.assertEquals
 
 object MeldingTransformerTest : Spek({
-    describe("MeldingTransformer") {
+    val meldingTransformer = MeldingTransformer()
+
+    describe("Transformerer liste av Events til liste av Meldinger") {
 
         it("filtrerer vekk inaktive events") {
-            val meldingTransformer = MeldingTransformer()
             val eventListe = listOf(EventObjectMother.medAktivtEvent, EventObjectMother.medInaktivtEvent)
             val resultat = meldingTransformer.toOutbound(eventListe)
             assertEquals(expected = 1, actual = resultat.size)
@@ -17,7 +18,6 @@ object MeldingTransformerTest : Spek({
         }
 
         it("sender videre riktig data i riktig felt") {
-            val meldingTransformer = MeldingTransformer()
             val eventListe = listOf(EventObjectMother.medAktivtEvent)
             val resultat = meldingTransformer.toOutbound(eventListe)
             assertEquals(eventListe[0].eventId, resultat[0].id)
