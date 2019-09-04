@@ -12,7 +12,7 @@ import no.nav.personbruker.dittnav.api.meldinger.MeldingService
 val meldingService = MeldingService()
 
 fun Route.meldinger(environment: Environment) {
-    get("/meldinger") {
+    get("/events") {
         val authHeader = call.request.parseAuthorizationHeader()
         if (authHeader != null) {
             call.respond(HttpStatusCode.OK, meldingService.getMeldinger(environment, authHeader))

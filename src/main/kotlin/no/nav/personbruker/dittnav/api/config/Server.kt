@@ -13,14 +13,12 @@ import io.ktor.server.engine.embeddedServer
 import io.ktor.server.netty.Netty
 import io.ktor.server.netty.NettyApplicationEngine
 import io.prometheus.client.hotspot.DefaultExports
-import no.nav.personbruker.dittnav.api.api.healthApi
-import no.nav.personbruker.dittnav.api.api.legacyMeldinger
-import no.nav.personbruker.dittnav.api.api.meldinger
+import no.nav.personbruker.dittnav.api.api.*
 import java.util.concurrent.TimeUnit
 
 object Server {
     const val portNumber = 8090
-    private val httpClient = HttpClient()
+    private val httpClient = HttpClient().client
 
     fun configure(environment: Environment): NettyApplicationEngine {
         DefaultExports.initialize()
@@ -42,7 +40,9 @@ object Server {
             routing {
                 healthApi()
                 authenticate {
-                    legacyMeldinger(environment, httpClient.client)
+                    legacyMeldinger(environment, httpClient)
+                    legacyPabegynte(environment, httpClient)
+                    legacyPersoninfo(environment, httpClient)
                     meldinger(environment)
                 }
             }

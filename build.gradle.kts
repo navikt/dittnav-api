@@ -6,6 +6,10 @@ val logstashVersion = 5.2
 val logbackVersion = "1.2.3"
 val kotlinVersion = "1.3.50"
 val jacksonVersion = "2.9.9"
+val spekVersion = "2.0.6"
+val mockKVersion = "1.9"
+val assertJVersion = "3.12.2"
+val junitVersion = "5.4.1"
 
 plugins {
     // Apply the Kotlin JVM plugin to add support for Kotlin on the JVM.
@@ -46,6 +50,13 @@ dependencies {
     compile("net.logstash.logback:logstash-logback-encoder:$logstashVersion")
     compile("com.fasterxml.jackson.datatype:jackson-datatype-jsr310:$jacksonVersion")
     compile("io.ktor:ktor-jackson:$ktorVersion")
+    testCompile("org.junit.jupiter:junit-jupiter-api:$junitVersion")
+    testCompile("org.assertj:assertj-core:3.12.1")
+    testCompile(kotlin("test-junit5"))
+    testImplementation("org.spekframework.spek2:spek-dsl-jvm:$spekVersion")
+    testImplementation("io.mockk:mockk:$mockKVersion")
+    testImplementation("org.assertj:assertj-core:$assertJVersion")
+    testRuntimeOnly("org.spekframework.spek2:spek-runner-junit5:$spekVersion")
 }
 
 application {
