@@ -48,12 +48,12 @@ fun Route.legacyPersoninfo(environment: Environment, httpClient: HttpClient) {
     get("/person/personinfo") {
         val authHeader = call.request.parseAuthorizationHeader()?.render()
         if (authHeader != null) {
-            val pabegynte = httpClient.request<JSONObject> {
+            val personinfo = httpClient.request<JSONObject> {
                 url(environment.dittNAVLegacyURL + "person/personinfo")
                 method = HttpMethod.Get
                 header(Authorization, authHeader)
             }
-            call.respond(HttpStatusCode(200, "OK"), pabegynte)
+            call.respond(HttpStatusCode(200, "OK"), personinfo)
         }
     }
 }
