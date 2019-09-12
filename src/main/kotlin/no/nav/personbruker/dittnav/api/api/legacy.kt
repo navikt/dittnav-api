@@ -2,59 +2,36 @@ package no.nav.personbruker.dittnav.api.api
 
 import io.ktor.application.call
 import io.ktor.auth.parseAuthorizationHeader
-import io.ktor.client.HttpClient
-import io.ktor.client.request.header
-import io.ktor.client.request.request
-import io.ktor.client.request.url
-import io.ktor.http.HttpHeaders.Authorization
-import io.ktor.http.HttpMethod
-import io.ktor.http.HttpStatusCode
 import io.ktor.response.respond
 import io.ktor.routing.Route
 import io.ktor.routing.get
+import no.nav.personbruker.dittnav.api.LegacyConsumer
 import no.nav.personbruker.dittnav.api.config.Environment
-import org.json.simple.JSONArray
-import org.json.simple.JSONObject
 
-fun Route.legacyMeldinger(environment: Environment, httpClient: HttpClient) {
+fun Route.legacyMeldinger(environment: Environment) {
     get("/meldinger/ubehandlede") {
         val authHeader = call.request.parseAuthorizationHeader()?.render()
-        if (authHeader != null) {
-            val ubehandledeMeldinger = httpClient.request<JSONArray> {
-                url(environment.dittNAVLegacyURL + "meldinger/ubehandlede")
-                method = HttpMethod.Get
-                header(Authorization, authHeader)
-            }
-            call.respond(HttpStatusCode(200, "OK"), ubehandledeMeldinger)
-        }
+        val ubehandledeMeldinger = LegacyConsumer().checkHeaderAndGetLegacyContent(
+            "meldinger/ubehandlede", environment, authHeader)
+        call.respond(ubehandledeMeldinger.first, ubehandledeMeldinger.second)
     }
 }
 
-fun Route.legacyPabegynte(environment: Environment, httpClient: HttpClient) {
+fun Route.legacyPabegynte(environment: Environment) {
     get("/saker/paabegynte") {
         val authHeader = call.request.parseAuthorizationHeader()?.render()
-        if (authHeader != null) {
-            val pabegynte = httpClient.request<JSONObject> {
-                url(environment.dittNAVLegacyURL + "saker/paabegynte")
-                method = HttpMethod.Get
-                header(Authorization, authHeader)
-            }
-            call.respond(HttpStatusCode(200, "OK"), pabegynte)
-        }
+        val paabegynte = LegacyConsumer().checkHeaderAndGetLegacyContent(
+            "saker/paabegynte", environment, authHeader)
+        call.respond(paabegynte.first, paabegynte.second)
     }
 }
 
-fun Route.legacyPersoninfo(environment: Environment, httpClient: HttpClient) {
+fun Route.legacyPersoninfo(environment: Environment) {
     get("/person/personinfo") {
         val authHeader = call.request.parseAuthorizationHeader()?.render()
-        if (authHeader != null) {
-            val personinfo = httpClient.request<JSONObject> {
-                url(environment.dittNAVLegacyURL + "person/personinfo")
-                method = HttpMethod.Get
-                header(Authorization, authHeader)
-            }
-            call.respond(HttpStatusCode(200, "OK"), personinfo)
-        }
+        val personinfo = LegacyConsumer().checkHeaderAndGetLegacyContent(
+            "person/personinfo", environment, authHeader)
+        call.respond(personinfo.first, personinfo.second)
     }
 }
 

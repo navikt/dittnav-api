@@ -18,7 +18,6 @@ import java.util.concurrent.TimeUnit
 
 object Server {
     const val portNumber = 8090
-    private val httpClient = HttpClient().client
 
     fun configure(environment: Environment): NettyApplicationEngine {
         DefaultExports.initialize()
@@ -40,9 +39,9 @@ object Server {
             routing {
                 healthApi()
                 authenticate {
-                    legacyMeldinger(environment, httpClient)
-                    legacyPabegynte(environment, httpClient)
-                    legacyPersoninfo(environment, httpClient)
+                    legacyMeldinger(environment)
+                    legacyPabegynte(environment)
+                    legacyPersoninfo(environment)
                     meldinger(environment)
                 }
             }
