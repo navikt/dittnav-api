@@ -6,7 +6,7 @@ import org.spekframework.spek2.style.specification.describe
 import kotlin.test.assertEquals
 
 object MeldingTransformerTest : Spek({
-    val meldingTransformer = MeldingTransformer()
+    val meldingTransformer = MeldingTransformer
 
     describe("Transformerer liste av Events til liste av Meldinger") {
 
