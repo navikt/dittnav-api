@@ -5,32 +5,31 @@ import io.ktor.auth.parseAuthorizationHeader
 import io.ktor.response.respond
 import io.ktor.routing.Route
 import io.ktor.routing.get
-import no.nav.personbruker.dittnav.api.LegacyConsumer
-import no.nav.personbruker.dittnav.api.config.Environment
+import no.nav.personbruker.dittnav.api.legacy.LegacyConsumer
 
-fun Route.legacyMeldinger(environment: Environment) {
+fun Route.legacyMeldinger(legacyConsumer: LegacyConsumer) {
     get("/meldinger/ubehandlede") {
         val authHeader = call.request.parseAuthorizationHeader()?.render()
-        val ubehandledeMeldinger = LegacyConsumer().checkHeaderAndGetLegacyContent(
-            "meldinger/ubehandlede", environment, authHeader)
+        val ubehandledeMeldinger = legacyConsumer.checkHeaderAndGetLegacyContent(
+            "meldinger/ubehandlede", authHeader)
         call.respond(ubehandledeMeldinger.first, ubehandledeMeldinger.second)
     }
 }
 
-fun Route.legacyPabegynte(environment: Environment) {
+fun Route.legacyPabegynte(legacyConsumer: LegacyConsumer) {
     get("/saker/paabegynte") {
         val authHeader = call.request.parseAuthorizationHeader()?.render()
-        val paabegynte = LegacyConsumer().checkHeaderAndGetLegacyContent(
-            "saker/paabegynte", environment, authHeader)
+        val paabegynte = legacyConsumer.checkHeaderAndGetLegacyContent(
+            "saker/paabegynte", authHeader)
         call.respond(paabegynte.first, paabegynte.second)
     }
 }
 
-fun Route.legacyPersoninfo(environment: Environment) {
+fun Route.legacyPersoninfo(legacyConsumer: LegacyConsumer) {
     get("/person/personinfo") {
         val authHeader = call.request.parseAuthorizationHeader()?.render()
-        val personinfo = LegacyConsumer().checkHeaderAndGetLegacyContent(
-            "person/personinfo", environment, authHeader)
+        val personinfo = legacyConsumer.checkHeaderAndGetLegacyContent(
+            "person/personinfo", authHeader)
         call.respond(personinfo.first, personinfo.second)
     }
 }
