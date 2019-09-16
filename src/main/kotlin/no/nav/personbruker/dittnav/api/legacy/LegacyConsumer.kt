@@ -9,26 +9,12 @@ import io.ktor.client.response.readBytes
 import io.ktor.http.HttpHeaders
 import io.ktor.http.HttpMethod
 import io.ktor.http.HttpStatusCode
+import io.ktor.http.auth.HttpAuthHeader
 import no.nav.personbruker.dittnav.api.config.Environment
 
 class LegacyConsumer(private val httpClient: HttpClient, private val environment: Environment) {
 
-    suspend fun checkHeaderAndGetLegacyContent(url: String, authHeader: String?): Pair<HttpStatusCode, ByteArray> {
-        val status: HttpStatusCode
-        val message: ByteArray
-        if (authHeader !== null) {
-            val content = getLegacyContent(url, authHeader)
-            status = content.status
-            message = content.readBytes()
-        }
-        else {
-            status = HttpStatusCode.Unauthorized
-            message = ByteArray(0)
-        }
-        return Pair(status, message)
-    }
-
-    private suspend fun getLegacyContent(url: String, authHeader: String): HttpResponse {
+    suspend fun getLegacyContent(url: String, authHeader: HttpAuthHeader?): HttpResponse {
         return httpClient.request {
             url(environment.dittNAVLegacyURL + url)
             method = HttpMethod.Get

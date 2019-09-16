@@ -48,6 +48,8 @@ dependencies {
     compile("io.ktor:ktor-client-gson:$ktorVersion")
     compile("ch.qos.logback:logback-classic:$logbackVersion")
     compile("net.logstash.logback:logstash-logback-encoder:$logstashVersion")
+    compile("io.ktor:ktor-client-logging:$ktorVersion")
+    compile("io.ktor:ktor-client-logging-jvm:$ktorVersion")
     compile("com.fasterxml.jackson.datatype:jackson-datatype-jsr310:$jacksonVersion")
     compile("io.ktor:ktor-jackson:$ktorVersion")
     testCompile("org.junit.jupiter:junit-jupiter-api:$junitVersion")
