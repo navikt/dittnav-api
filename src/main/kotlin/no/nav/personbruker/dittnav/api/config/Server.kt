@@ -1,25 +1,34 @@
 package no.nav.personbruker.dittnav.api.config
 
+import com.fasterxml.jackson.databind.SerializationFeature
 import io.ktor.application.install
 import io.ktor.auth.Authentication
 import io.ktor.auth.authenticate
 import io.ktor.auth.jwt.jwt
+import io.ktor.features.ContentNegotiation
 import io.ktor.features.DefaultHeaders
+import io.ktor.jackson.jackson
 import io.ktor.routing.routing
 import io.ktor.server.engine.embeddedServer
 import io.ktor.server.netty.Netty
 import io.ktor.server.netty.NettyApplicationEngine
 import io.prometheus.client.hotspot.DefaultExports
-import no.nav.personbruker.dittnav.api.api.healthApi
-import no.nav.personbruker.dittnav.api.api.ubehandledeMeldinger
+import no.nav.personbruker.dittnav.api.api.*
 import java.util.concurrent.TimeUnit
+import no.nav.personbruker.dittnav.api.legacy.LegacyConsumer
+import no.nav.personbruker.dittnav.api.meldinger.EventConsumer
+import no.nav.personbruker.dittnav.api.meldinger.MeldingService
 
 object Server {
-    const val portNumber = 8090
+    private const val portNumber = 8090
 
     fun configure(environment: Environment): NettyApplicationEngine {
-        DefaultExports.initialize()
         val client = HttpClient().client
+        val legacyConsumer = LegacyConsumer(client, environment)
+        val meldingService = MeldingService(EventConsumer(client, environment))
+
+        DefaultExports.initialize()
+
         val app = embeddedServer(Netty, port = portNumber) {
             install(DefaultHeaders)
 
@@ -29,10 +38,19 @@ object Server {
                 }
             }
 
+            install(ContentNegotiation) {
+                jackson {
+                    enable(SerializationFeature.INDENT_OUTPUT)
+                }
+            }
+
             routing {
                 healthApi()
                 authenticate {
-                    ubehandledeMeldinger(client, environment.dittNAVLegacyURL)
+                    legacyMeldinger(legacyConsumer)
+                    legacyPabegynte(legacyConsumer)
+                    legacyPersoninfo(legacyConsumer)
+                    meldinger(meldingService)
                 }
             }
         }

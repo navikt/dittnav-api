@@ -4,11 +4,17 @@ val prometheusVersion = "0.6.0"
 val ktorVersion = "1.2.2"
 val logstashVersion = 5.2
 val logbackVersion = "1.2.3"
+val kotlinVersion = "1.3.50"
+val jacksonVersion = "2.9.9"
+val spekVersion = "2.0.6"
+val mockKVersion = "1.9"
+val assertJVersion = "3.12.2"
+val junitVersion = "5.4.1"
 
 plugins {
     // Apply the Kotlin JVM plugin to add support for Kotlin on the JVM.
-    kotlin("jvm").version("1.3.31")
-    kotlin("plugin.allopen").version("1.3.31")
+    kotlin("jvm").version("1.3.50")
+    kotlin("plugin.allopen").version("1.3.50")
 
     id("org.flywaydb.flyway") version("5.2.4")
 
@@ -42,6 +48,17 @@ dependencies {
     compile("io.ktor:ktor-client-gson:$ktorVersion")
     compile("ch.qos.logback:logback-classic:$logbackVersion")
     compile("net.logstash.logback:logstash-logback-encoder:$logstashVersion")
+    compile("io.ktor:ktor-client-logging:$ktorVersion")
+    compile("io.ktor:ktor-client-logging-jvm:$ktorVersion")
+    compile("com.fasterxml.jackson.datatype:jackson-datatype-jsr310:$jacksonVersion")
+    compile("io.ktor:ktor-jackson:$ktorVersion")
+    testCompile("org.junit.jupiter:junit-jupiter-api:$junitVersion")
+    testCompile("org.assertj:assertj-core:3.12.1")
+    testCompile(kotlin("test-junit5"))
+    testImplementation("org.spekframework.spek2:spek-dsl-jvm:$spekVersion")
+    testImplementation("io.mockk:mockk:$mockKVersion")
+    testImplementation("org.assertj:assertj-core:$assertJVersion")
+    testRuntimeOnly("org.spekframework.spek2:spek-runner-junit5:$spekVersion")
 }
 
 application {
