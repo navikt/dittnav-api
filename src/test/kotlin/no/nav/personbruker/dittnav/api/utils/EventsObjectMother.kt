@@ -1,6 +1,6 @@
 package no.nav.personbruker.dittnav.api.utils
 
-import no.nav.personbruker.dittnav.api.domain.Event
+import no.nav.personbruker.dittnav.api.event.Event
 
 object EventObjectMother {
 

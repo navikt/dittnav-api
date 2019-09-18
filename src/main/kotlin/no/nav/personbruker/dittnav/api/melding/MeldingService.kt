@@ -1,8 +1,8 @@
-package no.nav.personbruker.dittnav.api.meldinger
+package no.nav.personbruker.dittnav.api.melding
 
 import io.ktor.http.auth.HttpAuthHeader
 import io.ktor.util.error
-import no.nav.personbruker.dittnav.api.domain.Melding
+import no.nav.personbruker.dittnav.api.event.EventConsumer
 import org.slf4j.LoggerFactory
 
 class MeldingService(private val eventConsumer: EventConsumer) {

@@ -1,0 +1,49 @@
+[ {
+  "id" : 12,
+  "produsent" : "DittNAV",
+  "eventTidspunkt" : 1562589982.229000000,
+  "aktorId" : "123",
+  "eventId" : "123",
+  "dokumentId" : "123",
+  "tekst" : "Dette er informasjon til brukeren",
+  "link" : "https://nav.no/systemX/1562589982229",
+  "sikkerhetsnivaa" : 4,
+  "sistOppdatert" : 1562589982.596000000,
+  "aktiv" : true
+}, {
+  "id" : 13,
+  "produsent" : "DittNAV",
+  "eventTidspunkt" : 1562589985.648000000,
+  "aktorId" : "123",
+  "eventId" : "123",
+  "dokumentId" : "123",
+  "tekst" : "Dette er informasjon til brukeren",
+  "link" : "https://nav.no/systemX/1562589985648",
+  "sikkerhetsnivaa" : 4,
+  "sistOppdatert" : 1562589985.916000000,
+  "aktiv" : true
+}, {
+  "id" : 14,
+  "produsent" : "DittNAV",
+  "eventTidspunkt" : 1562762284.908000000,
+  "aktorId" : "123",
+  "eventId" : "123",
+  "dokumentId" : "123",
+  "tekst" : "Dette er informasjon til brukeren",
+  "link" : "https://nav.no/systemX/1562762284908",
+  "sikkerhetsnivaa" : 4,
+  "sistOppdatert" : 1562762286.564000000,
+  "aktiv" : true
+}, {
+  "id" : 15,
+  "produsent" : "DittNAV",
+  "eventTidspunkt" : 1562763309.669000000,
+  "aktorId" : "123",
+  "eventId" : "123",
+  "dokumentId" : "123",
+  "tekst" : "Dette er informasjon til brukeren",
+  "link" : "https://nav.no/systemX/1562763309669",
+  "sikkerhetsnivaa" : 4,
+  "sistOppdatert" : 1562763310.035000000,
+  "aktiv" : true
+} ]

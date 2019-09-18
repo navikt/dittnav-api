@@ -1,4 +1,4 @@
-package no.nav.personbruker.dittnav.api.domain
+package no.nav.personbruker.dittnav.api.melding
 
 data class Melding(
     val id: String,
