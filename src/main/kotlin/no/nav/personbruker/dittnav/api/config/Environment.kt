@@ -6,7 +6,8 @@ data class Environment(val securityAudience: String = getEnvVar("AUDIENCE", "dum
                        val securityJwksIssuer: String = getEnvVar("JWKS_ISSUER", "dummyIssuer"),
                        val securityJwksUri: URL = URL(getEnvVar("JWKS_URI", "https://dummyUrl.com")),
                        val dittNAVLegacyURL: String = getDittNAVLegacyUrl(),
-                       val dittNAVEventsURL: String = getDittNAVEventsUrl()
+                       val dittNAVEventsURL: String = getDittNAVEventsUrl(),
+                       val isDev: Boolean = false
 )
 
 fun getEnvVar(varName: String, defaultValue: String? = null): String {
