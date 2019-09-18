@@ -10,8 +10,9 @@ class MeldingService(private val eventConsumer: EventConsumer) {
 
     suspend fun getMeldinger(authHeader: HttpAuthHeader?): List<Melding> {
         try {
-            val inbound = eventConsumer.getEvents(authHeader)
-            return MeldingTransformer.toOutbound(inbound)
+            eventConsumer.getEvents(authHeader).let {
+                return MeldingTransformer.toOutbound(it) }
+
         }
         catch (exception: Exception) {
             log.error(exception)

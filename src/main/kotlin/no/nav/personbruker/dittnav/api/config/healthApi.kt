@@ -1,4 +1,4 @@
-package no.nav.personbruker.dittnav.api.api
+package no.nav.personbruker.dittnav.api.config
 
 import io.ktor.application.call
 import io.ktor.http.ContentType

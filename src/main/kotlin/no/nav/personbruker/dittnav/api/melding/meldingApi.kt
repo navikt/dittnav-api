@@ -1,11 +1,10 @@
-package no.nav.personbruker.dittnav.api.api
+package no.nav.personbruker.dittnav.api.melding
 
 import io.ktor.application.call
 import io.ktor.auth.parseAuthorizationHeader
 import io.ktor.response.respond
 import io.ktor.routing.Route
 import io.ktor.routing.get
-import no.nav.personbruker.dittnav.api.meldinger.MeldingService
 
 fun Route.meldinger(meldingService: MeldingService) {
     get("/meldinger") {

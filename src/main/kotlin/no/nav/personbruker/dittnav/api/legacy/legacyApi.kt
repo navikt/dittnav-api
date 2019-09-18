@@ -1,4 +1,4 @@
-package no.nav.personbruker.dittnav.api.api
+package no.nav.personbruker.dittnav.api.legacy
 
 import io.ktor.application.call
 import io.ktor.auth.parseAuthorizationHeader
