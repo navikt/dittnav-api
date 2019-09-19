@@ -14,10 +14,6 @@ class HttpClient {
         install(JsonFeature) {
             serializer = GsonSerializer()
         }
-        install(Logging) {
-            logger = Logger.DEFAULT
-            level = LogLevel.HEADERS
-        }
     }
 
 }
