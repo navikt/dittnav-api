@@ -1,0 +1,22 @@
+[
+  {
+    "type": "ULEST",
+    "url": "https://tjenester.nav.no/mininnboks",
+    "antall": 479
+  },
+  {
+    "type": "UBESVART",
+    "url": "https://tjenester.nav.no/mininnboks",
+    "antall": 37
+  },
+  {
+    "type": "DOKUMENT_VARSEL",
+    "url": "https://tjenester.nav.no/innloggingsinfo/type/dokument",
+    "antall": 31
+  },
+  {
+    "type": "OPPGAVE_VARSEL",
+    "url": "https://tjenester.nav.no/innloggingsinfo/type/oppgave",
+    "antall": 23
+  }
+]

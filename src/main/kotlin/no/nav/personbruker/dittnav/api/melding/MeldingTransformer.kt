@@ -1,7 +1,6 @@
-package no.nav.personbruker.dittnav.api.meldinger
+package no.nav.personbruker.dittnav.api.melding
 
-import no.nav.personbruker.dittnav.api.domain.Event
-import no.nav.personbruker.dittnav.api.domain.Melding
+import no.nav.personbruker.dittnav.api.event.Event
 
 object MeldingTransformer {
 

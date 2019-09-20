@@ -1,4 +1,4 @@
-package no.nav.personbruker.dittnav.api.domain
+package no.nav.personbruker.dittnav.api.event
 
 data class Event(
     val aktiv: Boolean,

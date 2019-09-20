@@ -9,8 +9,8 @@ import io.ktor.client.features.logging.LogLevel
 import io.ktor.client.features.logging.Logger
 import io.ktor.client.features.logging.Logging
 
-class HttpClient {
-    val client: HttpClient = HttpClient(Apache) {
+open class HttpClient {
+    open val client: HttpClient = HttpClient(Apache) {
         install(JsonFeature) {
             serializer = GsonSerializer()
         }

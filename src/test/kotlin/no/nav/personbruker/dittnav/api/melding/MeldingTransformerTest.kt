@@ -1,4 +1,4 @@
-package no.nav.personbruker.dittnav.api.meldinger
+package no.nav.personbruker.dittnav.api.melding
 
 import no.nav.personbruker.dittnav.api.utils.EventObjectMother
 import org.spekframework.spek2.Spek

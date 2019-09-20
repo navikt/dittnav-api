@@ -1,4 +1,4 @@
-package no.nav.personbruker.dittnav.api.meldinger
+package no.nav.personbruker.dittnav.api.event
 
 import io.ktor.client.HttpClient
 import io.ktor.client.request.header
@@ -8,7 +8,6 @@ import io.ktor.http.HttpHeaders
 import io.ktor.http.HttpMethod
 import io.ktor.http.auth.HttpAuthHeader
 import no.nav.personbruker.dittnav.api.config.Environment
-import no.nav.personbruker.dittnav.api.domain.Event
 
 class EventConsumer(private val httpClient: HttpClient, private val environment: Environment) {
 

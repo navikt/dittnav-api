@@ -18,14 +18,14 @@ private fun getDittNAVLegacyUrl(): String {
     return when (System.getenv("NAIS_CLUSTER_NAME")) {
         "dev-sbs" -> "https://dittnav-legacy-api-q0.nais.oera-q.local/person/dittnav-legacy-api/"
         "prod-sbs" -> "https://dittnav-legacy-api.nais.oera.no/person/dittnav-legacy-api/"
-        else -> "https://dummyURL.com"
+        else -> "https://www.dummyUrl.no/person/dittnav-legacy-api/"
     }
 }
 
 private fun getDittNAVEventsUrl(): String {
     return when (System.getenv("NAIS_CLUSTER_NAME")) {
         "dev-sbs" -> "https://dittnav-event-handler.dev-sbs.nais.io/"
-        "prod-sbs" -> "https://dittnav-event-handler.prod-sbs.nais.io"
-        else -> "https://dummyURL.com"
+        "prod-sbs" -> "https://dittnav-event-handler.prod-sbs.nais.io/"
+        else -> "https://www.dummyURL.no/"
     }
 }

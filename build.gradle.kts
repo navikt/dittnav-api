@@ -55,6 +55,8 @@ dependencies {
     testCompile("org.junit.jupiter:junit-jupiter-api:$junitVersion")
     testCompile("org.assertj:assertj-core:3.12.1")
     testCompile(kotlin("test-junit5"))
+    testCompile("io.ktor:ktor-client-mock:$ktorVersion")
+    testCompile("io.ktor:ktor-client-mock-jvm:$ktorVersion")
     testImplementation("org.spekframework.spek2:spek-dsl-jvm:$spekVersion")
     testImplementation("io.mockk:mockk:$mockKVersion")
     testImplementation("org.assertj:assertj-core:$assertJVersion")
@@ -76,4 +78,9 @@ tasks.withType<Jar> {
 tasks.register("runServer", JavaExec::class) {
     main = application.mainClassName
     classpath = sourceSets["main"].runtimeClasspath
+}
+
+tasks.register("runLocalServer", JavaExec::class) {
+    main = "no.nav.personbruker.dittnav.api.TestAppKt"
+    classpath = sourceSets["test"].runtimeClasspath
 }
