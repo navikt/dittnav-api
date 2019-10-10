@@ -26,10 +26,9 @@ import java.util.concurrent.TimeUnit
 object Server {
     private const val portNumber = 8090
 
-    fun configure(client: HttpClient): NettyApplicationEngine {
+    fun configure(client: HttpClient, environment: Environment): NettyApplicationEngine {
         DefaultExports.initialize()
 
-        val environment = Environment()
         val legacyConsumer = LegacyConsumer(client, environment)
         val meldingService = MeldingService(EventConsumer(client, environment))
 
@@ -40,6 +39,7 @@ object Server {
             install(Authentication) {
                 jwt {
                     setupOidcAuthentication(environment)
+                    skipWhen { environment.isDev }
                 }
             }
 

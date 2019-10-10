@@ -1,7 +1,9 @@
 package no.nav.personbruker.dittnav.api
 
+import no.nav.personbruker.dittnav.api.config.Environment
 import no.nav.personbruker.dittnav.api.config.Server
 
 fun main() {
-    Server.configure(HttpClientMock().client).start()
+    val environment = Environment(isDev = true)
+    Server.configure(HttpClientMock().client, environment).start()
 }
