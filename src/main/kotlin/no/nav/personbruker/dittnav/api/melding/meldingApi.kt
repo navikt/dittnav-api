@@ -7,7 +7,7 @@ import io.ktor.routing.Route
 import io.ktor.routing.get
 
 fun Route.meldinger(meldingService: MeldingService) {
-    get("/meldinger") {
+    get("/person/dittnav-api/meldinger") {
         val authHeader = call.request.parseAuthorizationHeader()
         call.respond(meldingService.getMeldinger(authHeader))
     }
