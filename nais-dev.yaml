@@ -9,20 +9,19 @@ spec:
   image: {{version}}
   port: 8090
   liveness:
-    path: /isAlive
+    path: /person/dittnav-api/internal/isAlive
     initialDelay: 5
   readiness:
-    path: /isReady
+    path: /person/dittnav-api/internal/isReady
     initialDelay: 5
   prometheus:
-    path: /metrics
+    path: /person/dittnav-api/metrics
   replicas:
     min: 2
     max: 4
   webproxy: true
   ingresses:
-    - "https://dittnav-api.nais.oera-q.local"
-    - "https://dittnav-api.dev-sbs.nais.io"
+    - "https://dittnav-api.dev-sbs.nais.io/person/dittnav-api"
     - "https://www-q0.nav.no/person/dittnav-api"
   resources:
     limits:
