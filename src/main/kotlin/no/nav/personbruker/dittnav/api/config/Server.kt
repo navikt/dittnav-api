@@ -14,13 +14,16 @@ import io.ktor.server.engine.embeddedServer
 import io.ktor.server.netty.Netty
 import io.ktor.server.netty.NettyApplicationEngine
 import io.prometheus.client.hotspot.DefaultExports
+import no.nav.personbruker.dittnav.api.brukernotifikasjon.BrukernotifikasjonService
+import no.nav.personbruker.dittnav.api.brukernotifikasjon.brukernotifikasjoner
+import no.nav.personbruker.dittnav.api.informasjon.InformasjonConsumer
+import no.nav.personbruker.dittnav.api.informasjon.InformasjonService
 import no.nav.personbruker.dittnav.api.legacy.LegacyConsumer
 import no.nav.personbruker.dittnav.api.legacy.legacyMeldinger
 import no.nav.personbruker.dittnav.api.legacy.legacyPabegynte
 import no.nav.personbruker.dittnav.api.legacy.legacyPersoninfo
-import no.nav.personbruker.dittnav.api.event.EventConsumer
-import no.nav.personbruker.dittnav.api.melding.MeldingService
-import no.nav.personbruker.dittnav.api.melding.meldinger
+import no.nav.personbruker.dittnav.api.oppgave.OppgaveConsumer
+import no.nav.personbruker.dittnav.api.oppgave.OppgaveService
 import java.util.concurrent.TimeUnit
 
 object Server {
@@ -30,7 +33,9 @@ object Server {
         DefaultExports.initialize()
 
         val legacyConsumer = LegacyConsumer(client, environment)
-        val meldingService = MeldingService(EventConsumer(client, environment))
+        val oppgaveService = OppgaveService(OppgaveConsumer(client, environment))
+        val informasjonService = InformasjonService(InformasjonConsumer(client, environment))
+        val brukernotifikasjonService = BrukernotifikasjonService(oppgaveService, informasjonService)
 
 
         val app = embeddedServer(Netty, port = portNumber) {
@@ -55,7 +60,7 @@ object Server {
                     legacyMeldinger(legacyConsumer)
                     legacyPabegynte(legacyConsumer)
                     legacyPersoninfo(legacyConsumer)
-                    meldinger(meldingService)
+                    brukernotifikasjoner(brukernotifikasjonService)
                 }
             }
         }
