@@ -9,6 +9,7 @@ import io.ktor.features.ContentNegotiation
 import io.ktor.features.DefaultHeaders
 import io.ktor.jackson.jackson
 import io.ktor.routing.routing
+import io.ktor.util.KtorExperimentalAPI
 import io.prometheus.client.hotspot.DefaultExports
 import no.nav.personbruker.dittnav.api.event.EventConsumer
 import no.nav.personbruker.dittnav.api.legacy.LegacyConsumer
@@ -19,14 +20,14 @@ import no.nav.personbruker.dittnav.api.melding.MeldingService
 import no.nav.personbruker.dittnav.api.melding.meldinger
 import no.nav.security.token.support.ktor.tokenValidationSupport
 
+@KtorExperimentalAPI
 fun Application.mainModule() {
     val environment = Environment()
-    val httpClient = HttpClient().client
 
     DefaultExports.initialize()
 
-    val legacyConsumer = LegacyConsumer(httpClient, environment)
-    val meldingService = MeldingService(EventConsumer(httpClient, environment))
+    val legacyConsumer = LegacyConsumer(HttpClientBuilder, environment)
+    val meldingService = MeldingService(EventConsumer(HttpClientBuilder, environment))
 
     install(DefaultHeaders)
 
