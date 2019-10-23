@@ -12,7 +12,7 @@ class InformasjonService(private val informasjonConsumer: InformasjonConsumer) {
     suspend fun getInformasjonEventsAsBrukernotifikasjoner(authHeader: HttpAuthHeader?): List<Brukernotifikasjon> {
         try {
             informasjonConsumer.getEvents(authHeader).let {
-                return InformasjonTransformer.toBrukernotifikasjon(it)
+                return InformasjonTransformer.toBrukernotifikasjonList(it)
             }
         } catch (exception: Exception) {
             log.error(exception)

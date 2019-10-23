@@ -1,11 +1,11 @@
 package no.nav.personbruker.dittnav.api.informasjon
 
 import no.nav.personbruker.dittnav.api.brukernotifikasjon.Brukernotifikasjon
-import no.nav.personbruker.dittnav.api.event.EventType
+import no.nav.personbruker.dittnav.api.config.EventType
 
 object InformasjonTransformer {
 
-    fun toBrukernotifikasjon(inbound: List<Informasjon>): List<Brukernotifikasjon> {
+    fun toBrukernotifikasjonList(inbound: List<Informasjon>): List<Brukernotifikasjon> {
         return inbound
             .map {
                 Brukernotifikasjon(

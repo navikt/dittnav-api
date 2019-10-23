@@ -20,5 +20,4 @@ class OppgaveConsumer(private val httpClient: HttpClient, private val environmen
             }
         }
     }
-
 }

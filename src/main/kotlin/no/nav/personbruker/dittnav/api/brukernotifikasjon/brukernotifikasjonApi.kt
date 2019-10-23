@@ -12,5 +12,4 @@ fun Route.brukernotifikasjoner(brukernotifikasjonService: BrukernotifikasjonServ
         val authHeader = call.request.parseAuthorizationHeader()
         call.respond(brukernotifikasjonService.getBrukernotifikasjoner(authHeader))
     }
-
 }

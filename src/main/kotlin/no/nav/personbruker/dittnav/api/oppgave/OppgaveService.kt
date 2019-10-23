@@ -12,7 +12,7 @@ class OppgaveService(private val oppgaveConsumer: OppgaveConsumer) {
     suspend fun getOppgaveEventsAsBrukernotifikasjoner(authHeader: HttpAuthHeader?): List<Brukernotifikasjon> {
         try {
             oppgaveConsumer.getEvents(authHeader).let {
-                return OppgaveTransformer.toBrukernotifikasjon(it) }
+                return OppgaveTransformer.toBrukernotifikasjonList(it) }
         } catch (exception: Exception) {
             log.error(exception)
         }

@@ -1,4 +1,4 @@
-package no.nav.personbruker.dittnav.api.event
+package no.nav.personbruker.dittnav.api.config
 
 enum class EventType(val eventType: String) {
     OPPGAVE("oppgave"),

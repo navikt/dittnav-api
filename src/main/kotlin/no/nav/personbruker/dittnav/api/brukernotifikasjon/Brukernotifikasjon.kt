@@ -1,6 +1,6 @@
 package no.nav.personbruker.dittnav.api.brukernotifikasjon
 
-import no.nav.personbruker.dittnav.api.event.EventType
+import no.nav.personbruker.dittnav.api.config.EventType
 import java.time.LocalDateTime
 
 data class Brukernotifikasjon(

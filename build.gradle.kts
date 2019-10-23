@@ -1,7 +1,8 @@
+import org.gradle.api.tasks.testing.logging.TestExceptionFormat
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 val prometheusVersion = "0.6.0"
-val ktorVersion = "1.2.2"
+val ktorVersion = "1.2.5"
 val logstashVersion = 5.2
 val logbackVersion = "1.2.3"
 val kotlinVersion = "1.3.50"
@@ -10,6 +11,7 @@ val spekVersion = "2.0.6"
 val mockKVersion = "1.9"
 val assertJVersion = "3.12.2"
 val junitVersion = "5.4.1"
+val kluentVersion = "1.56"
 
 plugins {
     // Apply the Kotlin JVM plugin to add support for Kotlin on the JVM.
@@ -53,34 +55,34 @@ dependencies {
     compile("com.fasterxml.jackson.datatype:jackson-datatype-jsr310:$jacksonVersion")
     compile("io.ktor:ktor-jackson:$ktorVersion")
     testCompile("org.junit.jupiter:junit-jupiter-api:$junitVersion")
-    testCompile("org.assertj:assertj-core:3.12.1")
     testCompile(kotlin("test-junit5"))
-    testCompile("io.ktor:ktor-client-mock:$ktorVersion")
-    testCompile("io.ktor:ktor-client-mock-jvm:$ktorVersion")
-    testImplementation("org.spekframework.spek2:spek-dsl-jvm:$spekVersion")
-    testImplementation("io.mockk:mockk:$mockKVersion")
-    testImplementation("org.assertj:assertj-core:$assertJVersion")
-    testRuntimeOnly("org.spekframework.spek2:spek-runner-junit5:$spekVersion")
+    testRuntime("org.junit.jupiter:junit-jupiter-engine:$junitVersion")
+    testImplementation("org.amshove.kluent:kluent:$kluentVersion")
 }
 
 application {
     mainClassName = "no.nav.personbruker.dittnav.api.AppKt"
 }
 
-tasks.withType<Jar> {
-    manifest {
-        attributes["Main-Class"] = application.mainClassName
+tasks {
+    withType<Jar> {
+        manifest {
+            attributes["Main-Class"] = application.mainClassName
+        }
+
+        from(configurations.runtime.get().map { if (it.isDirectory) it else zipTree(it) })
     }
 
-    from(configurations.runtime.get().map { if (it.isDirectory) it else zipTree(it) })
-}
+    withType<Test> {
+        useJUnitPlatform()
+        testLogging {
+            exceptionFormat = TestExceptionFormat.FULL
+            events("passed", "skipped", "failed")
+        }
+    }
 
-tasks.register("runServer", JavaExec::class) {
-    main = application.mainClassName
-    classpath = sourceSets["main"].runtimeClasspath
-}
-
-tasks.register("runLocalServer", JavaExec::class) {
-    main = "no.nav.personbruker.dittnav.api.TestAppKt"
-    classpath = sourceSets["test"].runtimeClasspath
+    register("runServer", JavaExec::class) {
+        main = application.mainClassName
+        classpath = sourceSets["main"].runtimeClasspath
+    }
 }
