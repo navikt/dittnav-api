@@ -12,11 +12,14 @@ val mockKVersion = "1.9"
 val assertJVersion = "3.12.2"
 val junitVersion = "5.4.1"
 val kluentVersion = "1.56"
+val tokensupportVersion = "1.1.0"
+
 
 plugins {
     // Apply the Kotlin JVM plugin to add support for Kotlin on the JVM.
-    kotlin("jvm").version("1.3.50")
-    kotlin("plugin.allopen").version("1.3.50")
+    val kotlinVersion = "1.3.50"
+    kotlin("jvm").version(kotlinVersion)
+    kotlin("plugin.allopen").version(kotlinVersion)
 
     id("org.flywaydb.flyway") version("5.2.4")
 
@@ -36,9 +39,9 @@ repositories {
     mavenLocal()
 }
 
-
 dependencies {
     implementation(kotlin("stdlib-jdk8"))
+    compile("no.nav.security:token-validation-ktor:$tokensupportVersion")
     compile("io.prometheus:simpleclient_common:$prometheusVersion")
     compile("io.prometheus:simpleclient_hotspot:$prometheusVersion")
     compile("io.ktor:ktor-server-netty:$ktorVersion")
@@ -61,7 +64,7 @@ dependencies {
 }
 
 application {
-    mainClassName = "no.nav.personbruker.dittnav.api.AppKt"
+    mainClassName = "io.ktor.server.netty.EngineMain"
 }
 
 tasks {

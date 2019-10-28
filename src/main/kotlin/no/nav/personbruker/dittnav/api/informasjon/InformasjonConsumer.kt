@@ -11,12 +11,13 @@ import no.nav.personbruker.dittnav.api.config.Environment
 
 class InformasjonConsumer(private val httpClient: HttpClient, private val environment: Environment) {
 
-    suspend fun getEvents(authHeader: HttpAuthHeader?): List<Informasjon> {
+
+    suspend fun getEvents(token: String): List<Informasjon> {
         return httpClient.use { client ->
             client.request {
                 url(environment.dittNAVEventsURL + "fetch/informasjon")
                 method = HttpMethod.Get
-                header(HttpHeaders.Authorization, authHeader)
+                header(HttpHeaders.Authorization, "Bearer $token")
             }
         }
     }

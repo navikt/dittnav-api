@@ -1,6 +1,5 @@
 package no.nav.personbruker.dittnav.api.brukernotifikasjon
 
-import io.ktor.http.auth.HttpAuthHeader
 import kotlinx.coroutines.async
 import kotlinx.coroutines.runBlocking
 import no.nav.personbruker.dittnav.api.informasjon.InformasjonService
@@ -14,23 +13,23 @@ class BrukernotifikasjonService(
 
     private val log = LoggerFactory.getLogger(BrukernotifikasjonService::class.java)
 
-    fun getBrukernotifikasjoner(authHeader: HttpAuthHeader?): List<Brukernotifikasjon> {
+    fun getBrukernotifikasjoner(token: String): List<Brukernotifikasjon> {
         val brukernotifikasjoner: MutableList<Brukernotifikasjon> = mutableListOf()
 
         runBlocking {
-            val oppgaver = async { getOppgaver(authHeader) }
-            val informasjon = async { getInformasjon(authHeader) }
+            val oppgaver = async { getOppgaver(token) }
+            val informasjon = async { getInformasjon(token) }
             brukernotifikasjoner.addAll(oppgaver.await())
             brukernotifikasjoner.addAll(informasjon.await())
         }
         return brukernotifikasjoner
     }
 
-    private suspend fun getOppgaver(authHeader: HttpAuthHeader?): List<Brukernotifikasjon> {
-        return oppgaveService.getOppgaveEventsAsBrukernotifikasjoner(authHeader)
+    private suspend fun getOppgaver(token: String): List<Brukernotifikasjon> {
+        return oppgaveService.getOppgaveEventsAsBrukernotifikasjoner(token)
     }
 
-    private suspend fun getInformasjon(authHeader: HttpAuthHeader?): List<Brukernotifikasjon> {
-        return informasjonService.getInformasjonEventsAsBrukernotifikasjoner(authHeader)
+    private suspend fun getInformasjon(token: String): List<Brukernotifikasjon> {
+        return informasjonService.getInformasjonEventsAsBrukernotifikasjoner(token)
     }
 }
