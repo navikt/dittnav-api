@@ -9,6 +9,7 @@ import io.ktor.features.ContentNegotiation
 import io.ktor.features.DefaultHeaders
 import io.ktor.jackson.jackson
 import io.ktor.routing.routing
+import io.ktor.util.KtorExperimentalAPI
 import io.prometheus.client.hotspot.DefaultExports
 import no.nav.personbruker.dittnav.api.brukernotifikasjon.BrukernotifikasjonService
 import no.nav.personbruker.dittnav.api.brukernotifikasjon.brukernotifikasjoner
@@ -22,15 +23,15 @@ import no.nav.personbruker.dittnav.api.oppgave.OppgaveConsumer
 import no.nav.personbruker.dittnav.api.oppgave.OppgaveService
 import no.nav.security.token.support.ktor.tokenValidationSupport
 
+@KtorExperimentalAPI
 fun Application.mainModule() {
     val environment = Environment()
-    val httpClient = HttpClient().client
 
     DefaultExports.initialize()
 
-    val legacyConsumer = LegacyConsumer(httpClient, environment)
-    val oppgaveService = OppgaveService(OppgaveConsumer(httpClient, environment))
-    val informasjonService = InformasjonService(InformasjonConsumer(httpClient, environment))
+    val legacyConsumer = LegacyConsumer(HttpClientBuilder, environment)
+    val oppgaveService = OppgaveService(OppgaveConsumer(HttpClientBuilder, environment))
+    val informasjonService = InformasjonService(InformasjonConsumer(HttpClientBuilder, environment))
     val brukernotifikasjonService = BrukernotifikasjonService(oppgaveService, informasjonService)
 
     install(DefaultHeaders)
