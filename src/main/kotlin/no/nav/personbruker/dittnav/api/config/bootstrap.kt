@@ -12,10 +12,7 @@ import io.ktor.routing.routing
 import io.ktor.util.KtorExperimentalAPI
 import io.prometheus.client.hotspot.DefaultExports
 import no.nav.personbruker.dittnav.api.event.EventConsumer
-import no.nav.personbruker.dittnav.api.legacy.LegacyConsumer
-import no.nav.personbruker.dittnav.api.legacy.legacyMeldinger
-import no.nav.personbruker.dittnav.api.legacy.legacyPabegynte
-import no.nav.personbruker.dittnav.api.legacy.legacyPersoninfo
+import no.nav.personbruker.dittnav.api.legacy.*
 import no.nav.personbruker.dittnav.api.melding.MeldingService
 import no.nav.personbruker.dittnav.api.melding.meldinger
 import no.nav.security.token.support.ktor.tokenValidationSupport
@@ -48,7 +45,12 @@ fun Application.mainModule() {
         authenticate {
             legacyMeldinger(legacyConsumer)
             legacyPabegynte(legacyConsumer)
-            legacyPersoninfo(legacyConsumer)
+            legacyMeldekortinfo(legacyConsumer)
+            legacyPersonident(legacyConsumer)
+            legacyPersonnavn(legacyConsumer)
+            legacySakstema(legacyConsumer)
+            legacyUnderOppfolging(legacyConsumer)
+
             meldinger(meldingService)
         }
     }
