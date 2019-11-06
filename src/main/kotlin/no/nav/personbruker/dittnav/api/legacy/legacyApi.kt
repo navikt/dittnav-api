@@ -62,12 +62,12 @@ fun Route.legacyMeldekortinfo(legacyConsumer: LegacyConsumer) {
     }
 }
 
-fun Route.legacyUnderOppfolging(legacyConsumer: LegacyConsumer) {
-    get("/person/dittnav-api/underOppfolging") {
+fun Route.legacyOppfolging(legacyConsumer: LegacyConsumer) {
+    get("/person/dittnav-api/oppfolging") {
         val token = extractTokenFromRequest()
-        val underOppfolging = legacyConsumer.getLegacyContent(
-            "underOppfolging", token)
-        call.respond(underOppfolging.status, underOppfolging.readBytes())
+        val oppfolging = legacyConsumer.getLegacyContent(
+            "oppfolging", token)
+        call.respond(oppfolging.status, oppfolging.readBytes())
     }
 }
 

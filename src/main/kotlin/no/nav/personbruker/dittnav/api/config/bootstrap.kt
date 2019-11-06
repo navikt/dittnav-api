@@ -49,7 +49,7 @@ fun Application.mainModule() {
             legacyPersonident(legacyConsumer)
             legacyPersonnavn(legacyConsumer)
             legacySakstema(legacyConsumer)
-            legacyUnderOppfolging(legacyConsumer)
+            legacyOppfolging(legacyConsumer)
 
             meldinger(meldingService)
         }
