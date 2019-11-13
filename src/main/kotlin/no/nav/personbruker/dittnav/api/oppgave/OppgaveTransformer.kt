@@ -1,7 +1,7 @@
 package no.nav.personbruker.dittnav.api.oppgave
 
 import no.nav.personbruker.dittnav.api.brukernotifikasjon.Brukernotifikasjon
-import no.nav.personbruker.dittnav.api.config.EventType
+import no.nav.personbruker.dittnav.api.brukernotifikasjon.BrukernotifikasjonType
 
 object OppgaveTransformer {
 
@@ -10,7 +10,7 @@ object OppgaveTransformer {
                 .map {
                     Brukernotifikasjon(
                             eventId = it.eventId,
-                            type = EventType.OPPGAVE,
+                            type = BrukernotifikasjonType.OPPGAVE,
                             produsent = it.produsent,
                             eventTidspunkt = it.eventTidspunkt,
                             link = it.link,

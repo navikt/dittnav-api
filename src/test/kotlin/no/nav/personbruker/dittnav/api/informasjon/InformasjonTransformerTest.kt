@@ -1,6 +1,6 @@
 package no.nav.personbruker.dittnav.api.informasjon
 
-import no.nav.personbruker.dittnav.api.config.EventType
+import no.nav.personbruker.dittnav.api.brukernotifikasjon.BrukernotifikasjonType
 import org.amshove.kluent.`should be equal to`
 import org.amshove.kluent.`should be`
 import org.junit.jupiter.api.Test
@@ -12,14 +12,14 @@ class InformasjonTransformerTest {
         val informasjon1 = InformasjonObjectMother.createInformasjon("1", "1")
         val informasjon2 = InformasjonObjectMother.createInformasjon("2", "2")
         val brukernotifikasjonList = InformasjonTransformer.toBrukernotifikasjonList(listOf(informasjon1, informasjon2))
-        val brukernotifikasjon1 = brukernotifikasjonList.get(0)
+        val brukernotifikasjon = brukernotifikasjonList.get(0)
 
-        brukernotifikasjon1.produsent `should be equal to` informasjon1.produsent
-        brukernotifikasjon1.eventTidspunkt `should be` informasjon1.eventTidspunkt
-        brukernotifikasjon1.eventId `should be equal to` informasjon1.eventId
-        brukernotifikasjon1.tekst `should be equal to` informasjon1.tekst
-        brukernotifikasjon1.link `should be equal to` informasjon1.link
-        brukernotifikasjon1.sistOppdatert `should be` informasjon1.sistOppdatert
-        brukernotifikasjon1.type `should be` EventType.INFORMASJON
+        brukernotifikasjon.produsent `should be equal to` informasjon1.produsent
+        brukernotifikasjon.eventTidspunkt `should be` informasjon1.eventTidspunkt
+        brukernotifikasjon.eventId `should be equal to` informasjon1.eventId
+        brukernotifikasjon.tekst `should be equal to` informasjon1.tekst
+        brukernotifikasjon.link `should be equal to` informasjon1.link
+        brukernotifikasjon.sistOppdatert `should be` informasjon1.sistOppdatert
+        brukernotifikasjon.type `should be` BrukernotifikasjonType.INFORMASJON
     }
 }

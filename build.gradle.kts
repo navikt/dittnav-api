@@ -8,11 +8,12 @@ val logbackVersion = "1.2.3"
 val kotlinVersion = "1.3.50"
 val jacksonVersion = "2.9.9"
 val spekVersion = "2.0.6"
-val mockKVersion = "1.9"
+val mockKVersion = "1.9.3"
 val assertJVersion = "3.12.2"
 val junitVersion = "5.4.1"
 val kluentVersion = "1.56"
 val tokensupportVersion = "1.1.0"
+val kotlinxCoroutinesVersion = "1.3.2"
 
 
 plugins {
@@ -59,8 +60,10 @@ dependencies {
     compile("io.ktor:ktor-jackson:$ktorVersion")
     testCompile("org.junit.jupiter:junit-jupiter-api:$junitVersion")
     testCompile(kotlin("test-junit5"))
+    testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:$kotlinxCoroutinesVersion")
     testRuntime("org.junit.jupiter:junit-jupiter-engine:$junitVersion")
     testImplementation("org.amshove.kluent:kluent:$kluentVersion")
+    testImplementation("io.mockk:mockk:$mockKVersion")
 }
 
 application {

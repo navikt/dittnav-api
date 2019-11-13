@@ -1,7 +1,7 @@
 package no.nav.personbruker.dittnav.api.informasjon
 
 import no.nav.personbruker.dittnav.api.brukernotifikasjon.Brukernotifikasjon
-import no.nav.personbruker.dittnav.api.config.EventType
+import no.nav.personbruker.dittnav.api.brukernotifikasjon.BrukernotifikasjonType
 
 object InformasjonTransformer {
 
@@ -10,7 +10,7 @@ object InformasjonTransformer {
             .map {
                 Brukernotifikasjon(
                         eventId = it.eventId,
-                        type = EventType.INFORMASJON,
+                        type = BrukernotifikasjonType.INFORMASJON,
                         produsent = it.produsent,
                         eventTidspunkt = it.eventTidspunkt,
                         link = it.link,
