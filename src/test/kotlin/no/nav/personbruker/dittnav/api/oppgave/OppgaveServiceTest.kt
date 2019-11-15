@@ -3,7 +3,7 @@ package no.nav.personbruker.dittnav.api.oppgave
 import io.mockk.coEvery
 import io.mockk.mockk
 import kotlinx.coroutines.runBlocking
-import org.amshove.kluent.*
+import org.amshove.kluent.`should be equal to`
 import org.junit.jupiter.api.Test
 
 
@@ -19,9 +19,7 @@ class OppgaveServiceTest {
         coEvery { oppgaveConsumer.getEvents("1234") } returns listOf(oppgave1, oppgave2)
 
         runBlocking {
-            val brukernotifikasjonListe = oppgaveService.getOppgaveEventsAsBrukernotifikasjoner("1234");
-
-            Verify on oppgaveConsumer that oppgaveConsumer.getEvents("1234") was called
+            val brukernotifikasjonListe = oppgaveService.getOppgaveEventsAsBrukernotifikasjoner("1234")
             brukernotifikasjonListe.size `should be equal to` 2
         }
 
@@ -32,8 +30,7 @@ class OppgaveServiceTest {
         coEvery { oppgaveConsumer.getEvents("1234") } throws Exception("error")
 
         runBlocking {
-            val brukernotifikasjonListe = oppgaveService.getOppgaveEventsAsBrukernotifikasjoner("1234");
-            VerifyNotCalled on oppgaveConsumer that oppgaveConsumer.getEvents("1234")
+            val brukernotifikasjonListe = oppgaveService.getOppgaveEventsAsBrukernotifikasjoner("1234")
             brukernotifikasjonListe.size `should be equal to` 0
         }
 
