@@ -2,7 +2,7 @@ apiVersion: "nais.io/v1alpha1"
 kind: "Application"
 metadata:
   name: dittnav-api
-  namespace: default
+  namespace: q1
   labels:
     team: {{team}}
 spec:
@@ -21,8 +21,8 @@ spec:
     max: 4
   webproxy: true
   ingresses:
-    - "https://dittnav-api.dev-sbs.nais.io/person/dittnav-api"
-    - "https://www-q0.nav.no/person/dittnav-api"
+    - "https://dittnav-api-q1.dev-sbs.nais.io/person/dittnav-api"
+    - "https://www-q1.nav.no/person/dittnav-api"
   resources:
     limits:
       cpu: 500m

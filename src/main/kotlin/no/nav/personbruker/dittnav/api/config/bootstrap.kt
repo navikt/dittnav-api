@@ -15,12 +15,10 @@ import no.nav.personbruker.dittnav.api.brukernotifikasjon.BrukernotifikasjonServ
 import no.nav.personbruker.dittnav.api.brukernotifikasjon.brukernotifikasjoner
 import no.nav.personbruker.dittnav.api.informasjon.InformasjonConsumer
 import no.nav.personbruker.dittnav.api.informasjon.InformasjonService
-import no.nav.personbruker.dittnav.api.legacy.LegacyConsumer
-import no.nav.personbruker.dittnav.api.legacy.legacyMeldinger
-import no.nav.personbruker.dittnav.api.legacy.legacyPabegynte
-import no.nav.personbruker.dittnav.api.legacy.legacyPersoninfo
+import no.nav.personbruker.dittnav.api.legacy.*
 import no.nav.personbruker.dittnav.api.oppgave.OppgaveConsumer
 import no.nav.personbruker.dittnav.api.oppgave.OppgaveService
+
 import no.nav.security.token.support.ktor.tokenValidationSupport
 
 @KtorExperimentalAPI
@@ -53,7 +51,11 @@ fun Application.mainModule() {
         authenticate {
             legacyMeldinger(legacyConsumer)
             legacyPabegynte(legacyConsumer)
-            legacyPersoninfo(legacyConsumer)
+            legacyMeldekortinfo(legacyConsumer)
+            legacyPersonident(legacyConsumer)
+            legacyPersonnavn(legacyConsumer)
+            legacySakstema(legacyConsumer)
+            legacyOppfolging(legacyConsumer)
             brukernotifikasjoner(brukernotifikasjonService)
         }
     }

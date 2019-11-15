@@ -11,7 +11,7 @@ fun getEnvVar(varName: String, defaultValue: String? = null): String {
 
 private fun getDittNAVLegacyUrl(): String {
     return when (currentClusterName()) {
-        "dev-sbs" -> "https://dittnav-legacy-api-q0.nais.oera-q.local/person/dittnav-legacy-api/"
+        "dev-sbs" -> "https://dittnav-legacy-api-q1.nais.oera-q.local/person/dittnav-legacy-api/"
         "prod-sbs" -> "https://dittnav-legacy-api.nais.oera.no/person/dittnav-legacy-api/"
         else -> "http://localhost:8090/person/dittnav-legacy-api/"
     }
@@ -19,7 +19,7 @@ private fun getDittNAVLegacyUrl(): String {
 
 private fun getDittNAVEventsUrl(): String {
     return when (currentClusterName()) {
-        "dev-sbs" -> "https://dittnav-event-handler.dev-sbs.nais.io/"
+        "dev-sbs" -> "https://dittnav-event-handler-q1.dev-sbs.nais.io/"
         "prod-sbs" -> "https://dittnav-event-handler.prod-sbs.nais.io/"
         else -> "http://localhost:8092/"
     }

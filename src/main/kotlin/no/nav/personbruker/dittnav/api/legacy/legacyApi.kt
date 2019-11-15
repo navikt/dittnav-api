@@ -26,12 +26,48 @@ fun Route.legacyPabegynte(legacyConsumer: LegacyConsumer) {
     }
 }
 
-fun Route.legacyPersoninfo(legacyConsumer: LegacyConsumer) {
-    get("/person/dittnav-api/person/personinfo") {
+fun Route.legacySakstema(legacyConsumer: LegacyConsumer) {
+    get("/person/dittnav-api/saker/sakstema") {
         val token = extractTokenFromRequest()
-        val personinfo = legacyConsumer.getLegacyContent(
-                "person/personinfo", token)
-        call.respond(personinfo.status, personinfo.readBytes())
+        val sakstema = legacyConsumer.getLegacyContent(
+            "saker/sakstema", token)
+        call.respond(sakstema.status, sakstema.readBytes())
+    }
+}
+
+fun Route.legacyPersonnavn(legacyConsumer: LegacyConsumer) {
+    get("/person/dittnav-api/personalia/navn") {
+        val token = extractTokenFromRequest()
+        val navn = legacyConsumer.getLegacyContent(
+                "personalia/navn", token)
+        call.respond(navn.status, navn.readBytes())
+    }
+}
+
+fun Route.legacyPersonident(legacyConsumer: LegacyConsumer) {
+    get("/person/dittnav-api/personalia/ident") {
+        val token = extractTokenFromRequest()
+        val ident = legacyConsumer.getLegacyContent(
+            "personalia/ident", token)
+        call.respond(ident.status, ident.readBytes())
+    }
+}
+
+fun Route.legacyMeldekortinfo(legacyConsumer: LegacyConsumer) {
+    get("/person/dittnav-api/meldekortinfo") {
+        val token = extractTokenFromRequest()
+        val meldekortinfo = legacyConsumer.getLegacyContent(
+            "meldekortinfo", token)
+        call.respond(meldekortinfo.status, meldekortinfo.readBytes())
+    }
+}
+
+fun Route.legacyOppfolging(legacyConsumer: LegacyConsumer) {
+    get("/person/dittnav-api/oppfolging") {
+        val token = extractTokenFromRequest()
+        val oppfolging = legacyConsumer.getLegacyContent(
+            "oppfolging", token)
+        call.respond(oppfolging.status, oppfolging.readBytes())
     }
 }
 
