@@ -16,7 +16,7 @@ class InformasjonServiceTest {
 
     @Test
     fun `should return list of Brukernotifikasjoner when Events are received`() {
-        coEvery { informasjonConsumer.getEvents("1234") } returns listOf(informasjon1, informasjon2)
+        coEvery { informasjonConsumer.getExternalEvents("1234") } returns listOf(informasjon1, informasjon2)
 
         runBlocking {
             val brukernotifikasjonListe = informasjonService.getInformasjonEventsAsBrukernotifikasjoner("1234")
@@ -27,7 +27,7 @@ class InformasjonServiceTest {
 
     @Test
     fun `should return empty list when Exception is thrown`() {
-        coEvery { informasjonConsumer.getEvents("1234") } throws Exception("error")
+        coEvery { informasjonConsumer.getExternalEvents("1234") } throws Exception("error")
 
         runBlocking {
             val brukernotifikasjonListe = informasjonService.getInformasjonEventsAsBrukernotifikasjoner("1234")

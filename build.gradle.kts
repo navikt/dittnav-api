@@ -61,6 +61,8 @@ dependencies {
     compile("io.ktor:ktor-jackson:$ktorVersion")
     testCompile("org.junit.jupiter:junit-jupiter-api:$junitVersion")
     testCompile(kotlin("test-junit5"))
+    testCompile("io.ktor:ktor-client-mock:$ktorVersion")
+    testCompile("io.ktor:ktor-client-mock-jvm:$ktorVersion")
     testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:$kotlinxCoroutinesVersion")
     testRuntime("org.junit.jupiter:junit-jupiter-engine:$junitVersion")
     testImplementation("org.amshove.kluent:kluent:$kluentVersion")

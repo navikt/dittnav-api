@@ -10,7 +10,7 @@ class InformasjonService(private val informasjonConsumer: InformasjonConsumer) {
 
     suspend fun getInformasjonEventsAsBrukernotifikasjoner(token: String): List<Brukernotifikasjon> {
         try {
-            informasjonConsumer.getEvents(token).let {
+            informasjonConsumer.getExternalEvents(token).let {
                 return InformasjonTransformer.toBrukernotifikasjonList(it)
             }
         } catch (exception: Exception) {

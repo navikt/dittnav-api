@@ -16,7 +16,7 @@ class OppgaveServiceTest {
 
     @Test
     fun `should return list of Brukernotifikasjoner when Events are received`() {
-        coEvery { oppgaveConsumer.getEvents("1234") } returns listOf(oppgave1, oppgave2)
+        coEvery { oppgaveConsumer.getExternalEvents("1234") } returns listOf(oppgave1, oppgave2)
 
         runBlocking {
             val brukernotifikasjonListe = oppgaveService.getOppgaveEventsAsBrukernotifikasjoner("1234")
@@ -27,7 +27,7 @@ class OppgaveServiceTest {
 
     @Test
     fun `should return empty List when Exception is thrown`() {
-        coEvery { oppgaveConsumer.getEvents("1234") } throws Exception("error")
+        coEvery { oppgaveConsumer.getExternalEvents("1234") } throws Exception("error")
 
         runBlocking {
             val brukernotifikasjonListe = oppgaveService.getOppgaveEventsAsBrukernotifikasjoner("1234")

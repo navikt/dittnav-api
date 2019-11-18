@@ -10,7 +10,7 @@ class OppgaveService(private val oppgaveConsumer: OppgaveConsumer) {
 
     suspend fun getOppgaveEventsAsBrukernotifikasjoner(token: String): List<Brukernotifikasjon> {
         try {
-            oppgaveConsumer.getEvents(token).let {
+            oppgaveConsumer.getExternalEvents(token).let {
                 return OppgaveTransformer.toBrukernotifikasjonList(it) }
         } catch (exception: Exception) {
             log.error(exception)

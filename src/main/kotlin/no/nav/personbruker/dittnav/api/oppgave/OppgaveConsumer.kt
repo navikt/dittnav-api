@@ -10,7 +10,7 @@ import no.nav.personbruker.dittnav.api.config.HttpClientBuilder
 
 class OppgaveConsumer(private val httpClientBuilder: HttpClientBuilder, private val environment: Environment) {
 
-    suspend fun getEvents(token: String): List<Oppgave> {
+    suspend fun getExternalEvents(token: String): List<Oppgave> {
         val httpClient = httpClientBuilder.build()
         return httpClient.use { client ->
             client.request {
