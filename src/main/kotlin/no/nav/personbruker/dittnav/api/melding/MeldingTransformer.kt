@@ -7,7 +7,6 @@ object MeldingTransformer {
 
     fun toOutbound(inbound: List<Event>): List<Melding> {
         return inbound
-            .filter { it.aktiv }
             .map {
                 Melding(
                     id = it.eventId,
