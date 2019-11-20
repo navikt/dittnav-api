@@ -26,5 +26,4 @@ class LegacyConsumer(private val httpClientBuilder: HttpClientBuilder, private v
         log.info("Mottok følgende respons: $response")
         return response
     }
-
 }

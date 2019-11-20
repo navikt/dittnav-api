@@ -11,10 +11,14 @@ import io.ktor.jackson.jackson
 import io.ktor.routing.routing
 import io.ktor.util.KtorExperimentalAPI
 import io.prometheus.client.hotspot.DefaultExports
-import no.nav.personbruker.dittnav.api.event.EventConsumer
+import no.nav.personbruker.dittnav.api.brukernotifikasjon.BrukernotifikasjonService
+import no.nav.personbruker.dittnav.api.brukernotifikasjon.brukernotifikasjoner
+import no.nav.personbruker.dittnav.api.informasjon.InformasjonConsumer
+import no.nav.personbruker.dittnav.api.informasjon.InformasjonService
 import no.nav.personbruker.dittnav.api.legacy.*
-import no.nav.personbruker.dittnav.api.melding.MeldingService
-import no.nav.personbruker.dittnav.api.melding.meldinger
+import no.nav.personbruker.dittnav.api.oppgave.OppgaveConsumer
+import no.nav.personbruker.dittnav.api.oppgave.OppgaveService
+
 import no.nav.security.token.support.ktor.tokenValidationSupport
 
 @KtorExperimentalAPI
@@ -24,7 +28,9 @@ fun Application.mainModule() {
     DefaultExports.initialize()
 
     val legacyConsumer = LegacyConsumer(HttpClientBuilder, environment)
-    val meldingService = MeldingService(EventConsumer(HttpClientBuilder, environment))
+    val oppgaveService = OppgaveService(OppgaveConsumer(HttpClientBuilder, environment))
+    val informasjonService = InformasjonService(InformasjonConsumer(HttpClientBuilder, environment))
+    val brukernotifikasjonService = BrukernotifikasjonService(oppgaveService, informasjonService)
 
     install(DefaultHeaders)
 
@@ -50,9 +56,7 @@ fun Application.mainModule() {
             legacyPersonnavn(legacyConsumer)
             legacySakstema(legacyConsumer)
             legacyOppfolging(legacyConsumer)
-
-            meldinger(meldingService)
+            brukernotifikasjoner(brukernotifikasjonService)
         }
     }
-
 }
