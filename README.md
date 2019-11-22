@@ -1,3 +1,5 @@
+[![CircleCI](https://circleci.com/gh/navikt/dittnav-api.svg?style=svg&circle-token=999f4ceaae1ed22eb2272f9b6a4c5d6b9892d119)](https://circleci.com/gh/navikt/dittnav-api)
+
 # DittNAV api
 
 Proxy mellom dittnav-frontend og dittnav-legacy-api/dittnav-event-handler
