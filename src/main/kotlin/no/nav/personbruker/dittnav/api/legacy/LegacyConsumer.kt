@@ -18,7 +18,7 @@ class LegacyConsumer(private val httpClientBuilder: HttpClientBuilder, private v
         val httpClient = httpClientBuilder.build()
         val response: HttpResponse = httpClient.use { client ->
             client.request {
-                url(environment.dittNAVLegacyURL + url)
+                url(environment.dittNAVLegacyURL.toString() + url)
                 method = HttpMethod.Get
                 header(HttpHeaders.Authorization, "Bearer $token")
             }

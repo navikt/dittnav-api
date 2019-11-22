@@ -14,7 +14,7 @@ class InformasjonConsumer(private val httpClientBuilder: HttpClientBuilder, priv
         val httpClient = httpClientBuilder.build()
         return httpClient.use { client ->
             client.request {
-                url(environment.dittNAVEventsURL + "fetch/informasjon")
+                url(environment.dittNAVEventsURL.toString() + "/fetch/informasjon")
                 method = HttpMethod.Get
                 header(HttpHeaders.Authorization, "Bearer $token")
             }

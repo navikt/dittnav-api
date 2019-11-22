@@ -19,11 +19,12 @@ import no.nav.personbruker.dittnav.api.config.HttpClientBuilder
 import org.amshove.kluent.`should be equal to`
 import org.amshove.kluent.`should equal`
 import org.junit.jupiter.api.Test
+import java.net.URL
 
 class InformasjonConsumerTest {
 
     val httpClientBuilder = mockk<HttpClientBuilder>(relaxed=true)
-    val informasjonConsumer = InformasjonConsumer(httpClientBuilder, Environment("", "event-handler/"))
+    val informasjonConsumer = InformasjonConsumer(httpClientBuilder, Environment(URL("http://legacy-api"), URL("http://event-handler")))
 
 
     @Test
@@ -31,7 +32,7 @@ class InformasjonConsumerTest {
         val client = HttpClient(MockEngine) {
             engine {
                 addHandler { request ->
-                    if (request.url.encodedPath.contains("/fetch/informasjon") && request.url.encodedPath.contains("event-handler")) {
+                    if (request.url.encodedPath.contains("/fetch/informasjon") && request.url.host.contains("event-handler")) {
                         respond("[]", headers = headersOf(HttpHeaders.ContentType, ContentType.Application.Json.toString()))
                     } else {
                         respondError(HttpStatusCode.BadRequest)
