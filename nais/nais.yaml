@@ -2,7 +2,7 @@ apiVersion: "nais.io/v1alpha1"
 kind: "Application"
 metadata:
   name: dittnav-api
-  namespace: q1
+  namespace: {{namespace}}
   labels:
     team: {{team}}
 spec:
@@ -20,9 +20,9 @@ spec:
     min: 2
     max: 4
   webproxy: true
-  ingresses:
-    - "https://dittnav-api-q1.dev-sbs.nais.io/person/dittnav-api"
-    - "https://www-q1.nav.no/person/dittnav-api"
+  ingresses: {{ingresses}}
+  vault:
+    enabled: true
   resources:
     limits:
       cpu: 500m
@@ -30,5 +30,3 @@ spec:
     requests:
       cpu: 200m
       memory: 256Mi
-  vault:
-    enabled: true
