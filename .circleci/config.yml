@@ -1,43 +1,72 @@
 version: 2.1
 orbs:
-  nais: 'navikt/nais-deployment@1.4.1'
+  nais: 'navikt/nais-deployment@3.2.0'
 
 jobs:
-  build:
+  bygg-og-push-docker:
     docker:
-      - image: circleci/openjdk:11-jdk
+      - image: circleci/openjdk:13-jdk-buster
+        environment:
+          TZ: "Europe/Oslo"
     steps:
       - checkout
       - restore_cache:
           keys:
             - v1-dependencies-{{ checksum "build.gradle.kts" }}
             - v1-dependencies-
-      - run: gradle build
+      - run:
+          name: Gradle build
+          command: gradle build
+      - setup_remote_docker
+      - run:
+          name: Docker build
+          command: docker build -t "navikt/dittnav-api:$CIRCLE_SHA1" -t "navikt/dittnav-api:latest" .
+      - run:
+          name: Docker push
+          command: |
+            echo $DOCKER_PASSWORD | docker login --username $DOCKER_LOGIN --password-stdin
+            docker push "navikt/dittnav-api:$CIRCLE_SHA1"
+            docker push "navikt/dittnav-api:latest"
       - save_cache:
           paths:
             - ~/.gradle
           key: v1-dependencies-{{ checksum "build.gradle.kts" }}
-      - nais/docker-deploy:
+  deploy-q1:
+    executor: nais/deployment-cli
+    steps:
+      - nais-deploy:
+          namespace: q1
+          environment: dev-sbs
+
+commands:
+  nais-deploy:
+    description: Deploy til miljø
+    parameters:
+      namespace:
+        type: string
+      environment:
+        type: string
+    steps:
+      - checkout
+      - nais/deploy-with-gh-app:
+          repo: navikt/dittnav-api
           image: navikt/dittnav-api
+          github-app-id: 34043
+          nais-template: nais/nais.yaml
+          environment: << parameters.environment >>
+          team: personbruker
+          enable-vars: true
+          template-vars: nais/<< parameters.environment >>/<< parameters.namespace >>.json
 
 workflows:
-  build-and-deploy-dev:
+  bygg-og-deploy:
     jobs:
-      - build:
+      - bygg-og-push-docker:
           context: NAIS deployment
-      - bekreft-til-dev:
+      - til-q1:
           type: approval
           requires:
-            - build
-      - nais/deploy:
-          name: deploy-dev
-          context: NAIS deployment
-          image: navikt/dittnav-api
-          nais-template: nais-dev.yaml
-          build-and-push-docker-image: false
-          github-app-id: 34043
-          repo: navikt/dittnav-api
-          team: personbruker
-          environment: dev-sbs
+            - bygg-og-push-docker
+      - deploy-q1:
           requires:
-            - bekreft-til-dev
+            - til-q1
