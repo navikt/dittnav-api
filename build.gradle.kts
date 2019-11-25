@@ -2,7 +2,7 @@ import org.gradle.api.tasks.testing.logging.TestExceptionFormat
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 val prometheusVersion = "0.6.0"
-val ktorVersion = "1.2.5"
+val ktorVersion = "1.2.6"
 val logstashVersion = 5.2
 val logbackVersion = "1.2.3"
 val kotlinVersion = "1.3.50"
@@ -91,8 +91,8 @@ tasks {
     }
 
     register("runServer", JavaExec::class) {
-        environment("LEGACY-API_URL", "http://localhost:8090/person/dittnav-legacy-api")
-        environment("EVENT-HANDLER_URL", "http://localhost:8092")
+        environment("LEGACY_API_URL", "http://localhost:8090/person/dittnav-legacy-api")
+        environment("EVENT_HANDLER_URL", "http://localhost:8092")
         main = application.mainClassName
         classpath = sourceSets["main"].runtimeClasspath
     }
