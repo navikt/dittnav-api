@@ -1,28 +1,17 @@
 package no.nav.personbruker.dittnav.api.config
 
-data class Environment(val dittNAVLegacyURL: String = getDittNAVLegacyUrl(),
-                       val dittNAVEventsURL: String = getDittNAVEventsUrl()
+import org.slf4j.LoggerFactory
+import java.net.URL
+
+data class Environment(val dittNAVLegacyURL: URL = URL(getEnvVar("LEGACY_API_URL")),
+                       val dittNAVEventsURL: URL = URL(getEnvVar("EVENT_HANDLER_URL"))
 )
 
-fun getEnvVar(varName: String, defaultValue: String? = null): String {
-    return System.getenv(varName) ?: defaultValue
-    ?: throw IllegalArgumentException("Variable $varName cannot be empty")
-}
+private val log = LoggerFactory.getLogger(Environment::class.java)
 
-private fun getDittNAVLegacyUrl(): String {
-    return when (currentClusterName()) {
-        "dev-sbs" -> "https://dittnav-legacy-api-q1.nais.oera-q.local/person/dittnav-legacy-api/"
-        "prod-sbs" -> "https://dittnav-legacy-api.nais.oera.no/person/dittnav-legacy-api/"
-        else -> "http://localhost:8090/person/dittnav-legacy-api/"
-    }
-}
+fun getEnvVar(varName: String): String {
+    val varValue = System.getenv(varName)
+    log.info("Read the environment variable $varName to be $varValue")
+    return varValue ?: throw IllegalArgumentException("Variable $varName cannot be empty")
 
-private fun getDittNAVEventsUrl(): String {
-    return when (currentClusterName()) {
-        "dev-sbs" -> "https://dittnav-event-handler-q1.dev-sbs.nais.io/"
-        "prod-sbs" -> "https://dittnav-event-handler.prod-sbs.nais.io/"
-        else -> "http://localhost:8092/"
-    }
 }
-
-private fun currentClusterName() = System.getenv("NAIS_CLUSTER_NAME")

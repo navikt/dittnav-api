@@ -14,7 +14,7 @@ class OppgaveConsumer(private val httpClientBuilder: HttpClientBuilder, private 
         val httpClient = httpClientBuilder.build()
         return httpClient.use { client ->
             client.request {
-                url(environment.dittNAVEventsURL + "fetch/oppgave")
+                url("${environment.dittNAVEventsURL}/fetch/oppgave")
                 method = HttpMethod.Get
                 header(HttpHeaders.Authorization, "Bearer $token")
             }
