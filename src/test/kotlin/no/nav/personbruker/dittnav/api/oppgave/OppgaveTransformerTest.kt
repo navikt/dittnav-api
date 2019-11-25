@@ -5,7 +5,6 @@ import org.amshove.kluent.`should be equal to`
 import org.amshove.kluent.`should be`
 import org.junit.jupiter.api.Test
 
-
 class OppgaveTransformerTest {
 
     @Test
@@ -19,7 +18,7 @@ class OppgaveTransformerTest {
         brukernotifikasjon.eventTidspunkt `should be` oppgave1.eventTidspunkt
         brukernotifikasjon.eventId `should be equal to` oppgave1.eventId
         brukernotifikasjon.tekst `should be equal to` oppgave1.tekst
-        brukernotifikasjon.link `should be equal to`oppgave1.link
+        brukernotifikasjon.link `should be equal to` oppgave1.link
         brukernotifikasjon.sistOppdatert `should be` oppgave1.sistOppdatert
         brukernotifikasjon.type `should be` BrukernotifikasjonType.OPPGAVE
     }

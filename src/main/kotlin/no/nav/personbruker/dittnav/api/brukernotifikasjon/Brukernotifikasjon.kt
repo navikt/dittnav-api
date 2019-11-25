@@ -1,13 +1,13 @@
 package no.nav.personbruker.dittnav.api.brukernotifikasjon
 
-import java.time.LocalDateTime
+import java.time.ZonedDateTime
 
 data class Brukernotifikasjon(
-    val produsent: String,
-    val eventTidspunkt: LocalDateTime,
-    val eventId: String,
-    val tekst: String,
-    val link: String,
-    val sistOppdatert: LocalDateTime,
-    val type: BrukernotifikasjonType
+        val produsent: String,
+        val eventTidspunkt: ZonedDateTime,
+        val eventId: String,
+        val tekst: String,
+        val link: String,
+        val sistOppdatert: ZonedDateTime,
+        val type: BrukernotifikasjonType
 )
