@@ -11,8 +11,8 @@ class InformasjonTransformerTest {
     fun `should transform from Informasjon to Brukernotifikasjon`() {
         val informasjon1 = InformasjonObjectMother.createInformasjon("1", "1")
         val informasjon2 = InformasjonObjectMother.createInformasjon("2", "2")
-        val brukernotifikasjonList = InformasjonTransformer.toBrukernotifikasjonList(listOf(informasjon1, informasjon2))
-        val brukernotifikasjon = brukernotifikasjonList.get(0)
+        val brukernotifikasjonList = listOf(informasjon1, informasjon2).map { toBrukernotifikasjon(it) }
+        val brukernotifikasjon = brukernotifikasjonList.first()
 
         brukernotifikasjon.produsent `should be equal to` informasjon1.produsent
         brukernotifikasjon.eventTidspunkt `should be` informasjon1.eventTidspunkt
