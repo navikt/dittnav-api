@@ -1,6 +1,5 @@
 package no.nav.personbruker.dittnav.api.config
 
-import com.fasterxml.jackson.databind.SerializationFeature
 import io.ktor.application.Application
 import io.ktor.application.install
 import io.ktor.auth.Authentication
@@ -42,7 +41,7 @@ fun Application.mainModule() {
 
     install(ContentNegotiation) {
         jackson {
-            enable(SerializationFeature.INDENT_OUTPUT)
+            enableDittNavJsonConfig()
         }
     }
 

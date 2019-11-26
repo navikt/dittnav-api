@@ -1,11 +1,10 @@
 package no.nav.personbruker.dittnav.api.oppgave
 
-import com.google.gson.Gson
+import com.fasterxml.jackson.databind.ObjectMapper
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.mock.MockEngine
 import io.ktor.client.engine.mock.respond
 import io.ktor.client.engine.mock.respondError
-import io.ktor.client.features.json.GsonSerializer
 import io.ktor.client.features.json.JsonFeature
 import io.ktor.http.ContentType
 import io.ktor.http.HttpHeaders
@@ -14,8 +13,7 @@ import io.ktor.http.headersOf
 import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.runBlocking
-import no.nav.personbruker.dittnav.api.config.Environment
-import no.nav.personbruker.dittnav.api.config.HttpClientBuilder
+import no.nav.personbruker.dittnav.api.config.*
 import org.amshove.kluent.`should be equal to`
 import org.amshove.kluent.`should equal`
 import org.junit.jupiter.api.Test
@@ -23,9 +21,8 @@ import java.net.URL
 
 class OppgaveConsumerTest {
 
-    val httpClientBuilder = mockk<HttpClientBuilder>(relaxed=true)
+    val httpClientBuilder = mockk<HttpClientBuilder>(relaxed = true)
     val oppgaveConsumer = OppgaveConsumer(httpClientBuilder, Environment(URL("http://legacy-api"), URL("http://event-handler")))
-
 
     @Test
     fun `should call oppgave endpoint on event handler`() {
@@ -40,7 +37,7 @@ class OppgaveConsumerTest {
                 }
             }
             install(JsonFeature) {
-                serializer = GsonSerializer()
+                serializer = buildJsonSerializer()
             }
         }
         every { httpClientBuilder.build() } returns client
@@ -55,18 +52,22 @@ class OppgaveConsumerTest {
     fun `should get list of Oppgave`() {
         val oppgaveObject1 = OppgaveObjectMother.createOppgave("1", "1")
         val oppgaveObject2 = OppgaveObjectMother.createOppgave("2", "2")
+        val objectMapper = ObjectMapper().apply {
+            enableDittNavJsonConfig()
+        }
+
         val client = HttpClient(MockEngine) {
             engine {
                 addHandler {
                     respond(
-                        Gson().toJson(listOf(oppgaveObject1, oppgaveObject2)),
-                        headers = headersOf(HttpHeaders.ContentType,
-                            ContentType.Application.Json.toString())
+                            objectMapper.writeValueAsString(listOf(oppgaveObject1, oppgaveObject2)),
+                            headers = headersOf(HttpHeaders.ContentType,
+                                    ContentType.Application.Json.toString())
                     )
                 }
             }
             install(JsonFeature) {
-                serializer = GsonSerializer()
+                serializer = buildJsonSerializer()
             }
         }
         every { httpClientBuilder.build() } returns client
@@ -78,4 +79,5 @@ class OppgaveConsumerTest {
         }
 
     }
+
 }
