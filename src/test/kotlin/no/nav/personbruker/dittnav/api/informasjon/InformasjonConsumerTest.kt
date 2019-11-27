@@ -1,11 +1,10 @@
 package no.nav.personbruker.dittnav.api.informasjon
 
-import com.google.gson.Gson
+import com.fasterxml.jackson.databind.ObjectMapper
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.mock.MockEngine
 import io.ktor.client.engine.mock.respond
 import io.ktor.client.engine.mock.respondError
-import io.ktor.client.features.json.GsonSerializer
 import io.ktor.client.features.json.JsonFeature
 import io.ktor.http.ContentType
 import io.ktor.http.HttpHeaders
@@ -16,6 +15,8 @@ import io.mockk.mockk
 import kotlinx.coroutines.runBlocking
 import no.nav.personbruker.dittnav.api.config.Environment
 import no.nav.personbruker.dittnav.api.config.HttpClientBuilder
+import no.nav.personbruker.dittnav.api.config.buildJsonSerializer
+import no.nav.personbruker.dittnav.api.config.enableDittNavJsonConfig
 import org.amshove.kluent.`should be equal to`
 import org.amshove.kluent.`should equal`
 import org.junit.jupiter.api.Test
@@ -23,9 +24,8 @@ import java.net.URL
 
 class InformasjonConsumerTest {
 
-    val httpClientBuilder = mockk<HttpClientBuilder>(relaxed=true)
+    val httpClientBuilder = mockk<HttpClientBuilder>(relaxed = true)
     val informasjonConsumer = InformasjonConsumer(httpClientBuilder, Environment(URL("http://legacy-api"), URL("http://event-handler")))
-
 
     @Test
     fun `should call information endpoint on event handler`() {
@@ -40,7 +40,7 @@ class InformasjonConsumerTest {
                 }
             }
             install(JsonFeature) {
-                serializer = GsonSerializer()
+                serializer = buildJsonSerializer()
             }
         }
         every { httpClientBuilder.build() } returns client
@@ -54,18 +54,21 @@ class InformasjonConsumerTest {
     @Test
     fun `should get list of Informasjon`() {
         val informasjonObject = InformasjonObjectMother.createInformasjon("1", "1")
+        val objectMapper = ObjectMapper().apply {
+            enableDittNavJsonConfig()
+        }
         val client = HttpClient(MockEngine) {
             engine {
                 addHandler {
                     respond(
-                        Gson().toJson(listOf(informasjonObject)),
-                        headers = headersOf(HttpHeaders.ContentType,
-                            ContentType.Application.Json.toString())
+                            objectMapper.writeValueAsString(listOf(informasjonObject)),
+                            headers = headersOf(HttpHeaders.ContentType,
+                                    ContentType.Application.Json.toString())
                     )
                 }
             }
             install(JsonFeature) {
-                serializer = GsonSerializer()
+                serializer = buildJsonSerializer()
             }
         }
         every { httpClientBuilder.build() } returns client
