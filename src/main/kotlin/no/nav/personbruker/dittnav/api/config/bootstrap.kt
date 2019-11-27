@@ -13,6 +13,7 @@ import io.ktor.util.KtorExperimentalAPI
 import io.prometheus.client.hotspot.DefaultExports
 import no.nav.personbruker.dittnav.api.brukernotifikasjon.BrukernotifikasjonService
 import no.nav.personbruker.dittnav.api.brukernotifikasjon.brukernotifikasjoner
+import no.nav.personbruker.dittnav.api.health.healthApi
 import no.nav.personbruker.dittnav.api.informasjon.InformasjonConsumer
 import no.nav.personbruker.dittnav.api.informasjon.InformasjonService
 import no.nav.personbruker.dittnav.api.legacy.*
@@ -47,7 +48,7 @@ fun Application.mainModule() {
     }
 
     routing {
-        healthApi()
+        healthApi(environment)
         authenticate {
             legacyMeldinger(legacyConsumer)
             legacyPabegynte(legacyConsumer)
