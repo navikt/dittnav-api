@@ -11,8 +11,8 @@ class OppgaveTransformerTest {
     fun `should transform from Oppgave to Brukernotifikasjon`() {
         val oppgave1 = OppgaveObjectMother.createOppgave("1", "1")
         val oppgave2 = OppgaveObjectMother.createOppgave("2", "2")
-        val brukernotifikasjonList = OppgaveTransformer.toBrukernotifikasjonList(listOf(oppgave1, oppgave2))
-        val brukernotifikasjon = brukernotifikasjonList.get(0)
+        val brukernotifikasjonList = listOf(oppgave1, oppgave2).map { toBrukernotifikasjon(it) }
+        val brukernotifikasjon = brukernotifikasjonList.first()
 
         brukernotifikasjon.produsent `should be equal to` oppgave1.produsent
         brukernotifikasjon.eventTidspunkt `should be` oppgave1.eventTidspunkt

@@ -9,13 +9,13 @@ class InformasjonService(private val informasjonConsumer: InformasjonConsumer) {
     private val log = LoggerFactory.getLogger(InformasjonService::class.java)
 
     suspend fun getInformasjonEventsAsBrukernotifikasjoner(token: String): List<Brukernotifikasjon> {
-        try {
-            informasjonConsumer.getExternalEvents(token).let {
-                return InformasjonTransformer.toBrukernotifikasjonList(it)
+        return try {
+            informasjonConsumer.getExternalEvents(token).map { informasjon ->
+                toBrukernotifikasjon(informasjon)
             }
         } catch (exception: Exception) {
             log.error(exception)
+            emptyList()
         }
-        return emptyList()
     }
 }

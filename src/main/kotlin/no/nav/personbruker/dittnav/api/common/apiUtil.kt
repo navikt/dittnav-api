@@ -21,3 +21,5 @@ private fun PipelineContext<Unit, ApplicationCall>.getTokenFromHeader() =
 
 fun PipelineContext<Unit, ApplicationCall>.getTokenFromCookie() =
         call.request.cookies["selvbetjening-idtoken"]
+
+val PipelineContext<Unit, ApplicationCall>.brukerToken: String get() = extractTokenFromRequest()

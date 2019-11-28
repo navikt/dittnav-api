@@ -14,6 +14,8 @@ import no.nav.personbruker.dittnav.api.brukernotifikasjon.BrukernotifikasjonServ
 import no.nav.personbruker.dittnav.api.brukernotifikasjon.brukernotifikasjoner
 import no.nav.personbruker.dittnav.api.informasjon.InformasjonConsumer
 import no.nav.personbruker.dittnav.api.informasjon.InformasjonService
+import no.nav.personbruker.dittnav.api.innboks.InnboksConsumer
+import no.nav.personbruker.dittnav.api.innboks.InnboksService
 import no.nav.personbruker.dittnav.api.legacy.*
 import no.nav.personbruker.dittnav.api.oppgave.OppgaveConsumer
 import no.nav.personbruker.dittnav.api.oppgave.OppgaveService
@@ -29,7 +31,8 @@ fun Application.mainModule() {
     val legacyConsumer = LegacyConsumer(HttpClientBuilder, environment)
     val oppgaveService = OppgaveService(OppgaveConsumer(HttpClientBuilder, environment))
     val informasjonService = InformasjonService(InformasjonConsumer(HttpClientBuilder, environment))
-    val brukernotifikasjonService = BrukernotifikasjonService(oppgaveService, informasjonService)
+    val innboksService = InnboksService(InnboksConsumer(HttpClientBuilder, environment))
+    val brukernotifikasjonService = BrukernotifikasjonService(oppgaveService, informasjonService, innboksService)
 
     install(DefaultHeaders)
 
