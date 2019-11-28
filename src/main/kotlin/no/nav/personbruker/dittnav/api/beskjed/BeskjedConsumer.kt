@@ -1,4 +1,4 @@
-package no.nav.personbruker.dittnav.api.informasjon
+package no.nav.personbruker.dittnav.api.beskjed
 
 import io.ktor.client.request.header
 import io.ktor.client.request.request
@@ -8,9 +8,9 @@ import io.ktor.http.HttpMethod
 import no.nav.personbruker.dittnav.api.config.Environment
 import no.nav.personbruker.dittnav.api.config.HttpClientBuilder
 
-class InformasjonConsumer(private val httpClientBuilder: HttpClientBuilder, private val environment: Environment) {
+class BeskjedConsumer(private val httpClientBuilder: HttpClientBuilder, private val environment: Environment) {
 
-    suspend fun getExternalEvents(token: String): List<Informasjon> {
+    suspend fun getExternalEvents(token: String): List<Beskjed> {
         val httpClient = httpClientBuilder.build()
         return httpClient.use { client ->
             client.request {

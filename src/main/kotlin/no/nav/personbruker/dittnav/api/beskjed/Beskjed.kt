@@ -1,8 +1,8 @@
-package no.nav.personbruker.dittnav.api.informasjon
+package no.nav.personbruker.dittnav.api.beskjed
 
 import java.time.ZonedDateTime
 
-data class Informasjon(
+data class Beskjed(
         val produsent: String,
         val eventTidspunkt: ZonedDateTime,
         val aktorId: String,

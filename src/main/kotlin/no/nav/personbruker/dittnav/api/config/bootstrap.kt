@@ -12,8 +12,8 @@ import io.ktor.util.KtorExperimentalAPI
 import io.prometheus.client.hotspot.DefaultExports
 import no.nav.personbruker.dittnav.api.brukernotifikasjon.BrukernotifikasjonService
 import no.nav.personbruker.dittnav.api.brukernotifikasjon.brukernotifikasjoner
-import no.nav.personbruker.dittnav.api.informasjon.InformasjonConsumer
-import no.nav.personbruker.dittnav.api.informasjon.InformasjonService
+import no.nav.personbruker.dittnav.api.beskjed.BeskjedConsumer
+import no.nav.personbruker.dittnav.api.beskjed.BeskjedService
 import no.nav.personbruker.dittnav.api.innboks.InnboksConsumer
 import no.nav.personbruker.dittnav.api.innboks.InnboksService
 import no.nav.personbruker.dittnav.api.legacy.*
@@ -30,9 +30,9 @@ fun Application.mainModule() {
 
     val legacyConsumer = LegacyConsumer(HttpClientBuilder, environment)
     val oppgaveService = OppgaveService(OppgaveConsumer(HttpClientBuilder, environment))
-    val informasjonService = InformasjonService(InformasjonConsumer(HttpClientBuilder, environment))
+    val beskjedService = BeskjedService(BeskjedConsumer(HttpClientBuilder, environment))
     val innboksService = InnboksService(InnboksConsumer(HttpClientBuilder, environment))
-    val brukernotifikasjonService = BrukernotifikasjonService(oppgaveService, informasjonService, innboksService)
+    val brukernotifikasjonService = BrukernotifikasjonService(oppgaveService, beskjedService, innboksService)
 
     install(DefaultHeaders)
 
