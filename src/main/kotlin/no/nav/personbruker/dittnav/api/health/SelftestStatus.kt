@@ -9,13 +9,13 @@ enum class Status {
     OK, ERROR
 }
 
-data class SelftestStatus(val status: Status, val statusMessage: String)
+data class SelftestStatus(val status: Status, val statusMessage: String, val pingedURL: URL)
 
 suspend fun getStatus(url: URL, client: HttpClient): SelftestStatus {
     return try {
         val statusCode = client.get<HttpStatusCode>(url)
-        SelftestStatus(Status.OK, statusCode.toString())
+        SelftestStatus(Status.OK, statusCode.toString(), url)
     } catch (cause: Throwable) {
-        SelftestStatus(Status.ERROR, cause.toString())
+        SelftestStatus(Status.ERROR, cause.toString(), url)
     }
 }

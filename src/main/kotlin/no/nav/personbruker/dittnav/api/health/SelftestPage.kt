@@ -40,6 +40,7 @@ suspend fun ApplicationCall.pingDependencies(environment: Environment) = corouti
                     services.map {
                         tr {
                             td { +it.key }
+                            td { +it.value.pingedURL.toString() }
                             td {
                                 style = if (it.value.status === Status.OK) "background: green" else "background: red;font-weight:bold"
                                 +it.value.status.toString()
