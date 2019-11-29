@@ -14,6 +14,7 @@ val junitVersion = "5.4.1"
 val kluentVersion = "1.56"
 val tokensupportVersion = "1.1.0"
 val kotlinxCoroutinesVersion = "1.3.2"
+val kotlinxHtmlVersion = "0.6.12"
 
 
 plugins {
@@ -43,6 +44,7 @@ repositories {
 dependencies {
     implementation(kotlin("stdlib-jdk8"))
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:$kotlinxCoroutinesVersion")
+    implementation("io.ktor:ktor-html-builder:$ktorVersion")
     compile("no.nav.security:token-validation-ktor:$tokensupportVersion")
     compile("io.prometheus:simpleclient_common:$prometheusVersion")
     compile("io.prometheus:simpleclient_hotspot:$prometheusVersion")
@@ -59,6 +61,7 @@ dependencies {
     compile("io.ktor:ktor-client-logging-jvm:$ktorVersion")
     compile("com.fasterxml.jackson.datatype:jackson-datatype-jsr310:$jacksonVersion")
     compile("io.ktor:ktor-jackson:$ktorVersion")
+    compile("org.jetbrains.kotlinx:kotlinx-html-jvm:${kotlinxHtmlVersion}")
     testCompile("org.junit.jupiter:junit-jupiter-api:$junitVersion")
     testCompile(kotlin("test-junit5"))
     testCompile("io.ktor:ktor-client-mock:$ktorVersion")

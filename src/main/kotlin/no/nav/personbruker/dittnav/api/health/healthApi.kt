@@ -1,12 +1,14 @@
-package no.nav.personbruker.dittnav.api.config
+package no.nav.personbruker.dittnav.api.health
 
 import io.ktor.application.call
 import io.ktor.http.ContentType
+import io.ktor.response.respond
 import io.ktor.response.respondText
 import io.ktor.routing.Routing
 import io.ktor.routing.get
+import no.nav.personbruker.dittnav.api.config.Environment
 
-fun Routing.healthApi() {
+fun Routing.healthApi(environment: Environment) {
 
     val pingJsonResponse = """{"ping": "pong"}"""
 
@@ -20,6 +22,10 @@ fun Routing.healthApi() {
 
     get("/person/dittnav-api/internal/ping") {
         call.respondText(pingJsonResponse, ContentType.Application.Json)
+    }
+
+    get("/person/dittnav-api/internal/selftest") {
+        call.pingDependencies(environment)
     }
 
 }
