@@ -1,8 +1,6 @@
 package no.nav.personbruker.dittnav.api.innboks
 
 import io.ktor.util.error
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
 import no.nav.personbruker.dittnav.api.brukernotifikasjon.Brukernotifikasjon
 import org.slf4j.LoggerFactory
 
