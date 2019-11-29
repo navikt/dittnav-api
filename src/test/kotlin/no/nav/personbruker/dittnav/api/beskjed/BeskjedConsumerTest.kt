@@ -32,7 +32,7 @@ class BeskjedConsumerTest {
         val client = HttpClient(MockEngine) {
             engine {
                 addHandler { request ->
-                    if (request.url.encodedPath.contains("/fetch/informasjon") && request.url.host.contains("event-handler")) {
+                    if (request.url.encodedPath.contains("/fetch/beskjed") && request.url.host.contains("event-handler")) {
                         respond("[]", headers = headersOf(HttpHeaders.ContentType, ContentType.Application.Json.toString()))
                     } else {
                         respondError(HttpStatusCode.BadRequest)
@@ -76,7 +76,7 @@ class BeskjedConsumerTest {
         runBlocking {
             beskjedConsumer.getExternalEvents("1234").size `should be equal to` 1
             beskjedConsumer.getExternalEvents("1234")[0].tekst `should be equal to` beskjedObject.tekst
-            beskjedConsumer.getExternalEvents("1234")[0].aktorId `should be equal to` beskjedObject.aktorId
+            beskjedConsumer.getExternalEvents("1234")[0].fodselsnummer `should be equal to` beskjedObject.fodselsnummer
         }
 
     }
