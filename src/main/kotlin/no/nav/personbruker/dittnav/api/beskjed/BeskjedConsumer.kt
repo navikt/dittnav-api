@@ -14,7 +14,7 @@ class BeskjedConsumer(private val httpClientBuilder: HttpClientBuilder, private 
         val httpClient = httpClientBuilder.build()
         return httpClient.use { client ->
             client.request {
-                url("${environment.dittNAVEventsURL}/fetch/informasjon")
+                url("${environment.dittNAVEventsURL}/fetch/beskjed")
                 method = HttpMethod.Get
                 header(HttpHeaders.Authorization, "Bearer $token")
             }

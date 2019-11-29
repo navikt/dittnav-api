@@ -75,7 +75,7 @@ class OppgaveConsumerTest {
         runBlocking {
             oppgaveConsumer.getExternalEvents("1234").size `should be equal to` 2
             oppgaveConsumer.getExternalEvents("1234")[0].tekst `should be equal to` oppgaveObject1.tekst
-            oppgaveConsumer.getExternalEvents("1234")[0].aktorId `should be equal to` oppgaveObject1.aktorId
+            oppgaveConsumer.getExternalEvents("1234")[0].fodselsnummer `should be equal to` oppgaveObject1.fodselsnummer
         }
 
     }
