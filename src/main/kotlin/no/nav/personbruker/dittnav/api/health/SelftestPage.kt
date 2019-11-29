@@ -12,7 +12,7 @@ import java.net.URL
 suspend fun ApplicationCall.pingDependencies(environment: Environment) = coroutineScope {
     val client = HttpClientBuilder.build()
 
-    val eventHandlerPingableURL = URL("${environment.dittNAVEventsURL}/isAlive")
+    val eventHandlerPingableURL = URL("${environment.dittNAVEventsURL}/ping")
     val legacyApiPingableURL = URL("${environment.dittNAVLegacyURL}/internal/isAlive")
 
     val eventHandlerSelftestStatus = async { getStatus(eventHandlerPingableURL, client) }
