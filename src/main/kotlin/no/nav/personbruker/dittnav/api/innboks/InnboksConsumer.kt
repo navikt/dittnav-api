@@ -1,26 +1,12 @@
 package no.nav.personbruker.dittnav.api.innboks
 
-import io.ktor.client.request.header
-import io.ktor.client.request.request
-import io.ktor.client.request.url
-import io.ktor.http.HttpHeaders
-import io.ktor.http.HttpMethod
 import no.nav.personbruker.dittnav.api.config.Environment
 import no.nav.personbruker.dittnav.api.config.HttpClientBuilder
-import org.slf4j.LoggerFactory
+import no.nav.personbruker.dittnav.api.config.get
 
 class InnboksConsumer(private val httpClientBuilder: HttpClientBuilder, private val environment: Environment) {
 
-    val log = LoggerFactory.getLogger(InnboksConsumer::class.java)
-
     suspend fun getExternalEvents(token: String): List<Innboks> {
-        val httpClient = httpClientBuilder.build()
-        return httpClient.use { client ->
-            client.request {
-                url("${environment.dittNAVEventsURL}/fetch/innboks")
-                method = HttpMethod.Get
-                header(HttpHeaders.Authorization, "Bearer $token")
-            }
-        }
+        return httpClientBuilder.build().get("${environment.dittNAVEventsURL}/fetch/innboks", token)
     }
 }

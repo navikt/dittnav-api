@@ -1,10 +1,10 @@
 package no.nav.personbruker.dittnav.api.brukernotifikasjon
 
-import kotlinx.coroutines.*
+import kotlinx.coroutines.async
+import kotlinx.coroutines.coroutineScope
 import no.nav.personbruker.dittnav.api.beskjed.BeskjedService
 import no.nav.personbruker.dittnav.api.innboks.InnboksService
 import no.nav.personbruker.dittnav.api.oppgave.OppgaveService
-import org.slf4j.LoggerFactory
 
 class BrukernotifikasjonService(
         private val oppgaveService: OppgaveService,
@@ -12,13 +12,11 @@ class BrukernotifikasjonService(
         private val innboksService: InnboksService
 ) {
 
-    private val log = LoggerFactory.getLogger(BrukernotifikasjonService::class.java)
-
     suspend fun getBrukernotifikasjoner(token: String): List<Brukernotifikasjon> {
         return coroutineScope {
-            val oppgaver = async(Dispatchers.IO) { getOppgaver(token) }
-            val beskjed = async(Dispatchers.IO) { getBeskjed(token) }
-            val innboks = async(Dispatchers.IO) { getInnboks(token) }
+            val oppgaver = async { getOppgaver(token) }
+            val beskjed = async { getBeskjed(token) }
+            val innboks = async { getInnboks(token) }
 
             oppgaver.await() + beskjed.await() + innboks.await()
         }
