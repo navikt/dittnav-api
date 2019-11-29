@@ -1,4 +1,4 @@
-package no.nav.personbruker.dittnav.api.informasjon
+package no.nav.personbruker.dittnav.api.innboks
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import io.ktor.client.HttpClient
@@ -22,17 +22,16 @@ import org.amshove.kluent.`should equal`
 import org.junit.jupiter.api.Test
 import java.net.URL
 
-class InformasjonConsumerTest {
-
+class InnboksConsumerTest {
     val httpClientBuilder = mockk<HttpClientBuilder>(relaxed = true)
-    val informasjonConsumer = InformasjonConsumer(httpClientBuilder, Environment(URL("http://legacy-api"), URL("http://event-handler")))
+    val innboksConsumer = InnboksConsumer(httpClientBuilder, Environment(URL("http://legacy-api"), URL("http://event-handler")))
 
     @Test
-    fun `should call information endpoint on event handler`() {
+    fun `should call innboks endpoint on event handler`() {
         val client = HttpClient(MockEngine) {
             engine {
                 addHandler { request ->
-                    if (request.url.encodedPath.contains("/fetch/informasjon") && request.url.host.contains("event-handler")) {
+                    if (request.url.encodedPath.contains("/fetch/innboks") && request.url.host.contains("event-handler")) {
                         respond("[]", headers = headersOf(HttpHeaders.ContentType, ContentType.Application.Json.toString()))
                     } else {
                         respondError(HttpStatusCode.BadRequest)
@@ -46,22 +45,25 @@ class InformasjonConsumerTest {
         every { httpClientBuilder.build() } returns client
 
         runBlocking {
-            informasjonConsumer.getExternalEvents("1234") `should equal` emptyList()
+            innboksConsumer.getExternalEvents("1234") `should equal` emptyList()
         }
 
     }
 
     @Test
-    fun `should get list of Informasjon`() {
-        val informasjonObject = InformasjonObjectMother.createInformasjon("1", "1")
+    fun `should get list of Innboks`() {
+        val innboksObject1 = createInnboks("1", "1")
+        val innboksObject2 = createInnboks("2", "2")
+
         val objectMapper = ObjectMapper().apply {
             enableDittNavJsonConfig()
         }
+
         val client = HttpClient(MockEngine) {
             engine {
                 addHandler {
                     respond(
-                            objectMapper.writeValueAsString(listOf(informasjonObject)),
+                            objectMapper.writeValueAsString(listOf(innboksObject1, innboksObject2)),
                             headers = headersOf(HttpHeaders.ContentType,
                                     ContentType.Application.Json.toString())
                     )
@@ -74,9 +76,9 @@ class InformasjonConsumerTest {
         every { httpClientBuilder.build() } returns client
 
         runBlocking {
-            informasjonConsumer.getExternalEvents("1234").size `should be equal to` 1
-            informasjonConsumer.getExternalEvents("1234")[0].tekst `should be equal to` informasjonObject.tekst
-            informasjonConsumer.getExternalEvents("1234")[0].aktorId `should be equal to` informasjonObject.aktorId
+            innboksConsumer.getExternalEvents("1234").size `should be equal to` 2
+            innboksConsumer.getExternalEvents("1234")[0].tekst `should be equal to` innboksObject1.tekst
+            innboksConsumer.getExternalEvents("1234")[0].aktorId `should be equal to` innboksObject1.aktorId
         }
 
     }

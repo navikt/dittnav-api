@@ -13,8 +13,10 @@ import io.prometheus.client.hotspot.DefaultExports
 import no.nav.personbruker.dittnav.api.brukernotifikasjon.BrukernotifikasjonService
 import no.nav.personbruker.dittnav.api.brukernotifikasjon.brukernotifikasjoner
 import no.nav.personbruker.dittnav.api.health.healthApi
-import no.nav.personbruker.dittnav.api.informasjon.InformasjonConsumer
-import no.nav.personbruker.dittnav.api.informasjon.InformasjonService
+import no.nav.personbruker.dittnav.api.beskjed.BeskjedConsumer
+import no.nav.personbruker.dittnav.api.beskjed.BeskjedService
+import no.nav.personbruker.dittnav.api.innboks.InnboksConsumer
+import no.nav.personbruker.dittnav.api.innboks.InnboksService
 import no.nav.personbruker.dittnav.api.legacy.*
 import no.nav.personbruker.dittnav.api.oppgave.OppgaveConsumer
 import no.nav.personbruker.dittnav.api.oppgave.OppgaveService
@@ -29,8 +31,9 @@ fun Application.mainModule() {
 
     val legacyConsumer = LegacyConsumer(HttpClientBuilder, environment)
     val oppgaveService = OppgaveService(OppgaveConsumer(HttpClientBuilder, environment))
-    val informasjonService = InformasjonService(InformasjonConsumer(HttpClientBuilder, environment))
-    val brukernotifikasjonService = BrukernotifikasjonService(oppgaveService, informasjonService)
+    val beskjedService = BeskjedService(BeskjedConsumer(HttpClientBuilder, environment))
+    val innboksService = InnboksService(InnboksConsumer(HttpClientBuilder, environment))
+    val brukernotifikasjonService = BrukernotifikasjonService(oppgaveService, beskjedService, innboksService)
 
     install(DefaultHeaders)
 

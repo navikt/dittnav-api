@@ -1,22 +1,18 @@
-package no.nav.personbruker.dittnav.api.informasjon
+package no.nav.personbruker.dittnav.api.oppgave
 
 import no.nav.personbruker.dittnav.api.brukernotifikasjon.Brukernotifikasjon
 import no.nav.personbruker.dittnav.api.brukernotifikasjon.BrukernotifikasjonType
 
-object InformasjonTransformer {
-
-    fun toBrukernotifikasjonList(inbound: List<Informasjon>): List<Brukernotifikasjon> {
-        return inbound
-            .map {
+fun toBrukernotifikasjon(inbound: Oppgave): Brukernotifikasjon {
+    return inbound.let {
                 Brukernotifikasjon(
                         eventId = it.eventId,
-                        type = BrukernotifikasjonType.INFORMASJON,
+                        type = BrukernotifikasjonType.OPPGAVE,
                         produsent = it.produsent,
                         eventTidspunkt = it.eventTidspunkt,
                         link = it.link,
                         sistOppdatert = it.sistOppdatert,
                         tekst = it.tekst
                 )
-        }
-    }
+            }
 }

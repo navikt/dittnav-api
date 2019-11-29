@@ -9,12 +9,13 @@ class OppgaveService(private val oppgaveConsumer: OppgaveConsumer) {
     private val log = LoggerFactory.getLogger(OppgaveService::class.java)
 
     suspend fun getOppgaveEventsAsBrukernotifikasjoner(token: String): List<Brukernotifikasjon> {
-        try {
-            oppgaveConsumer.getExternalEvents(token).let {
-                return OppgaveTransformer.toBrukernotifikasjonList(it) }
+        return try {
+            oppgaveConsumer.getExternalEvents(token).map { oppgave ->
+                 toBrukernotifikasjon(oppgave)
+            }
         } catch (exception: Exception) {
             log.error(exception)
+            emptyList()
         }
-        return emptyList()
     }
 }

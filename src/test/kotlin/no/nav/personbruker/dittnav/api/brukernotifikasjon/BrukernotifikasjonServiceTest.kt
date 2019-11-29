@@ -2,42 +2,51 @@ package no.nav.personbruker.dittnav.api.brukernotifikasjon
 
 import io.mockk.coEvery
 import io.mockk.mockk
-import no.nav.personbruker.dittnav.api.informasjon.InformasjonService
+import kotlinx.coroutines.runBlocking
+import no.nav.personbruker.dittnav.api.beskjed.BeskjedService
+import no.nav.personbruker.dittnav.api.innboks.InnboksService
 import no.nav.personbruker.dittnav.api.oppgave.OppgaveService
 import org.amshove.kluent.`should be equal to`
 import org.junit.jupiter.api.Test
 
 class BrukernotifikasjonServiceTest {
     val oppgaveService = mockk<OppgaveService>()
-    val informasjonService = mockk<InformasjonService>()
+    val beskjedService = mockk<BeskjedService>()
+    val innboksService = mockk<InnboksService>()
 
-    val brukernotifikasjonService = BrukernotifikasjonService(oppgaveService, informasjonService);
+    val brukernotifikasjonService = BrukernotifikasjonService(oppgaveService, beskjedService, innboksService);
 
-    val informasjon1 = BrukernotfikasjonObjectMother.createInformasjonsBrukernotifikasjon("1")
-    val informasjon2 = BrukernotfikasjonObjectMother.createInformasjonsBrukernotifikasjon("2")
+    val beskjed1 = BrukernotfikasjonObjectMother.createBeskjedsBrukernotifikasjon("1")
+    val beskjed2 = BrukernotfikasjonObjectMother.createBeskjedsBrukernotifikasjon("2")
     val oppgave1 = BrukernotfikasjonObjectMother.createOppgaveBrukernotifikasjon("3")
+    val innboks1 = BrukernotfikasjonObjectMother.createInnboksBrukernotifikasjon("4")
 
     @Test
-    fun `should receive brukernotfikasjoner of type Informasjon and Oppgave`() {
+    fun `should receive brukernotfikasjoner of type Beskjed and Oppgave`() {
         coEvery { oppgaveService.getOppgaveEventsAsBrukernotifikasjoner("1234") } returns listOf(oppgave1)
-        coEvery { informasjonService.getInformasjonEventsAsBrukernotifikasjoner("1234") } returns listOf(informasjon1, informasjon2)
+        coEvery { beskjedService.getBeskjedEventsAsBrukernotifikasjoner("1234") } returns listOf(beskjed1, beskjed2)
+        coEvery { innboksService.getInnboksEventsAsBrukernotifikasjoner("1234") } returns listOf(innboks1)
 
-        val brukernotifikasjoner = brukernotifikasjonService.getBrukernotifikasjoner("1234")
-        brukernotifikasjoner.size `should be equal to` 3
+        val brukernotifikasjoner = runBlocking { brukernotifikasjonService.getBrukernotifikasjoner("1234") }
+        brukernotifikasjoner.size `should be equal to` 4
         brukernotifikasjoner
             .filter { notifikasjon -> notifikasjon.type === BrukernotifikasjonType.OPPGAVE }
             .size `should be equal to` 1
         brukernotifikasjoner
-            .filter { notifikasjon -> notifikasjon.type === BrukernotifikasjonType.INFORMASJON }
+            .filter { notifikasjon -> notifikasjon.type === BrukernotifikasjonType.BESKJED }
             .size `should be equal to` 2
+        brukernotifikasjoner
+            .filter { notifikasjon -> notifikasjon.type === BrukernotifikasjonType.INNBOKS }
+            .size `should be equal to` 1
     }
 
     @Test
     fun `should not receieve any brukernotfikasjoner`() {
         coEvery { oppgaveService.getOppgaveEventsAsBrukernotifikasjoner("1234") } returns emptyList()
-        coEvery { informasjonService.getInformasjonEventsAsBrukernotifikasjoner("1234") } returns emptyList()
+        coEvery { beskjedService.getBeskjedEventsAsBrukernotifikasjoner("1234") } returns emptyList()
+        coEvery { innboksService.getInnboksEventsAsBrukernotifikasjoner("1234") } returns emptyList()
 
-        val brukernotifikasjoner = brukernotifikasjonService.getBrukernotifikasjoner("1234")
+        val brukernotifikasjoner = runBlocking { brukernotifikasjonService.getBrukernotifikasjoner("1234") }
         brukernotifikasjoner.size `should be equal to` 0
     }
 }

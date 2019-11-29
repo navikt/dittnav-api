@@ -5,15 +5,15 @@ import java.time.ZonedDateTime
 
 object BrukernotfikasjonObjectMother {
 
-    fun createInformasjonsBrukernotifikasjon(eventId: String): Brukernotifikasjon {
+    fun createBeskjedsBrukernotifikasjon(eventId: String): Brukernotifikasjon {
         return Brukernotifikasjon(
                 produsent = "DittNav",
                 eventTidspunkt = ZonedDateTime.now(ZoneId.of("Europe/Oslo")),
                 eventId = eventId,
-                tekst = "Dette er informasjon til brukeren",
+                tekst = "Dette er beskjed til brukeren",
                 link = "https://nav.no/systemX/",
                 sistOppdatert = ZonedDateTime.now(ZoneId.of("Europe/Oslo")),
-                type = BrukernotifikasjonType.INFORMASJON
+                type = BrukernotifikasjonType.BESKJED
         )
     }
 
@@ -22,10 +22,22 @@ object BrukernotfikasjonObjectMother {
                 produsent = "DittNav",
                 eventTidspunkt = ZonedDateTime.now(ZoneId.of("Europe/Oslo")),
                 eventId = eventId,
-                tekst = "Dette er informasjon til brukeren",
+                tekst = "Dette er beskjed til brukeren",
                 link = "https://nav.no/systemX/",
                 sistOppdatert = ZonedDateTime.now(ZoneId.of("Europe/Oslo")),
                 type = BrukernotifikasjonType.OPPGAVE
+        )
+    }
+
+    fun createInnboksBrukernotifikasjon(eventId: String): Brukernotifikasjon {
+        return Brukernotifikasjon(
+                produsent = "DittNav",
+                eventTidspunkt = ZonedDateTime.now(ZoneId.of("Europe/Oslo")),
+                eventId = eventId,
+                tekst = "Dette er beskjed til brukeren",
+                link = "https://nav.no/systemX/",
+                sistOppdatert = ZonedDateTime.now(ZoneId.of("Europe/Oslo")),
+                type = BrukernotifikasjonType.INNBOKS
         )
     }
 }
