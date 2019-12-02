@@ -7,8 +7,9 @@ import ch.qos.logback.core.AppenderBase
 
 class MaskingAppender : AppenderBase<ILoggingEvent>() {
     private var appender: Appender<ILoggingEvent>? = null
+
     override fun append(iLoggingEvent: ILoggingEvent) {
-        appender!!.doAppend(MaskedLoggingEvent(iLoggingEvent))
+        appender?.doAppend(MaskedLoggingEvent(iLoggingEvent))
     }
 
     fun setAppender(appender: Appender<ILoggingEvent>?) {
