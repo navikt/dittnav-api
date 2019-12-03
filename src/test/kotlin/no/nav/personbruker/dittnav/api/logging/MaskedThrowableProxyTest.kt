@@ -10,7 +10,7 @@ import java.io.IOException
 
 class MaskedThrowableProxyTest {
     @Test
-    fun smoketest() {
+    fun `sjekk at maskering av fodselsnummer skjer ved kastet feil`() {
         val sensitiveException = RuntimeException(
             FNR,
             IllegalArgumentException(
@@ -27,6 +27,7 @@ class MaskedThrowableProxyTest {
         sensitiveException.printStackTrace()
         val sensitiveThrowableProxy = ThrowableProxy(sensitiveException)
         val maskedThrowableProxy = mask(sensitiveThrowableProxy)
+
         ThrowableProxyUtil.asString(sensitiveThrowableProxy) `should contain` FNR
         ThrowableProxyUtil.asString(maskedThrowableProxy) `should not contain` FNR
     }
