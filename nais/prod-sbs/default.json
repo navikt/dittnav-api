@@ -1,0 +1,6 @@
+{
+  "namespace": "default",
+  "ingresses": [
+    "https://dittnav-api.prod-sbs.nais.io/person/dittnav-api"
+  ]
+}
