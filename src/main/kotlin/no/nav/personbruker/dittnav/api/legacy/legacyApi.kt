@@ -11,7 +11,7 @@ fun Route.legacyMeldinger(legacyConsumer: LegacyConsumer) {
     get("/person/dittnav-api/meldinger/ubehandlede") {
         val token = extractTokenFromRequest()
         val ubehandledeMeldinger = legacyConsumer.getLegacyContent(
-                "meldinger/ubehandlede", token)
+                "/meldinger/ubehandlede", token)
         call.respond(ubehandledeMeldinger.status, ubehandledeMeldinger.readBytes())
     }
 
@@ -21,7 +21,7 @@ fun Route.legacyPabegynte(legacyConsumer: LegacyConsumer) {
     get("/person/dittnav-api/saker/paabegynte") {
         val token = extractTokenFromRequest()
         val paabegynte = legacyConsumer.getLegacyContent(
-                "saker/paabegynte", token)
+                "/saker/paabegynte", token)
         call.respond(paabegynte.status, paabegynte.readBytes())
     }
 }
@@ -30,7 +30,7 @@ fun Route.legacySakstema(legacyConsumer: LegacyConsumer) {
     get("/person/dittnav-api/saker/sakstema") {
         val token = extractTokenFromRequest()
         val sakstema = legacyConsumer.getLegacyContent(
-            "saker/sakstema", token)
+            "/saker/sakstema", token)
         call.respond(sakstema.status, sakstema.readBytes())
     }
 }
@@ -39,7 +39,7 @@ fun Route.legacyPersonnavn(legacyConsumer: LegacyConsumer) {
     get("/person/dittnav-api/personalia/navn") {
         val token = extractTokenFromRequest()
         val navn = legacyConsumer.getLegacyContent(
-                "personalia/navn", token)
+                "/personalia/navn", token)
         call.respond(navn.status, navn.readBytes())
     }
 }
