@@ -90,17 +90,17 @@ workflows:
             - bygg-og-push-docker
           filters:
             branches:
-              only: deploy-til-produksjon
+              only: master
       - bekreft-release:
           type: approval
           requires:
             - automatisk-deploy-q1
           filters:
             branches:
-              only: deploy-til-produksjon
+              only: master
       - release:
           requires:
             - bekreft-release
           filters:
             branches:
-              only: deploy-til-produksjon
+              only: master
