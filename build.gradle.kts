@@ -44,10 +44,10 @@ repositories {
 dependencies {
     implementation(kotlin("stdlib-jdk8"))
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:$kotlinxCoroutinesVersion")
-    implementation("io.ktor:ktor-html-builder:$ktorVersion")
     compile("no.nav.security:token-validation-ktor:$tokensupportVersion")
     compile("io.prometheus:simpleclient_common:$prometheusVersion")
     compile("io.prometheus:simpleclient_hotspot:$prometheusVersion")
+    compile("io.prometheus:simpleclient_logback:$prometheusVersion")
     compile("io.ktor:ktor-server-netty:$ktorVersion")
     compile("io.ktor:ktor-auth:$ktorVersion")
     compile("io.ktor:ktor-auth-jwt:$ktorVersion")
@@ -62,14 +62,15 @@ dependencies {
     compile("com.fasterxml.jackson.datatype:jackson-datatype-jsr310:$jacksonVersion")
     compile("io.ktor:ktor-jackson:$ktorVersion")
     compile("org.jetbrains.kotlinx:kotlinx-html-jvm:${kotlinxHtmlVersion}")
+    compile("io.ktor:ktor-html-builder:$ktorVersion")
     testCompile("org.junit.jupiter:junit-jupiter-api:$junitVersion")
     testCompile(kotlin("test-junit5"))
     testCompile("io.ktor:ktor-client-mock:$ktorVersion")
     testCompile("io.ktor:ktor-client-mock-jvm:$ktorVersion")
     testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:$kotlinxCoroutinesVersion")
-    testRuntime("org.junit.jupiter:junit-jupiter-engine:$junitVersion")
     testImplementation("org.amshove.kluent:kluent:$kluentVersion")
     testImplementation("io.mockk:mockk:$mockKVersion")
+    testRuntime("org.junit.jupiter:junit-jupiter-engine:$junitVersion")
 }
 
 application {
