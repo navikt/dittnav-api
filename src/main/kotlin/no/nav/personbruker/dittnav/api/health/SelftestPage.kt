@@ -26,11 +26,17 @@ suspend fun ApplicationCall.pingDependencies(environment: Environment) = corouti
 
     client.close()
 
+    val serviceStatus = if (services.values.any { it.status == Status.ERROR }) Status.ERROR else Status.OK
+
     respondHtml {
         head {
             title { +"Selftest dittnav-api" }
         }
         body {
+            h1 {
+                style = if (serviceStatus == Status.OK) "background: green" else "background: red;font-weight:bold"
+                +"Service status: $serviceStatus"
+            }
             table {
                 thead {
                     tr { th { +"SELFTEST" } }
@@ -41,7 +47,7 @@ suspend fun ApplicationCall.pingDependencies(environment: Environment) = corouti
                             td { +it.key }
                             td { +it.value.pingedURL.toString() }
                             td {
-                                style = if (it.value.status === Status.OK) "background: green" else "background: red;font-weight:bold"
+                                style = if (it.value.status == Status.OK) "background: green" else "background: red;font-weight:bold"
                                 +it.value.status.toString()
                             }
                             td { +it.value.statusMessage }
