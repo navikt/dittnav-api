@@ -4,6 +4,7 @@ import io.ktor.application.Application
 import io.ktor.application.install
 import io.ktor.auth.Authentication
 import io.ktor.auth.authenticate
+import io.ktor.features.CORS
 import io.ktor.features.ContentNegotiation
 import io.ktor.features.DefaultHeaders
 import io.ktor.jackson.jackson
@@ -39,6 +40,11 @@ fun Application.mainModule() {
     val brukernotifikasjonService = BrukernotifikasjonService(oppgaveService, beskjedService, innboksService)
 
     install(DefaultHeaders)
+
+    install(CORS) {
+        host(environment.corsAllowedOrigins)
+        allowCredentials = true
+    }
 
     val config = this.environment.config
 
