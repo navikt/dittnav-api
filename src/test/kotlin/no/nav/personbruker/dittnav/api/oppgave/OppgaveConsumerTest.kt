@@ -22,7 +22,7 @@ import java.net.URL
 class OppgaveConsumerTest {
 
     val httpClientBuilder = mockk<HttpClientBuilder>(relaxed = true)
-    val oppgaveConsumer = OppgaveConsumer(httpClientBuilder, Environment(URL("http://legacy-api"), URL("http://event-handler")))
+    val oppgaveConsumer = OppgaveConsumer(httpClientBuilder, URL("http://event-handler"))
 
     @Test
     fun `should call oppgave endpoint on event handler`() {

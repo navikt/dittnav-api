@@ -6,11 +6,14 @@ import io.ktor.client.request.url
 import io.ktor.client.response.HttpResponse
 import io.ktor.http.HttpHeaders
 import io.ktor.http.HttpMethod
-import no.nav.personbruker.dittnav.api.config.Environment
 import no.nav.personbruker.dittnav.api.config.HttpClientBuilder
 import org.slf4j.LoggerFactory
+import java.net.URL
 
-class LegacyConsumer(private val httpClientBuilder: HttpClientBuilder, private val environment: Environment) {
+class LegacyConsumer(
+        private val httpClientBuilder: HttpClientBuilder,
+        private val dittNAVLegacyURL: URL
+) {
 
     private val log = LoggerFactory.getLogger(LegacyConsumer::class.java)
 
@@ -18,7 +21,7 @@ class LegacyConsumer(private val httpClientBuilder: HttpClientBuilder, private v
         val httpClient = httpClientBuilder.build()
         val response: HttpResponse = httpClient.use { client ->
             client.request {
-                url("${environment.dittNAVLegacyURL}$url")
+                url("$dittNAVLegacyURL$url")
                 method = HttpMethod.Get
                 header(HttpHeaders.Authorization, "Bearer $token")
             }
