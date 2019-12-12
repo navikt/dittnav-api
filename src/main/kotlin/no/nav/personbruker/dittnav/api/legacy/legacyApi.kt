@@ -7,66 +7,73 @@ import io.ktor.routing.Route
 import io.ktor.routing.get
 import no.nav.personbruker.dittnav.api.common.extractTokenFromRequest
 
-fun Route.legacyMeldinger(legacyConsumer: LegacyConsumer) {
-    get("/meldinger/ubehandlede") {
+fun Route.legacyApi(legacyConsumer: LegacyConsumer) {
+
+    val ubehandledeMeldingerPath = "/meldinger/ubehandlede"
+    val paabegynteSakerPath = "/saker/paabegynte"
+    val sakstemaPath = "/saker/sakstema"
+    val navnPath = "/personalia/navn"
+    val identPath = "/personalia/ident"
+    val meldekortPath = "/meldekortinfo"
+    val oppfolgingPath = "/oppfolging"
+
+    get(ubehandledeMeldingerPath) {
         val token = extractTokenFromRequest()
         val ubehandledeMeldinger = legacyConsumer.getLegacyContent(
-                "/meldinger/ubehandlede", token)
+                ubehandledeMeldingerPath,
+                token
+        )
         call.respond(ubehandledeMeldinger.status, ubehandledeMeldinger.readBytes())
     }
 
-}
-
-fun Route.legacyPabegynte(legacyConsumer: LegacyConsumer) {
-    get("/saker/paabegynte") {
+    get(paabegynteSakerPath) {
         val token = extractTokenFromRequest()
         val paabegynte = legacyConsumer.getLegacyContent(
-                "/saker/paabegynte", token)
+                paabegynteSakerPath,
+                token
+        )
         call.respond(paabegynte.status, paabegynte.readBytes())
     }
-}
 
-fun Route.legacySakstema(legacyConsumer: LegacyConsumer) {
-    get("/saker/sakstema") {
+    get(sakstemaPath) {
         val token = extractTokenFromRequest()
         val sakstema = legacyConsumer.getLegacyContent(
-                "/saker/sakstema", token)
+                sakstemaPath, token)
         call.respond(sakstema.status, sakstema.readBytes())
     }
-}
 
-fun Route.legacyPersonnavn(legacyConsumer: LegacyConsumer) {
-    get("/personalia/navn") {
+    get(navnPath) {
         val token = extractTokenFromRequest()
         val navn = legacyConsumer.getLegacyContent(
-                "/personalia/navn", token)
+                navnPath,
+                token
+        )
         call.respond(navn.status, navn.readBytes())
     }
-}
 
-fun Route.legacyPersonident(legacyConsumer: LegacyConsumer) {
-    get("/personalia/ident") {
+    get(identPath) {
         val token = extractTokenFromRequest()
         val ident = legacyConsumer.getLegacyContent(
-                "personalia/ident", token)
+                identPath, token)
         call.respond(ident.status, ident.readBytes())
     }
-}
 
-fun Route.legacyMeldekortinfo(legacyConsumer: LegacyConsumer) {
-    get("/meldekortinfo") {
+    get(meldekortPath) {
         val token = extractTokenFromRequest()
         val meldekortinfo = legacyConsumer.getLegacyContent(
-                "meldekortinfo", token)
+                meldekortPath,
+                token
+        )
         call.respond(meldekortinfo.status, meldekortinfo.readBytes())
     }
-}
 
-fun Route.legacyOppfolging(legacyConsumer: LegacyConsumer) {
-    get("/oppfolging") {
+    get(oppfolgingPath) {
         val token = extractTokenFromRequest()
         val oppfolging = legacyConsumer.getLegacyContent(
-                "oppfolging", token)
+                oppfolgingPath,
+                token
+        )
         call.respond(oppfolging.status, oppfolging.readBytes())
     }
+
 }

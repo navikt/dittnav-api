@@ -79,6 +79,6 @@ class InnboksConsumerTest {
             innboksConsumer.getExternalEvents("1234")[0].tekst `should be equal to` innboksObject1.tekst
             innboksConsumer.getExternalEvents("1234")[0].fodselsnummer `should be equal to` innboksObject1.fodselsnummer
         }
-
     }
+
 }

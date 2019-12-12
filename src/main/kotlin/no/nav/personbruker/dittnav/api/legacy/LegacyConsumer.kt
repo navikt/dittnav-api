@@ -12,16 +12,18 @@ import java.net.URL
 
 class LegacyConsumer(
         private val httpClientBuilder: HttpClientBuilder,
-        private val dittNAVLegacyURL: URL
+        private val dittNAVLegacyBaseURL: URL
 ) {
 
     private val log = LoggerFactory.getLogger(LegacyConsumer::class.java)
 
-    suspend fun getLegacyContent(url: String, token: String): HttpResponse {
+    suspend fun getLegacyContent(path: String, token: String): HttpResponse {
         val httpClient = httpClientBuilder.build()
+        val endpoint = URL("$dittNAVLegacyBaseURL$path")
+        log.info("Skal hente fra: $endpoint")
         val response: HttpResponse = httpClient.use { client ->
             client.request {
-                url("$dittNAVLegacyURL$url")
+                url(endpoint)
                 method = HttpMethod.Get
                 header(HttpHeaders.Authorization, "Bearer $token")
             }

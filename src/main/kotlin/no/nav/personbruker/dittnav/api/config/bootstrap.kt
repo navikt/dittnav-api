@@ -18,7 +18,8 @@ import no.nav.personbruker.dittnav.api.brukernotifikasjon.brukernotifikasjoner
 import no.nav.personbruker.dittnav.api.health.healthApi
 import no.nav.personbruker.dittnav.api.innboks.InnboksConsumer
 import no.nav.personbruker.dittnav.api.innboks.InnboksService
-import no.nav.personbruker.dittnav.api.legacy.*
+import no.nav.personbruker.dittnav.api.legacy.LegacyConsumer
+import no.nav.personbruker.dittnav.api.legacy.legacyApi
 import no.nav.personbruker.dittnav.api.oppgave.OppgaveConsumer
 import no.nav.personbruker.dittnav.api.oppgave.OppgaveService
 import no.nav.security.token.support.ktor.tokenValidationSupport
@@ -61,13 +62,7 @@ fun Application.mainModule() {
     routing {
         healthApi(environment)
         authenticate {
-            legacyMeldinger(legacyConsumer)
-            legacyPabegynte(legacyConsumer)
-            legacyMeldekortinfo(legacyConsumer)
-            legacyPersonident(legacyConsumer)
-            legacyPersonnavn(legacyConsumer)
-            legacySakstema(legacyConsumer)
-            legacyOppfolging(legacyConsumer)
+            legacyApi(legacyConsumer)
             brukernotifikasjoner(brukernotifikasjonService)
         }
     }
