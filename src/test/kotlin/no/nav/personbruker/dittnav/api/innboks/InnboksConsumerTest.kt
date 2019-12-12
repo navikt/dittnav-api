@@ -13,7 +13,6 @@ import io.ktor.http.headersOf
 import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.runBlocking
-import no.nav.personbruker.dittnav.api.config.Environment
 import no.nav.personbruker.dittnav.api.config.HttpClientBuilder
 import no.nav.personbruker.dittnav.api.config.buildJsonSerializer
 import no.nav.personbruker.dittnav.api.config.enableDittNavJsonConfig
@@ -80,6 +79,6 @@ class InnboksConsumerTest {
             innboksConsumer.getExternalEvents("1234")[0].tekst `should be equal to` innboksObject1.tekst
             innboksConsumer.getExternalEvents("1234")[0].fodselsnummer `should be equal to` innboksObject1.fodselsnummer
         }
-
     }
+
 }
