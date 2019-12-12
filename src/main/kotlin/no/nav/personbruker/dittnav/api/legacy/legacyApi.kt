@@ -1,10 +1,12 @@
 package no.nav.personbruker.dittnav.api.legacy
 
+import io.ktor.application.ApplicationCall
 import io.ktor.application.call
 import io.ktor.client.response.readBytes
 import io.ktor.response.respond
 import io.ktor.routing.Route
 import io.ktor.routing.get
+import io.ktor.util.pipeline.PipelineContext
 import no.nav.personbruker.dittnav.api.common.extractTokenFromRequest
 
 fun Route.legacyApi(legacyConsumer: LegacyConsumer) {
@@ -18,62 +20,36 @@ fun Route.legacyApi(legacyConsumer: LegacyConsumer) {
     val oppfolgingPath = "/oppfolging"
 
     get(ubehandledeMeldingerPath) {
-        val token = extractTokenFromRequest()
-        val ubehandledeMeldinger = legacyConsumer.getLegacyContent(
-                ubehandledeMeldingerPath,
-                token
-        )
-        call.respond(ubehandledeMeldinger.status, ubehandledeMeldinger.readBytes())
+        hentRaattFraLegacyApiOgReturnerResponsen(legacyConsumer, ubehandledeMeldingerPath)
     }
 
     get(paabegynteSakerPath) {
-        val token = extractTokenFromRequest()
-        val paabegynte = legacyConsumer.getLegacyContent(
-                paabegynteSakerPath,
-                token
-        )
-        call.respond(paabegynte.status, paabegynte.readBytes())
+        hentRaattFraLegacyApiOgReturnerResponsen(legacyConsumer, paabegynteSakerPath)
     }
 
     get(sakstemaPath) {
-        val token = extractTokenFromRequest()
-        val sakstema = legacyConsumer.getLegacyContent(
-                sakstemaPath, token)
-        call.respond(sakstema.status, sakstema.readBytes())
+        hentRaattFraLegacyApiOgReturnerResponsen(legacyConsumer, sakstemaPath)
     }
 
     get(navnPath) {
-        val token = extractTokenFromRequest()
-        val navn = legacyConsumer.getLegacyContent(
-                navnPath,
-                token
-        )
-        call.respond(navn.status, navn.readBytes())
+        hentRaattFraLegacyApiOgReturnerResponsen(legacyConsumer, navnPath)
     }
 
     get(identPath) {
-        val token = extractTokenFromRequest()
-        val ident = legacyConsumer.getLegacyContent(
-                identPath, token)
-        call.respond(ident.status, ident.readBytes())
+        hentRaattFraLegacyApiOgReturnerResponsen(legacyConsumer, identPath)
     }
 
     get(meldekortPath) {
-        val token = extractTokenFromRequest()
-        val meldekortinfo = legacyConsumer.getLegacyContent(
-                meldekortPath,
-                token
-        )
-        call.respond(meldekortinfo.status, meldekortinfo.readBytes())
+        hentRaattFraLegacyApiOgReturnerResponsen(legacyConsumer, meldekortPath)
     }
 
     get(oppfolgingPath) {
-        val token = extractTokenFromRequest()
-        val oppfolging = legacyConsumer.getLegacyContent(
-                oppfolgingPath,
-                token
-        )
-        call.respond(oppfolging.status, oppfolging.readBytes())
+        hentRaattFraLegacyApiOgReturnerResponsen(legacyConsumer, oppfolgingPath)
     }
 
+}
+
+private suspend fun PipelineContext<Unit, ApplicationCall>.hentRaattFraLegacyApiOgReturnerResponsen(consumer: LegacyConsumer, path: String) {
+    val response = consumer.getLegacyContent(path, extractTokenFromRequest())
+    call.respond(response.status, response.readBytes())
 }
