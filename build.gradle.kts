@@ -97,6 +97,7 @@ tasks {
     register("runServer", JavaExec::class) {
         environment("LEGACY_API_URL", "http://localhost:8090/person/dittnav-legacy-api")
         environment("EVENT_HANDLER_URL", "http://localhost:8092")
+        environment("CORS_ALLOWED_ORIGINS", "localhost:9002")
         main = application.mainClassName
         classpath = sourceSets["main"].runtimeClasspath
     }

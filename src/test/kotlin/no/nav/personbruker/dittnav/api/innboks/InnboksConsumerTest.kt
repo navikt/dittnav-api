@@ -24,14 +24,14 @@ import java.net.URL
 
 class InnboksConsumerTest {
     val httpClientBuilder = mockk<HttpClientBuilder>(relaxed = true)
-    val innboksConsumer = InnboksConsumer(httpClientBuilder, Environment(URL("http://legacy-api"), URL("http://event-handler")))
+    val innboksConsumer = InnboksConsumer(httpClientBuilder, URL("http://dittnav-handler"))
 
     @Test
     fun `should call innboks endpoint on event handler`() {
         val client = HttpClient(MockEngine) {
             engine {
                 addHandler { request ->
-                    if (request.url.encodedPath.contains("/fetch/innboks") && request.url.host.contains("event-handler")) {
+                    if (request.url.encodedPath.contains("/fetch/innboks") && request.url.host.contains("dittnav-handler")) {
                         respond("[]", headers = headersOf(HttpHeaders.ContentType, ContentType.Application.Json.toString()))
                     } else {
                         respondError(HttpStatusCode.BadRequest)

@@ -13,7 +13,6 @@ import io.ktor.http.headersOf
 import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.runBlocking
-import no.nav.personbruker.dittnav.api.config.Environment
 import no.nav.personbruker.dittnav.api.config.HttpClientBuilder
 import no.nav.personbruker.dittnav.api.config.buildJsonSerializer
 import no.nav.personbruker.dittnav.api.config.enableDittNavJsonConfig
@@ -25,7 +24,7 @@ import java.net.URL
 class BeskjedConsumerTest {
 
     val httpClientBuilder = mockk<HttpClientBuilder>(relaxed = true)
-    val beskjedConsumer = BeskjedConsumer(httpClientBuilder, Environment(URL("http://legacy-api"), URL("http://event-handler")))
+    val beskjedConsumer = BeskjedConsumer(httpClientBuilder, URL("http://event-handler"))
 
     @Test
     fun `should call information endpoint on event handler`() {
