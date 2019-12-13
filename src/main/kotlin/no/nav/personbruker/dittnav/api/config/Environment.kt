@@ -13,7 +13,6 @@ private val log = LoggerFactory.getLogger(Environment::class.java)
 
 fun getEnvVar(varName: String): String {
     val varValue = System.getenv(varName)
-    log.info("Read the environment variable $varName to be $varValue")
     return varValue ?: throw IllegalArgumentException("Variable $varName cannot be empty")
 
 }
