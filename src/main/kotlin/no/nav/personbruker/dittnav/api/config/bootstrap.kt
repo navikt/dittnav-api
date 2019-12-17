@@ -1,9 +1,9 @@
 package no.nav.personbruker.dittnav.api.config
 
-import io.ktor.application.Application
-import io.ktor.application.install
+import io.ktor.application.*
 import io.ktor.auth.Authentication
 import io.ktor.auth.authenticate
+import io.ktor.client.HttpClient
 import io.ktor.features.ContentNegotiation
 import io.ktor.features.DefaultHeaders
 import io.ktor.jackson.jackson
@@ -62,5 +62,13 @@ fun Application.mainModule() {
             legacyOppfolging(legacyConsumer)
             brukernotifikasjoner(brukernotifikasjonService)
         }
+
+        configureShutdownHook(httpClient)
+    }
+}
+
+private fun Application.configureShutdownHook(httpClient: HttpClient) {
+    environment.monitor.subscribe(ApplicationStopping) {
+        httpClient.close()
     }
 }
