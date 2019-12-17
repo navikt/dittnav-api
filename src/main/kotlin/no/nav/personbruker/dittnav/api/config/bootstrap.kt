@@ -29,10 +29,11 @@ fun Application.mainModule() {
 
     DefaultExports.initialize()
 
-    val legacyConsumer = LegacyConsumer(HttpClientBuilder, environment)
-    val oppgaveService = OppgaveService(OppgaveConsumer(HttpClientBuilder, environment))
-    val beskjedService = BeskjedService(BeskjedConsumer(HttpClientBuilder, environment))
-    val innboksService = InnboksService(InnboksConsumer(HttpClientBuilder, environment))
+    val httpClient = HttpClientBuilder.build()
+    val legacyConsumer = LegacyConsumer(httpClient, environment)
+    val oppgaveService = OppgaveService(OppgaveConsumer(httpClient, environment))
+    val beskjedService = BeskjedService(BeskjedConsumer(httpClient, environment))
+    val innboksService = InnboksService(InnboksConsumer(httpClient, environment))
     val brukernotifikasjonService = BrukernotifikasjonService(oppgaveService, beskjedService, innboksService)
 
     install(DefaultHeaders)

@@ -48,7 +48,7 @@ fun Route.legacyPersonident(legacyConsumer: LegacyConsumer) {
     get("/person/dittnav-api/personalia/ident") {
         val token = extractTokenFromRequest()
         val ident = legacyConsumer.getLegacyContent(
-            "personalia/ident", token)
+            "/personalia/ident", token)
         call.respond(ident.status, ident.readBytes())
     }
 }
@@ -57,7 +57,7 @@ fun Route.legacyMeldekortinfo(legacyConsumer: LegacyConsumer) {
     get("/person/dittnav-api/meldekortinfo") {
         val token = extractTokenFromRequest()
         val meldekortinfo = legacyConsumer.getLegacyContent(
-            "meldekortinfo", token)
+            "/meldekortinfo", token)
         call.respond(meldekortinfo.status, meldekortinfo.readBytes())
     }
 }
@@ -66,7 +66,7 @@ fun Route.legacyOppfolging(legacyConsumer: LegacyConsumer) {
     get("/person/dittnav-api/oppfolging") {
         val token = extractTokenFromRequest()
         val oppfolging = legacyConsumer.getLegacyContent(
-            "oppfolging", token)
+            "/oppfolging", token)
         call.respond(oppfolging.status, oppfolging.readBytes())
     }
 }

@@ -24,9 +24,6 @@ import java.net.URL
 
 class BeskjedConsumerTest {
 
-    val httpClientBuilder = mockk<HttpClientBuilder>(relaxed = true)
-    val beskjedConsumer = BeskjedConsumer(httpClientBuilder, Environment(URL("http://legacy-api"), URL("http://event-handler")))
-
     @Test
     fun `should call information endpoint on event handler`() {
         val client = HttpClient(MockEngine) {
@@ -43,12 +40,11 @@ class BeskjedConsumerTest {
                 serializer = buildJsonSerializer()
             }
         }
-        every { httpClientBuilder.build() } returns client
+        val beskjedConsumer = BeskjedConsumer(client, Environment(URL("http://legacy-api"), URL("http://event-handler")))
 
         runBlocking {
             beskjedConsumer.getExternalEvents("1234") `should equal` emptyList()
         }
-
     }
 
     @Test
@@ -71,7 +67,7 @@ class BeskjedConsumerTest {
                 serializer = buildJsonSerializer()
             }
         }
-        every { httpClientBuilder.build() } returns client
+        val beskjedConsumer = BeskjedConsumer(client, Environment(URL("http://legacy-api"), URL("http://event-handler")))
 
         runBlocking {
             beskjedConsumer.getExternalEvents("1234").size `should be equal to` 1

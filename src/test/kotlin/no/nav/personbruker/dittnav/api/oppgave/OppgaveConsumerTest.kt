@@ -21,9 +21,6 @@ import java.net.URL
 
 class OppgaveConsumerTest {
 
-    val httpClientBuilder = mockk<HttpClientBuilder>(relaxed = true)
-    val oppgaveConsumer = OppgaveConsumer(httpClientBuilder, Environment(URL("http://legacy-api"), URL("http://event-handler")))
-
     @Test
     fun `should call oppgave endpoint on event handler`() {
         val client = HttpClient(MockEngine) {
@@ -40,7 +37,8 @@ class OppgaveConsumerTest {
                 serializer = buildJsonSerializer()
             }
         }
-        every { httpClientBuilder.build() } returns client
+
+        val oppgaveConsumer = OppgaveConsumer(client, Environment(URL("http://legacy-api"), URL("http://event-handler")))
 
         runBlocking {
             oppgaveConsumer.getExternalEvents("1234") `should equal` emptyList()
@@ -70,7 +68,7 @@ class OppgaveConsumerTest {
                 serializer = buildJsonSerializer()
             }
         }
-        every { httpClientBuilder.build() } returns client
+        val oppgaveConsumer = OppgaveConsumer(client, Environment(URL("http://legacy-api"), URL("http://event-handler")))
 
         runBlocking {
             oppgaveConsumer.getExternalEvents("1234").size `should be equal to` 2

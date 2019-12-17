@@ -23,8 +23,6 @@ import org.junit.jupiter.api.Test
 import java.net.URL
 
 class InnboksConsumerTest {
-    val httpClientBuilder = mockk<HttpClientBuilder>(relaxed = true)
-    val innboksConsumer = InnboksConsumer(httpClientBuilder, Environment(URL("http://legacy-api"), URL("http://event-handler")))
 
     @Test
     fun `should call innboks endpoint on event handler`() {
@@ -42,7 +40,7 @@ class InnboksConsumerTest {
                 serializer = buildJsonSerializer()
             }
         }
-        every { httpClientBuilder.build() } returns client
+        val innboksConsumer = InnboksConsumer(client, Environment(URL("http://legacy-api"), URL("http://event-handler")))
 
         runBlocking {
             innboksConsumer.getExternalEvents("1234") `should equal` emptyList()
@@ -73,7 +71,7 @@ class InnboksConsumerTest {
                 serializer = buildJsonSerializer()
             }
         }
-        every { httpClientBuilder.build() } returns client
+        val innboksConsumer = InnboksConsumer(client, Environment(URL("http://legacy-api"), URL("http://event-handler")))
 
         runBlocking {
             innboksConsumer.getExternalEvents("1234").size `should be equal to` 2
