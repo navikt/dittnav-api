@@ -38,7 +38,7 @@ class OppgaveConsumerTest {
             }
         }
 
-        val oppgaveConsumer = OppgaveConsumer(client, Environment(URL("http://legacy-api"), URL("http://event-handler")))
+        val oppgaveConsumer = OppgaveConsumer(client, URL("http://event-handler"))
 
         runBlocking {
             oppgaveConsumer.getExternalEvents("1234") `should equal` emptyList()
@@ -68,7 +68,7 @@ class OppgaveConsumerTest {
                 serializer = buildJsonSerializer()
             }
         }
-        val oppgaveConsumer = OppgaveConsumer(client, Environment(URL("http://legacy-api"), URL("http://event-handler")))
+        val oppgaveConsumer = OppgaveConsumer(client, URL("http://event-handler"))
 
         runBlocking {
             oppgaveConsumer.getExternalEvents("1234").size `should be equal to` 2

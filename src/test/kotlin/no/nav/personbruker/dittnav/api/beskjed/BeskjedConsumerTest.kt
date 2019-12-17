@@ -10,11 +10,7 @@ import io.ktor.http.ContentType
 import io.ktor.http.HttpHeaders
 import io.ktor.http.HttpStatusCode
 import io.ktor.http.headersOf
-import io.mockk.every
-import io.mockk.mockk
 import kotlinx.coroutines.runBlocking
-import no.nav.personbruker.dittnav.api.config.Environment
-import no.nav.personbruker.dittnav.api.config.HttpClientBuilder
 import no.nav.personbruker.dittnav.api.config.buildJsonSerializer
 import no.nav.personbruker.dittnav.api.config.enableDittNavJsonConfig
 import org.amshove.kluent.`should be equal to`
@@ -40,7 +36,7 @@ class BeskjedConsumerTest {
                 serializer = buildJsonSerializer()
             }
         }
-        val beskjedConsumer = BeskjedConsumer(client, Environment(URL("http://legacy-api"), URL("http://event-handler")))
+        val beskjedConsumer = BeskjedConsumer(client, URL("http://event-handler"))
 
         runBlocking {
             beskjedConsumer.getExternalEvents("1234") `should equal` emptyList()
@@ -67,7 +63,7 @@ class BeskjedConsumerTest {
                 serializer = buildJsonSerializer()
             }
         }
-        val beskjedConsumer = BeskjedConsumer(client, Environment(URL("http://legacy-api"), URL("http://event-handler")))
+        val beskjedConsumer = BeskjedConsumer(client, URL("http://event-handler"))
 
         runBlocking {
             beskjedConsumer.getExternalEvents("1234").size `should be equal to` 1

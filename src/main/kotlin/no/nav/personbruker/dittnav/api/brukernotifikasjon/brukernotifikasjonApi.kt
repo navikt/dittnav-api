@@ -8,7 +8,7 @@ import no.nav.personbruker.dittnav.api.common.brukerToken
 
 fun Route.brukernotifikasjoner(brukernotifikasjonService: BrukernotifikasjonService) {
 
-    get("/person/dittnav-api/brukernotifikasjoner") {
+    get("/brukernotifikasjoner") {
         call.respond(brukernotifikasjonService.getBrukernotifikasjoner(brukerToken))
     }
 }

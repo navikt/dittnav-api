@@ -13,7 +13,6 @@ import io.ktor.http.headersOf
 import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.runBlocking
-import no.nav.personbruker.dittnav.api.config.Environment
 import no.nav.personbruker.dittnav.api.config.HttpClientBuilder
 import no.nav.personbruker.dittnav.api.config.buildJsonSerializer
 import no.nav.personbruker.dittnav.api.config.enableDittNavJsonConfig
@@ -40,7 +39,7 @@ class InnboksConsumerTest {
                 serializer = buildJsonSerializer()
             }
         }
-        val innboksConsumer = InnboksConsumer(client, Environment(URL("http://legacy-api"), URL("http://event-handler")))
+        val innboksConsumer = InnboksConsumer(client, URL("http://event-handler"))
 
         runBlocking {
             innboksConsumer.getExternalEvents("1234") `should equal` emptyList()
@@ -71,13 +70,12 @@ class InnboksConsumerTest {
                 serializer = buildJsonSerializer()
             }
         }
-        val innboksConsumer = InnboksConsumer(client, Environment(URL("http://legacy-api"), URL("http://event-handler")))
+        val innboksConsumer = InnboksConsumer(client, URL("http://event-handler"))
 
         runBlocking {
             innboksConsumer.getExternalEvents("1234").size `should be equal to` 2
             innboksConsumer.getExternalEvents("1234")[0].tekst `should be equal to` innboksObject1.tekst
             innboksConsumer.getExternalEvents("1234")[0].fodselsnummer `should be equal to` innboksObject1.fodselsnummer
         }
-
     }
 }
