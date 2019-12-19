@@ -1,9 +1,9 @@
 package no.nav.personbruker.dittnav.api.config
 
-import io.ktor.application.Application
-import io.ktor.application.install
+import io.ktor.application.*
 import io.ktor.auth.Authentication
 import io.ktor.auth.authenticate
+import io.ktor.client.HttpClient
 import io.ktor.features.CORS
 import io.ktor.features.ContentNegotiation
 import io.ktor.features.DefaultHeaders
@@ -30,10 +30,12 @@ fun Application.mainModule() {
 
     DefaultExports.initialize()
 
-    val legacyConsumer = LegacyConsumer(HttpClientBuilder, environment.dittNAVLegacyURL)
-    val oppgaveConsumer = OppgaveConsumer(HttpClientBuilder, environment.dittNAVEventsURL)
-    val beskjedConsumer = BeskjedConsumer(HttpClientBuilder, environment.dittNAVEventsURL)
-    val innboksConsumer = InnboksConsumer(HttpClientBuilder, environment.dittNAVEventsURL)
+    val httpClient = HttpClientBuilder.build()
+
+    val legacyConsumer = LegacyConsumer(httpClient, environment.dittNAVLegacyURL)
+    val oppgaveConsumer = OppgaveConsumer(httpClient, environment.dittNAVEventsURL)
+    val beskjedConsumer = BeskjedConsumer(httpClient, environment.dittNAVEventsURL)
+    val innboksConsumer = InnboksConsumer(httpClient, environment.dittNAVEventsURL)
 
     val oppgaveService = OppgaveService(oppgaveConsumer)
     val beskjedService = BeskjedService(beskjedConsumer)
@@ -65,5 +67,13 @@ fun Application.mainModule() {
             legacyApi(legacyConsumer)
             brukernotifikasjoner(brukernotifikasjonService)
         }
+
+        configureShutdownHook(httpClient)
+    }
+}
+
+private fun Application.configureShutdownHook(httpClient: HttpClient) {
+    environment.monitor.subscribe(ApplicationStopping) {
+        httpClient.close()
     }
 }

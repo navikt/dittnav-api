@@ -10,10 +10,7 @@ import io.ktor.http.ContentType
 import io.ktor.http.HttpHeaders
 import io.ktor.http.HttpStatusCode
 import io.ktor.http.headersOf
-import io.mockk.every
-import io.mockk.mockk
 import kotlinx.coroutines.runBlocking
-import no.nav.personbruker.dittnav.api.config.HttpClientBuilder
 import no.nav.personbruker.dittnav.api.config.buildJsonSerializer
 import no.nav.personbruker.dittnav.api.config.enableDittNavJsonConfig
 import org.amshove.kluent.`should be equal to`
@@ -22,9 +19,6 @@ import org.junit.jupiter.api.Test
 import java.net.URL
 
 class BeskjedConsumerTest {
-
-    val httpClientBuilder = mockk<HttpClientBuilder>(relaxed = true)
-    val beskjedConsumer = BeskjedConsumer(httpClientBuilder, URL("http://event-handler"))
 
     @Test
     fun `should call information endpoint on event handler`() {
@@ -42,12 +36,11 @@ class BeskjedConsumerTest {
                 serializer = buildJsonSerializer()
             }
         }
-        every { httpClientBuilder.build() } returns client
+        val beskjedConsumer = BeskjedConsumer(client, URL("http://event-handler"))
 
         runBlocking {
             beskjedConsumer.getExternalEvents("1234") `should equal` emptyList()
         }
-
     }
 
     @Test
@@ -70,7 +63,7 @@ class BeskjedConsumerTest {
                 serializer = buildJsonSerializer()
             }
         }
-        every { httpClientBuilder.build() } returns client
+        val beskjedConsumer = BeskjedConsumer(client, URL("http://event-handler"))
 
         runBlocking {
             beskjedConsumer.getExternalEvents("1234").size `should be equal to` 1

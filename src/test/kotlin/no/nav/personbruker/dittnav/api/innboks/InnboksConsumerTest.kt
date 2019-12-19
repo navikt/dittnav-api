@@ -22,15 +22,13 @@ import org.junit.jupiter.api.Test
 import java.net.URL
 
 class InnboksConsumerTest {
-    val httpClientBuilder = mockk<HttpClientBuilder>(relaxed = true)
-    val innboksConsumer = InnboksConsumer(httpClientBuilder, URL("http://dittnav-handler"))
 
     @Test
     fun `should call innboks endpoint on event handler`() {
         val client = HttpClient(MockEngine) {
             engine {
                 addHandler { request ->
-                    if (request.url.encodedPath.contains("/fetch/innboks") && request.url.host.contains("dittnav-handler")) {
+                    if (request.url.encodedPath.contains("/fetch/innboks") && request.url.host.contains("event-handler")) {
                         respond("[]", headers = headersOf(HttpHeaders.ContentType, ContentType.Application.Json.toString()))
                     } else {
                         respondError(HttpStatusCode.BadRequest)
@@ -41,7 +39,7 @@ class InnboksConsumerTest {
                 serializer = buildJsonSerializer()
             }
         }
-        every { httpClientBuilder.build() } returns client
+        val innboksConsumer = InnboksConsumer(client, URL("http://event-handler"))
 
         runBlocking {
             innboksConsumer.getExternalEvents("1234") `should equal` emptyList()
@@ -72,7 +70,7 @@ class InnboksConsumerTest {
                 serializer = buildJsonSerializer()
             }
         }
-        every { httpClientBuilder.build() } returns client
+        val innboksConsumer = InnboksConsumer(client, URL("http://event-handler"))
 
         runBlocking {
             innboksConsumer.getExternalEvents("1234").size `should be equal to` 2
@@ -80,5 +78,4 @@ class InnboksConsumerTest {
             innboksConsumer.getExternalEvents("1234")[0].fodselsnummer `should be equal to` innboksObject1.fodselsnummer
         }
     }
-
 }
