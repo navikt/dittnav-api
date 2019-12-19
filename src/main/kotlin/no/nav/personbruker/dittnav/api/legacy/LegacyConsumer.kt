@@ -2,6 +2,7 @@ package no.nav.personbruker.dittnav.api.legacy
 
 import io.ktor.client.HttpClient
 import io.ktor.client.response.HttpResponse
+import io.ktor.http.HttpStatusCode
 import no.nav.personbruker.dittnav.api.config.get
 import org.slf4j.LoggerFactory
 import java.net.URL
@@ -14,7 +15,9 @@ class LegacyConsumer(private val httpClient: HttpClient, private val dittNAVLega
         val endpoint = URL("$dittNAVLegacyBaseURL$path")
         log.info("Skal hente fra: $endpoint")
         val response: HttpResponse = httpClient.get(endpoint, token)
-        log.info("Mottok følgende respons: $response")
+        if (response.status != HttpStatusCode.OK) {
+            log.warn("Error mot $dittNAVLegacyBaseURL$path: ${response.status.value} ${response.status.description}")
+        }
         return response
     }
 }
