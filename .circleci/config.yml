@@ -45,11 +45,23 @@ jobs:
             docker build -t "navikt/dittnav-api:$CIRCLE_SHA1" -t "navikt/dittnav-api:latest" .
             docker push "navikt/dittnav-api:$CIRCLE_SHA1"
             docker push "navikt/dittnav-api:latest"
+  deploy-q6:
+    executor: nais/deployment-cli
+    steps:
+      - nais-deploy:
+          namespace: q6
+          environment: dev-sbs
   deploy-q1:
     executor: nais/deployment-cli
     steps:
       - nais-deploy:
           namespace: q1
+          environment: dev-sbs
+  deploy-q0:
+    executor: nais/deployment-cli
+    steps:
+      - nais-deploy:
+          namespace: q0
           environment: dev-sbs
   automatisk-deploy-q1:
     executor: nais/deployment-cli
@@ -118,6 +130,16 @@ workflows:
             branches:
               only:
                 - master
+      - til-q6:
+          type: approval
+          requires:
+            - docker-bygg-og-push-uten-latest
+          filters:
+            branches:
+              ignore: master
+      - deploy-q6:
+          requires:
+            - til-q6
       - til-q1:
           type: approval
           requires:
@@ -142,6 +164,12 @@ workflows:
             branches:
               only: master
       - release:
+          requires:
+            - bekreft-release
+          filters:
+            branches:
+              only: master
+      - deploy-q0:
           requires:
             - bekreft-release
           filters:

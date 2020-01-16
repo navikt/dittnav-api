@@ -1,0 +1,7 @@
+{
+  "namespace": "q0",
+  "ingresses": [
+    "https://dittnav-api-q0.dev-sbs.nais.io/person/dittnav-api",
+    "https://www-q0.nav.no/person/dittnav-api"
+  ]
+}
