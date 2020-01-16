@@ -2,7 +2,7 @@ import org.gradle.api.tasks.testing.logging.TestExceptionFormat
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 val prometheusVersion = "0.6.0"
-val ktorVersion = "1.2.6"
+val ktorVersion = "1.3.0"
 val logstashVersion = 5.2
 val logbackVersion = "1.2.3"
 val kotlinVersion = "1.3.50"
@@ -13,7 +13,7 @@ val assertJVersion = "3.12.2"
 val junitVersion = "5.4.1"
 val kluentVersion = "1.56"
 val tokensupportVersion = "1.1.0"
-val kotlinxCoroutinesVersion = "1.3.2"
+val kotlinxCoroutinesVersion = "1.3.3"
 val kotlinxHtmlVersion = "0.6.12"
 
 
