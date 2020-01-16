@@ -1,7 +1,7 @@
 package no.nav.personbruker.dittnav.api.legacy
 
 import io.ktor.client.HttpClient
-import io.ktor.client.response.HttpResponse
+import io.ktor.client.statement.HttpResponse
 import io.ktor.http.HttpStatusCode
 import no.nav.personbruker.dittnav.api.config.get
 import org.slf4j.LoggerFactory

@@ -2,7 +2,7 @@ package no.nav.personbruker.dittnav.api.legacy
 
 import io.ktor.application.ApplicationCall
 import io.ktor.application.call
-import io.ktor.client.response.readBytes
+import io.ktor.client.statement.readBytes
 import io.ktor.response.respond
 import io.ktor.routing.Route
 import io.ktor.routing.get
