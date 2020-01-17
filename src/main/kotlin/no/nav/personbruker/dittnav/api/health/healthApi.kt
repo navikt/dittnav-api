@@ -15,16 +15,16 @@ fun Routing.healthApi(environment: Environment) {
 
     val pingJsonResponse = """{"ping": "pong"}"""
 
+    get("/internal/ping") {
+        call.respondText(pingJsonResponse, ContentType.Application.Json)
+    }
+
     get("/internal/isAlive") {
         call.respondText(text = "ALIVE", contentType = ContentType.Text.Plain)
     }
 
     get("/internal/isReady") {
         call.respondText(text = "READY", contentType = ContentType.Text.Plain)
-    }
-
-    get("/internal/ping") {
-        call.respondText(pingJsonResponse, ContentType.Application.Json)
     }
 
     get("/internal/selftest") {
