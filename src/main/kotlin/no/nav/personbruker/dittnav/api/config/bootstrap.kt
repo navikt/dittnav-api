@@ -16,6 +16,7 @@ import no.nav.personbruker.dittnav.api.beskjed.BeskjedService
 import no.nav.personbruker.dittnav.api.brukernotifikasjon.BrukernotifikasjonService
 import no.nav.personbruker.dittnav.api.brukernotifikasjon.brukernotifikasjoner
 import no.nav.personbruker.dittnav.api.health.healthApi
+import no.nav.personbruker.dittnav.api.health.authenticationCheck
 import no.nav.personbruker.dittnav.api.innboks.InnboksConsumer
 import no.nav.personbruker.dittnav.api.innboks.InnboksService
 import no.nav.personbruker.dittnav.api.legacy.LegacyConsumer
@@ -66,6 +67,7 @@ fun Application.mainModule() {
         authenticate {
             legacyApi(legacyConsumer)
             brukernotifikasjoner(brukernotifikasjonService)
+            authenticationCheck()
         }
 
         configureShutdownHook(httpClient)
