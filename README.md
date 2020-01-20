@@ -16,7 +16,7 @@ For å være sikker på at man får en ny tom database og tomme kafka-topics kan
 
 # Henvendelser
 
-Spørsmål knyttet til koden eller prosjektet kan rettes mot https://github.com/orgs/navikt/teams/personbruker
+Spørsmål knyttet til koden eller prosjektet kan stilles som issues her på github.
 
 ## For NAV-ansatte
 
