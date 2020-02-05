@@ -4,7 +4,7 @@ import io.mockk.coEvery
 import io.mockk.mockk
 import kotlinx.coroutines.runBlocking
 import no.nav.personbruker.dittnav.api.beskjed.BeskjedService
-import no.nav.personbruker.dittnav.api.common.createInnloggetBruker
+import no.nav.personbruker.dittnav.api.common.InnloggetBrukerObjectMother
 import no.nav.personbruker.dittnav.api.innboks.InnboksService
 import no.nav.personbruker.dittnav.api.oppgave.OppgaveService
 import org.amshove.kluent.`should be equal to`
@@ -22,7 +22,7 @@ class BrukernotifikasjonServiceTest {
     val oppgave1 = BrukernotfikasjonObjectMother.createOppgaveBrukernotifikasjon("3")
     val innboks1 = BrukernotfikasjonObjectMother.createInnboksBrukernotifikasjon("4")
 
-    val innloggetBruker = createInnloggetBruker()
+    val innloggetBruker = InnloggetBrukerObjectMother.createInnloggetBruker()
 
     @Test
     fun `should receive brukernotfikasjoner of type Beskjed and Oppgave`() {

@@ -9,7 +9,7 @@ import org.junit.jupiter.api.Test
 
 internal class InnloggetBrukerTest {
 
-    val tokenSupport = createDummyTokenSupport()
+    val tokenSupport = InnloggetBrukerObjectMother.createDummyTokenSupport()
     val innloggetBruker = InnloggetBruker(tokenSupport)
 
     @Test

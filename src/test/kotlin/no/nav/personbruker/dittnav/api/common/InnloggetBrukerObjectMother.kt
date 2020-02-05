@@ -6,16 +6,21 @@ import no.nav.security.token.support.core.context.TokenValidationContext
 import no.nav.security.token.support.core.jwt.JwtToken
 import no.nav.security.token.support.ktor.OIDCValidationContextPrincipal
 
-fun createInnloggetBruker(): InnloggetBruker {
-    val innloggetBruker = mockk<InnloggetBruker>()
-    every { innloggetBruker.getBearerToken() } returns "dummyToken"
-    return innloggetBruker
-}
+object InnloggetBrukerObjectMother {
 
-fun createDummyTokenSupport(): OIDCValidationContextPrincipal {
-    val tokenValidationContext = mockk<TokenValidationContext>()
-    val oidcValidationContextPrincipal = OIDCValidationContextPrincipal(tokenValidationContext)
-    val dummyJwtToken = mockk<JwtToken>()
-    every { oidcValidationContextPrincipal.context.firstValidToken.get() } returns dummyJwtToken
-    return oidcValidationContextPrincipal
+    fun createInnloggetBruker(): InnloggetBruker {
+        val innloggetBruker = mockk<InnloggetBruker>()
+        every { innloggetBruker.getBearerToken() } returns "dummyToken"
+        return innloggetBruker
+    }
+
+    fun createDummyTokenSupport(): OIDCValidationContextPrincipal {
+        val tokenValidationContext = mockk<TokenValidationContext>()
+        val oidcValidationContextPrincipal = OIDCValidationContextPrincipal(tokenValidationContext)
+        val dummyJwtToken = mockk<JwtToken>()
+
+        every { oidcValidationContextPrincipal.context.firstValidToken.get() } returns dummyJwtToken
+
+        return oidcValidationContextPrincipal
+    }
 }
