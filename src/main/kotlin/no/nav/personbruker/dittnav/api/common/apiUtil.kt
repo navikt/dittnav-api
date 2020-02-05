@@ -2,24 +2,16 @@ package no.nav.personbruker.dittnav.api.common
 
 import io.ktor.application.ApplicationCall
 import io.ktor.application.call
-import io.ktor.http.HttpHeaders
+import io.ktor.auth.authentication
 import io.ktor.util.pipeline.PipelineContext
+import no.nav.security.token.support.ktor.OIDCValidationContextPrincipal
 
-fun PipelineContext<Unit, ApplicationCall>.extractTokenFromRequest(): String {
-    var authToken = getTokenFromHeader()
-    if (authToken == null) {
-        authToken = getTokenFromCookie()
-    }
-    if (authToken == null) {
+fun PipelineContext<Unit, ApplicationCall>.hentInnloggetBruker(): InnloggetBruker {
+
+    val innloggetBruker = InnloggetBruker(call.authentication.principal<OIDCValidationContextPrincipal>())
+
+    if (innloggetBruker.principal == null) {
         throw Exception("Det ble ikke funnet noe token. Dette skal ikke kunne skje.")
     }
-    return authToken
+    return innloggetBruker
 }
-
-private fun PipelineContext<Unit, ApplicationCall>.getTokenFromHeader() =
-        call.request.headers[HttpHeaders.Authorization]?.replace("Bearer ", "")
-
-fun PipelineContext<Unit, ApplicationCall>.getTokenFromCookie() =
-        call.request.cookies["selvbetjening-idtoken"]
-
-val PipelineContext<Unit, ApplicationCall>.brukerToken: String get() = extractTokenFromRequest()
