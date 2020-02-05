@@ -8,12 +8,13 @@ import io.ktor.http.HttpHeaders
 import io.ktor.http.HttpMethod
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import no.nav.personbruker.dittnav.api.common.InnloggetBruker
 import java.net.URL
 
-suspend inline fun <reified T> HttpClient.get(url: URL, token: String): T = withContext(Dispatchers.IO) {
+suspend inline fun <reified T> HttpClient.get(url: URL, innloggetBruker: InnloggetBruker): T = withContext(Dispatchers.IO) {
     request<T> {
         url(url)
         method = HttpMethod.Get
-        header(HttpHeaders.Authorization, "Bearer $token")
+        header(HttpHeaders.Authorization, innloggetBruker.getBearerToken())
     }
 }

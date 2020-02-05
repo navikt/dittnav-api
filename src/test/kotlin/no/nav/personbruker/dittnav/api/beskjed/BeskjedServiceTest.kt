@@ -3,11 +3,14 @@ package no.nav.personbruker.dittnav.api.beskjed
 import io.mockk.coEvery
 import io.mockk.mockk
 import kotlinx.coroutines.runBlocking
+import no.nav.personbruker.dittnav.api.common.createInnloggetBruker
 import org.amshove.kluent.`should be equal to`
 import org.junit.jupiter.api.Test
 
 
 class BeskjedServiceTest {
+
+    val innloggetBruker = createInnloggetBruker()
 
     val beskjedConsumer = mockk<BeskjedConsumer>()
     val beskjedService = BeskjedService(beskjedConsumer)
@@ -16,10 +19,10 @@ class BeskjedServiceTest {
 
     @Test
     fun `should return list of Brukernotifikasjoner when Events are received`() {
-        coEvery { beskjedConsumer.getExternalEvents("1234") } returns listOf(beskjed1, beskjed2)
+        coEvery { beskjedConsumer.getExternalEvents(innloggetBruker) } returns listOf(beskjed1, beskjed2)
 
         runBlocking {
-            val brukernotifikasjonListe = beskjedService.getBeskjedEventsAsBrukernotifikasjoner("1234")
+            val brukernotifikasjonListe = beskjedService.getBeskjedEventsAsBrukernotifikasjoner(innloggetBruker)
             brukernotifikasjonListe.size `should be equal to` 2
         }
 
@@ -27,10 +30,10 @@ class BeskjedServiceTest {
 
     @Test
     fun `should return empty list when Exception is thrown`() {
-        coEvery { beskjedConsumer.getExternalEvents("1234") } throws Exception("error")
+        coEvery { beskjedConsumer.getExternalEvents(innloggetBruker) } throws Exception("error")
 
         runBlocking {
-            val brukernotifikasjonListe = beskjedService.getBeskjedEventsAsBrukernotifikasjoner("1234")
+            val brukernotifikasjonListe = beskjedService.getBeskjedEventsAsBrukernotifikasjoner(innloggetBruker)
             brukernotifikasjonListe.size `should be equal to` 0
         }
 

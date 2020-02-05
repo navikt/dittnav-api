@@ -4,6 +4,7 @@ import io.mockk.coEvery
 import io.mockk.mockk
 import kotlinx.coroutines.runBlocking
 import no.nav.personbruker.dittnav.api.beskjed.BeskjedService
+import no.nav.personbruker.dittnav.api.common.createInnloggetBruker
 import no.nav.personbruker.dittnav.api.innboks.InnboksService
 import no.nav.personbruker.dittnav.api.oppgave.OppgaveService
 import org.amshove.kluent.`should be equal to`
@@ -21,13 +22,15 @@ class BrukernotifikasjonServiceTest {
     val oppgave1 = BrukernotfikasjonObjectMother.createOppgaveBrukernotifikasjon("3")
     val innboks1 = BrukernotfikasjonObjectMother.createInnboksBrukernotifikasjon("4")
 
+    val innloggetBruker = createInnloggetBruker()
+
     @Test
     fun `should receive brukernotfikasjoner of type Beskjed and Oppgave`() {
-        coEvery { oppgaveService.getOppgaveEventsAsBrukernotifikasjoner("1234") } returns listOf(oppgave1)
-        coEvery { beskjedService.getBeskjedEventsAsBrukernotifikasjoner("1234") } returns listOf(beskjed1, beskjed2)
-        coEvery { innboksService.getInnboksEventsAsBrukernotifikasjoner("1234") } returns listOf(innboks1)
+        coEvery { oppgaveService.getOppgaveEventsAsBrukernotifikasjoner(innloggetBruker) } returns listOf(oppgave1)
+        coEvery { beskjedService.getBeskjedEventsAsBrukernotifikasjoner(innloggetBruker) } returns listOf(beskjed1, beskjed2)
+        coEvery { innboksService.getInnboksEventsAsBrukernotifikasjoner(innloggetBruker) } returns listOf(innboks1)
 
-        val brukernotifikasjoner = runBlocking { brukernotifikasjonService.getBrukernotifikasjoner("1234") }
+        val brukernotifikasjoner = runBlocking { brukernotifikasjonService.getBrukernotifikasjoner(innloggetBruker) }
         brukernotifikasjoner.size `should be equal to` 4
         brukernotifikasjoner
             .filter { notifikasjon -> notifikasjon.type === BrukernotifikasjonType.OPPGAVE }
@@ -42,11 +45,11 @@ class BrukernotifikasjonServiceTest {
 
     @Test
     fun `should not receieve any brukernotfikasjoner`() {
-        coEvery { oppgaveService.getOppgaveEventsAsBrukernotifikasjoner("1234") } returns emptyList()
-        coEvery { beskjedService.getBeskjedEventsAsBrukernotifikasjoner("1234") } returns emptyList()
-        coEvery { innboksService.getInnboksEventsAsBrukernotifikasjoner("1234") } returns emptyList()
+        coEvery { oppgaveService.getOppgaveEventsAsBrukernotifikasjoner(innloggetBruker) } returns emptyList()
+        coEvery { beskjedService.getBeskjedEventsAsBrukernotifikasjoner(innloggetBruker) } returns emptyList()
+        coEvery { innboksService.getInnboksEventsAsBrukernotifikasjoner(innloggetBruker) } returns emptyList()
 
-        val brukernotifikasjoner = runBlocking { brukernotifikasjonService.getBrukernotifikasjoner("1234") }
+        val brukernotifikasjoner = runBlocking { brukernotifikasjonService.getBrukernotifikasjoner(innloggetBruker) }
         brukernotifikasjoner.size `should be equal to` 0
     }
 }
