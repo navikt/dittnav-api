@@ -16,8 +16,6 @@ fun createDummyTokenSupport(): OIDCValidationContextPrincipal {
     val tokenValidationContext = mockk<TokenValidationContext>()
     val oidcValidationContextPrincipal = OIDCValidationContextPrincipal(tokenValidationContext)
     val dummyJwtToken = mockk<JwtToken>()
-
     every { oidcValidationContextPrincipal.context.firstValidToken.get() } returns dummyJwtToken
-
     return oidcValidationContextPrincipal
 }
