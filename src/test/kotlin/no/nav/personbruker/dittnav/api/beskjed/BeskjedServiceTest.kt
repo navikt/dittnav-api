@@ -3,14 +3,14 @@ package no.nav.personbruker.dittnav.api.beskjed
 import io.mockk.coEvery
 import io.mockk.mockk
 import kotlinx.coroutines.runBlocking
-import no.nav.personbruker.dittnav.api.common.createInnloggetBruker
+import no.nav.personbruker.dittnav.api.common.InnloggetBrukerObjectMother
 import org.amshove.kluent.`should be equal to`
 import org.junit.jupiter.api.Test
 
 
 class BeskjedServiceTest {
 
-    val innloggetBruker = createInnloggetBruker()
+    val innloggetBruker = InnloggetBrukerObjectMother.createInnloggetBruker()
 
     val beskjedConsumer = mockk<BeskjedConsumer>()
     val beskjedService = BeskjedService(beskjedConsumer)

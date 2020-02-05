@@ -3,7 +3,7 @@ package no.nav.personbruker.dittnav.api.oppgave
 import io.mockk.coEvery
 import io.mockk.mockk
 import kotlinx.coroutines.runBlocking
-import no.nav.personbruker.dittnav.api.common.createInnloggetBruker
+import no.nav.personbruker.dittnav.api.common.InnloggetBrukerObjectMother
 import org.amshove.kluent.`should be equal to`
 import org.junit.jupiter.api.Test
 
@@ -14,7 +14,7 @@ class OppgaveServiceTest {
     val oppgaveService = OppgaveService(oppgaveConsumer)
     val oppgave1 = OppgaveObjectMother.createOppgave("1", "1")
     val oppgave2 = OppgaveObjectMother.createOppgave("2", "2")
-    val innloggetBruker = createInnloggetBruker()
+    val innloggetBruker = InnloggetBrukerObjectMother.createInnloggetBruker()
 
     @Test
     fun `should return list of Brukernotifikasjoner when Events are received`() {
