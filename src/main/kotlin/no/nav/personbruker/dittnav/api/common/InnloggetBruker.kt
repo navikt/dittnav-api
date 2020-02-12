@@ -1,19 +1,19 @@
 package no.nav.personbruker.dittnav.api.common
 
-import no.nav.security.token.support.ktor.OIDCValidationContextPrincipal
+import no.nav.security.token.support.core.jwt.JwtToken
 
-class InnloggetBruker(val principal: OIDCValidationContextPrincipal?) {
+class InnloggetBruker(val token: JwtToken) {
 
     fun getBearerToken(): String {
-        return "Bearer " + getTokenAsString()
+        return "Bearer " + token.tokenAsString
     }
 
-    fun getTokenAsString(): String {
-        val token = principal?.context?.firstValidToken?.get()?.tokenAsString
-        if (token == null) {
-            throw Exception("Det ble ikke funnet noe token. Dette skal ikke kunne skje..")
-        } else {
-            return token
+    fun getIdentFromToken(): String {
+        val ident = token.jwtTokenClaims.getStringClaim("pid")
+        if (ident == null) {
+            return token.jwtTokenClaims.getStringClaim("sub")
         }
+        return ident
     }
+
 }
