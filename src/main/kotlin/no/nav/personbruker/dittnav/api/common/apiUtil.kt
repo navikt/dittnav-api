@@ -8,10 +8,11 @@ import no.nav.security.token.support.ktor.OIDCValidationContextPrincipal
 
 fun PipelineContext<Unit, ApplicationCall>.hentInnloggetBruker(): InnloggetBruker {
 
-    val innloggetBruker = InnloggetBruker(call.authentication.principal<OIDCValidationContextPrincipal>())
+    val token = call.authentication.principal<OIDCValidationContextPrincipal>()?.context?.firstValidToken
 
-    if (innloggetBruker.principal == null) {
+    if (token == null) {
         throw Exception("Det ble ikke funnet noe token. Dette skal ikke kunne skje.")
+    } else {
+        return InnloggetBruker(token.get())
     }
-    return innloggetBruker
 }

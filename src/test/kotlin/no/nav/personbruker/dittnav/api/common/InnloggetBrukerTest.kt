@@ -3,50 +3,46 @@ package no.nav.personbruker.dittnav.api.common
 import io.mockk.coEvery
 import kotlinx.coroutines.runBlocking
 import org.amshove.kluent.`should be equal to`
-import org.amshove.kluent.`should throw`
-import org.amshove.kluent.invoking
 import org.junit.jupiter.api.Test
 
 internal class InnloggetBrukerTest {
 
-    val tokenSupport = InnloggetBrukerObjectMother.createDummyTokenSupport()
-    val innloggetBruker = InnloggetBruker(tokenSupport)
-
-    @Test
-    fun `should return string with token`() {
-        val expectedToken = "dummyToken"
-
-        coEvery({ tokenSupport.context.firstValidToken.get().tokenAsString }) returns expectedToken
-
-        runBlocking {
-            val tokenAsString = innloggetBruker.getTokenAsString()
-            tokenAsString `should be equal to` expectedToken
-        }
-    }
+    val innloggetBruker = InnloggetBrukerObjectMother.createInnloggetBruker()
 
     @Test
     fun `should return string with Bearer token`() {
         val expectedToken = "Bearer dummyToken"
-        val dummyToken = "dummyToken"
-
-        coEvery({ tokenSupport.context.firstValidToken.get().tokenAsString }) returns dummyToken
 
         runBlocking {
-            val bearerToken = innloggetBruker.getBearerToken()
-            bearerToken `should be equal to` expectedToken
+            val actualToken = innloggetBruker.getBearerToken()
+            actualToken `should be equal to` expectedToken
         }
     }
 
     @Test
-    fun `should throw Exception if token is null`() {
+    fun `should return string with ident from pid token claim`() {
+        val expectedIdent = "dummyIdent"
+        val subClaimThatIsNotAnIdent ="dummyClaimThatIsNotAnIdent"
 
-        coEvery({ tokenSupport.context.firstValidToken.get().tokenAsString }) returns null
+        coEvery { innloggetBruker.token.jwtTokenClaims.getStringClaim("pid")} returns expectedIdent
+        coEvery { innloggetBruker.token.jwtTokenClaims.getStringClaim("sub")} returns subClaimThatIsNotAnIdent
 
-        invoking {
-            runBlocking {
-                innloggetBruker.getBearerToken()
-            }
+        runBlocking {
+            val actualIdent = innloggetBruker.getIdentFromToken()
+            actualIdent `should be equal to` expectedIdent
+        }
+    }
 
-        } `should throw` Exception::class
+    @Test
+    fun `should return string with ident from sub token claim`() {
+        val expectedIdent = "dummyIdent"
+
+        coEvery { innloggetBruker.token.jwtTokenClaims.getStringClaim("pid")} returns null
+        coEvery { innloggetBruker.token.jwtTokenClaims.getStringClaim("sub")} returns expectedIdent
+
+        runBlocking {
+            val acctualIdent = innloggetBruker.getIdentFromToken()
+            acctualIdent `should be equal to` expectedIdent
+        }
     }
 }
