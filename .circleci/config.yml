@@ -32,7 +32,6 @@ jobs:
       - docker-deploy:
           description: Docker build og push, uten latest
           command: |
-            echo HELLO
             echo $DOCKER_PASSWORD | docker login --username $DOCKER_LOGIN --password-stdin
             docker build -t "navikt/dittnav-api:$CIRCLE_SHA1" .
             docker push "navikt/dittnav-api:$CIRCLE_SHA1"
