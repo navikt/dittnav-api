@@ -35,7 +35,7 @@ internal class InnloggetBrukerTest {
 
     @Test
     fun `should return string with ident from sub token claim`() {
-        val expectedIdent = "dummyIdent"
+        val expectedIdent = "123"
 
         coEvery { innloggetBruker.token.jwtTokenClaims.getStringClaim("pid")} returns null
         coEvery { innloggetBruker.token.jwtTokenClaims.getStringClaim("sub")} returns expectedIdent
