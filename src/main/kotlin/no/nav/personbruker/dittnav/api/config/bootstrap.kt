@@ -15,6 +15,8 @@ import no.nav.personbruker.dittnav.api.beskjed.BeskjedConsumer
 import no.nav.personbruker.dittnav.api.beskjed.BeskjedService
 import no.nav.personbruker.dittnav.api.brukernotifikasjon.BrukernotifikasjonService
 import no.nav.personbruker.dittnav.api.brukernotifikasjon.brukernotifikasjoner
+import no.nav.personbruker.dittnav.api.done.DoneProducer
+import no.nav.personbruker.dittnav.api.done.doneApi
 import no.nav.personbruker.dittnav.api.health.healthApi
 import no.nav.personbruker.dittnav.api.health.authenticationCheck
 import no.nav.personbruker.dittnav.api.innboks.InnboksConsumer
@@ -42,6 +44,7 @@ fun Application.mainModule() {
     val beskjedService = BeskjedService(beskjedConsumer)
     val innboksService = InnboksService(innboksConsumer)
     val brukernotifikasjonService = BrukernotifikasjonService(oppgaveService, beskjedService, innboksService)
+    val doneProducer = DoneProducer(httpClient, environment.dittNAVEventsURL)
 
     install(DefaultHeaders)
 
@@ -68,6 +71,7 @@ fun Application.mainModule() {
             legacyApi(legacyConsumer)
             brukernotifikasjoner(brukernotifikasjonService)
             authenticationCheck()
+           doneApi(doneProducer)
         }
 
         configureShutdownHook(httpClient)

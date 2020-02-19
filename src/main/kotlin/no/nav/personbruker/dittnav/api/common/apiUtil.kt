@@ -16,3 +16,5 @@ fun PipelineContext<Unit, ApplicationCall>.hentInnloggetBruker(): InnloggetBruke
         return InnloggetBruker(token.get())
     }
 }
+
+val PipelineContext<Unit, ApplicationCall>.innloggetBruker: InnloggetBruker get() = hentInnloggetBruker()
