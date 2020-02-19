@@ -1,6 +1,7 @@
 package no.nav.personbruker.dittnav.api.innboks
 
 import io.ktor.client.HttpClient
+import no.nav.personbruker.dittnav.api.common.InnloggetBruker
 import no.nav.personbruker.dittnav.api.config.get
 import java.net.URL
 
@@ -10,7 +11,7 @@ class InnboksConsumer(
         private val completePathToEndpoint: URL = URL("$dittNAVEventsBaseURL/fetch/innboks")
 ) {
 
-    suspend fun getExternalEvents(token: String): List<Innboks> {
-        return client.get(completePathToEndpoint, token)
+    suspend fun getExternalEvents(innloggetBruker: InnloggetBruker): List<Innboks> {
+        return client.get(completePathToEndpoint, innloggetBruker)
     }
 }

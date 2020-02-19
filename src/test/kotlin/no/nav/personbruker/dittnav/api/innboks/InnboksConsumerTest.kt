@@ -10,10 +10,8 @@ import io.ktor.http.ContentType
 import io.ktor.http.HttpHeaders
 import io.ktor.http.HttpStatusCode
 import io.ktor.http.headersOf
-import io.mockk.every
-import io.mockk.mockk
 import kotlinx.coroutines.runBlocking
-import no.nav.personbruker.dittnav.api.config.HttpClientBuilder
+import no.nav.personbruker.dittnav.api.common.InnloggetBrukerObjectMother
 import no.nav.personbruker.dittnav.api.config.buildJsonSerializer
 import no.nav.personbruker.dittnav.api.config.enableDittNavJsonConfig
 import org.amshove.kluent.`should be equal to`
@@ -22,6 +20,8 @@ import org.junit.jupiter.api.Test
 import java.net.URL
 
 class InnboksConsumerTest {
+
+    val innloggetBruker = InnloggetBrukerObjectMother.createInnloggetBruker()
 
     @Test
     fun `should call innboks endpoint on event handler`() {
@@ -42,7 +42,7 @@ class InnboksConsumerTest {
         val innboksConsumer = InnboksConsumer(client, URL("http://event-handler"))
 
         runBlocking {
-            innboksConsumer.getExternalEvents("1234") `should equal` emptyList()
+            innboksConsumer.getExternalEvents(innloggetBruker) `should equal` emptyList()
         }
 
     }
@@ -73,9 +73,9 @@ class InnboksConsumerTest {
         val innboksConsumer = InnboksConsumer(client, URL("http://event-handler"))
 
         runBlocking {
-            innboksConsumer.getExternalEvents("1234").size `should be equal to` 2
-            innboksConsumer.getExternalEvents("1234")[0].tekst `should be equal to` innboksObject1.tekst
-            innboksConsumer.getExternalEvents("1234")[0].fodselsnummer `should be equal to` innboksObject1.fodselsnummer
+            innboksConsumer.getExternalEvents(innloggetBruker).size `should be equal to` 2
+            innboksConsumer.getExternalEvents(innloggetBruker)[0].tekst `should be equal to` innboksObject1.tekst
+            innboksConsumer.getExternalEvents(innloggetBruker)[0].fodselsnummer `should be equal to` innboksObject1.fodselsnummer
         }
     }
 }
