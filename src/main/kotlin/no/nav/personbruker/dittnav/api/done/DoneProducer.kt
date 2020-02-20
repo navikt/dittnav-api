@@ -39,7 +39,7 @@ class DoneProducer(private val httpClient: HttpClient, private val dittNAVBaseUR
             url(url)
             method = HttpMethod.Post
             header(HttpHeaders.Authorization, innloggetBruker.getBearerToken())
-            val json = mapOf<String, String>("eventId" to done.eventId)
+            val json = mapOf<String, String>("uid" to done.uid, "eventId" to done.eventId)
             body = TextContent(JSONObject.toJSONString(json), contentType = ContentType.Application.Json)
         }
     }

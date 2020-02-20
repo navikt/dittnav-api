@@ -7,6 +7,7 @@ object BeskjedObjectMother {
 
     fun createBeskjed(eventId: String, fodselsnummer: String): Beskjed {
         return Beskjed(
+                uid = 1,
                 produsent = "DittNav",
                 eventTidspunkt = ZonedDateTime.now(ZoneId.of("Europe/Oslo")),
                 fodselsnummer = fodselsnummer,

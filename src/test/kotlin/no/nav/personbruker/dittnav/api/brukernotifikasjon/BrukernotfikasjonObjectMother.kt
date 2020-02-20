@@ -7,6 +7,7 @@ object BrukernotfikasjonObjectMother {
 
     fun createBeskjedsBrukernotifikasjon(eventId: String): Brukernotifikasjon {
         return Brukernotifikasjon(
+                uid = 1,
                 produsent = "DittNav",
                 eventTidspunkt = ZonedDateTime.now(ZoneId.of("Europe/Oslo")),
                 eventId = eventId,
@@ -19,6 +20,7 @@ object BrukernotfikasjonObjectMother {
 
     fun createOppgaveBrukernotifikasjon(eventId: String): Brukernotifikasjon {
         return Brukernotifikasjon(
+                uid = 0,
                 produsent = "DittNav",
                 eventTidspunkt = ZonedDateTime.now(ZoneId.of("Europe/Oslo")),
                 eventId = eventId,
@@ -31,6 +33,7 @@ object BrukernotfikasjonObjectMother {
 
     fun createInnboksBrukernotifikasjon(eventId: String): Brukernotifikasjon {
         return Brukernotifikasjon(
+                uid = 0,
                 produsent = "DittNav",
                 eventTidspunkt = ZonedDateTime.now(ZoneId.of("Europe/Oslo")),
                 eventId = eventId,
