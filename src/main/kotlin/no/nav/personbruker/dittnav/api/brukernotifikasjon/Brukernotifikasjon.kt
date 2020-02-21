@@ -1,10 +1,10 @@
 package no.nav.personbruker.dittnav.api.brukernotifikasjon
 
+import com.fasterxml.jackson.annotation.JsonInclude
 import java.time.ZonedDateTime
 
 data class Brukernotifikasjon(
-        val uid: Int?,
-        val produsent: String,
+        @JsonInclude(JsonInclude.Include.NON_NULL) val uid: String?,
         val eventTidspunkt: ZonedDateTime,
         val eventId: String,
         val tekst: String,

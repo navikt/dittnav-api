@@ -9,7 +9,6 @@ fun toBrukernotifikasjon(inbound: Beskjed): Brukernotifikasjon {
                     uid = it.uid,
                     eventId = it.eventId,
                     type = BrukernotifikasjonType.BESKJED,
-                    produsent = it.produsent,
                     eventTidspunkt = it.eventTidspunkt,
                     link = it.link,
                     sistOppdatert = it.sistOppdatert,

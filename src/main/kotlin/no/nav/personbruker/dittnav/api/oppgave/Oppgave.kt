@@ -3,7 +3,6 @@ package no.nav.personbruker.dittnav.api.oppgave
 import java.time.ZonedDateTime
 
 data class Oppgave(
-        val produsent: String,
         val eventTidspunkt: ZonedDateTime,
         val fodselsnummer: String,
         val eventId: String,

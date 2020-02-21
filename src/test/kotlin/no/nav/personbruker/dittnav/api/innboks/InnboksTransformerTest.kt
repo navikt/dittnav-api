@@ -13,7 +13,6 @@ class InnboksTransformerTest {
         val brukernotifikasjonList = listOf(innboks1, innboks2).map { toBrukernotifikasjon(it) }
         val brukernotifikasjon = brukernotifikasjonList.first()
 
-        brukernotifikasjon.produsent `should be equal to` innboks1.produsent
         brukernotifikasjon.eventTidspunkt `should be` innboks1.eventTidspunkt
         brukernotifikasjon.eventId `should be equal to` innboks1.eventId
         brukernotifikasjon.tekst `should be equal to` innboks1.tekst

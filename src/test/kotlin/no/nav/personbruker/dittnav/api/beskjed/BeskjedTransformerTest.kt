@@ -9,12 +9,11 @@ class BeskjedTransformerTest {
 
     @Test
     fun `should transform from Beskjed to Brukernotifikasjon`() {
-        val beskjed1 = BeskjedObjectMother.createBeskjed("1", "1")
-        val beskjed2 = BeskjedObjectMother.createBeskjed("2", "2")
+        val beskjed1 = BeskjedObjectMother.createBeskjed("1", "1", "1")
+        val beskjed2 = BeskjedObjectMother.createBeskjed("2", "2","2")
         val brukernotifikasjonList = listOf(beskjed1, beskjed2).map { toBrukernotifikasjon(it) }
         val brukernotifikasjon = brukernotifikasjonList.first()
 
-        brukernotifikasjon.produsent `should be equal to` beskjed1.produsent
         brukernotifikasjon.eventTidspunkt `should be` beskjed1.eventTidspunkt
         brukernotifikasjon.eventId `should be equal to` beskjed1.eventId
         brukernotifikasjon.tekst `should be equal to` beskjed1.tekst

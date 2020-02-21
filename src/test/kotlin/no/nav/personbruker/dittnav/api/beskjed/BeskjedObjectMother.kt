@@ -1,14 +1,13 @@
 package no.nav.personbruker.dittnav.api.beskjed
 
-import java.time.ZonedDateTime
 import java.time.ZoneId
+import java.time.ZonedDateTime
 
 object BeskjedObjectMother {
 
-    fun createBeskjed(eventId: String, fodselsnummer: String): Beskjed {
+    fun createBeskjed(eventId: String, fodselsnummer: String, uid: String): Beskjed {
         return Beskjed(
-                uid = 1,
-                produsent = "DittNav",
+                uid = uid,
                 eventTidspunkt = ZonedDateTime.now(ZoneId.of("Europe/Oslo")),
                 fodselsnummer = fodselsnummer,
                 eventId = eventId,

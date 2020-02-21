@@ -17,8 +17,8 @@ class BrukernotifikasjonServiceTest {
 
     val brukernotifikasjonService = BrukernotifikasjonService(oppgaveService, beskjedService, innboksService);
 
-    val beskjed1 = BrukernotfikasjonObjectMother.createBeskjedsBrukernotifikasjon("1")
-    val beskjed2 = BrukernotfikasjonObjectMother.createBeskjedsBrukernotifikasjon("2")
+    val beskjed1 = BrukernotfikasjonObjectMother.createBeskjedsBrukernotifikasjon("1", "1")
+    val beskjed2 = BrukernotfikasjonObjectMother.createBeskjedsBrukernotifikasjon("2", "2")
     val oppgave1 = BrukernotfikasjonObjectMother.createOppgaveBrukernotifikasjon("3")
     val innboks1 = BrukernotfikasjonObjectMother.createInnboksBrukernotifikasjon("4")
 
