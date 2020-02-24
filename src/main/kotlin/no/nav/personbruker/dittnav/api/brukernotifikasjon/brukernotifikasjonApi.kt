@@ -4,11 +4,11 @@ import io.ktor.application.call
 import io.ktor.response.respond
 import io.ktor.routing.Route
 import io.ktor.routing.get
-import no.nav.personbruker.dittnav.api.common.hentInnloggetBruker
+import no.nav.personbruker.dittnav.api.common.innloggetBruker
 
 fun Route.brukernotifikasjoner(brukernotifikasjonService: BrukernotifikasjonService) {
 
     get("/brukernotifikasjoner") {
-        call.respond(brukernotifikasjonService.getBrukernotifikasjoner(hentInnloggetBruker()))
+        call.respond(brukernotifikasjonService.getBrukernotifikasjoner(innloggetBruker))
     }
 }

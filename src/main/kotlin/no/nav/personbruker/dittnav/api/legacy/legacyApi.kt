@@ -7,7 +7,7 @@ import io.ktor.response.respond
 import io.ktor.routing.Route
 import io.ktor.routing.get
 import io.ktor.util.pipeline.PipelineContext
-import no.nav.personbruker.dittnav.api.common.hentInnloggetBruker
+import no.nav.personbruker.dittnav.api.common.innloggetBruker
 
 fun Route.legacyApi(legacyConsumer: LegacyConsumer) {
 
@@ -50,6 +50,6 @@ fun Route.legacyApi(legacyConsumer: LegacyConsumer) {
 }
 
 private suspend fun PipelineContext<Unit, ApplicationCall>.hentRaattFraLegacyApiOgReturnerResponsen(consumer: LegacyConsumer, path: String) {
-    val response = consumer.getLegacyContent(path, hentInnloggetBruker())
+    val response = consumer.getLegacyContent(path, innloggetBruker)
     call.respond(response.status, response.readBytes())
 }
