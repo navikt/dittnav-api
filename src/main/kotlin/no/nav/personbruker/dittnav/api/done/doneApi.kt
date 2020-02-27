@@ -13,14 +13,14 @@ import no.nav.personbruker.dittnav.api.common.innloggetBruker
 
 fun Route.doneApi(doneProducer: DoneProducer) {
 
-    post("/api/produce/done") {
+    post("/produce/done") {
         respondForParameterType<DoneDto> { doneDto ->
             val response = doneProducer.postDoneEvents(doneDto, innloggetBruker)
 
             if (response.status == HttpStatusCode.OK) {
-                "Done-event er sendt til handler for identen: ${innloggetBruker.getIdentFromToken()} sitt event med eventID: ${doneDto.eventId}."
+                "Done-event er sendt til handler. EventID: ${doneDto.eventId}. Uid: ${doneDto.uid}"
             } else {
-                "Error mot /handler/produce/done: ${response.status.value} ${response.status.description}"
+                "Error mot /produce/done: ${response.status.value} ${response.status.description}"
             }
         }
     }

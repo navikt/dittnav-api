@@ -20,7 +20,7 @@ import java.net.URL
 class DoneProducer(private val httpClient: HttpClient, dittNAVBaseURL: URL) {
 
     private val log = LoggerFactory.getLogger(DoneProducer::class.java)
-    private val completePathToEndpoint = URL("$dittNAVBaseURL/handler/produce/done")
+    private val completePathToEndpoint = URL("$dittNAVBaseURL/produce/done")
 
     suspend fun postDoneEvents(done: DoneDto, innloggetBruker: InnloggetBruker): HttpResponse {
         val response: HttpResponse = post(completePathToEndpoint, done, innloggetBruker)
