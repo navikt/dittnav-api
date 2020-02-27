@@ -14,7 +14,7 @@ import no.nav.personbruker.dittnav.api.common.innloggetBruker
 fun Route.doneApi(doneProducer: DoneProducer) {
 
     post("/api/produce/done") {
-        respondForParameterType<DoneDTO> { doneDto ->
+        respondForParameterType<DoneDto> { doneDto ->
             val response = doneProducer.postDoneEvents(doneDto, innloggetBruker)
 
             if (response.status == HttpStatusCode.OK) {

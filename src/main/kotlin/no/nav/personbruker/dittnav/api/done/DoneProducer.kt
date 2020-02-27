@@ -13,34 +13,30 @@ import io.ktor.http.HttpStatusCode
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import no.nav.personbruker.dittnav.api.common.InnloggetBruker
-import org.json.simple.JSONObject
 import org.slf4j.LoggerFactory
 import java.net.URL
 
 
-class DoneProducer(private val httpClient: HttpClient, private val dittNAVBaseURL: URL) {
+class DoneProducer(private val httpClient: HttpClient, dittNAVBaseURL: URL) {
 
     private val log = LoggerFactory.getLogger(DoneProducer::class.java)
-    private val handlerPath = "/handler/produce/done"
+    private val completePathToEndpoint = URL("$dittNAVBaseURL/handler/produce/done")
 
-    suspend fun postDoneEvents(doneDTO: DoneDTO, innloggetBruker: InnloggetBruker): HttpResponse {
-        val endpoint = URL("$dittNAVBaseURL$handlerPath")
-        log.info("Sender POST fra: $endpoint")
-        val response: HttpResponse = post(endpoint, innloggetBruker, doneDTO)
+    suspend fun postDoneEvents(done: DoneDto, innloggetBruker: InnloggetBruker): HttpResponse {
+        val response: HttpResponse = post(completePathToEndpoint, done, innloggetBruker)
 
         if (response.status != HttpStatusCode.OK) {
-            log.warn("Error mot $dittNAVBaseURL$handlerPath: ${response.status.value} ${response.status.description}")
+            log.error("Error mot $completePathToEndpoint: ${response.status.value} ${response.status.description}")
         }
         return response
     }
 
-    private suspend inline fun <reified T> post(url: URL, innloggetBruker: InnloggetBruker, done: DoneDTO): T = withContext(Dispatchers.IO) {
+    private suspend inline fun <reified T> post(url: URL, done: DoneDto, innloggetBruker: InnloggetBruker): T = withContext(Dispatchers.IO) {
         httpClient.post<T>() {
             url(url)
             method = HttpMethod.Post
             header(HttpHeaders.Authorization, innloggetBruker.getBearerToken())
-            val json = mapOf<String, String>("uid" to done.uid, "eventId" to done.eventId)
-            body = TextContent(JSONObject.toJSONString(json), contentType = ContentType.Application.Json)
+            body = TextContent(done.toJsonString(), contentType = ContentType.Application.Json)
         }
     }
 }
