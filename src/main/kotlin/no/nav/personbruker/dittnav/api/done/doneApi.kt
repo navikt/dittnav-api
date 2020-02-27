@@ -2,10 +2,9 @@ package no.nav.personbruker.dittnav.api.done
 
 import io.ktor.application.ApplicationCall
 import io.ktor.application.call
-import io.ktor.http.ContentType
-import io.ktor.http.HttpStatusCode
+import io.ktor.client.statement.HttpResponse
 import io.ktor.request.receive
-import io.ktor.response.respondText
+import io.ktor.response.respond
 import io.ktor.routing.Route
 import io.ktor.routing.post
 import io.ktor.util.pipeline.PipelineContext
@@ -16,21 +15,13 @@ fun Route.doneApi(doneProducer: DoneProducer) {
     post("/produce/done") {
         respondForParameterType<DoneDto> { doneDto ->
             val response = doneProducer.postDoneEvents(doneDto, innloggetBruker)
-
-            if (response.status == HttpStatusCode.OK) {
-                "Done-event er sendt til handler. EventID: ${doneDto.eventId}. Uid: ${doneDto.uid}"
-            } else {
-                "Error mot /produce/done: ${response.status.value} ${response.status.description}"
-            }
+            response
         }
     }
 }
 
-suspend inline fun <reified T : Any> PipelineContext<Unit, ApplicationCall>.respondForParameterType(handler: (T) -> String) {
+suspend inline fun <reified T : Any> PipelineContext<Unit, ApplicationCall>.respondForParameterType(handler: (T) -> HttpResponse) {
     val postParametersDto: T = call.receive()
-    val message = handler.invoke(postParametersDto)
-    call.respondText(text = message, contentType = ContentType.Text.Plain)
+    val httpResponse = handler.invoke(postParametersDto)
+    call.respond(httpResponse.status)
 }
-
-
-
