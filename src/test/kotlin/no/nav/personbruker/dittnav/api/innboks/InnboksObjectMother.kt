@@ -5,7 +5,6 @@ import java.time.ZonedDateTime
 
 fun createInnboks(eventId: String, fodselsnummer: String): Innboks {
     return Innboks(
-            produsent = "DittNav",
             eventTidspunkt = ZonedDateTime.now(ZoneId.of("Europe/Oslo")),
             fodselsnummer = fodselsnummer,
             eventId = eventId,

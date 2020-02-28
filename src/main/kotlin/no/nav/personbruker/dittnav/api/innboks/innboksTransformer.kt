@@ -8,7 +8,6 @@ fun toBrukernotifikasjon(innboks: Innboks): Brukernotifikasjon =
             Brukernotifikasjon(
                     eventId = it.eventId,
                     type = BrukernotifikasjonType.INNBOKS,
-                    produsent = it.produsent,
                     eventTidspunkt = it.eventTidspunkt,
                     link = it.link,
                     sistOppdatert = it.sistOppdatert,

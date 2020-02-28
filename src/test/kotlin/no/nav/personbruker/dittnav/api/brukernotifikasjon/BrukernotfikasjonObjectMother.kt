@@ -5,9 +5,9 @@ import java.time.ZonedDateTime
 
 object BrukernotfikasjonObjectMother {
 
-    fun createBeskjedsBrukernotifikasjon(eventId: String): Brukernotifikasjon {
+    fun createBeskjedsBrukernotifikasjon(eventId: String, uid: String): Brukernotifikasjon {
         return Brukernotifikasjon(
-                produsent = "DittNav",
+                uid = uid,
                 eventTidspunkt = ZonedDateTime.now(ZoneId.of("Europe/Oslo")),
                 eventId = eventId,
                 tekst = "Dette er beskjed til brukeren",
@@ -19,7 +19,6 @@ object BrukernotfikasjonObjectMother {
 
     fun createOppgaveBrukernotifikasjon(eventId: String): Brukernotifikasjon {
         return Brukernotifikasjon(
-                produsent = "DittNav",
                 eventTidspunkt = ZonedDateTime.now(ZoneId.of("Europe/Oslo")),
                 eventId = eventId,
                 tekst = "Dette er beskjed til brukeren",
@@ -31,7 +30,6 @@ object BrukernotfikasjonObjectMother {
 
     fun createInnboksBrukernotifikasjon(eventId: String): Brukernotifikasjon {
         return Brukernotifikasjon(
-                produsent = "DittNav",
                 eventTidspunkt = ZonedDateTime.now(ZoneId.of("Europe/Oslo")),
                 eventId = eventId,
                 tekst = "Dette er beskjed til brukeren",

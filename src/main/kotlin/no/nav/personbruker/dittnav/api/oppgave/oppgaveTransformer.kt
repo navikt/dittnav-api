@@ -8,7 +8,6 @@ fun toBrukernotifikasjon(inbound: Oppgave): Brukernotifikasjon {
                 Brukernotifikasjon(
                         eventId = it.eventId,
                         type = BrukernotifikasjonType.OPPGAVE,
-                        produsent = it.produsent,
                         eventTidspunkt = it.eventTidspunkt,
                         link = it.link,
                         sistOppdatert = it.sistOppdatert,

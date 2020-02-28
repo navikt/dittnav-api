@@ -7,6 +7,7 @@ import io.ktor.client.HttpClient
 import io.ktor.features.CORS
 import io.ktor.features.ContentNegotiation
 import io.ktor.features.DefaultHeaders
+import io.ktor.http.HttpHeaders
 import io.ktor.jackson.jackson
 import io.ktor.routing.routing
 import io.ktor.util.KtorExperimentalAPI
@@ -15,6 +16,8 @@ import no.nav.personbruker.dittnav.api.beskjed.BeskjedConsumer
 import no.nav.personbruker.dittnav.api.beskjed.BeskjedService
 import no.nav.personbruker.dittnav.api.brukernotifikasjon.BrukernotifikasjonService
 import no.nav.personbruker.dittnav.api.brukernotifikasjon.brukernotifikasjoner
+import no.nav.personbruker.dittnav.api.done.DoneProducer
+import no.nav.personbruker.dittnav.api.done.doneApi
 import no.nav.personbruker.dittnav.api.health.healthApi
 import no.nav.personbruker.dittnav.api.health.authenticationCheck
 import no.nav.personbruker.dittnav.api.innboks.InnboksConsumer
@@ -42,12 +45,14 @@ fun Application.mainModule() {
     val beskjedService = BeskjedService(beskjedConsumer)
     val innboksService = InnboksService(innboksConsumer)
     val brukernotifikasjonService = BrukernotifikasjonService(oppgaveService, beskjedService, innboksService)
+    val doneProducer = DoneProducer(httpClient, environment.dittNAVEventsURL)
 
     install(DefaultHeaders)
 
     install(CORS) {
-        host(environment.corsAllowedOrigins)
+        host(environment.corsAllowedOrigins, schemes = listOf("https"))
         allowCredentials = true
+        header(HttpHeaders.ContentType)
     }
 
     val config = this.environment.config
@@ -68,6 +73,7 @@ fun Application.mainModule() {
             legacyApi(legacyConsumer)
             brukernotifikasjoner(brukernotifikasjonService)
             authenticationCheck()
+           doneApi(doneProducer)
         }
 
         configureShutdownHook(httpClient)
