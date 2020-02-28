@@ -22,7 +22,7 @@ class DoneProducer(private val httpClient: HttpClient, dittNAVBaseURL: URL) {
         val response: HttpResponse = post(completePathToEndpoint, done, innloggetBruker)
 
         if (response.status != HttpStatusCode.OK) {
-            log.error("Feil mot $completePathToEndpoint: ${response.status.value} ${response.status.description}")
+            log.warn("Feil mot $completePathToEndpoint: ${response.status.value} ${response.status.description}")
         }
         return response
     }
