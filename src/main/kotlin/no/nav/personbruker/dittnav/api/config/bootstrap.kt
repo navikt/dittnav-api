@@ -7,6 +7,7 @@ import io.ktor.client.HttpClient
 import io.ktor.features.CORS
 import io.ktor.features.ContentNegotiation
 import io.ktor.features.DefaultHeaders
+import io.ktor.http.HttpHeaders
 import io.ktor.jackson.jackson
 import io.ktor.routing.routing
 import io.ktor.util.KtorExperimentalAPI
@@ -49,8 +50,9 @@ fun Application.mainModule() {
     install(DefaultHeaders)
 
     install(CORS) {
-        host(environment.corsAllowedOrigins)
+        host(environment.corsAllowedOrigins, schemes = listOf("https"))
         allowCredentials = true
+        header(HttpHeaders.ContentType)
     }
 
     val config = this.environment.config
