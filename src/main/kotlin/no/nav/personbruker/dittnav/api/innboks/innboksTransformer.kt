@@ -6,7 +6,6 @@ import no.nav.personbruker.dittnav.api.brukernotifikasjon.BrukernotifikasjonType
 fun toBrukernotifikasjon(innboks: Innboks): Brukernotifikasjon =
         innboks.let {
             Brukernotifikasjon(
-                    uid = null,
                     eventId = it.eventId,
                     type = BrukernotifikasjonType.INNBOKS,
                     eventTidspunkt = it.eventTidspunkt,

@@ -11,4 +11,21 @@ data class Brukernotifikasjon(
         val link: String,
         val sistOppdatert: ZonedDateTime,
         val type: BrukernotifikasjonType
-)
+) {
+    constructor(
+            eventTidspunkt: ZonedDateTime,
+            eventId: String,
+            tekst: String,
+            link: String,
+            sistOppdatert: ZonedDateTime,
+            type: BrukernotifikasjonType
+    ) : this(
+            null,
+            eventTidspunkt,
+            eventId,
+            tekst,
+            link,
+            sistOppdatert,
+            type
+    )
+}

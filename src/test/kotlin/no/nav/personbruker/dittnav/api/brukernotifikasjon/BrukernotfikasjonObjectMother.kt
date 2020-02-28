@@ -19,7 +19,6 @@ object BrukernotfikasjonObjectMother {
 
     fun createOppgaveBrukernotifikasjon(eventId: String): Brukernotifikasjon {
         return Brukernotifikasjon(
-                uid = null,
                 eventTidspunkt = ZonedDateTime.now(ZoneId.of("Europe/Oslo")),
                 eventId = eventId,
                 tekst = "Dette er beskjed til brukeren",
@@ -31,7 +30,6 @@ object BrukernotfikasjonObjectMother {
 
     fun createInnboksBrukernotifikasjon(eventId: String): Brukernotifikasjon {
         return Brukernotifikasjon(
-                uid = null,
                 eventTidspunkt = ZonedDateTime.now(ZoneId.of("Europe/Oslo")),
                 eventId = eventId,
                 tekst = "Dette er beskjed til brukeren",
