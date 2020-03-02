@@ -1,7 +1,7 @@
 package no.nav.personbruker.dittnav.api.oppgave
 
-import java.time.ZoneId
 import java.time.ZonedDateTime
+import java.time.ZoneId
 
 object OppgaveObjectMother {
 
@@ -15,8 +15,7 @@ object OppgaveObjectMother {
                 link = "https://nav.no/systemX/",
                 sikkerhetsnivaa = 4,
                 sistOppdatert = ZonedDateTime.now(ZoneId.of("Europe/Oslo")),
-                aktiv = true,
-                produsent = "enSystembruker"
+                aktiv = true
         )
     }
 }

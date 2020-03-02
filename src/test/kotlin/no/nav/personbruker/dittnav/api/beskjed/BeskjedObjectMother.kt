@@ -16,8 +16,7 @@ object BeskjedObjectMother {
                 link = "https://nav.no/systemX/",
                 sikkerhetsnivaa = 4,
                 sistOppdatert = ZonedDateTime.now(ZoneId.of("Europe/Oslo")),
-                aktiv = true,
-                produsent = "enSystembruker"
+                aktiv = true
         )
     }
 }
