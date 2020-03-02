@@ -11,5 +11,6 @@ data class Innboks(
         val link: String,
         val sikkerhetsnivaa: Int,
         val sistOppdatert: ZonedDateTime,
-        val aktiv: Boolean
+        val aktiv: Boolean,
+        val produsent: String
 )

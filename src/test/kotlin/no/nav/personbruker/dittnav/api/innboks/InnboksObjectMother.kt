@@ -13,6 +13,7 @@ fun createInnboks(eventId: String, fodselsnummer: String): Innboks {
             link = "https://nav.no/systemX/",
             sikkerhetsnivaa = 4,
             sistOppdatert = ZonedDateTime.now(ZoneId.of("Europe/Oslo")),
-            aktiv = true
+            aktiv = true,
+            produsent = "enSystembruker"
     )
 }
