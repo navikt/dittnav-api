@@ -7,8 +7,8 @@ import java.net.URL
 
 class BeskjedConsumer(
         private val client: HttpClient,
-        private val dittNAVEventsBaseURL: URL,
-        private val completePathToEndpoint: URL = URL("$dittNAVEventsBaseURL/fetch/beskjed")
+        private val eventHandlerBaseURL: URL,
+        private val completePathToEndpoint: URL = URL("$eventHandlerBaseURL/fetch/beskjed")
 ) {
 
     suspend fun getExternalEvents(innloggetBruker: InnloggetBruker): List<Beskjed> {

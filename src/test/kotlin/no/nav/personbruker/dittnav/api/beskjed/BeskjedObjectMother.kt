@@ -1,16 +1,16 @@
-package no.nav.personbruker.dittnav.api.oppgave
+package no.nav.personbruker.dittnav.api.beskjed
 
 import java.time.ZonedDateTime
 import java.time.ZoneId
 
-fun createOppgave(eventId: String, fodselsnummer: String): Oppgave {
-    return Oppgave(
+fun createBeskjed(eventId: String, fodselsnummer: String): Beskjed {
+    return Beskjed(
             produsent = "DittNav",
             eventTidspunkt = ZonedDateTime.now(ZoneId.of("Europe/Oslo")),
             fodselsnummer = fodselsnummer,
             eventId = eventId,
             grupperingsId = "Dok123",
-            tekst = "Dette er en oppgave til brukeren",
+            tekst = "Dette er beskjed til brukeren",
             link = "https://nav.no/systemX/",
             sikkerhetsnivaa = 4,
             sistOppdatert = ZonedDateTime.now(ZoneId.of("Europe/Oslo")),
@@ -18,8 +18,8 @@ fun createOppgave(eventId: String, fodselsnummer: String): Oppgave {
     )
 }
 
-fun createOppgaveDTO(eventId: String): OppgaveDTO {
-    return OppgaveDTO(
+fun createBeskjedDTO(eventId: String): BeskjedDTO {
+    return BeskjedDTO(
             produsent = "DittNav",
             eventTidspunkt = ZonedDateTime.now(ZoneId.of("Europe/Oslo")),
             eventId = eventId,

@@ -7,8 +7,8 @@ import java.net.URL
 
 class InnboksConsumer(
         private val client: HttpClient,
-        private val dittNAVEventsBaseURL: URL,
-        private val completePathToEndpoint: URL = URL("$dittNAVEventsBaseURL/fetch/innboks")
+        private val eventHandlerBaseURL: URL,
+        private val completePathToEndpoint: URL = URL("$eventHandlerBaseURL/fetch/innboks")
 ) {
 
     suspend fun getExternalEvents(innloggetBruker: InnloggetBruker): List<Innboks> {

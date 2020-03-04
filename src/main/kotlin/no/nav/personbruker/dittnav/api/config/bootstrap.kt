@@ -13,8 +13,9 @@ import io.ktor.util.KtorExperimentalAPI
 import io.prometheus.client.hotspot.DefaultExports
 import no.nav.personbruker.dittnav.api.beskjed.BeskjedConsumer
 import no.nav.personbruker.dittnav.api.beskjed.BeskjedService
-import no.nav.personbruker.dittnav.api.brukernotifikasjon.BrukernotifikasjonService
-import no.nav.personbruker.dittnav.api.brukernotifikasjon.brukernotifikasjoner
+import no.nav.personbruker.dittnav.api.oppgave.oppgave
+import no.nav.personbruker.dittnav.api.beskjed.beskjed
+import no.nav.personbruker.dittnav.api.innboks.innboks
 import no.nav.personbruker.dittnav.api.health.healthApi
 import no.nav.personbruker.dittnav.api.health.authenticationCheck
 import no.nav.personbruker.dittnav.api.innboks.InnboksConsumer
@@ -33,15 +34,14 @@ fun Application.mainModule() {
 
     val httpClient = HttpClientBuilder.build()
 
-    val legacyConsumer = LegacyConsumer(httpClient, environment.dittNAVLegacyURL)
-    val oppgaveConsumer = OppgaveConsumer(httpClient, environment.dittNAVEventsURL)
-    val beskjedConsumer = BeskjedConsumer(httpClient, environment.dittNAVEventsURL)
-    val innboksConsumer = InnboksConsumer(httpClient, environment.dittNAVEventsURL)
+    val legacyConsumer = LegacyConsumer(httpClient, environment.legacyApiURL)
+    val oppgaveConsumer = OppgaveConsumer(httpClient, environment.eventHandlerURL)
+    val beskjedConsumer = BeskjedConsumer(httpClient, environment.eventHandlerURL)
+    val innboksConsumer = InnboksConsumer(httpClient, environment.eventHandlerURL)
 
     val oppgaveService = OppgaveService(oppgaveConsumer)
     val beskjedService = BeskjedService(beskjedConsumer)
     val innboksService = InnboksService(innboksConsumer)
-    val brukernotifikasjonService = BrukernotifikasjonService(oppgaveService, beskjedService, innboksService)
 
     install(DefaultHeaders)
 
@@ -66,7 +66,9 @@ fun Application.mainModule() {
         healthApi(environment)
         authenticate {
             legacyApi(legacyConsumer)
-            brukernotifikasjoner(brukernotifikasjonService)
+            oppgave(oppgaveService)
+            beskjed(beskjedService)
+            innboks(innboksService)
             authenticationCheck()
         }
 

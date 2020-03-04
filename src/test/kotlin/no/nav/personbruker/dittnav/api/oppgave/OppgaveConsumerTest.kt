@@ -52,8 +52,8 @@ class OppgaveConsumerTest {
     @Test
     fun `should get list of Oppgave`() {
 
-        val oppgaveObject1 = OppgaveObjectMother.createOppgave("1", "1")
-        val oppgaveObject2 = OppgaveObjectMother.createOppgave("2", "2")
+        val oppgaveObject1 = createOppgave("1", "1")
+        val oppgaveObject2 = createOppgave("2", "2")
         val objectMapper = ObjectMapper().apply {
             enableDittNavJsonConfig()
         }
@@ -81,5 +81,4 @@ class OppgaveConsumerTest {
         }
 
     }
-
 }

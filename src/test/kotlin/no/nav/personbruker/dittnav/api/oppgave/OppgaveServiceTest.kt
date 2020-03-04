@@ -7,13 +7,12 @@ import no.nav.personbruker.dittnav.api.common.InnloggetBrukerObjectMother
 import org.amshove.kluent.`should be equal to`
 import org.junit.jupiter.api.Test
 
-
 class OppgaveServiceTest {
 
     val oppgaveConsumer = mockk<OppgaveConsumer>()
     val oppgaveService = OppgaveService(oppgaveConsumer)
-    val oppgave1 = OppgaveObjectMother.createOppgave("1", "1")
-    val oppgave2 = OppgaveObjectMother.createOppgave("2", "2")
+    val oppgave1 = createOppgave("1", "1")
+    val oppgave2 = createOppgave("2", "2")
     val innloggetBruker = InnloggetBrukerObjectMother.createInnloggetBruker()
 
     @Test

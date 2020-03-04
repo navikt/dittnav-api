@@ -17,3 +17,14 @@ fun createInnboks(eventId: String, fodselsnummer: String): Innboks {
             aktiv = true
     )
 }
+
+fun createInnboksDTO(eventId: String): InnboksDTO {
+    return InnboksDTO(
+            produsent = "DittNav",
+            eventTidspunkt = ZonedDateTime.now(ZoneId.of("Europe/Oslo")),
+            eventId = eventId,
+            tekst = "Dette er beskjed til brukeren",
+            link = "https://nav.no/systemX/",
+            sistOppdatert = ZonedDateTime.now(ZoneId.of("Europe/Oslo"))
+    )
+}

@@ -14,8 +14,8 @@ class BeskjedServiceTest {
 
     val beskjedConsumer = mockk<BeskjedConsumer>()
     val beskjedService = BeskjedService(beskjedConsumer)
-    val beskjed1 = BeskjedObjectMother.createBeskjed("1", "1")
-    val beskjed2 = BeskjedObjectMother.createBeskjed("2", "2")
+    val beskjed1 = createBeskjed("1", "1")
+    val beskjed2 = createBeskjed("2", "2")
 
     @Test
     fun `should return list of Brukernotifikasjoner when Events are received`() {
