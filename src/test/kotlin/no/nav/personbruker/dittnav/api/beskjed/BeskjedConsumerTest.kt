@@ -48,7 +48,7 @@ class BeskjedConsumerTest {
 
     @Test
     fun `should get list of Beskjed`() {
-        val beskjedObject = createBeskjed("1", "1")
+        val beskjedObject = createBeskjed("1", "1", "1")
         val objectMapper = ObjectMapper().apply {
             enableDittNavJsonConfig()
         }

@@ -7,13 +7,12 @@ import org.junit.jupiter.api.Test
 class InnboksTransformerTest {
 
     @Test
-    fun `should transform from Innboks to Brukernotifikasjon`() {
+    fun `should transform from Innboks to InnboksDTO`() {
         val innboks1 = createInnboks("1", "1")
         val innboks2 = createInnboks("2", "2")
         val innboksDTOList = listOf(innboks1, innboks2).map { toInnboksDTO(it) }
         val innboksDTO = innboksDTOList.first()
 
-        innboksDTO.produsent `should be equal to` innboks1.produsent
         innboksDTO.eventTidspunkt `should be` innboks1.eventTidspunkt
         innboksDTO.eventId `should be equal to` innboks1.eventId
         innboksDTO.tekst `should be equal to` innboks1.tekst

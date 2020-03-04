@@ -13,7 +13,6 @@ class OppgaveTransformerTest {
         val brukernotifikasjonList = listOf(oppgave1, oppgave2).map { toOppgaveDTO(it) }
         val brukernotifikasjon = brukernotifikasjonList.first()
 
-        brukernotifikasjon.produsent `should be equal to` oppgave1.produsent
         brukernotifikasjon.eventTidspunkt `should be` oppgave1.eventTidspunkt
         brukernotifikasjon.eventId `should be equal to` oppgave1.eventId
         brukernotifikasjon.tekst `should be equal to` oppgave1.tekst

@@ -1,11 +1,11 @@
 package no.nav.personbruker.dittnav.api.beskjed
 
-import java.time.ZonedDateTime
 import java.time.ZoneId
+import java.time.ZonedDateTime
 
-fun createBeskjed(eventId: String, fodselsnummer: String): Beskjed {
+fun createBeskjed(eventId: String, fodselsnummer: String, uid: String): Beskjed {
     return Beskjed(
-            produsent = "DittNav",
+            uid = uid,
             eventTidspunkt = ZonedDateTime.now(ZoneId.of("Europe/Oslo")),
             fodselsnummer = fodselsnummer,
             eventId = eventId,
@@ -20,7 +20,6 @@ fun createBeskjed(eventId: String, fodselsnummer: String): Beskjed {
 
 fun createBeskjedDTO(eventId: String): BeskjedDTO {
     return BeskjedDTO(
-            produsent = "DittNav",
             eventTidspunkt = ZonedDateTime.now(ZoneId.of("Europe/Oslo")),
             eventId = eventId,
             tekst = "Dette er beskjed til brukeren",

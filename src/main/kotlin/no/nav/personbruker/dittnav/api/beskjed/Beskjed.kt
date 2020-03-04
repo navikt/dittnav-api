@@ -3,7 +3,7 @@ package no.nav.personbruker.dittnav.api.beskjed
 import java.time.ZonedDateTime
 
 data class Beskjed(
-        val produsent: String,
+        val uid: String,
         val eventTidspunkt: ZonedDateTime,
         val fodselsnummer: String,
         val eventId: String,

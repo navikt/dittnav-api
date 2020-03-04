@@ -1,13 +1,13 @@
 package no.nav.personbruker.dittnav.api.beskjed
 
 fun toBeskjedDTO(inbound: Beskjed): BeskjedDTO =
-        inbound.let{
+        inbound.let {
             BeskjedDTO(
-                    eventId = it.eventId,
-                    produsent = it.produsent,
+                    uid = it.uid,
                     eventTidspunkt = it.eventTidspunkt,
+                    eventId = it.eventId,
+                    tekst = it.tekst,
                     link = it.link,
-                    sistOppdatert = it.sistOppdatert,
-                    tekst = it.tekst
+                    sistOppdatert = it.sistOppdatert
             )
-    }
+        }

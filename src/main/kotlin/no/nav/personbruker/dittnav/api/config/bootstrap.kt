@@ -7,6 +7,7 @@ import io.ktor.client.HttpClient
 import io.ktor.features.CORS
 import io.ktor.features.ContentNegotiation
 import io.ktor.features.DefaultHeaders
+import io.ktor.http.HttpHeaders
 import io.ktor.jackson.jackson
 import io.ktor.routing.routing
 import io.ktor.util.KtorExperimentalAPI
@@ -15,6 +16,8 @@ import no.nav.personbruker.dittnav.api.beskjed.BeskjedConsumer
 import no.nav.personbruker.dittnav.api.beskjed.BeskjedService
 import no.nav.personbruker.dittnav.api.oppgave.oppgave
 import no.nav.personbruker.dittnav.api.beskjed.beskjed
+import no.nav.personbruker.dittnav.api.done.DoneProducer
+import no.nav.personbruker.dittnav.api.done.doneApi
 import no.nav.personbruker.dittnav.api.innboks.innboks
 import no.nav.personbruker.dittnav.api.health.healthApi
 import no.nav.personbruker.dittnav.api.health.authenticationCheck
@@ -39,15 +42,19 @@ fun Application.mainModule() {
     val beskjedConsumer = BeskjedConsumer(httpClient, environment.eventHandlerURL)
     val innboksConsumer = InnboksConsumer(httpClient, environment.eventHandlerURL)
 
+    val doneProducer = DoneProducer(httpClient, environment.eventHandlerURL)
+
     val oppgaveService = OppgaveService(oppgaveConsumer)
     val beskjedService = BeskjedService(beskjedConsumer)
     val innboksService = InnboksService(innboksConsumer)
 
+
     install(DefaultHeaders)
 
     install(CORS) {
-        host(environment.corsAllowedOrigins)
+        host(environment.corsAllowedOrigins, schemes = listOf("https"))
         allowCredentials = true
+        header(HttpHeaders.ContentType)
     }
 
     val config = this.environment.config
@@ -70,6 +77,7 @@ fun Application.mainModule() {
             beskjed(beskjedService)
             innboks(innboksService)
             authenticationCheck()
+            doneApi(doneProducer)
         }
 
         configureShutdownHook(httpClient)

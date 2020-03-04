@@ -18,5 +18,4 @@ class InnboksService (private val innboksConsumer: InnboksConsumer) {
             emptyList()
         }
     }
-
 }

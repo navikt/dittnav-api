@@ -5,7 +5,6 @@ import java.time.ZoneId
 
 fun createOppgave(eventId: String, fodselsnummer: String): Oppgave {
     return Oppgave(
-            produsent = "DittNav",
             eventTidspunkt = ZonedDateTime.now(ZoneId.of("Europe/Oslo")),
             fodselsnummer = fodselsnummer,
             eventId = eventId,
@@ -20,7 +19,6 @@ fun createOppgave(eventId: String, fodselsnummer: String): Oppgave {
 
 fun createOppgaveDTO(eventId: String): OppgaveDTO {
     return OppgaveDTO(
-            produsent = "DittNav",
             eventTidspunkt = ZonedDateTime.now(ZoneId.of("Europe/Oslo")),
             eventId = eventId,
             tekst = "Dette er beskjed til brukeren",

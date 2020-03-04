@@ -23,7 +23,6 @@ class OppgaveServiceTest {
             val brukernotifikasjonListe = oppgaveService.getOppgaveEventsAsBrukernotifikasjoner(innloggetBruker)
             brukernotifikasjonListe.size `should be equal to` 2
         }
-
     }
 
     @Test
@@ -34,7 +33,5 @@ class OppgaveServiceTest {
             val brukernotifikasjonListe = oppgaveService.getOppgaveEventsAsBrukernotifikasjoner(innloggetBruker)
             brukernotifikasjonListe.size `should be equal to` 0
         }
-
     }
-
 }
