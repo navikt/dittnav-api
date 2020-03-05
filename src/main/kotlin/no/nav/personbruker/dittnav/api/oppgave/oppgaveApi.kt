@@ -9,7 +9,12 @@ import no.nav.personbruker.dittnav.api.common.innloggetBruker
 fun Route.oppgave(oppgaveService: OppgaveService) {
 
     get("/oppgave") {
-        val oppgaveEventsAsBrukernotifikasjoner = oppgaveService.getOppgaveEventsAsBrukernotifikasjoner(innloggetBruker)
-        call.respond(oppgaveEventsAsBrukernotifikasjoner)
+        val oppgaveEvents = oppgaveService.getActiveOppgaveEvents(innloggetBruker)
+        call.respond(oppgaveEvents)
+    }
+
+    get("/oppgave/inaktiv") {
+        val oppgaveEvents = oppgaveService.getInactiveOppgaveEvents(innloggetBruker)
+        call.respond(oppgaveEvents)
     }
 }

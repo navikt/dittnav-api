@@ -42,7 +42,7 @@ class InnboksConsumerTest {
         val innboksConsumer = InnboksConsumer(client, URL("http://event-handler"))
 
         runBlocking {
-            innboksConsumer.getExternalEvents(innloggetBruker) `should equal` emptyList()
+            innboksConsumer.getExternalActiveEvents(innloggetBruker) `should equal` emptyList()
         }
 
     }
@@ -73,9 +73,9 @@ class InnboksConsumerTest {
         val innboksConsumer = InnboksConsumer(client, URL("http://event-handler"))
 
         runBlocking {
-            innboksConsumer.getExternalEvents(innloggetBruker).size `should be equal to` 2
-            innboksConsumer.getExternalEvents(innloggetBruker)[0].tekst `should be equal to` innboksObject1.tekst
-            innboksConsumer.getExternalEvents(innloggetBruker)[0].fodselsnummer `should be equal to` innboksObject1.fodselsnummer
+            innboksConsumer.getExternalActiveEvents(innloggetBruker).size `should be equal to` 2
+            innboksConsumer.getExternalActiveEvents(innloggetBruker)[0].tekst `should be equal to` innboksObject1.tekst
+            innboksConsumer.getExternalActiveEvents(innloggetBruker)[0].fodselsnummer `should be equal to` innboksObject1.fodselsnummer
         }
     }
 }

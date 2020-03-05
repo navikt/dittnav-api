@@ -8,11 +8,25 @@ class InnboksService (private val innboksConsumer: InnboksConsumer) {
 
     private val log = LoggerFactory.getLogger(InnboksService::class.java)
 
-    suspend fun getInnboksEventsAsBrukernotifikasjoner(innloggetBruker: InnloggetBruker): List<InnboksDTO> {
+    suspend fun getActiveInnboksEvents(innloggetBruker: InnloggetBruker): List<InnboksDTO> {
+        return getInnboksEvents(innloggetBruker) {
+            innboksConsumer.getExternalActiveEvents(it)
+        }
+    }
+
+    suspend fun getInactiveInnboksEvents(innloggetBruker: InnloggetBruker): List<InnboksDTO> {
+        return getInnboksEvents(innloggetBruker) {
+            innboksConsumer.getExternalInactiveEvents(it)
+        }
+    }
+
+    private suspend fun getInnboksEvents(
+            innloggetBruker: InnloggetBruker,
+            getEvents: suspend (InnloggetBruker) -> List<Innboks>
+    ): List<InnboksDTO> {
         return try {
-            innboksConsumer.getExternalEvents(innloggetBruker).map { innboks ->
-                toInnboksDTO(innboks)
-            }
+            val externalEvents = getEvents(innloggetBruker)
+            externalEvents.map { innboks -> toInnboksDTO(innboks) }
         } catch (exception: Exception) {
             log.error(exception)
             emptyList()

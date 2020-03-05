@@ -9,7 +9,12 @@ import no.nav.personbruker.dittnav.api.common.innloggetBruker
 fun Route.beskjed(beskjedService: BeskjedService) {
 
     get("/beskjed") {
-        val beskjedEventsAsBrukernotifikasjoner = beskjedService.getBeskjedEventsAsBrukernotifikasjoner(innloggetBruker)
-        call.respond(beskjedEventsAsBrukernotifikasjoner)
+        val beskjedEvents = beskjedService.getActiveBeskjedEvents(innloggetBruker)
+        call.respond(beskjedEvents)
+    }
+
+    get("/beskjed/inaktiv") {
+        val beskjedEvents = beskjedService.getInactiveBeskjedEvents(innloggetBruker)
+        call.respond(beskjedEvents)
     }
 }

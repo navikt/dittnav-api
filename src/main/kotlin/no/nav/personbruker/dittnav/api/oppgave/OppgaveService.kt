@@ -8,11 +8,25 @@ class OppgaveService(private val oppgaveConsumer: OppgaveConsumer) {
 
     private val log = LoggerFactory.getLogger(OppgaveService::class.java)
 
-    suspend fun getOppgaveEventsAsBrukernotifikasjoner(innloggetBruker: InnloggetBruker): List<OppgaveDTO> {
+    suspend fun getActiveOppgaveEvents(innloggetBruker: InnloggetBruker): List<OppgaveDTO> {
+        return getOppgaveEvents(innloggetBruker) {
+            oppgaveConsumer.getExternalActiveEvents(it)
+        }
+    }
+
+    suspend fun getInactiveOppgaveEvents(innloggetBruker: InnloggetBruker): List<OppgaveDTO> {
+        return getOppgaveEvents(innloggetBruker) {
+            oppgaveConsumer.getExternalInactiveEvents(it)
+        }
+    }
+
+    private suspend fun getOppgaveEvents(
+            innloggetBruker: InnloggetBruker,
+            getEvents: suspend (InnloggetBruker) -> List<Oppgave>
+    ): List<OppgaveDTO> {
         return try {
-            oppgaveConsumer.getExternalEvents(innloggetBruker).map { oppgave ->
-                 toOppgaveDTO(oppgave)
-            }
+            val externalEvents = getEvents(innloggetBruker)
+            externalEvents.map { oppgave -> toOppgaveDTO(oppgave) }
         } catch (exception: Exception) {
             log.error(exception)
             emptyList()

@@ -18,8 +18,9 @@ fun createBeskjed(eventId: String, fodselsnummer: String, uid: String): Beskjed 
     )
 }
 
-fun createBeskjedDTO(eventId: String): BeskjedDTO {
+fun createBeskjedDTO(eventId: String, uid: String): BeskjedDTO {
     return BeskjedDTO(
+            uid = uid,
             eventTidspunkt = ZonedDateTime.now(ZoneId.of("Europe/Oslo")),
             eventId = eventId,
             tekst = "Dette er beskjed til brukeren",

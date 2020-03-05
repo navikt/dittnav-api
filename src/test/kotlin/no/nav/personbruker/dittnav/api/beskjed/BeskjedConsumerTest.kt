@@ -42,7 +42,7 @@ class BeskjedConsumerTest {
         val beskjedConsumer = BeskjedConsumer(client, URL("http://event-handler"))
 
         runBlocking {
-            beskjedConsumer.getExternalEvents(innloggetBruker) `should equal` emptyList()
+            beskjedConsumer.getExternalActiveEvents(innloggetBruker) `should equal` emptyList()
         }
     }
 
@@ -69,9 +69,9 @@ class BeskjedConsumerTest {
         val beskjedConsumer = BeskjedConsumer(client, URL("http://event-handler"))
 
         runBlocking {
-            beskjedConsumer.getExternalEvents(innloggetBruker).size `should be equal to` 1
-            beskjedConsumer.getExternalEvents(innloggetBruker)[0].tekst `should be equal to` beskjedObject.tekst
-            beskjedConsumer.getExternalEvents(innloggetBruker)[0].fodselsnummer `should be equal to` beskjedObject.fodselsnummer
+            beskjedConsumer.getExternalActiveEvents(innloggetBruker).size `should be equal to` 1
+            beskjedConsumer.getExternalActiveEvents(innloggetBruker)[0].tekst `should be equal to` beskjedObject.tekst
+            beskjedConsumer.getExternalActiveEvents(innloggetBruker)[0].fodselsnummer `should be equal to` beskjedObject.fodselsnummer
         }
 
     }

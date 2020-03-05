@@ -9,7 +9,12 @@ import no.nav.personbruker.dittnav.api.common.innloggetBruker
 fun Route.innboks(innboksService: InnboksService) {
 
     get("/innboks") {
-        val innboksEventsAsBrukernotifikasjoner = innboksService.getInnboksEventsAsBrukernotifikasjoner(innloggetBruker)
-        call.respond(innboksEventsAsBrukernotifikasjoner)
+        val innboksEvents = innboksService.getActiveInnboksEvents(innloggetBruker)
+        call.respond(innboksEvents)
+    }
+
+    get("/innboks/inaktiv") {
+        val innboksEvents = innboksService.getInactiveInnboksEvents(innloggetBruker)
+        call.respond(innboksEvents)
     }
 }

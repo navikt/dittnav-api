@@ -17,20 +17,20 @@ class OppgaveServiceTest {
 
     @Test
     fun `should return list of Brukernotifikasjoner when Events are received`() {
-        coEvery { oppgaveConsumer.getExternalEvents(innloggetBruker) } returns listOf(oppgave1, oppgave2)
+        coEvery { oppgaveConsumer.getExternalActiveEvents(innloggetBruker) } returns listOf(oppgave1, oppgave2)
 
         runBlocking {
-            val brukernotifikasjonListe = oppgaveService.getOppgaveEventsAsBrukernotifikasjoner(innloggetBruker)
+            val brukernotifikasjonListe = oppgaveService.getActiveOppgaveEvents(innloggetBruker)
             brukernotifikasjonListe.size `should be equal to` 2
         }
     }
 
     @Test
     fun `should return empty List when Exception is thrown`() {
-        coEvery { oppgaveConsumer.getExternalEvents(innloggetBruker) } throws Exception("error")
+        coEvery { oppgaveConsumer.getExternalActiveEvents(innloggetBruker) } throws Exception("error")
 
         runBlocking {
-            val brukernotifikasjonListe = oppgaveService.getOppgaveEventsAsBrukernotifikasjoner(innloggetBruker)
+            val brukernotifikasjonListe = oppgaveService.getActiveOppgaveEvents(innloggetBruker)
             brukernotifikasjonListe.size `should be equal to` 0
         }
     }
