@@ -13,7 +13,8 @@ object BrukernotfikasjonObjectMother {
                 tekst = "Dette er beskjed til brukeren",
                 link = "https://nav.no/systemX/",
                 sistOppdatert = ZonedDateTime.now(ZoneId.of("Europe/Oslo")),
-                type = BrukernotifikasjonType.BESKJED
+                type = BrukernotifikasjonType.BESKJED,
+                sikkerhetsnivaa = 4
         )
     }
 
@@ -24,7 +25,8 @@ object BrukernotfikasjonObjectMother {
                 tekst = "Dette er beskjed til brukeren",
                 link = "https://nav.no/systemX/",
                 sistOppdatert = ZonedDateTime.now(ZoneId.of("Europe/Oslo")),
-                type = BrukernotifikasjonType.OPPGAVE
+                type = BrukernotifikasjonType.OPPGAVE,
+                sikkerhetsnivaa = 4
         )
     }
 
@@ -35,7 +37,8 @@ object BrukernotfikasjonObjectMother {
                 tekst = "Dette er beskjed til brukeren",
                 link = "https://nav.no/systemX/",
                 sistOppdatert = ZonedDateTime.now(ZoneId.of("Europe/Oslo")),
-                type = BrukernotifikasjonType.INNBOKS
+                type = BrukernotifikasjonType.INNBOKS,
+                sikkerhetsnivaa = 4
         )
     }
 }

@@ -11,6 +11,7 @@ fun toBrukernotifikasjon(innboks: Innboks): Brukernotifikasjon =
                     eventTidspunkt = it.eventTidspunkt,
                     link = it.link,
                     sistOppdatert = it.sistOppdatert,
-                    tekst = it.tekst
+                    tekst = it.tekst,
+                    sikkerhetsnivaa = it.sikkerhetsnivaa
             )
         }

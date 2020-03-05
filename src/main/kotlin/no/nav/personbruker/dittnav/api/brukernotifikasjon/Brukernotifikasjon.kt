@@ -10,7 +10,8 @@ data class Brukernotifikasjon(
         val tekst: String,
         val link: String,
         val sistOppdatert: ZonedDateTime,
-        val type: BrukernotifikasjonType
+        val type: BrukernotifikasjonType,
+        val sikkerhetsnivaa: Int
 ) {
     constructor(
             eventTidspunkt: ZonedDateTime,
@@ -18,7 +19,8 @@ data class Brukernotifikasjon(
             tekst: String,
             link: String,
             sistOppdatert: ZonedDateTime,
-            type: BrukernotifikasjonType
+            type: BrukernotifikasjonType,
+            sikkerhetsnivaa: Int
     ) : this(
             null,
             eventTidspunkt,
@@ -26,6 +28,7 @@ data class Brukernotifikasjon(
             tekst,
             link,
             sistOppdatert,
-            type
+            type,
+            sikkerhetsnivaa
     )
 }
