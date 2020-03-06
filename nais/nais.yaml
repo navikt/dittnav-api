@@ -15,6 +15,7 @@ spec:
     path: /person/dittnav-api/internal/isReady
     initialDelay: 10
   prometheus:
+    enabled: true
     path: /person/dittnav-api/metrics
   replicas:
     min: 2
