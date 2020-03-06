@@ -13,7 +13,7 @@ suspend fun ApplicationCall.pingDependencies(environment: Environment) = corouti
     val client = HttpClientBuilder.build()
 
     // val eventHandlerPingableURL = URL("${environment.dittNAVEventsURL}/ping")
-    val legacyApiPingableURL = URL("${environment.dittNAVLegacyURL}/internal/isAlive")
+    val legacyApiPingableURL = URL("${environment.legacyApiURL}/internal/isAlive")
 
     // val eventHandlerSelftestStatus = async { getStatus(eventHandlerPingableURL, client) }
     val legacySelftestStatus = async { getStatus(legacyApiPingableURL, client) }

@@ -16,10 +16,10 @@ class InnboksServiceTest {
 
     @Test
     fun `should return list of Brukernotifikasjoner when Events are received`() {
-        coEvery { innboksConsumer.getExternalEvents(innloggetBruker) } returns listOf(innboks1, innboks2)
+        coEvery { innboksConsumer.getExternalActiveEvents(innloggetBruker) } returns listOf(innboks1, innboks2)
 
         runBlocking {
-            val brukernotifikasjonListe = innboksService.getInnboksEventsAsBrukernotifikasjoner(innloggetBruker)
+            val brukernotifikasjonListe = innboksService.getActiveInnboksEvents(innloggetBruker)
             brukernotifikasjonListe.size `should be equal to` 2
         }
 
@@ -27,10 +27,10 @@ class InnboksServiceTest {
 
     @Test
     fun `should return empty list when Exception is thrown`() {
-        coEvery { innboksConsumer.getExternalEvents(innloggetBruker) } throws Exception("error")
+        coEvery { innboksConsumer.getExternalActiveEvents(innloggetBruker) } throws Exception("error")
 
         runBlocking {
-            val brukernotifikasjonListe = innboksService.getInnboksEventsAsBrukernotifikasjoner(innloggetBruker)
+            val brukernotifikasjonListe = innboksService.getActiveInnboksEvents(innloggetBruker)
             brukernotifikasjonListe.size `should be equal to` 0
         }
 

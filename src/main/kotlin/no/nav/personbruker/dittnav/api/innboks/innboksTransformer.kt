@@ -1,17 +1,13 @@
 package no.nav.personbruker.dittnav.api.innboks
 
-import no.nav.personbruker.dittnav.api.brukernotifikasjon.Brukernotifikasjon
-import no.nav.personbruker.dittnav.api.brukernotifikasjon.BrukernotifikasjonType
-
-fun toBrukernotifikasjon(innboks: Innboks): Brukernotifikasjon =
+fun toInnboksDTO(innboks: Innboks): InnboksDTO =
         innboks.let {
-            Brukernotifikasjon(
-                    eventId = it.eventId,
-                    type = BrukernotifikasjonType.INNBOKS,
+            InnboksDTO(
                     eventTidspunkt = it.eventTidspunkt,
+                    eventId = it.eventId,
+                    tekst = it.tekst,
                     link = it.link,
                     sistOppdatert = it.sistOppdatert,
-                    tekst = it.tekst,
                     sikkerhetsnivaa = it.sikkerhetsnivaa
             )
         }

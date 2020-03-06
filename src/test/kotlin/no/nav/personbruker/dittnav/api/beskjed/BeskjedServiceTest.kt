@@ -14,15 +14,15 @@ class BeskjedServiceTest {
 
     val beskjedConsumer = mockk<BeskjedConsumer>()
     val beskjedService = BeskjedService(beskjedConsumer)
-    val beskjed1 = BeskjedObjectMother.createBeskjed("1", "1", "1")
-    val beskjed2 = BeskjedObjectMother.createBeskjed("2", "2", "2")
+    val beskjed1 = createBeskjed("1", "1", "1")
+    val beskjed2 = createBeskjed("2", "2", "2")
 
     @Test
     fun `should return list of Brukernotifikasjoner when Events are received`() {
-        coEvery { beskjedConsumer.getExternalEvents(innloggetBruker) } returns listOf(beskjed1, beskjed2)
+        coEvery { beskjedConsumer.getExternalActiveEvents(innloggetBruker) } returns listOf(beskjed1, beskjed2)
 
         runBlocking {
-            val brukernotifikasjonListe = beskjedService.getBeskjedEventsAsBrukernotifikasjoner(innloggetBruker)
+            val brukernotifikasjonListe = beskjedService.getActiveBeskjedEvents(innloggetBruker)
             brukernotifikasjonListe.size `should be equal to` 2
         }
 
@@ -30,10 +30,10 @@ class BeskjedServiceTest {
 
     @Test
     fun `should return empty list when Exception is thrown`() {
-        coEvery { beskjedConsumer.getExternalEvents(innloggetBruker) } throws Exception("error")
+        coEvery { beskjedConsumer.getExternalActiveEvents(innloggetBruker) } throws Exception("error")
 
         runBlocking {
-            val brukernotifikasjonListe = beskjedService.getBeskjedEventsAsBrukernotifikasjoner(innloggetBruker)
+            val brukernotifikasjonListe = beskjedService.getActiveBeskjedEvents(innloggetBruker)
             brukernotifikasjonListe.size `should be equal to` 0
         }
 

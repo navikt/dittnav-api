@@ -44,7 +44,7 @@ class OppgaveConsumerTest {
         val oppgaveConsumer = OppgaveConsumer(client, URL("http://event-handler"))
 
         runBlocking {
-            oppgaveConsumer.getExternalEvents(innloggetBruker) `should equal` emptyList()
+            oppgaveConsumer.getExternalActiveEvents(innloggetBruker) `should equal` emptyList()
         }
 
     }
@@ -52,8 +52,8 @@ class OppgaveConsumerTest {
     @Test
     fun `should get list of Oppgave`() {
 
-        val oppgaveObject1 = OppgaveObjectMother.createOppgave("1", "1")
-        val oppgaveObject2 = OppgaveObjectMother.createOppgave("2", "2")
+        val oppgaveObject1 = createOppgave("1", "1")
+        val oppgaveObject2 = createOppgave("2", "2")
         val objectMapper = ObjectMapper().apply {
             enableDittNavJsonConfig()
         }
@@ -75,11 +75,10 @@ class OppgaveConsumerTest {
         val oppgaveConsumer = OppgaveConsumer(client, URL("http://event-handler"))
 
         runBlocking {
-            oppgaveConsumer.getExternalEvents(innloggetBruker).size `should be equal to` 2
-            oppgaveConsumer.getExternalEvents(innloggetBruker)[0].tekst `should be equal to` oppgaveObject1.tekst
-            oppgaveConsumer.getExternalEvents(innloggetBruker)[0].fodselsnummer `should be equal to` oppgaveObject1.fodselsnummer
+            oppgaveConsumer.getExternalActiveEvents(innloggetBruker).size `should be equal to` 2
+            oppgaveConsumer.getExternalActiveEvents(innloggetBruker)[0].tekst `should be equal to` oppgaveObject1.tekst
+            oppgaveConsumer.getExternalActiveEvents(innloggetBruker)[0].fodselsnummer `should be equal to` oppgaveObject1.fodselsnummer
         }
 
     }
-
 }

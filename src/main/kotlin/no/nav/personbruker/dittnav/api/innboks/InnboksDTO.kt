@@ -1,16 +1,15 @@
-package no.nav.personbruker.dittnav.api.brukernotifikasjon
+package no.nav.personbruker.dittnav.api.innboks
 
 import com.fasterxml.jackson.annotation.JsonInclude
 import java.time.ZonedDateTime
 
-data class Brukernotifikasjon(
+data class InnboksDTO(
         @JsonInclude(JsonInclude.Include.NON_NULL) val uid: String?,
         val eventTidspunkt: ZonedDateTime,
         val eventId: String,
         val tekst: String,
         val link: String,
         val sistOppdatert: ZonedDateTime,
-        val type: BrukernotifikasjonType,
         val sikkerhetsnivaa: Int
 ) {
     constructor(
@@ -19,7 +18,6 @@ data class Brukernotifikasjon(
             tekst: String,
             link: String,
             sistOppdatert: ZonedDateTime,
-            type: BrukernotifikasjonType,
             sikkerhetsnivaa: Int
     ) : this(
             null,
@@ -28,7 +26,6 @@ data class Brukernotifikasjon(
             tekst,
             link,
             sistOppdatert,
-            type,
             sikkerhetsnivaa
     )
 }
