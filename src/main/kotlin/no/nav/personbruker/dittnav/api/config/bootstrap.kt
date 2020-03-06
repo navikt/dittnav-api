@@ -52,7 +52,7 @@ fun Application.mainModule() {
     install(DefaultHeaders)
 
     install(CORS) {
-        host(environment.corsAllowedOrigins, schemes = listOf("https"))
+        host(environment.corsAllowedOrigins, schemes = listOf(environment.corsAllowedSchemes))
         allowCredentials = true
         header(HttpHeaders.ContentType)
     }
