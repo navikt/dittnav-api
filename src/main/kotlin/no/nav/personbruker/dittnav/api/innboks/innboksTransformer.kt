@@ -7,6 +7,7 @@ fun toInnboksDTO(innboks: Innboks): InnboksDTO =
                     eventId = it.eventId,
                     tekst = it.tekst,
                     link = it.link,
-                    sistOppdatert = it.sistOppdatert
+                    sistOppdatert = it.sistOppdatert,
+                    sikkerhetsnivaa = it.sikkerhetsnivaa
             )
         }

@@ -25,6 +25,7 @@ fun createBeskjedDTO(eventId: String, uid: String): BeskjedDTO {
             eventId = eventId,
             tekst = "Dette er beskjed til brukeren",
             link = "https://nav.no/systemX/",
-            sistOppdatert = ZonedDateTime.now(ZoneId.of("Europe/Oslo"))
+            sistOppdatert = ZonedDateTime.now(ZoneId.of("Europe/Oslo")),
+            sikkerhetsnivaa = 4
     )
 }

@@ -9,20 +9,23 @@ data class BeskjedDTO(
         val eventId: String,
         val tekst: String,
         val link: String,
-        val sistOppdatert: ZonedDateTime
+        val sistOppdatert: ZonedDateTime,
+        val sikkerhetsnivaa: Int
 ) {
     constructor(
             eventTidspunkt: ZonedDateTime,
             eventId: String,
             tekst: String,
             link: String,
-            sistOppdatert: ZonedDateTime
+            sistOppdatert: ZonedDateTime,
+            sikkerhetsnivaa: Int
     ) : this(
             null,
             eventTidspunkt,
             eventId,
             tekst,
             link,
-            sistOppdatert
+            sistOppdatert,
+            sikkerhetsnivaa
     )
 }
