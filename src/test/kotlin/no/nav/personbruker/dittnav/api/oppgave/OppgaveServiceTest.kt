@@ -11,16 +11,26 @@ class OppgaveServiceTest {
 
     val oppgaveConsumer = mockk<OppgaveConsumer>()
     val oppgaveService = OppgaveService(oppgaveConsumer)
-    val oppgave1 = createOppgave("1", "1")
-    val oppgave2 = createOppgave("2", "2")
     val innloggetBruker = InnloggetBrukerObjectMother.createInnloggetBruker()
 
     @Test
-    fun `should return list of Brukernotifikasjoner when Events are received`() {
+    fun `should return list of OppgaveDTO when active Events are received`() {
+        val oppgave1 = createOppgave("1", "1", true)
+        val oppgave2 = createOppgave("2", "2", true)
         coEvery { oppgaveConsumer.getExternalActiveEvents(innloggetBruker) } returns listOf(oppgave1, oppgave2)
-
         runBlocking {
             val brukernotifikasjonListe = oppgaveService.getActiveOppgaveEvents(innloggetBruker)
+            brukernotifikasjonListe.size `should be equal to` 2
+        }
+    }
+
+    @Test
+    fun `should return list of OppgaveDTO when inactive Events are received`() {
+        val oppgave1 = createOppgave("1", "1", false)
+        val oppgave2 = createOppgave("2", "2", false)
+        coEvery { oppgaveConsumer.getExternalInactiveEvents(innloggetBruker) } returns listOf(oppgave1, oppgave2)
+        runBlocking {
+            val brukernotifikasjonListe = oppgaveService.getInactiveOppgaveEvents(innloggetBruker)
             brukernotifikasjonListe.size `should be equal to` 2
         }
     }

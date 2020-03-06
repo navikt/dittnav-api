@@ -10,19 +10,29 @@ import org.junit.jupiter.api.Test
 class InnboksServiceTest {
     val innboksConsumer = mockk<InnboksConsumer>()
     val innboksService = InnboksService(innboksConsumer)
-    val innboks1 = createInnboks("1", "1")
-    val innboks2 = createInnboks("2", "2")
+
     val innloggetBruker = InnloggetBrukerObjectMother.createInnloggetBruker()
 
     @Test
-    fun `should return list of Brukernotifikasjoner when Events are received`() {
+    fun `should return list of InnboksDTO when active Events are received`() {
+        val innboks1 = createInnboks("1", "1", true)
+        val innboks2 = createInnboks("2", "2", true)
         coEvery { innboksConsumer.getExternalActiveEvents(innloggetBruker) } returns listOf(innboks1, innboks2)
-
         runBlocking {
             val brukernotifikasjonListe = innboksService.getActiveInnboksEvents(innloggetBruker)
             brukernotifikasjonListe.size `should be equal to` 2
         }
+    }
 
+    @Test
+    fun `should return list of InnboksDTO when inactive Events are received`() {
+        val innboks1 = createInnboks("1", "1", false)
+        val innboks2 = createInnboks("2", "2", false)
+        coEvery { innboksConsumer.getExternalInactiveEvents(innloggetBruker) } returns listOf(innboks1, innboks2)
+        runBlocking {
+            val brukernotifikasjonListe = innboksService.getInactiveInnboksEvents(innloggetBruker)
+            brukernotifikasjonListe.size `should be equal to` 2
+        }
     }
 
     @Test

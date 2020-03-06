@@ -14,18 +14,27 @@ class BeskjedServiceTest {
 
     val beskjedConsumer = mockk<BeskjedConsumer>()
     val beskjedService = BeskjedService(beskjedConsumer)
-    val beskjed1 = createBeskjed("1", "1", "1")
-    val beskjed2 = createBeskjed("2", "2", "2")
 
     @Test
-    fun `should return list of Brukernotifikasjoner when Events are received`() {
+    fun `should return list of BeskjedDTO when active Events are received`() {
+        var beskjed1 = createBeskjed("1", "1", "1", true)
+        var beskjed2 = createBeskjed("2", "2", "2", true)
         coEvery { beskjedConsumer.getExternalActiveEvents(innloggetBruker) } returns listOf(beskjed1, beskjed2)
-
         runBlocking {
             val brukernotifikasjonListe = beskjedService.getActiveBeskjedEvents(innloggetBruker)
             brukernotifikasjonListe.size `should be equal to` 2
         }
+    }
 
+    @Test
+    fun `should return list of BeskjedDTO when inactive Events are received`() {
+        var beskjed1 = createBeskjed("1", "1", "1", false)
+        var beskjed2 = createBeskjed("2", "2", "2", false)
+        coEvery { beskjedConsumer.getExternalInactiveEvents(innloggetBruker) } returns listOf(beskjed1, beskjed2)
+        runBlocking {
+            val brukernotifikasjonListe = beskjedService.getInactiveBeskjedEvents(innloggetBruker)
+            brukernotifikasjonListe.size `should be equal to` 2
+        }
     }
 
     @Test

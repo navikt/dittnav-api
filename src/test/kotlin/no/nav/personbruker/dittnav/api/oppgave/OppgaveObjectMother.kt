@@ -3,7 +3,7 @@ package no.nav.personbruker.dittnav.api.oppgave
 import java.time.ZonedDateTime
 import java.time.ZoneId
 
-fun createOppgave(eventId: String, fodselsnummer: String): Oppgave {
+fun createOppgave(eventId: String, fodselsnummer: String, aktiv: Boolean): Oppgave {
     return Oppgave(
             eventTidspunkt = ZonedDateTime.now(ZoneId.of("Europe/Oslo")),
             fodselsnummer = fodselsnummer,
@@ -13,7 +13,7 @@ fun createOppgave(eventId: String, fodselsnummer: String): Oppgave {
             link = "https://nav.no/systemX/",
             sikkerhetsnivaa = 4,
             sistOppdatert = ZonedDateTime.now(ZoneId.of("Europe/Oslo")),
-            aktiv = true
+            aktiv = aktiv
     )
 }
 
