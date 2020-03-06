@@ -16,6 +16,8 @@ import no.nav.personbruker.dittnav.api.beskjed.BeskjedConsumer
 import no.nav.personbruker.dittnav.api.beskjed.BeskjedService
 import no.nav.personbruker.dittnav.api.oppgave.oppgave
 import no.nav.personbruker.dittnav.api.beskjed.beskjed
+import no.nav.personbruker.dittnav.api.brukernotifikasjon.BrukernotifikasjonService
+import no.nav.personbruker.dittnav.api.brukernotifikasjon.brukernotifikasjoner
 import no.nav.personbruker.dittnav.api.done.DoneProducer
 import no.nav.personbruker.dittnav.api.done.doneApi
 import no.nav.personbruker.dittnav.api.innboks.innboks
@@ -48,6 +50,8 @@ fun Application.mainModule() {
     val beskjedService = BeskjedService(beskjedConsumer)
     val innboksService = InnboksService(innboksConsumer)
 
+    val brukernotifikasjonService = BrukernotifikasjonService(oppgaveService, beskjedService, innboksService)
+
 
     install(DefaultHeaders)
 
@@ -78,6 +82,7 @@ fun Application.mainModule() {
             innboks(innboksService)
             authenticationCheck()
             doneApi(doneProducer)
+            brukernotifikasjoner(brukernotifikasjonService)
         }
 
         configureShutdownHook(httpClient)
