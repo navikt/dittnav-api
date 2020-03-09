@@ -46,10 +46,14 @@ class OppgaveService(private val oppgaveConsumer: OppgaveConsumer) {
     }
 
     private fun transformToDTO(oppgave: Oppgave, innloggetBruker: InnloggetBruker): OppgaveDTO {
-        return if(innloggetBruker.getSecurityLevel().level >= oppgave.sikkerhetsnivaa) {
+        return if(innloggetBrukerIsAllowedToViewAllDataInEvent(oppgave, innloggetBruker)) {
             toOppgaveDTO(oppgave)
         } else {
             toMaskedOppgaveDTO(oppgave)
         }
+    }
+
+    private fun innloggetBrukerIsAllowedToViewAllDataInEvent(oppgave: Oppgave, innloggetBruker: InnloggetBruker): Boolean {
+        return innloggetBruker.getSecurityLevel().level >= oppgave.sikkerhetsnivaa;
     }
 }

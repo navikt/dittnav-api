@@ -46,10 +46,14 @@ class BeskjedService(private val beskjedConsumer: BeskjedConsumer) {
     }
 
     private fun transformToDTO(beskjed: Beskjed, innloggetBruker: InnloggetBruker): BeskjedDTO {
-        return if(innloggetBruker.getSecurityLevel().level >= beskjed.sikkerhetsnivaa) {
+        return if(innloggetBrukerIsAllowedToViewAllDataInEvent(beskjed, innloggetBruker)) {
             toBeskjedDTO(beskjed)
         } else {
             toMaskedBeskjedDTO(beskjed)
         }
+    }
+
+    private fun innloggetBrukerIsAllowedToViewAllDataInEvent(beskjed: Beskjed, innloggetBruker: InnloggetBruker): Boolean {
+        return innloggetBruker.getSecurityLevel().level >= beskjed.sikkerhetsnivaa;
     }
 }
