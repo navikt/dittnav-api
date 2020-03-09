@@ -23,9 +23,9 @@ class OppgaveService(private val oppgaveConsumer: OppgaveConsumer) {
 
     suspend fun getOppgaveEventsAsBrukernotifikasjoner(innloggetBruker: InnloggetBruker): List<Brukernotifikasjon> {
         return try {
-            oppgaveConsumer.getExternalActiveEvents(innloggetBruker).map { oppgave ->
-                toBrukernotifikasjon(oppgave)
-            }
+            oppgaveConsumer.getExternalActiveEvents(innloggetBruker)
+                    .filter { oppgave -> innloggetBruker.getSecurityLevel().level >= oppgave.sikkerhetsnivaa}
+                    .map { oppgave -> toBrukernotifikasjon(oppgave) }
         } catch (exception: Exception) {
             log.error(exception)
             emptyList()
@@ -38,10 +38,18 @@ class OppgaveService(private val oppgaveConsumer: OppgaveConsumer) {
     ): List<OppgaveDTO> {
         return try {
             val externalEvents = getEvents(innloggetBruker)
-            externalEvents.map { oppgave -> toOppgaveDTO(oppgave) }
+            externalEvents.map { oppgave -> transformToDTO(oppgave, innloggetBruker) }
         } catch (exception: Exception) {
             log.error(exception)
             emptyList()
+        }
+    }
+
+    private fun transformToDTO(oppgave: Oppgave, innloggetBruker: InnloggetBruker): OppgaveDTO {
+        return if(innloggetBruker.getSecurityLevel().level >= oppgave.sikkerhetsnivaa) {
+            toOppgaveDTO(oppgave)
+        } else {
+            toMaskedOppgaveDTO(oppgave)
         }
     }
 }

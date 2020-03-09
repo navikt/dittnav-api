@@ -15,6 +15,12 @@ fun toOppgaveDTO(inbound: Oppgave): OppgaveDTO =
             )
         }
 
+fun toMaskedOppgaveDTO(oppgave: Oppgave): OppgaveDTO =
+        oppgave.let {
+            var maskedOppgaveDTO = toOppgaveDTO(oppgave)
+            return maskedOppgaveDTO.copy(tekst = "***", link = "***")
+        }
+
 fun toBrukernotifikasjon(inbound: Oppgave): Brukernotifikasjon =
         inbound.let {
             Brukernotifikasjon(

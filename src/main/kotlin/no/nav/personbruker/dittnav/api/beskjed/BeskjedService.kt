@@ -23,9 +23,9 @@ class BeskjedService(private val beskjedConsumer: BeskjedConsumer) {
 
     suspend fun getBeskjedEventsAsBrukernotifikasjoner(innloggetBruker: InnloggetBruker): List<Brukernotifikasjon> {
         return try {
-            beskjedConsumer.getExternalActiveEvents(innloggetBruker).map { beskjed ->
-                toBrukernotifikasjon(beskjed)
-            }
+            beskjedConsumer.getExternalActiveEvents(innloggetBruker)
+                    .filter { beskjed ->  innloggetBruker.getSecurityLevel().level >= beskjed.sikkerhetsnivaa }
+                    .map { beskjed -> toBrukernotifikasjon(beskjed) }
         } catch (exception: Exception) {
             log.error(exception)
             emptyList()
@@ -38,10 +38,18 @@ class BeskjedService(private val beskjedConsumer: BeskjedConsumer) {
     ): List<BeskjedDTO> {
         return try {
             val externalEvents = getEvents(innloggetBruker)
-            externalEvents.map { beskjed -> toBeskjedDTO(beskjed) }
+            externalEvents.map { beskjed -> transformToDTO(beskjed, innloggetBruker) }
         } catch(exception: Exception) {
             log.error(exception)
             emptyList()
+        }
+    }
+
+    private fun transformToDTO(beskjed: Beskjed, innloggetBruker: InnloggetBruker): BeskjedDTO {
+        return if(innloggetBruker.getSecurityLevel().level >= beskjed.sikkerhetsnivaa) {
+            toBeskjedDTO(beskjed)
+        } else {
+            toMaskedBeskjedDTO(beskjed)
         }
     }
 }

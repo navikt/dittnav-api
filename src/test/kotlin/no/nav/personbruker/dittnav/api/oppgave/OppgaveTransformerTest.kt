@@ -36,4 +36,16 @@ class OppgaveTransformerTest {
         brukernotifikasjon.sistOppdatert `should be` oppgave1.sistOppdatert
         brukernotifikasjon.type `should be` BrukernotifikasjonType.OPPGAVE
     }
+
+    @Test
+    fun `should mask tekst and link`() {
+        val oppgave = createOppgave("1", "1", true)
+        val oppgaveDTO = toMaskedOppgaveDTO(oppgave)
+        oppgaveDTO.eventTidspunkt `should be` oppgave.eventTidspunkt
+        oppgaveDTO.eventId `should be equal to` oppgave.eventId
+        oppgaveDTO.tekst `should be equal to` "***"
+        oppgaveDTO.link `should be equal to` "***"
+        oppgaveDTO.sistOppdatert `should be` oppgave.sistOppdatert
+        oppgaveDTO.sikkerhetsnivaa `should be` oppgave.sikkerhetsnivaa
+    }
 }

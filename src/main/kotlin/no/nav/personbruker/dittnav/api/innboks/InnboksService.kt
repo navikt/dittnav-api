@@ -23,9 +23,9 @@ class InnboksService (private val innboksConsumer: InnboksConsumer) {
 
     suspend fun getInnboksEventsAsBrukernotifikasjoner(innloggetBruker: InnloggetBruker): List<Brukernotifikasjon> {
         return try {
-            innboksConsumer.getExternalActiveEvents(innloggetBruker).map { innboks ->
-                toBrukernotifikasjon(innboks)
-            }
+            innboksConsumer.getExternalActiveEvents(innloggetBruker)
+                    .filter { innboks -> innloggetBruker.getSecurityLevel().level >= innboks.sikkerhetsnivaa }
+                    .map { innboks-> toBrukernotifikasjon(innboks) }
         } catch (exception: Exception) {
             log.error(exception)
             emptyList()
@@ -38,10 +38,18 @@ class InnboksService (private val innboksConsumer: InnboksConsumer) {
     ): List<InnboksDTO> {
         return try {
             val externalEvents = getEvents(innloggetBruker)
-            externalEvents.map { innboks -> toInnboksDTO(innboks) }
+            externalEvents.map { innboks -> transformToDTO(innboks, innloggetBruker) }
         } catch (exception: Exception) {
             log.error(exception)
             emptyList()
+        }
+    }
+
+    private fun transformToDTO(innboks: Innboks, innloggetBruker: InnloggetBruker): InnboksDTO {
+        return if(innloggetBruker.getSecurityLevel().level >= innboks.sikkerhetsnivaa) {
+            toInnboksDTO(innboks)
+        } else {
+            toMaskedInnboksDTO(innboks)
         }
     }
 }

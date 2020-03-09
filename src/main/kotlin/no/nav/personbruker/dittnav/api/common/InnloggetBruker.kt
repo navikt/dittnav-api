@@ -22,6 +22,17 @@ class InnloggetBruker(val token: JwtToken) {
         return token.jwtTokenClaims.getStringClaim("pid")
     }
 
+    fun getSecurityLevel(): SecurityLevel {
+        val levelClaim = token.jwtTokenClaims.getStringClaim("acr")
+        val level = when(levelClaim) {
+            "Level3" -> SecurityLevel.Level3
+            "Level4" -> SecurityLevel.Level4
+            else -> SecurityLevel.Ukjent
+        }
+        return level
+    }
+
+
     private fun isClaimElevenDigitsOrLess(ident: String): Boolean {
         val regex = """\d{1,11}""".toRegex()
         return regex.matches(ident)

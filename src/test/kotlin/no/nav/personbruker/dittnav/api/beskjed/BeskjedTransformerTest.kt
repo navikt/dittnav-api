@@ -38,4 +38,16 @@ class BeskjedTransformerTest {
         brukernotifikasjon.sikkerhetsnivaa `should be` beskjed1.sikkerhetsnivaa
         brukernotifikasjon.type `should be` BrukernotifikasjonType.BESKJED
     }
+
+    @Test
+    fun `should mask tekst and link`() {
+        val beskjed = createBeskjed("1", "1", "1", true)
+        val beskjedDTO = toMaskedBeskjedDTO(beskjed)
+        beskjedDTO.eventTidspunkt `should be` beskjed.eventTidspunkt
+        beskjedDTO.eventId `should be equal to` beskjed.eventId
+        beskjedDTO.tekst `should be equal to` "***"
+        beskjedDTO.link `should be equal to` "***"
+        beskjedDTO.sistOppdatert `should be` beskjed.sistOppdatert
+        beskjedDTO.sikkerhetsnivaa `should be` beskjed.sikkerhetsnivaa
+    }
 }
