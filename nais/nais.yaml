@@ -15,6 +15,7 @@ spec:
     path: /person/dittnav-api/internal/isReady
     initialDelay: 10
   prometheus:
+    enabled: true
     path: /person/dittnav-api/metrics
   replicas:
     min: 2
@@ -25,8 +26,8 @@ spec:
     enabled: true
   resources:
     limits:
-      cpu: 500m
-      memory: 512Mi
+      cpu: "1"
+      memory: 768Mi
     requests:
-      cpu: 200m
-      memory: 256Mi
+      cpu: "500m"
+      memory: 384Mi

@@ -11,7 +11,7 @@ import io.prometheus.client.CollectorRegistry
 import io.prometheus.client.exporter.common.TextFormat
 import no.nav.personbruker.dittnav.api.config.Environment
 
-fun Routing.healthApi(environment: Environment) {
+fun Routing.healthApi(environment: Environment, collectorRegistry: CollectorRegistry = CollectorRegistry.defaultRegistry) {
 
     val pingJsonResponse = """{"ping": "pong"}"""
 
@@ -34,7 +34,7 @@ fun Routing.healthApi(environment: Environment) {
     get("/metrics") {
         val names = call.request.queryParameters.getAll("name")?.toSet() ?: emptySet()
         call.respondTextWriter(ContentType.parse(TextFormat.CONTENT_TYPE_004), HttpStatusCode.OK) {
-            TextFormat.write004(this, CollectorRegistry.defaultRegistry.filteredMetricFamilySamples(names))
+            TextFormat.write004(this, collectorRegistry.filteredMetricFamilySamples(names))
         }
     }
 
