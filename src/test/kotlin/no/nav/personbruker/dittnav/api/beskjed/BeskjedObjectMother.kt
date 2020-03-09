@@ -3,7 +3,7 @@ package no.nav.personbruker.dittnav.api.beskjed
 import java.time.ZoneId
 import java.time.ZonedDateTime
 
-fun createBeskjed(eventId: String, fodselsnummer: String, uid: String): Beskjed {
+fun createBeskjed(eventId: String, fodselsnummer: String, uid: String, aktiv: Boolean): Beskjed {
     return Beskjed(
             uid = uid,
             eventTidspunkt = ZonedDateTime.now(ZoneId.of("Europe/Oslo")),
@@ -14,7 +14,7 @@ fun createBeskjed(eventId: String, fodselsnummer: String, uid: String): Beskjed 
             link = "https://nav.no/systemX/",
             sikkerhetsnivaa = 4,
             sistOppdatert = ZonedDateTime.now(ZoneId.of("Europe/Oslo")),
-            aktiv = true
+            aktiv = aktiv
     )
 }
 

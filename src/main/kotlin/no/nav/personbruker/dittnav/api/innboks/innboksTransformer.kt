@@ -15,6 +15,12 @@ fun toInnboksDTO(innboks: Innboks): InnboksDTO =
             )
         }
 
+fun toMaskedInnboksDTO(innboks: Innboks): InnboksDTO =
+        innboks.let {
+            var maskedInnboksDTO = toInnboksDTO(innboks)
+            return maskedInnboksDTO.copy(tekst = "***", link = "***")
+        }
+
 fun toBrukernotifikasjon(innboks: Innboks): Brukernotifikasjon =
         innboks.let {
             Brukernotifikasjon(

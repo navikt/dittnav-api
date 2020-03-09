@@ -15,16 +15,21 @@ fun toOppgaveDTO(inbound: Oppgave): OppgaveDTO =
             )
         }
 
-fun toBrukernotifikasjon(inbound: Oppgave): Brukernotifikasjon {
-    return inbound.let {
-        Brukernotifikasjon(
-                eventId = it.eventId,
-                type = BrukernotifikasjonType.OPPGAVE,
-                eventTidspunkt = it.eventTidspunkt,
-                link = it.link,
-                sistOppdatert = it.sistOppdatert,
-                tekst = it.tekst,
-                sikkerhetsnivaa = it.sikkerhetsnivaa
-        )
-    }
-}
+fun toMaskedOppgaveDTO(oppgave: Oppgave): OppgaveDTO =
+        oppgave.let {
+            var maskedOppgaveDTO = toOppgaveDTO(oppgave)
+            return maskedOppgaveDTO.copy(tekst = "***", link = "***")
+        }
+
+fun toBrukernotifikasjon(inbound: Oppgave): Brukernotifikasjon =
+        inbound.let {
+            Brukernotifikasjon(
+                    eventId = it.eventId,
+                    type = BrukernotifikasjonType.OPPGAVE,
+                    eventTidspunkt = it.eventTidspunkt,
+                    link = it.link,
+                    sistOppdatert = it.sistOppdatert,
+                    tekst = it.tekst,
+                    sikkerhetsnivaa = it.sikkerhetsnivaa
+            )
+        }

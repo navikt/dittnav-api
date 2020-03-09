@@ -3,8 +3,8 @@ package no.nav.personbruker.dittnav.api.beskjed
 import no.nav.personbruker.dittnav.api.brukernotifikasjon.Brukernotifikasjon
 import no.nav.personbruker.dittnav.api.brukernotifikasjon.BrukernotifikasjonType
 
-fun toBeskjedDTO(inbound: Beskjed): BeskjedDTO =
-        inbound.let {
+fun toBeskjedDTO(beskjed: Beskjed): BeskjedDTO =
+        beskjed.let {
             BeskjedDTO(
                     uid = it.uid,
                     eventTidspunkt = it.eventTidspunkt,
@@ -16,8 +16,14 @@ fun toBeskjedDTO(inbound: Beskjed): BeskjedDTO =
             )
         }
 
-fun toBrukernotifikasjon(inbound: Beskjed): Brukernotifikasjon {
-    return inbound.let{
+fun toMaskedBeskjedDTO(beskjed: Beskjed): BeskjedDTO =
+        beskjed.let {
+            var maskedBeskjedDTO = toBeskjedDTO(beskjed)
+            return maskedBeskjedDTO.copy(tekst = "***", link = "***")
+        }
+
+fun toBrukernotifikasjon(beskjed: Beskjed): Brukernotifikasjon =
+    beskjed.let{
         Brukernotifikasjon(
                 uid = it.uid,
                 eventId = it.eventId,
@@ -29,4 +35,3 @@ fun toBrukernotifikasjon(inbound: Beskjed): Brukernotifikasjon {
                 sikkerhetsnivaa = it.sikkerhetsnivaa
         )
     }
-}
