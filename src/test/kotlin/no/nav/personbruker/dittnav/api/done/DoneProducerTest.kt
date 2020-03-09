@@ -9,6 +9,7 @@ import io.ktor.client.statement.request
 import io.ktor.http.*
 import kotlinx.coroutines.runBlocking
 import no.nav.personbruker.dittnav.api.common.InnloggetBrukerObjectMother
+import no.nav.personbruker.dittnav.api.common.SecurityLevel
 import no.nav.personbruker.dittnav.api.config.buildJsonSerializer
 import org.amshove.kluent.`should equal`
 import org.junit.jupiter.api.Test
@@ -16,7 +17,7 @@ import java.net.URL
 
 internal class DoneProducerTest {
 
-    val innloggetBruker = InnloggetBrukerObjectMother.createInnloggetBruker()
+    val innloggetBruker = InnloggetBrukerObjectMother.createInnloggetBruker(SecurityLevel.Level4)
 
     @Test
     fun `should call post endpoint on event handler`() {
