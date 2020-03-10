@@ -12,7 +12,6 @@ import no.nav.personbruker.dittnav.api.common.InnloggetBruker
 import org.slf4j.LoggerFactory
 import java.net.URL
 
-
 class DoneProducer(private val httpClient: HttpClient, dittNAVBaseURL: URL) {
 
     private val log = LoggerFactory.getLogger(DoneProducer::class.java)
@@ -31,7 +30,7 @@ class DoneProducer(private val httpClient: HttpClient, dittNAVBaseURL: URL) {
         httpClient.post<T>() {
             url(url)
             method = HttpMethod.Post
-            header(HttpHeaders.Authorization, innloggetBruker.getBearerToken())
+            header(HttpHeaders.Authorization, innloggetBruker.createAuthenticationHeader())
             contentType(ContentType.Application.Json)
             body = done
         }

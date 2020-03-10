@@ -4,7 +4,6 @@ import io.mockk.coEvery
 import io.mockk.mockk
 import kotlinx.coroutines.runBlocking
 import no.nav.personbruker.dittnav.api.common.InnloggetBrukerObjectMother
-import no.nav.personbruker.dittnav.api.common.SecurityLevel
 import org.amshove.kluent.`should be equal to`
 import org.junit.jupiter.api.Test
 
@@ -12,7 +11,7 @@ class OppgaveServiceTest {
 
     val oppgaveConsumer = mockk<OppgaveConsumer>()
     val oppgaveService = OppgaveService(oppgaveConsumer)
-    var innloggetBruker = InnloggetBrukerObjectMother.createInnloggetBruker(SecurityLevel.Level4)
+    var innloggetBruker = InnloggetBrukerObjectMother.createInnloggetBruker()
 
     @Test
     fun `should return list of OppgaveDTO when active Events are received`() {
@@ -48,9 +47,10 @@ class OppgaveServiceTest {
 
     @Test
     fun `should mask events with security level higher than current user`() {
-        var oppgave = createOppgave("1", "1", true)
+        val ident = "1"
+        var oppgave = createOppgave("1", ident, true)
         oppgave = oppgave.copy(sikkerhetsnivaa = 4)
-        innloggetBruker = InnloggetBrukerObjectMother.createInnloggetBruker(SecurityLevel.Level3)
+        innloggetBruker = InnloggetBrukerObjectMother.createInnloggetBruker(ident, 3)
         coEvery { oppgaveConsumer.getExternalActiveEvents(innloggetBruker) } returns listOf(oppgave)
         runBlocking {
             val oppgaveList = oppgaveService.getActiveOppgaveEvents(innloggetBruker)
@@ -77,7 +77,7 @@ class OppgaveServiceTest {
 
     @Test
     fun `should not mask events with security level equal than current user`() {
-        var oppgave = createOppgave("1", "1", true)
+        val oppgave = createOppgave("1", "1", true)
         coEvery { oppgaveConsumer.getExternalActiveEvents(innloggetBruker) } returns listOf(oppgave)
         runBlocking {
             val oppgaveList = oppgaveService.getActiveOppgaveEvents(innloggetBruker)

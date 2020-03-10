@@ -4,7 +4,7 @@ import io.ktor.application.call
 import io.ktor.response.respond
 import io.ktor.routing.Route
 import io.ktor.routing.get
-import no.nav.personbruker.dittnav.api.common.innloggetBruker
+import no.nav.personbruker.dittnav.api.config.innloggetBruker
 
 fun Route.beskjed(beskjedService: BeskjedService) {
 

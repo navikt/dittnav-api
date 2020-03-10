@@ -24,7 +24,7 @@ class OppgaveService(private val oppgaveConsumer: OppgaveConsumer) {
     suspend fun getOppgaveEventsAsBrukernotifikasjoner(innloggetBruker: InnloggetBruker): List<Brukernotifikasjon> {
         return try {
             oppgaveConsumer.getExternalActiveEvents(innloggetBruker)
-                    .filter { oppgave -> innloggetBruker.getSecurityLevel().level >= oppgave.sikkerhetsnivaa}
+                    .filter { oppgave -> innloggetBruker.innloggingsnivaa >= oppgave.sikkerhetsnivaa }
                     .map { oppgave -> toBrukernotifikasjon(oppgave) }
         } catch (exception: Exception) {
             log.error(exception)
@@ -54,6 +54,6 @@ class OppgaveService(private val oppgaveConsumer: OppgaveConsumer) {
     }
 
     private fun innloggetBrukerIsAllowedToViewAllDataInEvent(oppgave: Oppgave, innloggetBruker: InnloggetBruker): Boolean {
-        return innloggetBruker.getSecurityLevel().level >= oppgave.sikkerhetsnivaa;
+        return innloggetBruker.innloggingsnivaa >= oppgave.sikkerhetsnivaa
     }
 }

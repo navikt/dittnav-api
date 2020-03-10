@@ -8,7 +8,7 @@ import io.ktor.response.respond
 import io.ktor.routing.Route
 import io.ktor.routing.post
 import io.ktor.util.pipeline.PipelineContext
-import no.nav.personbruker.dittnav.api.common.innloggetBruker
+import no.nav.personbruker.dittnav.api.config.innloggetBruker
 
 fun Route.doneApi(doneProducer: DoneProducer) {
 

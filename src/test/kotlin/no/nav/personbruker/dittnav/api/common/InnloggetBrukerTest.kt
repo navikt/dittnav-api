@@ -1,93 +1,43 @@
 package no.nav.personbruker.dittnav.api.common
 
-import io.mockk.coEvery
-import kotlinx.coroutines.runBlocking
 import org.amshove.kluent.`should be equal to`
-import org.amshove.kluent.`should equal`
+import org.amshove.kluent.`should contain`
+import org.amshove.kluent.`should not contain`
+import org.amshove.kluent.shouldNotBeNullOrBlank
 import org.junit.jupiter.api.Test
 
 internal class InnloggetBrukerTest {
 
-    val innloggetBruker = InnloggetBrukerObjectMother.createInnloggetBruker(SecurityLevel.Level4)
-
     @Test
-    fun `should return string with Bearer token`() {
-        val expectedToken = "Bearer dummyToken"
+    fun `should return expected values`() {
+        val expectedIdent = "12345"
+        val expectedInnloggingsnivaa = 4
 
-        runBlocking {
-            val actualToken = innloggetBruker.getBearerToken()
-            actualToken `should be equal to` expectedToken
-        }
+        val innloggetbruker = InnloggetBrukerObjectMother.createInnloggetBruker(expectedIdent, expectedInnloggingsnivaa)
+
+        innloggetbruker.ident `should be equal to` expectedIdent
+        innloggetbruker.innloggingsnivaa `should be equal to` expectedInnloggingsnivaa
+        innloggetbruker.token.shouldNotBeNullOrBlank()
     }
 
     @Test
-    fun `should return string with ident from pid token claim`() {
-        val expectedIdent = "dummyIdent"
-        val subClaimThatIsNotAnIdent ="dummyClaimThatIsNotAnIdent"
+    fun `should create authentication header`() {
+        val innloggetBruker = InnloggetBrukerObjectMother.createInnloggetBruker()
 
-        coEvery { innloggetBruker.token.jwtTokenClaims.getStringClaim("pid")} returns expectedIdent
-        coEvery { innloggetBruker.token.jwtTokenClaims.getStringClaim("sub")} returns subClaimThatIsNotAnIdent
+        val generatedAuthHeader = innloggetBruker.createAuthenticationHeader()
 
-        runBlocking {
-            val actualIdent = innloggetBruker.getIdentFromToken()
-            actualIdent `should be equal to` expectedIdent
-        }
+        generatedAuthHeader `should be equal to` "Bearer ${innloggetBruker.token}"
     }
 
     @Test
-    fun `should return string with ident from sub token claim`() {
-        val expectedIdent = "123"
+    fun `should not include sensitive values in the output for the toString method`() {
+        val innloggetBruker = InnloggetBrukerObjectMother.createInnloggetBruker()
 
-        coEvery { innloggetBruker.token.jwtTokenClaims.getStringClaim("pid")} returns null
-        coEvery { innloggetBruker.token.jwtTokenClaims.getStringClaim("sub")} returns expectedIdent
+        val outputOfToString = innloggetBruker.toString()
 
-        runBlocking {
-            val actualIdent = innloggetBruker.getIdentFromToken()
-            actualIdent `should be equal to` expectedIdent
-        }
+        outputOfToString `should contain` (innloggetBruker.innloggingsnivaa.toString())
+        outputOfToString `should not contain` (innloggetBruker.ident)
+        outputOfToString `should not contain` (innloggetBruker.token)
     }
 
-    @Test
-    fun `should return security level 4 from acr token claim`() {
-        val expectedLevel = SecurityLevel.Level4
-        coEvery { innloggetBruker.token.jwtTokenClaims.getStringClaim("acr")} returns "Level4"
-
-        runBlocking {
-            val actualLevel = innloggetBruker.getSecurityLevel()
-            actualLevel `should equal` expectedLevel
-        }
-    }
-
-    @Test
-    fun `should return security level 3 from acr token claim`() {
-        val expectedLevel = SecurityLevel.Level3
-        coEvery { innloggetBruker.token.jwtTokenClaims.getStringClaim("acr")} returns "Level3"
-
-        runBlocking {
-            val actualLevel = innloggetBruker.getSecurityLevel()
-            actualLevel `should equal` expectedLevel
-        }
-    }
-
-    @Test
-    fun `should return unknown level from acr token claim`() {
-        val expectedLevel = SecurityLevel.Ukjent
-        coEvery { innloggetBruker.token.jwtTokenClaims.getStringClaim("acr")} returns "dummy"
-
-        runBlocking {
-            val actualLevel = innloggetBruker.getSecurityLevel()
-            actualLevel `should equal` expectedLevel
-        }
-    }
-
-    @Test
-    fun `should return int indicating unknown level if acr claim is missing`() {
-        val expectedLevel = SecurityLevel.Ukjent
-        coEvery { innloggetBruker.token.jwtTokenClaims.getStringClaim("acr")} returns null
-
-        runBlocking {
-            val actualLevel = innloggetBruker.getSecurityLevel()
-            actualLevel `should equal` expectedLevel
-        }
-    }
 }

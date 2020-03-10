@@ -4,7 +4,6 @@ import io.mockk.coEvery
 import io.mockk.mockk
 import kotlinx.coroutines.runBlocking
 import no.nav.personbruker.dittnav.api.common.InnloggetBrukerObjectMother
-import no.nav.personbruker.dittnav.api.common.SecurityLevel
 import org.amshove.kluent.`should be equal to`
 import org.junit.jupiter.api.Test
 
@@ -12,7 +11,7 @@ class InnboksServiceTest {
     val innboksConsumer = mockk<InnboksConsumer>()
     val innboksService = InnboksService(innboksConsumer)
 
-    var innloggetBruker = InnloggetBrukerObjectMother.createInnloggetBruker(SecurityLevel.Level4)
+    var innloggetBruker = InnloggetBrukerObjectMother.createInnloggetBruker()
 
     @Test
     fun `should return list of InnboksDTO when active Events are received`() {
@@ -48,9 +47,10 @@ class InnboksServiceTest {
 
     @Test
     fun `should mask events with security level higher than current user`() {
-        var innboks = createInnboks("1", "1", true)
+        val ident = "1"
+        var innboks = createInnboks("1", ident, true)
         innboks = innboks.copy(sikkerhetsnivaa = 4)
-        innloggetBruker = InnloggetBrukerObjectMother.createInnloggetBruker(SecurityLevel.Level3)
+        innloggetBruker = InnloggetBrukerObjectMother.createInnloggetBruker(ident, 3)
         coEvery { innboksConsumer.getExternalActiveEvents(innloggetBruker) } returns listOf(innboks)
         runBlocking {
             val innboksList = innboksService.getActiveInnboksEvents(innloggetBruker)
@@ -77,7 +77,7 @@ class InnboksServiceTest {
 
     @Test
     fun `should not mask events with security level equal than current user`() {
-        var innboks = createInnboks("1", "1", true)
+        val innboks = createInnboks("1", "1", true)
         coEvery { innboksConsumer.getExternalActiveEvents(innloggetBruker) } returns listOf(innboks)
         runBlocking {
             val innboksList = innboksService.getActiveInnboksEvents(innloggetBruker)

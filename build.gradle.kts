@@ -15,7 +15,8 @@ val kluentVersion = "1.56"
 val tokensupportVersion = "1.1.0"
 val kotlinxCoroutinesVersion = "1.3.3"
 val kotlinxHtmlVersion = "0.6.12"
-
+val jjwtVersion = "0.11.0"
+val bcproVersion = "1.64"
 
 plugins {
     // Apply the Kotlin JVM plugin to add support for Kotlin on the JVM.
@@ -23,7 +24,7 @@ plugins {
     kotlin("jvm").version(kotlinVersion)
     kotlin("plugin.allopen").version(kotlinVersion)
 
-    id("org.flywaydb.flyway") version("5.2.4")
+    id("org.flywaydb.flyway") version ("5.2.4")
 
     // Apply the application plugin to add support for building a CLI application.
     application
@@ -54,15 +55,15 @@ dependencies {
     compile("io.ktor:ktor-client-apache:$ktorVersion")
     compile("io.ktor:ktor-client-json:$ktorVersion")
     compile("io.ktor:ktor-client-serialization-jvm:$ktorVersion")
+    compile("io.ktor:ktor-jackson:$ktorVersion")
     compile("io.ktor:ktor-client-jackson:$ktorVersion")
-    compile("ch.qos.logback:logback-classic:$logbackVersion")
-    compile("net.logstash.logback:logstash-logback-encoder:$logstashVersion")
+    compile("io.ktor:ktor-html-builder:$ktorVersion")
     compile("io.ktor:ktor-client-logging:$ktorVersion")
     compile("io.ktor:ktor-client-logging-jvm:$ktorVersion")
+    compile("ch.qos.logback:logback-classic:$logbackVersion")
+    compile("net.logstash.logback:logstash-logback-encoder:$logstashVersion")
     compile("com.fasterxml.jackson.datatype:jackson-datatype-jsr310:$jacksonVersion")
-    compile("io.ktor:ktor-jackson:$ktorVersion")
     compile("org.jetbrains.kotlinx:kotlinx-html-jvm:${kotlinxHtmlVersion}")
-    compile("io.ktor:ktor-html-builder:$ktorVersion")
     testCompile("org.junit.jupiter:junit-jupiter-api:$junitVersion")
     testCompile(kotlin("test-junit5"))
     testCompile("io.ktor:ktor-client-mock:$ktorVersion")
@@ -71,6 +72,10 @@ dependencies {
     testImplementation("org.amshove.kluent:kluent:$kluentVersion")
     testImplementation("io.mockk:mockk:$mockKVersion")
     testRuntime("org.junit.jupiter:junit-jupiter-engine:$junitVersion")
+    testCompile("io.jsonwebtoken:jjwt-api:$jjwtVersion")
+    testRuntime("io.jsonwebtoken:jjwt-impl:$jjwtVersion")
+    testRuntime("io.jsonwebtoken:jjwt-jackson:$jjwtVersion")
+    testRuntime("org.bouncycastle:bcprov-jdk15on:$bcproVersion")
 }
 
 application {
@@ -98,6 +103,7 @@ tasks {
         environment("LEGACY_API_URL", "http://localhost:8090/person/dittnav-legacy-api")
         environment("EVENT_HANDLER_URL", "http://localhost:8092")
         environment("CORS_ALLOWED_ORIGINS", "localhost:9002")
+        environment("OIDC_CLAIM_CONTAINING_THE_IDENTITY", "pid")
         main = application.mainClassName
         classpath = sourceSets["main"].runtimeClasspath
     }

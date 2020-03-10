@@ -24,7 +24,7 @@ class BeskjedService(private val beskjedConsumer: BeskjedConsumer) {
     suspend fun getBeskjedEventsAsBrukernotifikasjoner(innloggetBruker: InnloggetBruker): List<Brukernotifikasjon> {
         return try {
             beskjedConsumer.getExternalActiveEvents(innloggetBruker)
-                    .filter { beskjed ->  innloggetBruker.getSecurityLevel().level >= beskjed.sikkerhetsnivaa }
+                    .filter { beskjed -> innloggetBruker.innloggingsnivaa >= beskjed.sikkerhetsnivaa }
                     .map { beskjed -> toBrukernotifikasjon(beskjed) }
         } catch (exception: Exception) {
             log.error(exception)
@@ -54,6 +54,6 @@ class BeskjedService(private val beskjedConsumer: BeskjedConsumer) {
     }
 
     private fun innloggetBrukerIsAllowedToViewAllDataInEvent(beskjed: Beskjed, innloggetBruker: InnloggetBruker): Boolean {
-        return innloggetBruker.getSecurityLevel().level >= beskjed.sikkerhetsnivaa;
+        return innloggetBruker.innloggingsnivaa >= beskjed.sikkerhetsnivaa
     }
 }
