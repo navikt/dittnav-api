@@ -2,6 +2,7 @@ package no.nav.personbruker.dittnav.api.innboks
 
 import io.ktor.util.error
 import no.nav.personbruker.dittnav.api.brukernotifikasjon.Brukernotifikasjon
+import no.nav.personbruker.dittnav.api.common.ConsumeEventException
 import no.nav.personbruker.dittnav.api.common.InnloggetBruker
 import org.slf4j.LoggerFactory
 
@@ -40,8 +41,7 @@ class InnboksService (private val innboksConsumer: InnboksConsumer) {
             val externalEvents = getEvents(innloggetBruker)
             externalEvents.map { innboks -> transformToDTO(innboks, innloggetBruker) }
         } catch (exception: Exception) {
-            log.error(exception)
-            emptyList()
+            throw ConsumeEventException("Klarte ikke hente eventer av type Innboks", exception)
         }
     }
 
