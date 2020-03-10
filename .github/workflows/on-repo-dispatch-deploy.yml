@@ -35,7 +35,6 @@ jobs:
       - name: 'Deploy-er til ${{ env.NAMESPACE }} i ${{ env.CLUSTER }}'
         uses: 'nais/deploy/actions/deploy@v1'
         env:
-          TEAM: personbruker
           APIKEY: ${{ secrets.NAIS_DEPLOY_APIKEY }}
           CLUSTER: ${{ env.CLUSTER }}
           RESOURCE: ./nais/nais.yaml
