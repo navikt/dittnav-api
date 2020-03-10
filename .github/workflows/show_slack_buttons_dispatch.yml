@@ -16,6 +16,23 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
 
+      - name: 'Sjekker ut en branchen det ønskes å lage et docker-image for'
+        run: |
+          git fetch --no-tags --prune origin +refs/heads/*:refs/remotes/origin/*
+          git checkout $COMMIT_BRANCH
+          echo "::set-env name=CURRENT_REF::$(git log -1 --pretty='%H')"
+
+      - name: Kompiler
+        uses: navikt/pb-common-gh-actions/build@v1
+        with:
+          SKIP_TESTS: "true"
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Bygg, tag og push Docker image
+        uses: navikt/pb-common-gh-actions/docker-publish@v1
+        with:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
       - name: Vis deploy-knapper i slack
         uses: navikt/deploy-trigger-slack-integration@v1
         with:

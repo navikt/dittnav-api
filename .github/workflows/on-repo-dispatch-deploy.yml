@@ -22,8 +22,7 @@ jobs:
         run: |
           echo "Henter ut alle branch-er"
           git fetch --no-tags --prune origin +refs/heads/*:refs/remotes/origin/*
-          SHA=$(echo $VERSION | cut -c16-23)
-          git checkout $SHA
+          git checkout $VERSION
 
       - name: Genererer tagger og imagenavn, tilgjengeliggjør dette for resten av stegene
         run: |
