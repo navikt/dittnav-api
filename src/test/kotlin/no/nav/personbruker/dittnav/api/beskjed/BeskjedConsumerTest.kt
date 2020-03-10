@@ -2,7 +2,10 @@ package no.nav.personbruker.dittnav.api.beskjed
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import io.ktor.client.HttpClient
-import io.ktor.client.engine.mock.*
+import io.ktor.client.engine.mock.MockEngine
+import io.ktor.client.engine.mock.MockRequestHandleScope
+import io.ktor.client.engine.mock.respond
+import io.ktor.client.engine.mock.respondError
 import io.ktor.client.features.json.JsonFeature
 import io.ktor.client.request.HttpResponseData
 import io.ktor.http.ContentType
@@ -11,7 +14,6 @@ import io.ktor.http.HttpStatusCode
 import io.ktor.http.headersOf
 import kotlinx.coroutines.runBlocking
 import no.nav.personbruker.dittnav.api.common.InnloggetBrukerObjectMother
-import no.nav.personbruker.dittnav.api.common.SecurityLevel
 import no.nav.personbruker.dittnav.api.config.buildJsonSerializer
 import no.nav.personbruker.dittnav.api.config.enableDittNavJsonConfig
 import org.amshove.kluent.`should be equal to`
@@ -23,7 +25,7 @@ import java.net.URL
 
 class BeskjedConsumerTest {
 
-    val innloggetBruker = InnloggetBrukerObjectMother.createInnloggetBruker(SecurityLevel.Level4)
+    val innloggetBruker = InnloggetBrukerObjectMother.createInnloggetBruker()
 
     @Test
     fun `should call information endpoint on event handler`() {

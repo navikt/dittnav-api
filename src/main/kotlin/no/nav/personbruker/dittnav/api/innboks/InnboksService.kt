@@ -24,7 +24,7 @@ class InnboksService (private val innboksConsumer: InnboksConsumer) {
     suspend fun getInnboksEventsAsBrukernotifikasjoner(innloggetBruker: InnloggetBruker): List<Brukernotifikasjon> {
         return try {
             innboksConsumer.getExternalActiveEvents(innloggetBruker)
-                    .filter { innboks -> innloggetBruker.getSecurityLevel().level >= innboks.sikkerhetsnivaa }
+                    .filter { innboks -> innloggetBruker.innloggingsnivaa >= innboks.sikkerhetsnivaa }
                     .map { innboks-> toBrukernotifikasjon(innboks) }
         } catch (exception: Exception) {
             log.error(exception)
@@ -54,6 +54,6 @@ class InnboksService (private val innboksConsumer: InnboksConsumer) {
     }
 
     private fun innloggetBrukerIsAllowedToViewAllDataInEvent(innboks: Innboks, innloggetBruker: InnloggetBruker): Boolean {
-        return innloggetBruker.getSecurityLevel().level >= innboks.sikkerhetsnivaa;
+        return innloggetBruker.innloggingsnivaa >= innboks.sikkerhetsnivaa
     }
 }

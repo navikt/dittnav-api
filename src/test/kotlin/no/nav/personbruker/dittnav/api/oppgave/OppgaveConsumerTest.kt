@@ -14,7 +14,6 @@ import io.ktor.http.HttpStatusCode
 import io.ktor.http.headersOf
 import kotlinx.coroutines.runBlocking
 import no.nav.personbruker.dittnav.api.common.InnloggetBrukerObjectMother
-import no.nav.personbruker.dittnav.api.common.SecurityLevel
 import no.nav.personbruker.dittnav.api.config.buildJsonSerializer
 import no.nav.personbruker.dittnav.api.config.enableDittNavJsonConfig
 import org.amshove.kluent.`should be equal to`
@@ -26,7 +25,7 @@ import java.net.URL
 
 class OppgaveConsumerTest {
 
-    val innloggetBruker = InnloggetBrukerObjectMother.createInnloggetBruker(SecurityLevel.Level4)
+    val innloggetBruker = InnloggetBrukerObjectMother.createInnloggetBruker()
 
     @Test
     fun `should call oppgave endpoint on event handler`() {

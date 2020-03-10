@@ -15,6 +15,6 @@ suspend inline fun <reified T> HttpClient.get(url: URL, innloggetBruker: Innlogg
     request<T> {
         url(url)
         method = HttpMethod.Get
-        header(HttpHeaders.Authorization, innloggetBruker.getBearerToken())
+        header(HttpHeaders.Authorization, innloggetBruker.createAuthenticationHeader())
     }
 }
