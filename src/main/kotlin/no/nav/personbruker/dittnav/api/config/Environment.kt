@@ -1,6 +1,5 @@
 package no.nav.personbruker.dittnav.api.config
 
-import org.slf4j.LoggerFactory
 import java.net.URL
 
 data class Environment(
@@ -9,8 +8,6 @@ data class Environment(
         val corsAllowedOrigins: String = getEnvVar("CORS_ALLOWED_ORIGINS"),
         val corsAllowedSchemes: String = getOptionalEnvVar("CORS_ALLOWED_SCHEMES", "https")
 )
-
-private val log = LoggerFactory.getLogger(Environment::class.java)
 
 fun getEnvVar(varName: String): String {
     val varValue = System.getenv(varName)

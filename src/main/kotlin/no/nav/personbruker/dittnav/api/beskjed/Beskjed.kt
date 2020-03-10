@@ -13,4 +13,18 @@ data class Beskjed(
         val sikkerhetsnivaa: Int,
         val sistOppdatert: ZonedDateTime,
         val aktiv: Boolean
-)
+) {
+    override fun toString(): String {
+        return "Beskjed(" +
+                "uid=$uid, " +
+                "eventTidspunkt=$eventTidspunkt, " +
+                "fodselsnummer=***, " +
+                "eventId=$eventId, " +
+                "grupperingsId=$grupperingsId, " +
+                "tekst=***, " +
+                "link=***, " +
+                "sikkerhetsnivaa=$sikkerhetsnivaa, " +
+                "sistOppdatert=$sistOppdatert, " +
+                "aktiv=$aktiv"
+    }
+}
