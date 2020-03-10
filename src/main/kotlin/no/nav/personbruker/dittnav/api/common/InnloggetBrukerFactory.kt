@@ -25,7 +25,7 @@ object InnloggetBrukerFactory {
         return InnloggetBruker(ident, innloggingsnivaa, token.tokenAsString)
     }
 
-    fun extractInnloggingsnivaa(token: JwtToken): Int {
+    private fun extractInnloggingsnivaa(token: JwtToken): Int {
         val innloggingsnivaaClaim = token.jwtTokenClaims.getStringClaim("acr")
 
         return when (innloggingsnivaaClaim) {
