@@ -22,9 +22,9 @@ spec:
     max: 4
   webproxy: true
   ingresses:
-  {{#each ingresses}}
-     - "{{this}}"
-     {{/each}}
+{{#each ingresses}}
+  - "{{this}}"
+{{/each}}
 vault:
   enabled: true
 resources:
