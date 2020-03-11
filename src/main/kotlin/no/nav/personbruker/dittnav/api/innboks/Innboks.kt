@@ -12,4 +12,17 @@ data class Innboks(
         val sikkerhetsnivaa: Int,
         val sistOppdatert: ZonedDateTime,
         val aktiv: Boolean
-)
+) {
+    override fun toString(): String {
+        return "Innboks(" +
+                "eventTidspunkt=$eventTidspunkt, " +
+                "fodselsnummer=***, " +
+                "eventId=$eventId, " +
+                "grupperingsId=$grupperingsId, " +
+                "tekst=***, " +
+                "link=***, " +
+                "sikkerhetsnivaa=$sikkerhetsnivaa, " +
+                "sistOppdatert=$sistOppdatert, " +
+                "aktiv=$aktiv"
+    }
+}

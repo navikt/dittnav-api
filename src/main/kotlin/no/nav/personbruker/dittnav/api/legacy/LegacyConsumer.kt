@@ -14,10 +14,9 @@ class LegacyConsumer(private val httpClient: HttpClient, private val dittNAVLega
 
     suspend fun getLegacyContent(path: String, innloggetBruker: InnloggetBruker): HttpResponse {
         val endpoint = URL("$dittNAVLegacyBaseURL$path")
-        log.info("Skal hente fra: $endpoint")
         val response: HttpResponse = httpClient.get(endpoint, innloggetBruker)
         if (response.status != HttpStatusCode.OK) {
-            log.warn("Error mot $dittNAVLegacyBaseURL$path: ${response.status.value} ${response.status.description}")
+            log.warn("Feil mot $dittNAVLegacyBaseURL$path: ${response.status.value} ${response.status.description}")
         }
         return response
     }

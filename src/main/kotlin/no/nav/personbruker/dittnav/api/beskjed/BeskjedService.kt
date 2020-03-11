@@ -2,6 +2,7 @@ package no.nav.personbruker.dittnav.api.beskjed
 
 import io.ktor.util.error
 import no.nav.personbruker.dittnav.api.brukernotifikasjon.Brukernotifikasjon
+import no.nav.personbruker.dittnav.api.common.ConsumeEventException
 import no.nav.personbruker.dittnav.api.common.InnloggetBruker
 import org.slf4j.LoggerFactory
 
@@ -40,8 +41,7 @@ class BeskjedService(private val beskjedConsumer: BeskjedConsumer) {
             val externalEvents = getEvents(innloggetBruker)
             externalEvents.map { beskjed -> transformToDTO(beskjed, innloggetBruker) }
         } catch(exception: Exception) {
-            log.error(exception)
-            emptyList()
+            throw ConsumeEventException("Klarte ikke hente eventer av type Beskjed", exception)
         }
     }
 

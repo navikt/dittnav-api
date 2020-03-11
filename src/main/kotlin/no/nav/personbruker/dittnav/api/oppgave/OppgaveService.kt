@@ -2,6 +2,7 @@ package no.nav.personbruker.dittnav.api.oppgave
 
 import io.ktor.util.error
 import no.nav.personbruker.dittnav.api.brukernotifikasjon.Brukernotifikasjon
+import no.nav.personbruker.dittnav.api.common.ConsumeEventException
 import no.nav.personbruker.dittnav.api.common.InnloggetBruker
 import org.slf4j.LoggerFactory
 
@@ -40,8 +41,7 @@ class OppgaveService(private val oppgaveConsumer: OppgaveConsumer) {
             val externalEvents = getEvents(innloggetBruker)
             externalEvents.map { oppgave -> transformToDTO(oppgave, innloggetBruker) }
         } catch (exception: Exception) {
-            log.error(exception)
-            emptyList()
+            throw ConsumeEventException("Klarte ikke hente eventer av type Oppgave", exception)
         }
     }
 

@@ -3,8 +3,11 @@ package no.nav.personbruker.dittnav.api.oppgave
 import io.mockk.coEvery
 import io.mockk.mockk
 import kotlinx.coroutines.runBlocking
+import no.nav.personbruker.dittnav.api.common.ConsumeEventException
 import no.nav.personbruker.dittnav.api.common.InnloggetBrukerObjectMother
 import org.amshove.kluent.`should be equal to`
+import org.amshove.kluent.`should throw`
+import org.amshove.kluent.invoking
 import org.junit.jupiter.api.Test
 
 class OppgaveServiceTest {
@@ -36,11 +39,11 @@ class OppgaveServiceTest {
     }
 
     @Test
-    fun `should return empty List when Exception is thrown`() {
+    fun `should return empty List of Brukernotifikasjon when Exception is thrown`() {
         coEvery { oppgaveConsumer.getExternalActiveEvents(innloggetBruker) } throws Exception("error")
 
         runBlocking {
-            val brukernotifikasjonListe = oppgaveService.getActiveOppgaveEvents(innloggetBruker)
+            val brukernotifikasjonListe = oppgaveService.getOppgaveEventsAsBrukernotifikasjoner(innloggetBruker)
             brukernotifikasjonListe.size `should be equal to` 0
         }
     }
@@ -86,5 +89,17 @@ class OppgaveServiceTest {
             oppgaveDTO.link `should be equal to` oppgave.link
             oppgaveDTO.sikkerhetsnivaa `should be equal to` 4
         }
+    }
+
+    @Test
+    fun `should throw exception if fetching active events fails`() {
+        coEvery { oppgaveConsumer.getExternalActiveEvents(innloggetBruker) } throws Exception("error")
+        invoking { runBlocking { oppgaveService.getActiveOppgaveEvents(innloggetBruker) } } `should throw` ConsumeEventException::class
+    }
+
+    @Test
+    fun `should throw exception if fetching inactive events fails`() {
+        coEvery { oppgaveConsumer.getExternalInactiveEvents(innloggetBruker) } throws Exception("error")
+        invoking { runBlocking { oppgaveService.getInactiveOppgaveEvents(innloggetBruker) } } `should throw` ConsumeEventException::class
     }
 }

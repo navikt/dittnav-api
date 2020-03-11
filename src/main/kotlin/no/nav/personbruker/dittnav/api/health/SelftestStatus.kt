@@ -11,14 +11,15 @@ enum class Status {
 }
 
 data class SelftestStatus(val status: Status, val statusMessage: String, val pingedURL: URL)
+
 private val log = LoggerFactory.getLogger(SelftestStatus::class.java)
 
 suspend fun getStatus(url: URL, client: HttpClient): SelftestStatus {
     return try {
         val statusCode = client.get<HttpStatusCode>(url)
         SelftestStatus(Status.OK, statusCode.toString(), url)
-    } catch (cause: Throwable) {
-        log.error("Feil på Selftest mot $url: ${cause.printStackTrace()}")
-        SelftestStatus(Status.ERROR, cause.toString(), url)
+    } catch (exception: Exception) {
+        log.error("Feil på Selftest mot $url", exception)
+        SelftestStatus(Status.ERROR, exception.toString(), url)
     }
 }

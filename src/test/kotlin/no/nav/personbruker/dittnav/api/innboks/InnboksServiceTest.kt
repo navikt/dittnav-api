@@ -3,8 +3,11 @@ package no.nav.personbruker.dittnav.api.innboks
 import io.mockk.coEvery
 import io.mockk.mockk
 import kotlinx.coroutines.runBlocking
+import no.nav.personbruker.dittnav.api.common.ConsumeEventException
 import no.nav.personbruker.dittnav.api.common.InnloggetBrukerObjectMother
 import org.amshove.kluent.`should be equal to`
+import org.amshove.kluent.`should throw`
+import org.amshove.kluent.invoking
 import org.junit.jupiter.api.Test
 
 class InnboksServiceTest {
@@ -36,11 +39,11 @@ class InnboksServiceTest {
     }
 
     @Test
-    fun `should return empty list when Exception is thrown`() {
+    fun `should return empty list of Brukernotifikasjon when Exception is thrown`() {
         coEvery { innboksConsumer.getExternalActiveEvents(innloggetBruker) } throws Exception("error")
 
         runBlocking {
-            val brukernotifikasjonListe = innboksService.getActiveInnboksEvents(innloggetBruker)
+            val brukernotifikasjonListe = innboksService.getInnboksEventsAsBrukernotifikasjoner(innloggetBruker)
             brukernotifikasjonListe.size `should be equal to` 0
         }
     }
@@ -86,5 +89,17 @@ class InnboksServiceTest {
             innboksDTO.link `should be equal to` innboks.link
             innboksDTO.sikkerhetsnivaa `should be equal to` 4
         }
+    }
+
+    @Test
+    fun `should throw exception if fetching active events fails`() {
+        coEvery { innboksConsumer.getExternalActiveEvents(innloggetBruker) } throws Exception("error")
+        invoking { runBlocking { innboksService.getActiveInnboksEvents(innloggetBruker) } } `should throw` ConsumeEventException::class
+    }
+
+    @Test
+    fun `should throw exception if fetching inactive events fails`() {
+        coEvery { innboksConsumer.getExternalInactiveEvents(innloggetBruker) } throws Exception("error")
+        invoking { runBlocking { innboksService.getInactiveInnboksEvents(innloggetBruker) } } `should throw` ConsumeEventException::class
     }
 }
