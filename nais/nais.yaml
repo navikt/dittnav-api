@@ -4,7 +4,7 @@ metadata:
   name: dittnav-api
   namespace: {{namespace}}
   labels:
-    team: {{team}}
+    team: personbruker
 spec:
   image: {{version}}
   port: 8080
