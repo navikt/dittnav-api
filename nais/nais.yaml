@@ -21,13 +21,16 @@ spec:
     min: 2
     max: 4
   webproxy: true
-  ingresses: {{ingresses}}
-  vault:
-    enabled: true
-  resources:
-    limits:
-      cpu: "1"
-      memory: 768Mi
-    requests:
-      cpu: "500m"
-      memory: 384Mi
+  ingresses:
+  {{#each ingresses}}
+     - "{{this}}"
+     {{/each}}
+vault:
+  enabled: true
+resources:
+  limits:
+    cpu: "1"
+    memory: 768Mi
+  requests:
+    cpu: "500m"
+    memory: 384Mi
