@@ -103,7 +103,12 @@ tasks {
         environment("LEGACY_API_URL", "http://localhost:8090/person/dittnav-legacy-api")
         environment("EVENT_HANDLER_URL", "http://localhost:8092")
         environment("CORS_ALLOWED_ORIGINS", "localhost:9002")
+
+        environment("OIDC_ISSUER", "http://localhost:9000")
+        environment("OIDC_DISCOVERY_URL", "http://localhost:9000/.well-known/openid-configuration")
+        environment("OIDC_ACCEPTED_AUDIENCE", "stubOidcClient")
         environment("OIDC_CLAIM_CONTAINING_THE_IDENTITY", "pid")
+
         main = application.mainClassName
         classpath = sourceSets["main"].runtimeClasspath
     }

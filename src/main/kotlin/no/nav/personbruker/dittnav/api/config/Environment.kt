@@ -10,8 +10,8 @@ data class Environment(
 )
 
 fun getEnvVar(varName: String): String {
-    val varValue = System.getenv(varName)
-    return varValue ?: throw IllegalArgumentException("Variable $varName cannot be empty")
+    return System.getenv(varName)
+            ?: throw IllegalArgumentException("Appen kan ikke starte uten av miljøvariabelen $varName er satt.")
 }
 
 fun getOptionalEnvVar(varName: String, defaultValue: String): String {
