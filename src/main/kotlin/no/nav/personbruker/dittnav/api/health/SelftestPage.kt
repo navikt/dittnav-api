@@ -40,7 +40,7 @@ suspend fun ApplicationCall.pingDependencies(environment: Environment) = corouti
             }
             table {
                 thead {
-                    tr { th { +"SELFTEST" } }
+                    tr { th { +"SELFTEST DITTNAV-API" } }
                 }
                 tbody {
                     services.map {
