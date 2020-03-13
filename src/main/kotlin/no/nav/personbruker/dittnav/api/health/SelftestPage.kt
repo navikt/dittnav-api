@@ -16,11 +16,9 @@ suspend fun ApplicationCall.pingDependencies(environment: Environment) = corouti
     val legacySelftestStatus = async { getStatus(legacyApiPingableURL, client) }
     var services = mutableMapOf("DITTNAV_LEGACY_API:" to legacySelftestStatus.await())
 
-    if(isOtherEnvironmentThanProd()) {
-        val eventHandlerPingableURL = URL("${environment.eventHandlerURL}/internal/isAlive")
-        val eventHandlerSelftestStatus = async { getStatus(eventHandlerPingableURL, client) }
-        services.put("DITTNAV_EVENT_HANDLER:", eventHandlerSelftestStatus.await())
-    }
+    val eventHandlerPingableURL = URL("${environment.eventHandlerURL}/isAlive")
+    val eventHandlerSelftestStatus = async { getStatus(eventHandlerPingableURL, client) }
+    services.put("DITTNAV_EVENT_HANDLER:", eventHandlerSelftestStatus.await())
 
     client.close()
 
@@ -56,6 +54,4 @@ suspend fun ApplicationCall.pingDependencies(environment: Environment) = corouti
         }
     }
 }
-
-private fun isOtherEnvironmentThanProd() = System.getenv("NAIS_CLUSTER_NAME") != "prod-sbs"
 
