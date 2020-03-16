@@ -3,6 +3,7 @@ package no.nav.personbruker.dittnav.api.config
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.apache.Apache
 import io.ktor.client.features.json.JsonFeature
+import io.ktor.client.features.HttpTimeout
 
 object HttpClientBuilder {
 
@@ -11,6 +12,7 @@ object HttpClientBuilder {
             install(JsonFeature) {
                 serializer = buildJsonSerializer()
             }
+            install(HttpTimeout)
         }
     }
 
