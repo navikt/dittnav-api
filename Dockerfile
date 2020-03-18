@@ -5,3 +5,5 @@ ENV JAVA_OPTS="-XX:MaxRAMPercentage=75 \
                -XX:HeapDumpPath=/oom-dump.hprof"
 ENV PORT=8080
 EXPOSE $PORT
+
+ENV APPD_ENABLED=true
