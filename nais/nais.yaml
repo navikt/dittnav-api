@@ -29,8 +29,8 @@ spec:
     enabled: true
   resources:
     limits:
-      cpu: "1"
+      cpu: "3"
       memory: 768Mi
     requests:
       cpu: "500m"
-      memory: 384Mi
+      memory: 580Mi
