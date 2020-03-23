@@ -21,7 +21,7 @@ jobs:
       - name: 'Sjekker ut commiten tilhørende imaget som skal deploy-es, for å få tak i riktig versjon av nais-mainifetene'
         run: |
           echo "Henter ut alle branch-er"
-          git fetch --no-tags --prune origin +refs/heads/*:refs/remotes/origin/*
+          git fetch --prune origin +refs/heads/*:refs/remotes/origin/*
           git checkout $VERSION
 
       - name: Genererer tagger og imagenavn, tilgjengeliggjør dette for resten av stegene
