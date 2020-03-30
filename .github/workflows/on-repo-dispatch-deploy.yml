@@ -5,7 +5,8 @@ on:
     types: deploy
 
 env:
-  VERSION: ${{ github.event.client_payload.version }}
+  COMMIT_SHA: ${{ github.event.client_payload.commit_sha }}
+  RELEASE_VERSION: ${{ github.event.client_payload.version }}
   CLUSTER: ${{ github.event.client_payload.cluster }}
   NAMESPACE: ${{ github.event.client_payload.namespace }}
 
@@ -17,24 +18,42 @@ jobs:
     steps:
       - name: 'Sjekk ut koden for dette repo-et'
         uses: 'actions/checkout@v2'
+        with:
+          FETCH-DEPTH: '0'
 
-      - name: 'Sjekker ut commiten tilhørende imaget som skal deploy-es, for å få tak i riktig versjon av nais-mainifetene'
+      - name: 'Sjekker ut gitt commit, for å få tak i riktig versjon av nais-mainifetene'
+        if: env.COMMIT_SHA != ''
         run: |
-          echo "Henter ut alle branch-er"
           git fetch --prune origin +refs/heads/*:refs/remotes/origin/*
-          git checkout $VERSION
+          git checkout $COMMIT_SHA
 
-      - name: Genererer tagger og imagenavn, tilgjengeliggjør dette for resten av stegene
+      - name: 'Sjekk ut commit tilhørende release version, for å få tak i riktig versjon av nais-mainifetene'
+        if: env.COMMIT_SHA == ''
+        run: |
+          SHORT_SHA=$(echo $RELEASE_VERSION | cut -c16-23)
+          git fetch --prune origin +refs/heads/*:refs/remotes/origin/*
+          git checkout $SHORT_SHA
+          echo "::set-env name=COMMIT_SHA::$(git log -1 --pretty='%H')"
+
+      - name: Utleder komplett image-navn basert på release-version, tilgjengeliggjør dette for deploy-steget
+        if: env.RELEASE_VERSION != ''
         run: |
           APP_NAME="${GITHUB_REPOSITORY//navikt\//}"
           IMAGE_BASE="docker.pkg.github.com/$GITHUB_REPOSITORY/$APP_NAME"
-          TAG="$(git log -1 --pretty='%ad' --date=format:'%Y%m%d%H%M%S')-$(git log -1 --pretty='%h')"
-          echo "::set-env name=IMAGE::$IMAGE_BASE:$TAG"
+          echo "::set-env name=IMAGE::$IMAGE_BASE:$RELEASE_VERSION"
+
+      - name: Utleder komplett image-navn basert på gitt commit, tilgjengeliggjør dette for deploy-steget
+        if: env.RELEASE_VERSION == ''
+        run: |
+          APP_NAME="${GITHUB_REPOSITORY//navikt\//}"
+          IMAGE_BASE="docker.pkg.github.com/$GITHUB_REPOSITORY/$APP_NAME"
+          IMAGE_TAG="$(git log -1 --pretty='%ad' --date=format:'%Y%m%d%H%M%S')-$(git log -1 --pretty='%h')"
+          echo "::set-env name=IMAGE::$IMAGE_BASE:$IMAGE_TAG"
 
       - name: 'Deploy-er til ${{ env.NAMESPACE }} i ${{ env.CLUSTER }}'
         uses: 'nais/deploy/actions/deploy@v1'
         env:
-          REF: ${{ env.VERSION }}
+          REF: ${{ env.COMMIT_SHA }}
           APIKEY: ${{ secrets.NAIS_DEPLOY_APIKEY }}
           CLUSTER: ${{ env.CLUSTER }}
           RESOURCE: ./nais/nais.yaml

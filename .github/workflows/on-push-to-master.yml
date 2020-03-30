@@ -23,6 +23,7 @@ jobs:
       - name: Bygg, tag og push Docker image
         uses: navikt/pb-common-gh-actions/docker-publish@v1
         with:
+          TAG_LATEST: "true"
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Tag release i git-repo-et
