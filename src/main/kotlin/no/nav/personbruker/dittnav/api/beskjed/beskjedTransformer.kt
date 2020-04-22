@@ -11,6 +11,7 @@ fun toBeskjedDTO(beskjed: Beskjed): BeskjedDTO =
                     eventId = it.eventId,
                     tekst = it.tekst,
                     link = it.link,
+                    produsent = it.produsent,
                     sistOppdatert = it.sistOppdatert,
                     sikkerhetsnivaa = it.sikkerhetsnivaa
             )

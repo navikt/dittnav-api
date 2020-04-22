@@ -12,20 +12,9 @@ fun createBeskjed(eventId: String, fodselsnummer: String, uid: String, aktiv: Bo
             grupperingsId = "Dok123",
             tekst = "Dette er beskjed til brukeren",
             link = "https://nav.no/systemX/",
+            produsent = "dittnav",
             sikkerhetsnivaa = 4,
             sistOppdatert = ZonedDateTime.now(ZoneId.of("Europe/Oslo")),
             aktiv = aktiv
-    )
-}
-
-fun createBeskjedDTO(eventId: String, uid: String): BeskjedDTO {
-    return BeskjedDTO(
-            uid = uid,
-            eventTidspunkt = ZonedDateTime.now(ZoneId.of("Europe/Oslo")),
-            eventId = eventId,
-            tekst = "Dette er beskjed til brukeren",
-            link = "https://nav.no/systemX/",
-            sistOppdatert = ZonedDateTime.now(ZoneId.of("Europe/Oslo")),
-            sikkerhetsnivaa = 4
     )
 }

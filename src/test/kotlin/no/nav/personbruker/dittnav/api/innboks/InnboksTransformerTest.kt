@@ -18,6 +18,7 @@ class InnboksTransformerTest {
         innboksDTO.eventId `should be equal to` innboks1.eventId
         innboksDTO.tekst `should be equal to` innboks1.tekst
         innboksDTO.link `should be equal to` innboks1.link
+        innboksDTO.produsent `should be equal to` innboks1.produsent
         innboksDTO.sistOppdatert `should be` innboks1.sistOppdatert
         innboksDTO.sikkerhetsnivaa `should be` innboks1.sikkerhetsnivaa
     }

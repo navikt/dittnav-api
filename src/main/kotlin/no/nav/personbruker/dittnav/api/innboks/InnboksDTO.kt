@@ -9,6 +9,7 @@ data class InnboksDTO(
         val eventId: String,
         val tekst: String,
         val link: String,
+        val produsent: String,
         val sistOppdatert: ZonedDateTime,
         val sikkerhetsnivaa: Int
 ) {
@@ -17,6 +18,7 @@ data class InnboksDTO(
             eventId: String,
             tekst: String,
             link: String,
+            produsent: String,
             sistOppdatert: ZonedDateTime,
             sikkerhetsnivaa: Int
     ) : this(
@@ -25,6 +27,7 @@ data class InnboksDTO(
             eventId,
             tekst,
             link,
+            produsent,
             sistOppdatert,
             sikkerhetsnivaa
     )

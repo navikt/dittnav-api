@@ -19,6 +19,7 @@ class BeskjedTransformerTest {
         beskjedDTO.eventId `should be equal to` beskjed1.eventId
         beskjedDTO.tekst `should be equal to` beskjed1.tekst
         beskjedDTO.link `should be equal to` beskjed1.link
+        beskjedDTO.produsent `should be equal to` beskjed1.produsent
         beskjedDTO.sistOppdatert `should be` beskjed1.sistOppdatert
         beskjedDTO.sikkerhetsnivaa `should be` beskjed1.sikkerhetsnivaa
     }
