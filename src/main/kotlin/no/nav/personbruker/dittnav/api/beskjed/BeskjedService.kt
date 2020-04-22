@@ -1,14 +1,9 @@
 package no.nav.personbruker.dittnav.api.beskjed
 
-import io.ktor.util.error
-import no.nav.personbruker.dittnav.api.brukernotifikasjon.Brukernotifikasjon
 import no.nav.personbruker.dittnav.api.common.ConsumeEventException
 import no.nav.personbruker.dittnav.api.common.InnloggetBruker
-import org.slf4j.LoggerFactory
 
 class BeskjedService(private val beskjedConsumer: BeskjedConsumer) {
-
-    private val log = LoggerFactory.getLogger(BeskjedService::class.java)
 
     suspend fun getActiveBeskjedEvents(innloggetBruker: InnloggetBruker): List<BeskjedDTO> {
         return getBeskjedEvents(innloggetBruker) {
@@ -19,17 +14,6 @@ class BeskjedService(private val beskjedConsumer: BeskjedConsumer) {
     suspend fun getInactiveBeskjedEvents(innloggetBruker: InnloggetBruker): List<BeskjedDTO> {
         return getBeskjedEvents(innloggetBruker) {
             beskjedConsumer.getExternalInactiveEvents(it)
-        }
-    }
-
-    suspend fun getBeskjedEventsAsBrukernotifikasjoner(innloggetBruker: InnloggetBruker): List<Brukernotifikasjon> {
-        return try {
-            beskjedConsumer.getExternalActiveEvents(innloggetBruker)
-                    .filter { beskjed -> innloggetBruker.innloggingsnivaa >= beskjed.sikkerhetsnivaa }
-                    .map { beskjed -> toBrukernotifikasjon(beskjed) }
-        } catch (exception: Exception) {
-            log.error(exception)
-            emptyList()
         }
     }
 

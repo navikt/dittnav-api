@@ -23,8 +23,8 @@ class BeskjedServiceTest {
         val beskjed2 = createBeskjed("2", "2", "2", true)
         coEvery { beskjedConsumer.getExternalActiveEvents(innloggetBruker) } returns listOf(beskjed1, beskjed2)
         runBlocking {
-            val brukernotifikasjonListe = beskjedService.getActiveBeskjedEvents(innloggetBruker)
-            brukernotifikasjonListe.size `should be equal to` 2
+            val beskjedList = beskjedService.getActiveBeskjedEvents(innloggetBruker)
+            beskjedList.size `should be equal to` 2
         }
     }
 
@@ -34,18 +34,8 @@ class BeskjedServiceTest {
         val beskjed2 = createBeskjed("2", "2", "2", false)
         coEvery { beskjedConsumer.getExternalInactiveEvents(innloggetBruker) } returns listOf(beskjed1, beskjed2)
         runBlocking {
-            val brukernotifikasjonListe = beskjedService.getInactiveBeskjedEvents(innloggetBruker)
-            brukernotifikasjonListe.size `should be equal to` 2
-        }
-    }
-
-    @Test
-    fun `should return empty list of Brukernotifikasjoner when Exception is thrown`() {
-        coEvery { beskjedConsumer.getExternalActiveEvents(innloggetBruker) } throws Exception("error")
-
-        runBlocking {
-            val brukernotifikasjonListe = beskjedService.getBeskjedEventsAsBrukernotifikasjoner(innloggetBruker)
-            brukernotifikasjonListe.size `should be equal to` 0
+            val beskjedList = beskjedService.getInactiveBeskjedEvents(innloggetBruker)
+            beskjedList.size `should be equal to` 2
         }
     }
 

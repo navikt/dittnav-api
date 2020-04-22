@@ -22,8 +22,8 @@ class InnboksServiceTest {
         val innboks2 = createInnboks("2", "2", true)
         coEvery { innboksConsumer.getExternalActiveEvents(innloggetBruker) } returns listOf(innboks1, innboks2)
         runBlocking {
-            val brukernotifikasjonListe = innboksService.getActiveInnboksEvents(innloggetBruker)
-            brukernotifikasjonListe.size `should be equal to` 2
+            val innboksList = innboksService.getActiveInnboksEvents(innloggetBruker)
+            innboksList.size `should be equal to` 2
         }
     }
 
@@ -33,18 +33,8 @@ class InnboksServiceTest {
         val innboks2 = createInnboks("2", "2", false)
         coEvery { innboksConsumer.getExternalInactiveEvents(innloggetBruker) } returns listOf(innboks1, innboks2)
         runBlocking {
-            val brukernotifikasjonListe = innboksService.getInactiveInnboksEvents(innloggetBruker)
-            brukernotifikasjonListe.size `should be equal to` 2
-        }
-    }
-
-    @Test
-    fun `should return empty list of Brukernotifikasjon when Exception is thrown`() {
-        coEvery { innboksConsumer.getExternalActiveEvents(innloggetBruker) } throws Exception("error")
-
-        runBlocking {
-            val brukernotifikasjonListe = innboksService.getInnboksEventsAsBrukernotifikasjoner(innloggetBruker)
-            brukernotifikasjonListe.size `should be equal to` 0
+            val innboksList = innboksService.getInactiveInnboksEvents(innloggetBruker)
+            innboksList.size `should be equal to` 2
         }
     }
 

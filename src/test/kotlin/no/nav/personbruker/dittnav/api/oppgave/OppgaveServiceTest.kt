@@ -22,8 +22,8 @@ class OppgaveServiceTest {
         val oppgave2 = createOppgave("2", "2", true)
         coEvery { oppgaveConsumer.getExternalActiveEvents(innloggetBruker) } returns listOf(oppgave1, oppgave2)
         runBlocking {
-            val brukernotifikasjonListe = oppgaveService.getActiveOppgaveEvents(innloggetBruker)
-            brukernotifikasjonListe.size `should be equal to` 2
+            val oppgaveList = oppgaveService.getActiveOppgaveEvents(innloggetBruker)
+            oppgaveList.size `should be equal to` 2
         }
     }
 
@@ -33,18 +33,8 @@ class OppgaveServiceTest {
         val oppgave2 = createOppgave("2", "2", false)
         coEvery { oppgaveConsumer.getExternalInactiveEvents(innloggetBruker) } returns listOf(oppgave1, oppgave2)
         runBlocking {
-            val brukernotifikasjonListe = oppgaveService.getInactiveOppgaveEvents(innloggetBruker)
-            brukernotifikasjonListe.size `should be equal to` 2
-        }
-    }
-
-    @Test
-    fun `should return empty List of Brukernotifikasjon when Exception is thrown`() {
-        coEvery { oppgaveConsumer.getExternalActiveEvents(innloggetBruker) } throws Exception("error")
-
-        runBlocking {
-            val brukernotifikasjonListe = oppgaveService.getOppgaveEventsAsBrukernotifikasjoner(innloggetBruker)
-            brukernotifikasjonListe.size `should be equal to` 0
+            val oppgaveList = oppgaveService.getInactiveOppgaveEvents(innloggetBruker)
+            oppgaveList.size `should be equal to` 2
         }
     }
 
