@@ -1,14 +1,9 @@
 package no.nav.personbruker.dittnav.api.oppgave
 
-import io.ktor.util.error
-import no.nav.personbruker.dittnav.api.brukernotifikasjon.Brukernotifikasjon
 import no.nav.personbruker.dittnav.api.common.ConsumeEventException
 import no.nav.personbruker.dittnav.api.common.InnloggetBruker
-import org.slf4j.LoggerFactory
 
 class OppgaveService(private val oppgaveConsumer: OppgaveConsumer) {
-
-    private val log = LoggerFactory.getLogger(OppgaveService::class.java)
 
     suspend fun getActiveOppgaveEvents(innloggetBruker: InnloggetBruker): List<OppgaveDTO> {
         return getOppgaveEvents(innloggetBruker) {
@@ -19,17 +14,6 @@ class OppgaveService(private val oppgaveConsumer: OppgaveConsumer) {
     suspend fun getInactiveOppgaveEvents(innloggetBruker: InnloggetBruker): List<OppgaveDTO> {
         return getOppgaveEvents(innloggetBruker) {
             oppgaveConsumer.getExternalInactiveEvents(it)
-        }
-    }
-
-    suspend fun getOppgaveEventsAsBrukernotifikasjoner(innloggetBruker: InnloggetBruker): List<Brukernotifikasjon> {
-        return try {
-            oppgaveConsumer.getExternalActiveEvents(innloggetBruker)
-                    .filter { oppgave -> innloggetBruker.innloggingsnivaa >= oppgave.sikkerhetsnivaa }
-                    .map { oppgave -> toBrukernotifikasjon(oppgave) }
-        } catch (exception: Exception) {
-            log.error(exception)
-            emptyList()
         }
     }
 
