@@ -1,6 +1,5 @@
 package no.nav.personbruker.dittnav.api.beskjed
 
-import no.nav.personbruker.dittnav.api.brukernotifikasjon.BrukernotifikasjonType
 import org.amshove.kluent.`should be equal to`
 import org.amshove.kluent.`should be`
 import org.junit.jupiter.api.Test
@@ -22,22 +21,6 @@ class BeskjedTransformerTest {
         beskjedDTO.produsent `should be equal to` beskjed1.produsent
         beskjedDTO.sistOppdatert `should be` beskjed1.sistOppdatert
         beskjedDTO.sikkerhetsnivaa `should be` beskjed1.sikkerhetsnivaa
-    }
-
-    @Test
-    fun `should transform from Beskjed to Brukernotifikasjon`() {
-        val beskjed1 = createBeskjed("1", "1", "1", true)
-        val beskjed2 = createBeskjed("2", "2","2", true)
-        val brukernotifikasjonList = listOf(beskjed1, beskjed2).map { toBrukernotifikasjon(it) }
-        val brukernotifikasjon = brukernotifikasjonList.first()
-
-        brukernotifikasjon.eventTidspunkt `should be` beskjed1.eventTidspunkt
-        brukernotifikasjon.eventId `should be equal to` beskjed1.eventId
-        brukernotifikasjon.tekst `should be equal to` beskjed1.tekst
-        brukernotifikasjon.link `should be equal to` beskjed1.link
-        brukernotifikasjon.sistOppdatert `should be` beskjed1.sistOppdatert
-        brukernotifikasjon.sikkerhetsnivaa `should be` beskjed1.sikkerhetsnivaa
-        brukernotifikasjon.type `should be` BrukernotifikasjonType.BESKJED
     }
 
     @Test

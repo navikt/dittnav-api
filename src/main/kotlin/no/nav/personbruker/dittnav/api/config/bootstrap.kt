@@ -17,8 +17,6 @@ import io.prometheus.client.hotspot.DefaultExports
 import no.nav.personbruker.dittnav.api.beskjed.BeskjedConsumer
 import no.nav.personbruker.dittnav.api.beskjed.BeskjedService
 import no.nav.personbruker.dittnav.api.beskjed.beskjed
-import no.nav.personbruker.dittnav.api.brukernotifikasjon.BrukernotifikasjonService
-import no.nav.personbruker.dittnav.api.brukernotifikasjon.brukernotifikasjoner
 import no.nav.personbruker.dittnav.api.common.InnloggetBruker
 import no.nav.personbruker.dittnav.api.common.InnloggetBrukerFactory
 import no.nav.personbruker.dittnav.api.done.DoneProducer
@@ -54,9 +52,6 @@ fun Application.mainModule() {
     val beskjedService = BeskjedService(beskjedConsumer)
     val innboksService = InnboksService(innboksConsumer)
 
-    val brukernotifikasjonService = BrukernotifikasjonService(oppgaveService, beskjedService, innboksService)
-
-
     install(DefaultHeaders)
 
     install(CORS) {
@@ -86,7 +81,6 @@ fun Application.mainModule() {
             innboks(innboksService)
             authenticationCheck()
             doneApi(doneProducer)
-            brukernotifikasjoner(brukernotifikasjonService)
         }
 
         configureShutdownHook(httpClient)
