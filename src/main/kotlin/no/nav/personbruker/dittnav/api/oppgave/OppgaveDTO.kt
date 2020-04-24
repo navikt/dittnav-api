@@ -9,7 +9,7 @@ data class OppgaveDTO(
         val eventId: String,
         val tekst: String,
         val link: String,
-        val produsent: String,
+        val produsent: String?,
         val sistOppdatert: ZonedDateTime,
         val sikkerhetsnivaa: Int
 ) {
@@ -18,7 +18,7 @@ data class OppgaveDTO(
             eventId: String,
             tekst: String,
             link: String,
-            produsent: String,
+            produsent: String?,
             sistOppdatert: ZonedDateTime,
             sikkerhetsnivaa: Int
     ) : this(

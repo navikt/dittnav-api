@@ -17,7 +17,7 @@ class OppgaveTransformerTest {
         oppgaveDTO.eventId `should be equal to` oppgave1.eventId
         oppgaveDTO.tekst `should be equal to` oppgave1.tekst
         oppgaveDTO.link `should be equal to` oppgave1.link
-        oppgaveDTO.produsent `should be equal to` oppgave1.produsent
+        oppgaveDTO.produsent!! `should be equal to` oppgave1.produsent!!
         oppgaveDTO.sistOppdatert `should be` oppgave1.sistOppdatert
         oppgaveDTO.sikkerhetsnivaa `should be` oppgave1.sikkerhetsnivaa
     }
