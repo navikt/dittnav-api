@@ -9,6 +9,7 @@ data class Innboks(
         val grupperingsId: String,
         val tekst: String,
         val link: String,
+        val produsent: String?,
         val sikkerhetsnivaa: Int,
         val sistOppdatert: ZonedDateTime,
         val aktiv: Boolean
@@ -21,6 +22,7 @@ data class Innboks(
                 "grupperingsId=$grupperingsId, " +
                 "tekst=***, " +
                 "link=***, " +
+                "produsent=$produsent, " +
                 "sikkerhetsnivaa=$sikkerhetsnivaa, " +
                 "sistOppdatert=$sistOppdatert, " +
                 "aktiv=$aktiv"

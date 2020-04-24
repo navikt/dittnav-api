@@ -11,19 +11,10 @@ fun createInnboks(eventId: String, fodselsnummer: String, aktiv: Boolean): Innbo
             grupperingsId = "Dok123",
             tekst = "Dette er en oppgave til brukeren",
             link = "https://nav.no/systemX/",
+            produsent = "dittnav",
             sikkerhetsnivaa = 4,
             sistOppdatert = ZonedDateTime.now(ZoneId.of("Europe/Oslo")),
             aktiv = aktiv
     )
 }
 
-fun createInnboksDTO(eventId: String): InnboksDTO {
-    return InnboksDTO(
-            eventTidspunkt = ZonedDateTime.now(ZoneId.of("Europe/Oslo")),
-            eventId = eventId,
-            tekst = "Dette er beskjed til brukeren",
-            link = "https://nav.no/systemX/",
-            sistOppdatert = ZonedDateTime.now(ZoneId.of("Europe/Oslo")),
-            sikkerhetsnivaa = 4
-    )
-}
