@@ -16,5 +16,5 @@ fun toInnboksDTO(innboks: Innboks): InnboksDTO =
 fun toMaskedInnboksDTO(innboks: Innboks): InnboksDTO =
         innboks.let {
             var maskedInnboksDTO = toInnboksDTO(innboks)
-            return maskedInnboksDTO.copy(tekst = "***", link = "***")
+            return maskedInnboksDTO.copy(tekst = "***", link = "***", produsent = "***")
         }

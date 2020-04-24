@@ -23,13 +23,14 @@ class OppgaveTransformerTest {
     }
 
     @Test
-    fun `should mask tekst and link`() {
+    fun `should mask tekst, link and produsent`() {
         val oppgave = createOppgave("1", "1", true)
         val oppgaveDTO = toMaskedOppgaveDTO(oppgave)
         oppgaveDTO.eventTidspunkt `should be` oppgave.eventTidspunkt
         oppgaveDTO.eventId `should be equal to` oppgave.eventId
         oppgaveDTO.tekst `should be equal to` "***"
         oppgaveDTO.link `should be equal to` "***"
+        oppgaveDTO.produsent!! `should be equal to` "***"
         oppgaveDTO.sistOppdatert `should be` oppgave.sistOppdatert
         oppgaveDTO.sikkerhetsnivaa `should be` oppgave.sikkerhetsnivaa
     }
