@@ -17,5 +17,5 @@ fun toBeskjedDTO(beskjed: Beskjed): BeskjedDTO =
 fun toMaskedBeskjedDTO(beskjed: Beskjed): BeskjedDTO =
         beskjed.let {
             var maskedBeskjedDTO = toBeskjedDTO(beskjed)
-            return maskedBeskjedDTO.copy(tekst = "***", link = "***")
+            return maskedBeskjedDTO.copy(tekst = "***", link = "***", produsent = "***")
         }

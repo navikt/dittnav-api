@@ -23,13 +23,14 @@ class InnboksTransformerTest {
     }
 
     @Test
-    fun `should mask tekst and link`() {
+    fun `should mask tekst, link and produsent`() {
         val innboks = createInnboks("1", "1", true)
         val innboksDTO = toMaskedInnboksDTO(innboks)
         innboksDTO.eventTidspunkt `should be` innboks.eventTidspunkt
         innboksDTO.eventId `should be equal to` innboks.eventId
         innboksDTO.tekst `should be equal to` "***"
         innboksDTO.link `should be equal to` "***"
+        innboksDTO.produsent!! `should be equal to` "***"
         innboksDTO.sistOppdatert `should be` innboks.sistOppdatert
         innboksDTO.sikkerhetsnivaa `should be` innboks.sikkerhetsnivaa
     }
