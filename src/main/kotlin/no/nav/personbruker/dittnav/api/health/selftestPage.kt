@@ -17,7 +17,7 @@ suspend fun ApplicationCall.pingDependencies(environment: Environment) = corouti
     val legacySelftestStatus = async { getStatus(legacyApiPingableURL, client) }
     var services = mutableMapOf("DITTNAV_LEGACY_API:" to legacySelftestStatus.await())
 
-    val eventHandlerPingableURL = URL("${environment.eventHandlerURL}/isAlive")
+    val eventHandlerPingableURL = URL("${environment.eventHandlerURL}/internal/isAlive")
     val eventHandlerSelftestStatus = async { getStatus(eventHandlerPingableURL, client) }
     services.put("DITTNAV_EVENT_HANDLER:", eventHandlerSelftestStatus.await())
 
