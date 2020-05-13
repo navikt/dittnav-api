@@ -21,8 +21,9 @@ object InnloggetBrukerFactory {
 
         val ident: String = token.jwtTokenClaims.getStringClaim(IDENT_CLAIM.claimName)
         val innloggingsnivaa = extractInnloggingsnivaa(token)
+        val expirationTime = token.jwtTokenClaims.expirationTime
 
-        return InnloggetBruker(ident, innloggingsnivaa, token.tokenAsString)
+        return InnloggetBruker(ident, innloggingsnivaa, token.tokenAsString, expirationTime)
     }
 
     private fun extractInnloggingsnivaa(token: JwtToken): Int {

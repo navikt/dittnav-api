@@ -5,6 +5,7 @@ import io.jsonwebtoken.SignatureAlgorithm
 import io.jsonwebtoken.security.Keys
 import no.nav.security.token.support.core.jwt.JwtToken
 import java.security.Key
+import java.util.*
 
 object InnloggetBrukerObjectMother {
 
@@ -21,12 +22,15 @@ object InnloggetBrukerObjectMother {
     }
 
     fun createInnloggetBruker(ident: String, innloggingsnivaa: Int): InnloggetBruker {
+        val expiredDate = Date(System.currentTimeMillis().plus(1000000))
         val jws = Jwts.builder()
                 .setSubject(ident)
                 .addClaims(mutableMapOf(Pair("acr", "Level$innloggingsnivaa")) as Map<String, Any>?)
+                .setExpiration(expiredDate)
                 .signWith(key).compact()
         val token = JwtToken(jws)
-        return InnloggetBruker(ident, innloggingsnivaa, token.tokenAsString)
+
+        return InnloggetBruker(ident, innloggingsnivaa, token.tokenAsString, token.jwtTokenClaims.expirationTime)
     }
 
 }
