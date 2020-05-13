@@ -6,6 +6,7 @@ import kotlinx.coroutines.coroutineScope
 import no.nav.personbruker.dittnav.api.config.Environment
 import no.nav.personbruker.dittnav.api.config.HttpClientBuilder
 import io.ktor.html.respondHtml
+import io.ktor.http.HttpStatusCode
 import kotlinx.html.*
 import java.net.URL
 
@@ -24,7 +25,13 @@ suspend fun ApplicationCall.pingDependencies(environment: Environment) = corouti
 
     val serviceStatus = if (services.values.any { it.status == Status.ERROR }) Status.ERROR else Status.OK
 
-    respondHtml {
+    respondHtml(status =
+    if(Status.ERROR == serviceStatus) {
+        HttpStatusCode.ServiceUnavailable
+    } else {
+        HttpStatusCode.OK
+    })
+    {
         head {
             title { +"Selftest dittnav-api" }
         }
