@@ -6,6 +6,7 @@ import kotlinx.coroutines.coroutineScope
 import no.nav.personbruker.dittnav.api.config.Environment
 import no.nav.personbruker.dittnav.api.config.HttpClientBuilder
 import io.ktor.html.respondHtml
+import io.ktor.http.HttpStatusCode
 import kotlinx.html.*
 import java.net.URL
 
@@ -16,7 +17,7 @@ suspend fun ApplicationCall.pingDependencies(environment: Environment) = corouti
     val legacySelftestStatus = async { getStatus(legacyApiPingableURL, client) }
     var services = mutableMapOf("DITTNAV_LEGACY_API:" to legacySelftestStatus.await())
 
-    val eventHandlerPingableURL = URL("${environment.eventHandlerURL}/isAlive")
+    val eventHandlerPingableURL = URL("${environment.eventHandlerURL}/internal/isAlive")
     val eventHandlerSelftestStatus = async { getStatus(eventHandlerPingableURL, client) }
     services.put("DITTNAV_EVENT_HANDLER:", eventHandlerSelftestStatus.await())
 
@@ -24,7 +25,13 @@ suspend fun ApplicationCall.pingDependencies(environment: Environment) = corouti
 
     val serviceStatus = if (services.values.any { it.status == Status.ERROR }) Status.ERROR else Status.OK
 
-    respondHtml {
+    respondHtml(status =
+    if(Status.ERROR == serviceStatus) {
+        HttpStatusCode.ServiceUnavailable
+    } else {
+        HttpStatusCode.OK
+    })
+    {
         head {
             title { +"Selftest dittnav-api" }
         }
