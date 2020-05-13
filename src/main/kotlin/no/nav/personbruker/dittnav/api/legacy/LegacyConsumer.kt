@@ -16,7 +16,7 @@ class LegacyConsumer(private val httpClient: HttpClient, private val dittNAVLega
         val endpoint = URL("$dittNAVLegacyBaseURL$path")
         val response: HttpResponse = httpClient.getExtendedTimeout(endpoint, innloggetBruker)
         if (response.status != HttpStatusCode.OK) {
-            log.warn("Feil mot " + "$dittNAVLegacyBaseURL$path: ${response.status.value} ${response.status.description}, ${innloggetBruker.toString()}.")
+            log.warn("Feil mot $dittNAVLegacyBaseURL$path: ${response.status.value} ${response.status.description}, ${innloggetBruker.toString()}.")
         }
         return response
     }
