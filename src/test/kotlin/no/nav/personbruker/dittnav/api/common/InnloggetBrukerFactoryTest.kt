@@ -5,6 +5,7 @@ import no.nav.security.token.support.core.context.TokenValidationContext
 import no.nav.security.token.support.ktor.OIDCValidationContextPrincipal
 import org.amshove.kluent.*
 import org.junit.jupiter.api.Test
+import java.time.LocalDateTime
 import java.util.*
 
 internal class InnloggetBrukerFactoryTest {
@@ -48,7 +49,7 @@ internal class InnloggetBrukerFactoryTest {
         val principal = createPrincipalForAzure(expectedIdent, expectedInnloggingsnivaa)
         val innloggetBruker = InnloggetBrukerFactory.createNewInnloggetBruker(principal)
 
-        innloggetBruker.tokenExpirationTime.after(Date(System.currentTimeMillis())) `shouldBe` true
+        innloggetBruker.tokenExpirationTime `should be after` LocalDateTime.now()
 
     }
 }

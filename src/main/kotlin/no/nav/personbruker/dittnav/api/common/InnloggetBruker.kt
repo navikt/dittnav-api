@@ -1,11 +1,11 @@
 package no.nav.personbruker.dittnav.api.common
 
-import java.util.*
+import java.time.LocalDateTime
 
 data class InnloggetBruker(val ident: String,
                            val innloggingsnivaa: Int,
                            val token: String,
-                           val tokenExpirationTime: Date) {
+                           val tokenExpirationTime: LocalDateTime) {
 
     fun createAuthenticationHeader(): String {
         return "Bearer $token"
