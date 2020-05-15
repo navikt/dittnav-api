@@ -3,6 +3,8 @@ package no.nav.personbruker.dittnav.api.common
 import no.nav.personbruker.dittnav.api.config.getOptionalEnvVar
 import no.nav.security.token.support.core.jwt.JwtToken
 import no.nav.security.token.support.ktor.OIDCValidationContextPrincipal
+import java.time.LocalDateTime
+import java.time.ZoneId
 
 object InnloggetBrukerFactory {
 
@@ -21,8 +23,9 @@ object InnloggetBrukerFactory {
 
         val ident: String = token.jwtTokenClaims.getStringClaim(IDENT_CLAIM.claimName)
         val innloggingsnivaa = extractInnloggingsnivaa(token)
+        val expirationTime = getTokenExpirationLocalDateTime(token)
 
-        return InnloggetBruker(ident, innloggingsnivaa, token.tokenAsString)
+        return InnloggetBruker(ident, innloggingsnivaa, token.tokenAsString, expirationTime)
     }
 
     private fun extractInnloggingsnivaa(token: JwtToken): Int {
@@ -35,4 +38,11 @@ object InnloggetBrukerFactory {
         }
     }
 
+    private fun getTokenExpirationLocalDateTime(token: JwtToken): LocalDateTime {
+        return token.jwtTokenClaims
+                .expirationTime
+                .toInstant()
+                .atZone(ZoneId.of("Europe/Oslo"))
+                .toLocalDateTime()
+    }
 }

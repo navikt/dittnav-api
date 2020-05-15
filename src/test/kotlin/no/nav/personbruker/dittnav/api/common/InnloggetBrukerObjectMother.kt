@@ -5,6 +5,8 @@ import io.jsonwebtoken.SignatureAlgorithm
 import io.jsonwebtoken.security.Keys
 import no.nav.security.token.support.core.jwt.JwtToken
 import java.security.Key
+import java.time.ZoneId
+import java.util.*
 
 object InnloggetBrukerObjectMother {
 
@@ -24,9 +26,15 @@ object InnloggetBrukerObjectMother {
         val jws = Jwts.builder()
                 .setSubject(ident)
                 .addClaims(mutableMapOf(Pair("acr", "Level$innloggingsnivaa")) as Map<String, Any>?)
+                .setExpiration(Date(System.currentTimeMillis().plus(1000000)))
                 .signWith(key).compact()
         val token = JwtToken(jws)
-        return InnloggetBruker(ident, innloggingsnivaa, token.tokenAsString)
+        val expirationTime = token.jwtTokenClaims
+                                                .expirationTime
+                                                .toInstant()
+                                                .atZone(ZoneId.of("Europe/Oslo"))
+                                                .toLocalDateTime()
+        return InnloggetBruker(ident, innloggingsnivaa, token.tokenAsString, expirationTime)
     }
 
 }

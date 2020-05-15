@@ -3,11 +3,9 @@ package no.nav.personbruker.dittnav.api.common
 import no.nav.personbruker.dittnav.api.common.OIDCValidationContextPrincipalObjectMother.createPrincipalForAzure
 import no.nav.security.token.support.core.context.TokenValidationContext
 import no.nav.security.token.support.ktor.OIDCValidationContextPrincipal
-import org.amshove.kluent.`should be equal to`
-import org.amshove.kluent.`should throw`
-import org.amshove.kluent.invoking
-import org.amshove.kluent.shouldNotBeNullOrBlank
+import org.amshove.kluent.*
 import org.junit.jupiter.api.Test
+import java.time.LocalDateTime
 import java.util.*
 
 internal class InnloggetBrukerFactoryTest {
@@ -43,4 +41,15 @@ internal class InnloggetBrukerFactoryTest {
         innloggetBruker.token.shouldNotBeNullOrBlank()
     }
 
+    @Test
+    fun `should extract the token expirationTime from the token claim`() {
+        val expectedIdent = "000"
+        val expectedInnloggingsnivaa = 3
+
+        val principal = createPrincipalForAzure(expectedIdent, expectedInnloggingsnivaa)
+        val innloggetBruker = InnloggetBrukerFactory.createNewInnloggetBruker(principal)
+
+        innloggetBruker.tokenExpirationTime `should be after` LocalDateTime.now()
+
+    }
 }
