@@ -33,7 +33,7 @@ fun Route.brukernotifikasjoner(service: BrukernotifikasjonService) {
         }
     }
 
-    get("/brukernotifikasjone/count/active") {
+    get("/brukernotifikasjon/count/active") {
         try {
             val numberOfActiveEvents = service.numberOfActive(innloggetBruker)
             call.respond(HttpStatusCode.OK, numberOfActiveEvents)
