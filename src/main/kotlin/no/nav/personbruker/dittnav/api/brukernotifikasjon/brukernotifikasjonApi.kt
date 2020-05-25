@@ -13,7 +13,7 @@ fun Route.brukernotifikasjoner(service: BrukernotifikasjonService) {
 
     val log = LoggerFactory.getLogger(BrukernotifikasjonService::class.java)
 
-    get("/count/brukernotifikasjoner") {
+    get("/brukernotifikasjon/count") {
         try {
             val totalNumberOfEvents = service.totalNumberOfEvents(innloggetBruker)
             call.respond(HttpStatusCode.OK, totalNumberOfEvents)
@@ -23,7 +23,7 @@ fun Route.brukernotifikasjoner(service: BrukernotifikasjonService) {
         }
     }
 
-    get("/count/brukernotifikasjoner/inactive") {
+    get("/brukernotifikasjon/count/inactive") {
         try {
             val numberOfInactiveEvents = service.numberOfInactive(innloggetBruker)
             call.respond(HttpStatusCode.OK, numberOfInactiveEvents)
@@ -33,7 +33,7 @@ fun Route.brukernotifikasjoner(service: BrukernotifikasjonService) {
         }
     }
 
-    get("/count/brukernotifikasjoner/active") {
+    get("/brukernotifikasjone/count/active") {
         try {
             val numberOfActiveEvents = service.numberOfActive(innloggetBruker)
             call.respond(HttpStatusCode.OK, numberOfActiveEvents)
