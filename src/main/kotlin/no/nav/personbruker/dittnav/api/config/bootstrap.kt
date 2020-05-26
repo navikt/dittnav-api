@@ -17,6 +17,9 @@ import io.prometheus.client.hotspot.DefaultExports
 import no.nav.personbruker.dittnav.api.beskjed.BeskjedConsumer
 import no.nav.personbruker.dittnav.api.beskjed.BeskjedService
 import no.nav.personbruker.dittnav.api.beskjed.beskjed
+import no.nav.personbruker.dittnav.api.brukernotifikasjon.BrukernotifikasjonConsumer
+import no.nav.personbruker.dittnav.api.brukernotifikasjon.BrukernotifikasjonService
+import no.nav.personbruker.dittnav.api.brukernotifikasjon.brukernotifikasjoner
 import no.nav.personbruker.dittnav.api.common.InnloggetBruker
 import no.nav.personbruker.dittnav.api.common.InnloggetBrukerFactory
 import no.nav.personbruker.dittnav.api.done.DoneProducer
@@ -45,12 +48,14 @@ fun Application.mainModule() {
     val oppgaveConsumer = OppgaveConsumer(httpClient, environment.eventHandlerURL)
     val beskjedConsumer = BeskjedConsumer(httpClient, environment.eventHandlerURL)
     val innboksConsumer = InnboksConsumer(httpClient, environment.eventHandlerURL)
+    val brukernotifikasjonConsumer = BrukernotifikasjonConsumer(httpClient, environment.eventHandlerURL)
 
     val doneProducer = DoneProducer(httpClient, environment.eventHandlerURL)
 
     val oppgaveService = OppgaveService(oppgaveConsumer)
     val beskjedService = BeskjedService(beskjedConsumer)
     val innboksService = InnboksService(innboksConsumer)
+    val brukernotifikasjonService = BrukernotifikasjonService(brukernotifikasjonConsumer)
 
     install(DefaultHeaders)
 
@@ -79,6 +84,7 @@ fun Application.mainModule() {
             oppgave(oppgaveService)
             beskjed(beskjedService)
             innboks(innboksService)
+            brukernotifikasjoner(brukernotifikasjonService)
             authenticationCheck()
             doneApi(doneProducer)
         }
