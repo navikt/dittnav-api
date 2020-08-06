@@ -5,14 +5,14 @@ import io.jsonwebtoken.SignatureAlgorithm
 import io.jsonwebtoken.security.Keys
 import no.nav.security.token.support.core.context.TokenValidationContext
 import no.nav.security.token.support.core.jwt.JwtToken
-import no.nav.security.token.support.ktor.OIDCValidationContextPrincipal
+import no.nav.security.token.support.ktor.TokenValidationContextPrincipal
 import java.security.Key
 import java.time.Instant
 import java.util.*
 
-object OIDCValidationContextPrincipalObjectMother {
+object TokenValidationContextPrincipalObjectMother {
 
-    fun createPrincipalForAzure(ident: String, innloggingsnivaa: Int): OIDCValidationContextPrincipal {
+    fun createPrincipalForAzure(ident: String, innloggingsnivaa: Int): TokenValidationContextPrincipal {
         val key: Key = Keys.secretKeyFor(SignatureAlgorithm.HS256)
         val inTwoMinutes = Date(Instant.now().plusSeconds(60).toEpochMilli())
         val expiredJws = Jwts.builder()
@@ -30,10 +30,10 @@ object OIDCValidationContextPrincipalObjectMother {
         val issuer = "keyForIssuer"
         issuerShortNameValidatedTokenMap[issuer] = token
         val context = TokenValidationContext(issuerShortNameValidatedTokenMap)
-        return OIDCValidationContextPrincipal(context)
+        return TokenValidationContextPrincipal(context)
     }
 
-    fun createPrincipalForIdPorten(ident: String, innloggingsnivaa: Int): OIDCValidationContextPrincipal {
+    fun createPrincipalForIdPorten(ident: String, innloggingsnivaa: Int): TokenValidationContextPrincipal {
         val key: Key = Keys.secretKeyFor(SignatureAlgorithm.HS256)
         val inTwoMinutes = Date(Instant.now().plusSeconds(60).toEpochMilli())
         val expiredJws = Jwts.builder()
@@ -51,7 +51,7 @@ object OIDCValidationContextPrincipalObjectMother {
         val issuer = "keyForIssuer"
         issuerShortNameValidatedTokenMap[issuer] = token
         val context = TokenValidationContext(issuerShortNameValidatedTokenMap)
-        return OIDCValidationContextPrincipal(context)
+        return TokenValidationContextPrincipal(context)
     }
 
 }
