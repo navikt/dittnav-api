@@ -1,8 +1,8 @@
 package no.nav.personbruker.dittnav.api.common
 
-import no.nav.personbruker.dittnav.api.common.TokenValidationContextPrincipalObjectMother.createPrincipalForAzure
+import no.nav.personbruker.dittnav.api.common.OIDCValidationContextPrincipalObjectMother.createPrincipalForAzure
 import no.nav.security.token.support.core.context.TokenValidationContext
-import no.nav.security.token.support.ktor.TokenValidationContextPrincipal
+import no.nav.security.token.support.ktor.OIDCValidationContextPrincipal
 import org.amshove.kluent.*
 import org.junit.jupiter.api.Test
 import java.time.LocalDateTime
@@ -20,7 +20,7 @@ internal class InnloggetBrukerFactoryTest {
     @Test
     fun `should throw exception if the token context is empty`() {
         val context = TokenValidationContext(emptyMap())
-        val principal = TokenValidationContextPrincipal(context)
+        val principal = OIDCValidationContextPrincipal(context)
         invoking {
             InnloggetBrukerFactory.createNewInnloggetBruker(principal)
         } `should throw` NoSuchElementException::class

@@ -2,7 +2,7 @@ package no.nav.personbruker.dittnav.api.common
 
 import no.nav.personbruker.dittnav.api.config.getOptionalEnvVar
 import no.nav.security.token.support.core.jwt.JwtToken
-import no.nav.security.token.support.ktor.TokenValidationContextPrincipal
+import no.nav.security.token.support.ktor.OIDCValidationContextPrincipal
 import java.time.LocalDateTime
 import java.time.ZoneId
 
@@ -17,7 +17,7 @@ object InnloggetBrukerFactory {
         IDENT_CLAIM = IdentityClaim.fromClaimName(identityClaimFromEnvVariable)
     }
 
-    fun createNewInnloggetBruker(principal: TokenValidationContextPrincipal?): InnloggetBruker {
+    fun createNewInnloggetBruker(principal: OIDCValidationContextPrincipal?): InnloggetBruker {
         val token = principal?.context?.firstValidToken?.get()
                 ?: throw Exception("Det ble ikke funnet noe token. Dette skal ikke kunne skje.")
 
