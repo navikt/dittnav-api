@@ -26,9 +26,9 @@ suspend inline fun <reified T> HttpClient.getExtendedTimeout(url: URL, innlogget
         method = HttpMethod.Get
         header(HttpHeaders.Authorization, innloggetBruker.createAuthenticationHeader())
         timeout {
-            socketTimeoutMillis = 20000
+            socketTimeoutMillis = 30000
             connectTimeoutMillis = 10000
-            requestTimeoutMillis = 35000
+            requestTimeoutMillis = 40000
         }
     }
 }
