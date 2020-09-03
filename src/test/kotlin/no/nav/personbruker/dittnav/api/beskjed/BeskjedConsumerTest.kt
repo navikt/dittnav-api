@@ -28,7 +28,7 @@ class BeskjedConsumerTest {
     val innloggetBruker = InnloggetBrukerObjectMother.createInnloggetBruker()
 
     @Test
-    fun `should call information endpoint on event handler`() {
+    fun `should call beskjed endpoint on event handler`() {
         val client = HttpClient(MockEngine) {
             engine {
                 addHandler { request ->
