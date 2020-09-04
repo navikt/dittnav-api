@@ -34,6 +34,8 @@ import no.nav.personbruker.dittnav.api.legacy.legacyApi
 import no.nav.personbruker.dittnav.api.oppgave.OppgaveConsumer
 import no.nav.personbruker.dittnav.api.oppgave.OppgaveService
 import no.nav.personbruker.dittnav.api.oppgave.oppgave
+import no.nav.personbruker.dittnav.api.varsel.VarselConsumer
+import no.nav.personbruker.dittnav.api.varsel.VarselService
 import no.nav.security.token.support.ktor.tokenValidationSupport
 
 @KtorExperimentalAPI
@@ -49,6 +51,7 @@ fun Application.mainModule() {
     val beskjedConsumer = BeskjedConsumer(httpClient, environment.eventHandlerURL)
     val innboksConsumer = InnboksConsumer(httpClient, environment.eventHandlerURL)
     val brukernotifikasjonConsumer = BrukernotifikasjonConsumer(httpClient, environment.eventHandlerURL)
+    val varselConsumer = VarselConsumer(httpClient, environment.legacyApiURL)
 
     val doneProducer = DoneProducer(httpClient, environment.eventHandlerURL)
 
@@ -56,6 +59,7 @@ fun Application.mainModule() {
     val beskjedService = BeskjedService(beskjedConsumer)
     val innboksService = InnboksService(innboksConsumer)
     val brukernotifikasjonService = BrukernotifikasjonService(brukernotifikasjonConsumer)
+    val varselService = VarselService(varselConsumer)
 
     install(DefaultHeaders)
 
