@@ -40,33 +40,6 @@ class VarselServiceTest {
     }
 
     @Test
-    fun `should mask events with security level higher than current user`() {
-        val ident = "1"
-        val varsel = createActiveVarsel("5")
-        innloggetBruker = InnloggetBrukerObjectMother.createInnloggetBruker(ident, 3)
-        coEvery { varselConsumer.getSisteVarsler(innloggetBruker) } returns listOf(varsel)
-        runBlocking {
-            val varselList = varselService.getActiveVarselEvents(innloggetBruker)
-            val varselDTO = varselList.first()
-            varselDTO.tekst `should be equal to` "***"
-            varselDTO.link `should be equal to` "***"
-            varselDTO.sikkerhetsnivaa `should be equal to` 4
-        }
-    }
-
-    @Test
-    fun `should not mask events with security level lower than current user`() {
-        val varsel = createActiveVarsel("6")
-        coEvery { varselConsumer.getSisteVarsler(innloggetBruker) } returns listOf(varsel)
-        runBlocking {
-            val varselList = varselService.getActiveVarselEvents(innloggetBruker)
-            val varselDTO = varselList.first()
-            varselDTO.tekst `should be equal to` varsel.varseltekst
-            varselDTO.link `should be equal to` varsel.url
-        }
-    }
-
-    @Test
     fun `should not mask events with security level equal than current user`() {
         val varsel = createActiveVarsel("7")
         coEvery { varselConsumer.getSisteVarsler(innloggetBruker) } returns listOf(varsel)
@@ -90,4 +63,5 @@ class VarselServiceTest {
         coEvery { varselConsumer.getSisteVarsler(innloggetBruker) } throws Exception("error")
         invoking { runBlocking { varselService.getInactiveVarselEvents(innloggetBruker) } } `should throw` ConsumeEventException::class
     }
+
 }

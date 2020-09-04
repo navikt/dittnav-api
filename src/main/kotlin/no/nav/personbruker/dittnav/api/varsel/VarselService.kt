@@ -24,21 +24,10 @@ class VarselService(private val varselConsumer: VarselConsumer) {
     ): List<BeskjedDTO> {
         return try {
             val externalEvents = getEvents(innloggetBruker)
-            externalEvents.map { varsel -> transformToDTO(varsel, innloggetBruker) }
+            externalEvents.map { varsel -> toVarselDTO(varsel) }
         } catch (exception: Exception) {
             throw ConsumeEventException("Klarte ikke hente eventer av type Varsel", exception)
         }
     }
 
-    private fun transformToDTO(varsel: Varsel, innloggetBruker: InnloggetBruker): BeskjedDTO {
-        return if (innloggetBrukerIsAllowedToViewAllDataInEvent(innloggetBruker)) {
-            toVarselDTO(varsel)
-        } else {
-            toMaskedVarselDTO(varsel)
-        }
-    }
-
-    private fun innloggetBrukerIsAllowedToViewAllDataInEvent(innloggetBruker: InnloggetBruker): Boolean {
-        return innloggetBruker.innloggingsnivaa >= 4
-    }
 }
