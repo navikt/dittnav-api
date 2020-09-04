@@ -10,8 +10,8 @@ fun createInactiveVarsel(eventId: String): Varsel {
         "Tekst",
         eventId,
         "3",
-        LocalDate.of(2020, 8, 8),
-        LocalDate.of(2020, 8, 9)
+        LocalDate.now().minusDays(30),
+        LocalDate.now().minusDays(20)
     )
 }
 
@@ -23,7 +23,7 @@ fun createActiveVarsel(eventId: String): Varsel {
         "Tekst",
         eventId,
         "4",
-        LocalDate.of(2020, 9, 10),
+        LocalDate.now().minusDays(10),
         null
     )
 }
