@@ -6,6 +6,7 @@ import io.jsonwebtoken.security.Keys
 import no.nav.security.token.support.core.jwt.JwtToken
 import java.security.Key
 import java.time.ZoneId
+import java.time.ZonedDateTime
 import java.util.*
 
 object InnloggetBrukerObjectMother {
@@ -27,6 +28,21 @@ object InnloggetBrukerObjectMother {
                 .setSubject(ident)
                 .addClaims(mutableMapOf(Pair("acr", "Level$innloggingsnivaa")) as Map<String, Any>?)
                 .setExpiration(Date(System.currentTimeMillis().plus(1000000)))
+                .signWith(key).compact()
+        val token = JwtToken(jws)
+        val expirationTime = token.jwtTokenClaims
+                                                .expirationTime
+                                                .toInstant()
+                                                .atZone(ZoneId.of("Europe/Oslo"))
+                                                .toLocalDateTime()
+        return InnloggetBruker(ident, innloggingsnivaa, token.tokenAsString, expirationTime)
+    }
+
+    fun createInnloggetBruker(ident: String, innloggingsnivaa: Int, tokensUtlopstidspunkt: ZonedDateTime): InnloggetBruker {
+        val jws = Jwts.builder()
+                .setSubject(ident)
+                .addClaims(mutableMapOf(Pair("acr", "Level$innloggingsnivaa")) as Map<String, Any>?)
+                .setExpiration(Date.from(tokensUtlopstidspunkt.toInstant()))
                 .signWith(key).compact()
         val token = JwtToken(jws)
         val expirationTime = token.jwtTokenClaims
