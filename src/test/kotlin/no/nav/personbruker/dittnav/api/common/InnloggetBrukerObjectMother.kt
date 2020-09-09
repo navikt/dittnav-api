@@ -24,21 +24,11 @@ object InnloggetBrukerObjectMother {
     }
 
     fun createInnloggetBruker(ident: String, innloggingsnivaa: Int): InnloggetBruker {
-        val jws = Jwts.builder()
-                .setSubject(ident)
-                .addClaims(mutableMapOf(Pair("acr", "Level$innloggingsnivaa")) as Map<String, Any>?)
-                .setExpiration(Date(System.currentTimeMillis().plus(1000000)))
-                .signWith(key).compact()
-        val token = JwtToken(jws)
-        val expirationTime = token.jwtTokenClaims
-                                                .expirationTime
-                                                .toInstant()
-                                                .atZone(ZoneId.of("Europe/Oslo"))
-                                                .toLocalDateTime()
-        return InnloggetBruker(ident, innloggingsnivaa, token.tokenAsString, expirationTime)
+        val inTwoMinutes = ZonedDateTime.now().plusMinutes(2)
+        return createInnloggetBrukerWithValidTokenUntil(ident, innloggingsnivaa, inTwoMinutes)
     }
 
-    fun createInnloggetBruker(ident: String, innloggingsnivaa: Int, tokensUtlopstidspunkt: ZonedDateTime): InnloggetBruker {
+    fun createInnloggetBrukerWithValidTokenUntil(ident: String, innloggingsnivaa: Int, tokensUtlopstidspunkt: ZonedDateTime): InnloggetBruker {
         val jws = Jwts.builder()
                 .setSubject(ident)
                 .addClaims(mutableMapOf(Pair("acr", "Level$innloggingsnivaa")) as Map<String, Any>?)
