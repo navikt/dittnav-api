@@ -6,6 +6,7 @@ import io.ktor.response.*
 import io.ktor.routing.*
 import no.nav.personbruker.dittnav.api.common.respondWithError
 import no.nav.personbruker.dittnav.api.config.innloggetBruker
+import no.nav.personbruker.dittnav.api.config.isRunningInDev
 import org.slf4j.LoggerFactory
 
 fun Route.beskjed(beskjedService: BeskjedService, mergeBeskjedMedVarselService: MergeBeskjedMedVarselService) {
@@ -23,6 +24,8 @@ fun Route.beskjed(beskjedService: BeskjedService, mergeBeskjedMedVarselService: 
     }
 
     get("/beskjed/inaktiv") {
+        log.info("Kjører i et dev-miljø, aktiverer grensesnittet for vasler sammen med beskjeder.")
+
         try {
             val beskjedEvents = beskjedService.getInactiveBeskjedEvents(innloggetBruker)
             call.respond(HttpStatusCode.OK, beskjedEvents)
@@ -32,23 +35,25 @@ fun Route.beskjed(beskjedService: BeskjedService, mergeBeskjedMedVarselService: 
         }
     }
 
-    get("/beskjed/merged") {
-        try {
-            val events = mergeBeskjedMedVarselService.getActiveEvents(innloggetBruker)
-            call.respond(HttpStatusCode.OK, events)
+    if (isRunningInDev()) {
+        get("/beskjed/merged") {
+            try {
+                val events = mergeBeskjedMedVarselService.getActiveEvents(innloggetBruker)
+                call.respond(HttpStatusCode.OK, events)
 
-        } catch (exception: Exception) {
-            respondWithError(call, log, exception)
+            } catch (exception: Exception) {
+                respondWithError(call, log, exception)
+            }
         }
-    }
 
-    get("/beskjed/merged/inaktiv") {
-        try {
-            val events = mergeBeskjedMedVarselService.getInactiveEvents(innloggetBruker)
-            call.respond(HttpStatusCode.OK, events)
+        get("/beskjed/merged/inaktiv") {
+            try {
+                val events = mergeBeskjedMedVarselService.getInactiveEvents(innloggetBruker)
+                call.respond(HttpStatusCode.OK, events)
 
-        } catch (exception: Exception) {
-            respondWithError(call, log, exception)
+            } catch (exception: Exception) {
+                respondWithError(call, log, exception)
+            }
         }
     }
 
