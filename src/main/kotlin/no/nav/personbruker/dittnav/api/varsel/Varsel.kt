@@ -1,6 +1,6 @@
 package no.nav.personbruker.dittnav.api.varsel
 
-import java.time.LocalDate
+import java.time.ZonedDateTime
 
 data class Varsel(
     val id: Long,
@@ -9,8 +9,8 @@ data class Varsel(
     val varseltekst: String,
     val varselId: String,
     val meldingsType: String,
-    val datoOpprettet: LocalDate,
-    val datoLest: LocalDate?
+    val datoOpprettet: ZonedDateTime,
+    val datoLest: ZonedDateTime?
 ) {
     override fun toString(): String {
         return "Varsel(" +

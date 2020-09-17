@@ -9,23 +9,19 @@ fun toVarselDTO(externalVarsel: Varsel): BeskjedDTO =
     externalVarsel.let { varsel ->
         BeskjedDTO(
             uid = "${varsel.id}",
-            eventTidspunkt = varsel.datoOpprettet.toZonedDateTime(),
+            eventTidspunkt = varsel.datoOpprettet,
             eventId = varsel.varselId,
             tekst = cropTextIfOverMaxLengthOfBeskjed(varsel.varseltekst),
             link = varsel.url,
             produsent = "varselinnboks",
-            sistOppdatert = chooseSisteOppdatert(varsel),
-            sikkerhetsnivaa = 4
+            sistOppdatert = chooseSistOppdatert(varsel),
+            sikkerhetsnivaa = 3,
+            aktiv = varsel.datoLest == null
         )
     }
 
-private fun chooseSisteOppdatert(varsel: Varsel): ZonedDateTime {
-    return if (varsel.datoLest != null) {
-        varsel.datoLest.toZonedDateTime()
-
-    } else {
-        varsel.datoOpprettet.toZonedDateTime()
-    }
+private fun chooseSistOppdatert(varsel: Varsel): ZonedDateTime {
+    return varsel.datoLest ?: varsel.datoOpprettet
 }
 
 private fun cropTextIfOverMaxLengthOfBeskjed(text: String): String {
@@ -36,12 +32,6 @@ private fun cropTextIfOverMaxLengthOfBeskjed(text: String): String {
         text.substring(0, 150)
     }
 }
-
-fun toMaskedVarselDTO(varsel: Varsel): BeskjedDTO =
-    varsel.let {
-        val maskedVarselDTO = toVarselDTO(varsel)
-        return maskedVarselDTO.copy(tekst = "***", link = "***", produsent = "***")
-    }
 
 fun LocalDate.toZonedDateTime(): ZonedDateTime {
     val zone = ZoneId.of("Europe/Oslo")

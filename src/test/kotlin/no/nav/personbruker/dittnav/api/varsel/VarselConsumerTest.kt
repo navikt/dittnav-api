@@ -50,7 +50,7 @@ class VarselConsumerTest {
 
     @Test
     fun `should get list of active Varsel`() {
-        val varselObject = createInactiveVarsel("1")
+        val varselObject = createLestVarsel("1")
         val objectMapper = ObjectMapper().apply {
             enableDittNavJsonConfig()
         }

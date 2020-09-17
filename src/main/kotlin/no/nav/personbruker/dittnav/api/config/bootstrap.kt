@@ -12,6 +12,7 @@ import io.ktor.util.pipeline.*
 import io.prometheus.client.hotspot.DefaultExports
 import no.nav.personbruker.dittnav.api.beskjed.BeskjedConsumer
 import no.nav.personbruker.dittnav.api.beskjed.BeskjedService
+import no.nav.personbruker.dittnav.api.beskjed.MergeBeskjedMedVarselService
 import no.nav.personbruker.dittnav.api.beskjed.beskjed
 import no.nav.personbruker.dittnav.api.brukernotifikasjon.BrukernotifikasjonConsumer
 import no.nav.personbruker.dittnav.api.brukernotifikasjon.BrukernotifikasjonService
@@ -57,6 +58,7 @@ fun Application.mainModule() {
     val innboksService = InnboksService(innboksConsumer)
     val brukernotifikasjonService = BrukernotifikasjonService(brukernotifikasjonConsumer)
     val varselService = VarselService(varselConsumer)
+    val mergeBeskjedMedVarselService = MergeBeskjedMedVarselService(beskjedService, varselService)
 
     install(DefaultHeaders)
 
@@ -83,7 +85,7 @@ fun Application.mainModule() {
         authenticate {
             legacyApi(legacyConsumer)
             oppgave(oppgaveService)
-            beskjed(beskjedService)
+            beskjed(beskjedService, mergeBeskjedMedVarselService)
             if(isRunningInDev()) {
                 log.info("Kjører i et dev-miljø, aktiverer grensesnittet for vasler.")
                 varsel(varselService)

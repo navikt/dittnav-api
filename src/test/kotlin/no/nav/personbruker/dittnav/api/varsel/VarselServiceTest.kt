@@ -19,8 +19,8 @@ class VarselServiceTest {
 
     @Test
     fun `should return list of VarselDTO when active Events are received`() {
-        val varsel1 = createActiveVarsel("1")
-        val varsel2 = createActiveVarsel("2")
+        val varsel1 = createUlestVarsel("1")
+        val varsel2 = createUlestVarsel("2")
         coEvery { varselConsumer.getSisteVarsler(innloggetBruker) } returns listOf(varsel1, varsel2)
         runBlocking {
             val varselList = varselService.getActiveVarselEvents(innloggetBruker)
@@ -30,25 +30,12 @@ class VarselServiceTest {
 
     @Test
     fun `should return list of VarselDTO when inactive Events are received`() {
-        val varsel1 = createInactiveVarsel("3")
-        val varsel2 = createInactiveVarsel("4")
+        val varsel1 = createLestVarsel("3")
+        val varsel2 = createLestVarsel("4")
         coEvery { varselConsumer.getSisteVarsler(innloggetBruker) } returns listOf(varsel1, varsel2)
         runBlocking {
             val varselList = varselService.getInactiveVarselEvents(innloggetBruker)
             varselList.size `should be equal to` 2
-        }
-    }
-
-    @Test
-    fun `should not mask events with security level equal than current user`() {
-        val varsel = createActiveVarsel("7")
-        coEvery { varselConsumer.getSisteVarsler(innloggetBruker) } returns listOf(varsel)
-        runBlocking {
-            val varselList = varselService.getActiveVarselEvents(innloggetBruker)
-            val beskjedDTO = varselList.first()
-            beskjedDTO.tekst `should be equal to` varsel.varseltekst
-            beskjedDTO.link `should be equal to` varsel.url
-            beskjedDTO.sikkerhetsnivaa `should be equal to` 4
         }
     }
 

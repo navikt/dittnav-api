@@ -1,8 +1,8 @@
 package no.nav.personbruker.dittnav.api.varsel
 
-import java.time.LocalDate
+import java.time.ZonedDateTime
 
-fun createInactiveVarsel(eventId: String): Varsel {
+fun createLestVarsel(eventId: String): Varsel {
     return Varsel(
         1,
         "2",
@@ -10,12 +10,12 @@ fun createInactiveVarsel(eventId: String): Varsel {
         "Tekst",
         eventId,
         "3",
-        LocalDate.now().minusDays(30),
-        LocalDate.now().minusDays(20)
+        ZonedDateTime.now().minusDays(30),
+        ZonedDateTime.now().minusDays(20)
     )
 }
 
-fun createActiveVarsel(eventId: String): Varsel {
+fun createUlestVarsel(eventId: String): Varsel {
     return Varsel(
         2,
         "3",
@@ -23,7 +23,7 @@ fun createActiveVarsel(eventId: String): Varsel {
         "Tekst",
         eventId,
         "4",
-        LocalDate.now().minusDays(10),
+        ZonedDateTime.now().minusDays(10),
         null
     )
 }

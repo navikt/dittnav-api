@@ -16,8 +16,8 @@ class VarselTest {
             |"varseltekst":"Tekst",
             |"varselId":"4",
             |"meldingsType":"a",
-            |"datoOpprettet":"2020-08-27",
-            |"datoLest":"2020-09-04"}
+            |"datoOpprettet":"2019-12-06T07:07:55.246+01:00[Europe/Oslo]",
+            |"datoLest":"2020-02-04T08:02:13+01:00[Europe/Oslo]"}
             |""".trimMargin()
 
     val objectMapper = ObjectMapper().apply {
@@ -26,7 +26,7 @@ class VarselTest {
 
     @Test
     fun `skal returnere maskerte data fra toString-metoden`() {
-        val varsel = createInactiveVarsel("1")
+        val varsel = createLestVarsel("1")
         val varselAsString = varsel.toString()
         varselAsString `should contain` "aktoerID=***"
         varselAsString `should contain` "tekst=***"
@@ -35,7 +35,7 @@ class VarselTest {
 
     @Test
     fun `skal kunne serialisere og deserialisere`() {
-        val varsel = createInactiveVarsel("1000")
+        val varsel = createLestVarsel("1000")
         val serialized = objectMapper.writeValueAsString(varsel)
 
         val deserialiser = objectMapper.readValue<Varsel>(serialized)
