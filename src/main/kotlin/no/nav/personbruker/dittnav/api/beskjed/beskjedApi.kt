@@ -24,8 +24,6 @@ fun Route.beskjed(beskjedService: BeskjedService, mergeBeskjedMedVarselService: 
     }
 
     get("/beskjed/inaktiv") {
-        log.info("Kjører i et dev-miljø, aktiverer grensesnittet for vasler sammen med beskjeder.")
-
         try {
             val beskjedEvents = beskjedService.getInactiveBeskjedEvents(innloggetBruker)
             call.respond(HttpStatusCode.OK, beskjedEvents)
@@ -36,6 +34,8 @@ fun Route.beskjed(beskjedService: BeskjedService, mergeBeskjedMedVarselService: 
     }
 
     if (isRunningInDev()) {
+        log.info("Kjører i et dev-miljø, aktiverer grensesnittet for vasler sammen med beskjeder.")
+
         get("/beskjed/merged") {
             try {
                 val events = mergeBeskjedMedVarselService.getActiveEvents(innloggetBruker)
