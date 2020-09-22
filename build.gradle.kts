@@ -19,6 +19,7 @@ repositories {
     // You can declare any Maven/Ivy/file repository here.
     jcenter()
     maven("https://packages.confluent.io/maven")
+    maven("https://jitpack.io")
     mavenLocal()
 }
 
@@ -50,6 +51,7 @@ dependencies {
     testImplementation(Kluent.kluent)
     testImplementation(Mockk.mockk)
     testImplementation(Jjwt.api)
+    testImplementation(DittNAV.Common.test)
 
     testRuntimeOnly(Bouncycastle.bcprovJdk15on)
     testRuntimeOnly(Jjwt.impl)

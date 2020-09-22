@@ -1,21 +1,18 @@
 package no.nav.personbruker.dittnav.api.config
 
 import io.ktor.application.*
-import io.ktor.auth.Authentication
-import io.ktor.auth.authenticate
-import io.ktor.auth.authentication
-import io.ktor.client.HttpClient
-import io.ktor.features.CORS
-import io.ktor.features.ContentNegotiation
-import io.ktor.features.DefaultHeaders
-import io.ktor.http.HttpHeaders
-import io.ktor.jackson.jackson
-import io.ktor.routing.routing
-import io.ktor.util.KtorExperimentalAPI
-import io.ktor.util.pipeline.PipelineContext
+import io.ktor.auth.*
+import io.ktor.client.*
+import io.ktor.features.*
+import io.ktor.http.*
+import io.ktor.jackson.*
+import io.ktor.routing.*
+import io.ktor.util.*
+import io.ktor.util.pipeline.*
 import io.prometheus.client.hotspot.DefaultExports
 import no.nav.personbruker.dittnav.api.beskjed.BeskjedConsumer
 import no.nav.personbruker.dittnav.api.beskjed.BeskjedService
+import no.nav.personbruker.dittnav.api.beskjed.MergeBeskjedMedVarselService
 import no.nav.personbruker.dittnav.api.beskjed.beskjed
 import no.nav.personbruker.dittnav.api.brukernotifikasjon.BrukernotifikasjonConsumer
 import no.nav.personbruker.dittnav.api.brukernotifikasjon.BrukernotifikasjonService
@@ -34,6 +31,9 @@ import no.nav.personbruker.dittnav.api.legacy.legacyApi
 import no.nav.personbruker.dittnav.api.oppgave.OppgaveConsumer
 import no.nav.personbruker.dittnav.api.oppgave.OppgaveService
 import no.nav.personbruker.dittnav.api.oppgave.oppgave
+import no.nav.personbruker.dittnav.api.varsel.VarselConsumer
+import no.nav.personbruker.dittnav.api.varsel.VarselService
+import no.nav.personbruker.dittnav.api.varsel.varsel
 import no.nav.security.token.support.ktor.tokenValidationSupport
 
 @KtorExperimentalAPI
@@ -49,6 +49,7 @@ fun Application.mainModule() {
     val beskjedConsumer = BeskjedConsumer(httpClient, environment.eventHandlerURL)
     val innboksConsumer = InnboksConsumer(httpClient, environment.eventHandlerURL)
     val brukernotifikasjonConsumer = BrukernotifikasjonConsumer(httpClient, environment.eventHandlerURL)
+    val varselConsumer = VarselConsumer(httpClient, environment.legacyApiURL)
 
     val doneProducer = DoneProducer(httpClient, environment.eventHandlerURL)
 
@@ -56,6 +57,8 @@ fun Application.mainModule() {
     val beskjedService = BeskjedService(beskjedConsumer)
     val innboksService = InnboksService(innboksConsumer)
     val brukernotifikasjonService = BrukernotifikasjonService(brukernotifikasjonConsumer)
+    val varselService = VarselService(varselConsumer)
+    val mergeBeskjedMedVarselService = MergeBeskjedMedVarselService(beskjedService, varselService)
 
     install(DefaultHeaders)
 
@@ -82,7 +85,11 @@ fun Application.mainModule() {
         authenticate {
             legacyApi(legacyConsumer)
             oppgave(oppgaveService)
-            beskjed(beskjedService)
+            beskjed(beskjedService, mergeBeskjedMedVarselService)
+            if(isRunningInDev()) {
+                log.info("Kjører i et dev-miljø, aktiverer grensesnittet for vasler.")
+                varsel(varselService)
+            }
             innboks(innboksService)
             brukernotifikasjoner(brukernotifikasjonService)
             authenticationCheck()
@@ -101,3 +108,11 @@ private fun Application.configureShutdownHook(httpClient: HttpClient) {
 
 val PipelineContext<Unit, ApplicationCall>.innloggetBruker: InnloggetBruker
     get() = InnloggetBrukerFactory.createNewInnloggetBruker(call.authentication.principal())
+
+fun isRunningInDev(clusterName: String? = System.getenv("NAIS_CLUSTER_NAME")): Boolean {
+    var runningInDev = true
+    if (clusterName != null && clusterName == "prod-sbs") {
+        runningInDev = false
+    }
+    return runningInDev
+}
