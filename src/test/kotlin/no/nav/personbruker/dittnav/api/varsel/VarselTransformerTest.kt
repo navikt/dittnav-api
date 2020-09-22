@@ -7,7 +7,7 @@ import org.junit.jupiter.api.Test
 class VarselTransformerTest {
 
     @Test
-    fun `should transform from Varsel to BeskjedDTO`() {
+    fun `Skal transformere fra Varsel til BeskjedDTO`() {
         val original = createLestVarsel("1")
         val beskjedDTO = toVarselDTO(original)
 

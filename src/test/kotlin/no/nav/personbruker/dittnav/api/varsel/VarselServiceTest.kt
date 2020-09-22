@@ -18,7 +18,7 @@ class VarselServiceTest {
     val varselService = VarselService(varselConsumer)
 
     @Test
-    fun `should return list of VarselDTO when active Events are received`() {
+    fun `Skal mottat en liste med VarselDTO i det aktive eventer hentes`() {
         val varsel1 = createUlestVarsel("1")
         val varsel2 = createUlestVarsel("2")
         coEvery { varselConsumer.getSisteVarsler(innloggetBruker) } returns listOf(varsel1, varsel2)
@@ -29,7 +29,7 @@ class VarselServiceTest {
     }
 
     @Test
-    fun `should return list of VarselDTO when inactive Events are received`() {
+    fun `Skal motta en liste med VarselDTO i det inaktive eventer hentes`() {
         val varsel1 = createLestVarsel("3")
         val varsel2 = createLestVarsel("4")
         coEvery { varselConsumer.getSisteVarsler(innloggetBruker) } returns listOf(varsel1, varsel2)
@@ -40,13 +40,13 @@ class VarselServiceTest {
     }
 
     @Test
-    fun `should throw exception if fetching active events fails`() {
+    fun `Skal kaste en exception hvis henting av aktive eventer feiler`() {
         coEvery { varselConsumer.getSisteVarsler(innloggetBruker) } throws Exception("error")
         invoking { runBlocking { varselService.getActiveVarselEvents(innloggetBruker) } } `should throw` ConsumeEventException::class
     }
 
     @Test
-    fun `should throw exception if fetching inactive events fails`() {
+    fun `Skal kaste en exception hvis henting av inaktive eventer feiler`() {
         coEvery { varselConsumer.getSisteVarsler(innloggetBruker) } throws Exception("error")
         invoking { runBlocking { varselService.getInactiveVarselEvents(innloggetBruker) } } `should throw` ConsumeEventException::class
     }

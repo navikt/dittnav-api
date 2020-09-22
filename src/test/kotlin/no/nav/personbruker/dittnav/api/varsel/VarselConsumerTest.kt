@@ -26,7 +26,7 @@ class VarselConsumerTest {
     private val innloggetBruker = InnloggetBrukerObjectMother.createInnloggetBruker()
 
     @Test
-    fun `should call varsel endpoint on dittnav-legacy-api`() {
+    fun `Skal kalle varsel-endepunktet i dittnav-legacy-api`() {
         val client = HttpClient(MockEngine) {
             engine {
                 addHandler { request ->
@@ -49,7 +49,7 @@ class VarselConsumerTest {
     }
 
     @Test
-    fun `should get list of active Varsel`() {
+    fun `Skal mottat en liste av aktive Varsel`() {
         val varselObject = createLestVarsel("1")
         val objectMapper = ObjectMapper().apply {
             enableDittNavJsonConfig()

@@ -28,7 +28,7 @@ class BeskjedConsumerTest {
     val innloggetBruker = InnloggetBrukerObjectMother.createInnloggetBruker()
 
     @Test
-    fun `should call beskjed endpoint on event handler`() {
+    fun `Skal kalle beskjed-endepunktet i event-handler`() {
         val client = HttpClient(MockEngine) {
             engine {
                 addHandler { request ->
@@ -51,7 +51,7 @@ class BeskjedConsumerTest {
     }
 
     @Test
-    fun `should get list of active Beskjed`() {
+    fun `Skal mottat en liste over aktive Beskjeder`() {
         val beskjedObject = createBeskjed("1", "1", "1", true)
         val objectMapper = ObjectMapper().apply {
             enableDittNavJsonConfig()
@@ -76,7 +76,7 @@ class BeskjedConsumerTest {
     }
 
     @Test
-    fun `should get list of inactive Beskjed`() {
+    fun `Skal motta en liste over inaktive Beskjeder`() {
         val beskjedObject = createBeskjed("1", "1", "1", false)
         val objectMapper = ObjectMapper().apply {
             enableDittNavJsonConfig()
