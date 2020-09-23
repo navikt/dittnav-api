@@ -9,7 +9,7 @@ class BeskjedVarselSwitcher(
     private val includeVarsel: Boolean
 ) {
 
-    private val log = LoggerFactory.getLogger(BeskjedService::class.java)
+    private val log = LoggerFactory.getLogger(BeskjedVarselSwitcher::class.java)
 
     init {
         if (includeVarsel) {
