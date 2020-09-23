@@ -5,17 +5,21 @@ import io.ktor.http.*
 import io.ktor.response.*
 import io.ktor.routing.*
 import no.nav.personbruker.dittnav.api.common.respondWithError
+import no.nav.personbruker.dittnav.api.config.Environment
 import no.nav.personbruker.dittnav.api.config.innloggetBruker
-import no.nav.personbruker.dittnav.api.config.isRunningInDev
 import org.slf4j.LoggerFactory
 
-fun Route.beskjed(beskjedService: BeskjedService, mergeBeskjedMedVarselService: MergeBeskjedMedVarselService) {
+fun Route.beskjed(
+    mergeBeskjedMedVarselService: MergeBeskjedMedVarselService,
+    beskjedVarselSwitcher: BeskjedVarselSwitcher,
+    environment: Environment
+) {
 
     val log = LoggerFactory.getLogger(BeskjedService::class.java)
 
     get("/beskjed") {
         try {
-            val beskjedEvents = beskjedService.getActiveBeskjedEvents(innloggetBruker)
+            val beskjedEvents = beskjedVarselSwitcher.getActiveEvents(innloggetBruker)
             call.respond(HttpStatusCode.OK, beskjedEvents)
 
         } catch (exception: Exception) {
@@ -25,7 +29,7 @@ fun Route.beskjed(beskjedService: BeskjedService, mergeBeskjedMedVarselService: 
 
     get("/beskjed/inaktiv") {
         try {
-            val beskjedEvents = beskjedService.getInactiveBeskjedEvents(innloggetBruker)
+            val beskjedEvents = beskjedVarselSwitcher.getInactiveEvents(innloggetBruker)
             call.respond(HttpStatusCode.OK, beskjedEvents)
 
         } catch (exception: Exception) {
@@ -33,8 +37,8 @@ fun Route.beskjed(beskjedService: BeskjedService, mergeBeskjedMedVarselService: 
         }
     }
 
-    if (isRunningInDev()) {
-        log.info("Kjører i et dev-miljø, aktiverer grensesnittet for vasler sammen med beskjeder.")
+    if (environment.isRunningInDev) {
+        log.info("Kjører i et dev-miljø, aktiverer grensesnittet for varsler sammen med beskjeder.")
 
         get("/beskjed/merged") {
             try {

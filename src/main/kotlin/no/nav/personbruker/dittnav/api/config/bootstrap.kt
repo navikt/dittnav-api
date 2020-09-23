@@ -10,10 +10,7 @@ import io.ktor.routing.*
 import io.ktor.util.*
 import io.ktor.util.pipeline.*
 import io.prometheus.client.hotspot.DefaultExports
-import no.nav.personbruker.dittnav.api.beskjed.BeskjedConsumer
-import no.nav.personbruker.dittnav.api.beskjed.BeskjedService
-import no.nav.personbruker.dittnav.api.beskjed.MergeBeskjedMedVarselService
-import no.nav.personbruker.dittnav.api.beskjed.beskjed
+import no.nav.personbruker.dittnav.api.beskjed.*
 import no.nav.personbruker.dittnav.api.brukernotifikasjon.BrukernotifikasjonConsumer
 import no.nav.personbruker.dittnav.api.brukernotifikasjon.BrukernotifikasjonService
 import no.nav.personbruker.dittnav.api.brukernotifikasjon.brukernotifikasjoner
@@ -59,6 +56,12 @@ fun Application.mainModule() {
     val brukernotifikasjonService = BrukernotifikasjonService(brukernotifikasjonConsumer)
     val varselService = VarselService(varselConsumer)
     val mergeBeskjedMedVarselService = MergeBeskjedMedVarselService(beskjedService, varselService)
+    val enableVarsel = environment.includeVarselinnboks && environment.isRunningInDev
+    val beskjedVarselSwitcher = BeskjedVarselSwitcher(
+        beskjedService,
+        mergeBeskjedMedVarselService,
+        enableVarsel
+    )
 
     install(DefaultHeaders)
 
@@ -85,9 +88,9 @@ fun Application.mainModule() {
         authenticate {
             legacyApi(legacyConsumer)
             oppgave(oppgaveService)
-            beskjed(beskjedService, mergeBeskjedMedVarselService)
-            if(isRunningInDev()) {
-                log.info("Kjører i et dev-miljø, aktiverer grensesnittet for vasler.")
+            beskjed(mergeBeskjedMedVarselService, beskjedVarselSwitcher, environment)
+            if (environment.isRunningInDev) {
+                log.info("Kjører i et dev-miljø, aktiverer grensesnittet for varsler.")
                 varsel(varselService)
             }
             innboks(innboksService)
@@ -108,11 +111,3 @@ private fun Application.configureShutdownHook(httpClient: HttpClient) {
 
 val PipelineContext<Unit, ApplicationCall>.innloggetBruker: InnloggetBruker
     get() = InnloggetBrukerFactory.createNewInnloggetBruker(call.authentication.principal())
-
-fun isRunningInDev(clusterName: String? = System.getenv("NAIS_CLUSTER_NAME")): Boolean {
-    var runningInDev = true
-    if (clusterName != null && clusterName == "prod-sbs") {
-        runningInDev = false
-    }
-    return runningInDev
-}
