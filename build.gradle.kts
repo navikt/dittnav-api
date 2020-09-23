@@ -6,6 +6,7 @@ plugins {
     kotlin("jvm").version(Kotlin.version)
     kotlin("plugin.allopen").version(Kotlin.version)
 
+    id(Shadow.pluginId) version (Shadow.version)
     // Apply the application plugin to add support for building a CLI application.
     application
 }
@@ -62,22 +63,6 @@ application {
 }
 
 tasks {
-    withType<Jar> {
-        duplicatesStrategy = DuplicatesStrategy.EXCLUDE // Tillater ikke duplikater i jar-fila, slik som kreves for å være kompatible med Gradle 7.
-        manifest {
-            attributes["Main-Class"] = application.mainClassName
-        }
-        from(sourceSets.main.get().output)
-        dependsOn(configurations.runtimeClasspath)
-        from({
-            configurations.runtimeClasspath.get().filter { file ->
-                file.name.endsWith("jar")
-            }.map { fileToAddToZip ->
-                zipTree(fileToAddToZip)
-            }
-        })
-    }
-
     withType<Test> {
         useJUnitPlatform()
         testLogging {
@@ -97,3 +82,5 @@ tasks {
         classpath = sourceSets["main"].runtimeClasspath
     }
 }
+
+apply(plugin = Shadow.pluginId)
