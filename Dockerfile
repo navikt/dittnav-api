@@ -1,5 +1,5 @@
 FROM navikt/java:13-appdynamics
-COPY build/libs/api.jar /app/app.jar
+COPY build/libs/api-all.jar /app/app.jar
 ENV JAVA_OPTS="-XX:MaxRAMPercentage=75 \
                -XX:+HeapDumpOnOutOfMemoryError \
                -XX:HeapDumpPath=/oom-dump.hprof"
