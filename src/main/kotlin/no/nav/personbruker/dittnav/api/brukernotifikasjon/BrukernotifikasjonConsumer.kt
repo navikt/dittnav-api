@@ -11,11 +11,6 @@ class BrukernotifikasjonConsumer(
         private val pathToEndpoint: URL = URL("$eventHandlerBaseURL/count/brukernotifikasjoner")
 ) {
 
-    suspend fun countInactive(innloggetBruker: InnloggetBruker): Int {
-        val completePathToEndpoint = URL("$pathToEndpoint/inactive")
-        return client.get(completePathToEndpoint, innloggetBruker)
-    }
-
     suspend fun countActive(innloggetBruker: InnloggetBruker): Int {
         val completePathToEndpoint = URL("$pathToEndpoint/active")
         return client.get(completePathToEndpoint, innloggetBruker)

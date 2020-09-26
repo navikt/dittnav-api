@@ -14,15 +14,6 @@ class BrukernotifikasjonService(private val brukernotifikasjonConsumer: Brukerno
         }
     }
 
-    suspend fun numberOfInactive(innloggetBruker: InnloggetBruker): Int {
-        return try {
-            brukernotifikasjonConsumer.countInactive(innloggetBruker)
-
-        } catch (exception: Exception) {
-            throw ConsumeEventException("Klarte ikke å finne ut om brukeren har inaktive brukernotifikasjoner", exception)
-        }
-    }
-
     suspend fun numberOfActive(innloggetBruker: InnloggetBruker): Int {
         return try {
             brukernotifikasjonConsumer.countActive(innloggetBruker)

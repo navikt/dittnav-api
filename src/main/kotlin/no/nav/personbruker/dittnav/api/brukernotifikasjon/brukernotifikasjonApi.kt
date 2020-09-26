@@ -23,16 +23,6 @@ fun Route.brukernotifikasjoner(service: BrukernotifikasjonService) {
         }
     }
 
-    get("/brukernotifikasjon/count/inactive") {
-        try {
-            val numberOfInactiveEvents = service.numberOfInactive(innloggetBruker)
-            call.respond(HttpStatusCode.OK, numberOfInactiveEvents)
-
-        } catch(exception: Exception) {
-            respondWithError(call, log, exception)
-        }
-    }
-
     get("/brukernotifikasjon/count/active") {
         try {
             val numberOfActiveEvents = service.numberOfActive(innloggetBruker)
