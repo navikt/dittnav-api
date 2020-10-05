@@ -7,6 +7,7 @@ import io.ktor.routing.*
 import no.nav.personbruker.dittnav.api.common.respondWithError
 import no.nav.personbruker.dittnav.api.config.Environment
 import no.nav.personbruker.dittnav.api.config.innloggetBruker
+import no.nav.personbruker.dittnav.api.logging.logTokenExpiry
 import org.slf4j.LoggerFactory
 
 fun Route.beskjed(
@@ -20,6 +21,7 @@ fun Route.beskjed(
     get("/beskjed") {
         try {
             val beskjedEvents = beskjedVarselSwitcher.getActiveEvents(innloggetBruker)
+            logTokenExpiry(log, call)
             call.respond(HttpStatusCode.OK, beskjedEvents)
 
         } catch (exception: Exception) {
@@ -30,6 +32,12 @@ fun Route.beskjed(
     get("/beskjed/inaktiv") {
         try {
             val beskjedEvents = beskjedVarselSwitcher.getInactiveEvents(innloggetBruker)
+            val headers: ResponseHeaders = call.response.headers
+
+            if (headers.contains("x-token-expires-soon")) {
+                log.debug("X-token-expires-soon er satt til true")
+            }
+
             call.respond(HttpStatusCode.OK, beskjedEvents)
 
         } catch (exception: Exception) {
