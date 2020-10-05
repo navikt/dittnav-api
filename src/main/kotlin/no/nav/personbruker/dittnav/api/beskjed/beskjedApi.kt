@@ -32,12 +32,6 @@ fun Route.beskjed(
     get("/beskjed/inaktiv") {
         try {
             val beskjedEvents = beskjedVarselSwitcher.getInactiveEvents(innloggetBruker)
-            val headers: ResponseHeaders = call.response.headers
-
-            if (headers.contains("x-token-expires-soon")) {
-                log.debug("X-token-expires-soon er satt til true")
-            }
-
             call.respond(HttpStatusCode.OK, beskjedEvents)
 
         } catch (exception: Exception) {
