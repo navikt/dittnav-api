@@ -4,13 +4,11 @@ import io.ktor.application.ApplicationCall
 import io.ktor.application.call
 import io.ktor.client.statement.readBytes
 import io.ktor.http.HttpStatusCode
-import io.ktor.response.ResponseHeaders
 import io.ktor.response.respond
 import io.ktor.routing.Route
 import io.ktor.routing.get
 import io.ktor.util.pipeline.PipelineContext
 import no.nav.personbruker.dittnav.api.config.innloggetBruker
-import no.nav.personbruker.dittnav.api.logging.logTokenExpiry
 import org.slf4j.LoggerFactory
 import java.net.SocketTimeoutException
 
