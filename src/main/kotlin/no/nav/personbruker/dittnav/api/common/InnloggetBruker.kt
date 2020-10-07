@@ -26,4 +26,9 @@ data class InnloggetBruker(
         return tokenExpirationTime.isBefore(now)
     }
 
+    fun isTokenAboutToExpire(expiryThresholdInMinutes: Long): Boolean {
+        val now = Instant.now().atZone(oslo).toLocalDateTime()
+        return now.isAfter(tokenExpirationTime.minusMinutes(expiryThresholdInMinutes))
+    }
+
 }

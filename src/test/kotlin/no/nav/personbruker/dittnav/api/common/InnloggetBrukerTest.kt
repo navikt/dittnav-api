@@ -57,4 +57,22 @@ internal class InnloggetBrukerTest {
         bruker.isTokenExpired() `should be equal to` false
     }
 
+    @Test
+    fun `should return true for users with valid token that is about to expire`() {
+        val inTheFuture = ZonedDateTime.now().plusMinutes(1)
+        val expiryThresholdInMinutes = 2L
+        val bruker = InnloggetBrukerObjectMother.createInnloggetBrukerWithValidTokenUntil("123", 4, inTheFuture)
+
+        bruker.isTokenAboutToExpire(expiryThresholdInMinutes) `should be equal to` true
+    }
+
+    @Test
+    fun `should return false for users with valid token that is about to expire`() {
+        val inTheFuture = ZonedDateTime.now().plusMinutes(3)
+        val expiryThresholdInMinutes = 2L
+        val bruker = InnloggetBrukerObjectMother.createInnloggetBrukerWithValidTokenUntil("123", 4, inTheFuture)
+
+        bruker.isTokenAboutToExpire(expiryThresholdInMinutes) `should be equal to` false
+    }
+
 }
