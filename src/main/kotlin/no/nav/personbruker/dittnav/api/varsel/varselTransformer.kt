@@ -8,7 +8,7 @@ import java.time.ZonedDateTime
 fun toVarselDTO(externalVarsel: Varsel): BeskjedDTO =
     externalVarsel.let { varsel ->
         BeskjedDTO(
-            uid = "${varsel.id}",
+            uid = "${varsel.meldingsType}-${varsel.varselId}",
             eventTidspunkt = varsel.datoOpprettet,
             eventId = varsel.varselId,
             tekst = cropTextIfOverMaxLengthOfBeskjed(varsel.varseltekst),
