@@ -11,7 +11,7 @@ class VarselTransformerTest {
         val original = createLestVarsel("1")
         val beskjedDTO = toVarselDTO(original)
 
-        beskjedDTO.uid!! `should be equal to` original.id.toString()
+        beskjedDTO.uid!! `should be equal to` "${original.meldingsType}-${original.id}"
         beskjedDTO.eventTidspunkt.toString() `should be equal to` original.datoOpprettet.toString()
         beskjedDTO.eventId `should be equal to` original.varselId
         beskjedDTO.tekst `should be equal to` original.varseltekst
