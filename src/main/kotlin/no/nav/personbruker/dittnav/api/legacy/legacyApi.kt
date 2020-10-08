@@ -8,6 +8,7 @@ import io.ktor.response.respond
 import io.ktor.routing.Route
 import io.ktor.routing.get
 import io.ktor.util.pipeline.PipelineContext
+import no.nav.personbruker.dittnav.api.common.InnloggetBruker
 import no.nav.personbruker.dittnav.api.config.innloggetBruker
 import org.slf4j.LoggerFactory
 import java.net.SocketTimeoutException
@@ -25,6 +26,7 @@ fun Route.legacyApi(legacyConsumer: LegacyConsumer) {
     val oppfolgingPath = "/oppfolging"
 
     get(ubehandledeMeldingerPath) {
+        logWhenTokenIsAboutToExpire(innloggetBruker)
         hentRaattFraLegacyApiOgReturnerResponsen(legacyConsumer, ubehandledeMeldingerPath)
     }
 
@@ -66,4 +68,12 @@ private suspend fun PipelineContext<Unit, ApplicationCall>.hentRaattFraLegacyApi
         call.respond(HttpStatusCode.InternalServerError)
     }
 
+}
+
+fun logWhenTokenIsAboutToExpire(innloggetBruker: InnloggetBruker) {
+    val expiryThresholdInMinutes = 2L
+
+    if (innloggetBruker.isTokenAboutToExpire(expiryThresholdInMinutes)) {
+        log.info("Det er mindre enn $expiryThresholdInMinutes minutter før token-et går ut for: $innloggetBruker")
+    }
 }
