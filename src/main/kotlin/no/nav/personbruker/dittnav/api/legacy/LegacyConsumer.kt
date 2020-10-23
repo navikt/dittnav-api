@@ -20,17 +20,30 @@ class LegacyConsumer(private val httpClient: HttpClient, private val dittNAVLega
     }
 
     private fun logContextInCaseOfErrors(response: HttpResponse, path: String, innloggetBruker: InnloggetBruker) {
-        if (response.status != HttpStatusCode.OK) {
-            if (isFeiletMed401PgaUtloptToken(response, innloggetBruker)) {
-                log.info("Token-et utløp mens request-en pågikk. Feil mot $dittNAVLegacyBaseURL$path: ${response.status.value} ${response.status.description}, $innloggetBruker.")
+        if (enFeilOppstod(response)) {
+            when {
+                feiletMedHttpStatus401PgaUtloptToken(response, innloggetBruker) -> {
+                    log.info("Token-et utløp mens request-en pågikk. Feil mot $dittNAVLegacyBaseURL$path: ${response.status.value} ${response.status.description}, $innloggetBruker.")
 
-            } else {
-                log.warn("Feil mot $dittNAVLegacyBaseURL$path: ${response.status.value} ${response.status.description}, $innloggetBruker.")
+                }
+                feiletMedHttpStatus408PgaTimeout(response) -> {
+                    log.info("Det oppstod en timeout ved henting av $dittNAVLegacyBaseURL$path: ${response.status.value} ${response.status.description}, $innloggetBruker.")
+
+                }
+                else -> {
+                    log.warn("Feil mot $dittNAVLegacyBaseURL$path: ${response.status.value} ${response.status.description}, $innloggetBruker.")
+                }
             }
         }
     }
 
-    private fun isFeiletMed401PgaUtloptToken(response: HttpResponse, innloggetBruker: InnloggetBruker) =
+    private fun enFeilOppstod(response: HttpResponse) =
+        response.status != HttpStatusCode.OK
+
+    private fun feiletMedHttpStatus401PgaUtloptToken(response: HttpResponse, innloggetBruker: InnloggetBruker) =
         response.status == HttpStatusCode.Unauthorized && innloggetBruker.isTokenExpired()
+
+    private fun feiletMedHttpStatus408PgaTimeout(response: HttpResponse): Boolean =
+        response.status == HttpStatusCode.RequestTimeout
 
 }
