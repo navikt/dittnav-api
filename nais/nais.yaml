@@ -6,6 +6,8 @@ metadata:
   labels:
     team: personbruker
 spec:
+  envFrom:
+    - configmap: loginservice-idporten
   image: {{version}}
   port: 8080
   liveness:
