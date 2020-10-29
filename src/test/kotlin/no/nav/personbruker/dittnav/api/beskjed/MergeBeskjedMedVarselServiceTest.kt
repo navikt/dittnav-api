@@ -24,8 +24,8 @@ internal class MergeBeskjedMedVarselServiceTest {
 
     @Test
     fun `Skal vise aktive beskjeder og varsler sammen`() {
-        val expectedBeskjeder = BeskjedResultObjectMother.createNumberOfInactiveBeskjed(1)
-        val expectedVarslerAsBeskjed = BeskjedResultObjectMother.createNumberOfInactiveBeskjed(2, "varsel")
+        val expectedBeskjeder = BeskjedResultObjectMother.createBeskjedResultWithoutErrors(1)
+        val expectedVarslerAsBeskjed = BeskjedResultObjectMother.createBeskjedResultWithoutErrors(2, "varsel")
         coEvery { beskjedService.getActiveBeskjedEvents(any()) } returns expectedBeskjeder
         coEvery { varselService.getActiveVarselEvents(any()) } returns expectedVarslerAsBeskjed
 
@@ -43,8 +43,8 @@ internal class MergeBeskjedMedVarselServiceTest {
 
     @Test
     fun `Skal vise inaktive beskjeder og varsler sammen`() {
-        val expectedBeskjeder = BeskjedResultObjectMother.createNumberOfInactiveBeskjed(2)
-        val expectedVarslerAsBeskjed = BeskjedResultObjectMother.createNumberOfInactiveBeskjed(3, "varsel")
+        val expectedBeskjeder = BeskjedResultObjectMother.createBeskjedResultWithoutErrors(2)
+        val expectedVarslerAsBeskjed = BeskjedResultObjectMother.createBeskjedResultWithoutErrors(3, "varsel")
         coEvery { beskjedService.getActiveBeskjedEvents(any()) } returns expectedBeskjeder
         coEvery { varselService.getActiveVarselEvents(any()) } returns expectedVarslerAsBeskjed
 
@@ -62,9 +62,9 @@ internal class MergeBeskjedMedVarselServiceTest {
 
     @Test
     fun `Skal returnere returnere svar og info om feil for aktive eventer, varselinnboks feiler`() {
-        val expectedBeskjeder = BeskjedResultObjectMother.createNumberOfActiveBeskjed(2)
+        val expectedBeskjeder = BeskjedResultObjectMother.createBeskjedResultWithoutErrors(2)
         coEvery { beskjedService.getActiveBeskjedEvents(any()) } returns expectedBeskjeder
-        coEvery { varselService.getActiveVarselEvents(any()) } returns BeskjedResult(emptyList(), listOf(KildeType.VARSELINNBOKS))
+        coEvery { varselService.getActiveVarselEvents(any()) } returns BeskjedResult(listOf(KildeType.VARSELINNBOKS))
 
         val service = MergeBeskjedMedVarselService(beskjedService, varselService)
 
@@ -79,8 +79,8 @@ internal class MergeBeskjedMedVarselServiceTest {
 
     @Test
     fun `Skal returnere returnere svar og info om feil for aktive eventer, event-handler feiler`() {
-        val expectedBeskjeder = BeskjedResultObjectMother.createNumberOfActiveBeskjed(2)
-        coEvery { beskjedService.getActiveBeskjedEvents(any()) } returns BeskjedResult(emptyList(), listOf(KildeType.EVENTHANDLER))
+        val expectedBeskjeder = BeskjedResultObjectMother.createBeskjedResultWithoutErrors(2)
+        coEvery { beskjedService.getActiveBeskjedEvents(any()) } returns BeskjedResult(listOf(KildeType.EVENTHANDLER))
         coEvery { varselService.getActiveVarselEvents(any()) } returns expectedBeskjeder
 
         val service = MergeBeskjedMedVarselService(beskjedService, varselService)
@@ -96,9 +96,9 @@ internal class MergeBeskjedMedVarselServiceTest {
 
     @Test
     fun `Skal returnere returnere svar og info om feil for inaktive eventer, varselinnboks feiler`() {
-        val expectedBeskjeder = BeskjedResultObjectMother.createNumberOfActiveBeskjed(2)
+        val expectedBeskjeder = BeskjedResultObjectMother.createBeskjedResultWithoutErrors(2)
         coEvery { beskjedService.getInactiveBeskjedEvents(any()) } returns expectedBeskjeder
-        coEvery { varselService.getInactiveVarselEvents(any()) } returns BeskjedResult(emptyList(), listOf(KildeType.VARSELINNBOKS))
+        coEvery { varselService.getInactiveVarselEvents(any()) } returns BeskjedResult(listOf(KildeType.VARSELINNBOKS))
 
         val service = MergeBeskjedMedVarselService(beskjedService, varselService)
 
@@ -113,8 +113,8 @@ internal class MergeBeskjedMedVarselServiceTest {
 
     @Test
     fun `Skal returnere returnere svar og info om feil for inaktive eventer, event-handler feiler`() {
-        val expectedBeskjeder = BeskjedResultObjectMother.createNumberOfActiveBeskjed(2)
-        coEvery { beskjedService.getInactiveBeskjedEvents(any()) } returns BeskjedResult(emptyList(), listOf(KildeType.EVENTHANDLER))
+        val expectedBeskjeder = BeskjedResultObjectMother.createBeskjedResultWithoutErrors(2)
+        coEvery { beskjedService.getInactiveBeskjedEvents(any()) } returns BeskjedResult(listOf(KildeType.EVENTHANDLER))
         coEvery { varselService.getInactiveVarselEvents(any()) } returns expectedBeskjeder
 
         val service = MergeBeskjedMedVarselService(beskjedService, varselService)
@@ -130,8 +130,8 @@ internal class MergeBeskjedMedVarselServiceTest {
 
     @Test
     fun `Skal stotte at begge kilder feiler for aktive eventer`() {
-        coEvery { beskjedService.getActiveBeskjedEvents(any()) } returns BeskjedResult(emptyList(), listOf(KildeType.EVENTHANDLER))
-        coEvery { varselService.getActiveVarselEvents(any()) } returns BeskjedResult(emptyList(), listOf(KildeType.VARSELINNBOKS))
+        coEvery { beskjedService.getActiveBeskjedEvents(any()) } returns BeskjedResult(listOf(KildeType.EVENTHANDLER))
+        coEvery { varselService.getActiveVarselEvents(any()) } returns BeskjedResult(listOf(KildeType.VARSELINNBOKS))
 
         val service = MergeBeskjedMedVarselService(beskjedService, varselService)
 
@@ -147,8 +147,8 @@ internal class MergeBeskjedMedVarselServiceTest {
 
     @Test
     fun `Skal stotte at begge kilder feiler for inaktive eventer`() {
-        coEvery { beskjedService.getInactiveBeskjedEvents(any()) } returns BeskjedResult(emptyList(), listOf(KildeType.EVENTHANDLER))
-        coEvery { varselService.getInactiveVarselEvents(any()) } returns BeskjedResult(emptyList(), listOf(KildeType.VARSELINNBOKS))
+        coEvery { beskjedService.getInactiveBeskjedEvents(any()) } returns BeskjedResult(listOf(KildeType.EVENTHANDLER))
+        coEvery { varselService.getInactiveVarselEvents(any()) } returns BeskjedResult(listOf(KildeType.VARSELINNBOKS))
 
         val service = MergeBeskjedMedVarselService(beskjedService, varselService)
 
