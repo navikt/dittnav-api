@@ -9,13 +9,13 @@ import no.nav.personbruker.dittnav.api.varsel.VarselService
 import org.slf4j.LoggerFactory
 
 class MergeBeskjedMedVarselService(
-    private val beskjedService: BeskjedService,
-    private val varselService: VarselService
+        private val beskjedService: BeskjedService,
+        private val varselService: VarselService
 ) {
 
     private val log = LoggerFactory.getLogger(MergeBeskjedMedVarselService::class.java)
 
-    suspend fun getActiveEvents(innloggetBruker: InnloggetBruker): List<BeskjedDTO> {
+    suspend fun getActiveEvents(innloggetBruker: InnloggetBruker): BeskjedResult {
         return try {
             withContext(Dispatchers.IO) {
                 val beskjeder = async {
@@ -26,19 +26,16 @@ class MergeBeskjedMedVarselService(
                     varselService.getActiveVarselEvents(innloggetBruker)
                 }
 
-                val allActive = mutableListOf<BeskjedDTO>()
-                allActive.addAll(beskjeder.await())
-                allActive.addAll(varslerSomBeskjed.await())
-                allActive
+                beskjeder.await() + varslerSomBeskjed.await()
             }
         } catch (e: Exception) {
             throw ConsumeEventException(
-                "Uventet feil ved sammenslåing av aktive beskjeder og varsler. Minst en av kildene feilet.", e
+                    "Uventet feil ved sammenslåing av aktive beskjeder og varsler.", e
             )
         }
     }
 
-    suspend fun getInactiveEvents(innloggetBruker: InnloggetBruker): List<BeskjedDTO> {
+    suspend fun getInactiveEvents(innloggetBruker: InnloggetBruker): BeskjedResult {
         return try {
             withContext(Dispatchers.IO) {
                 val beskjeder = async {
@@ -49,15 +46,11 @@ class MergeBeskjedMedVarselService(
                     varselService.getInactiveVarselEvents(innloggetBruker)
                 }
 
-                val allInactive = mutableListOf<BeskjedDTO>()
-                allInactive.addAll(beskjeder.await())
-                allInactive.addAll(varslerSomBeskjed.await())
-
-                return@withContext allInactive
+                beskjeder.await() + varslerSomBeskjed.await()
             }
         } catch (e: Exception) {
             throw ConsumeEventException(
-                "Uventet feil ved sammenslåing av inaktive beskjeder og varsler. Minst en av kildene feilet.", e
+                    "Uventet feil ved sammenslåing av inaktive beskjeder og varsler. Minst en av kildene feilet.", e
             )
         }
     }

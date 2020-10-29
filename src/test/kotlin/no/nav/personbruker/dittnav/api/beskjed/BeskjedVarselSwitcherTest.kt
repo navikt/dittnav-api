@@ -17,10 +17,10 @@ internal class BeskjedVarselSwitcherTest {
 
     @BeforeEach
     fun setup() {
-        coEvery { beskjedService.getActiveBeskjedEvents(any()) } returns emptyList()
-        coEvery { beskjedService.getInactiveBeskjedEvents(any()) } returns emptyList()
-        coEvery { beskjedMedVarselService.getActiveEvents(any()) } returns emptyList()
-        coEvery { beskjedMedVarselService.getInactiveEvents(any()) } returns emptyList()
+        coEvery { beskjedService.getActiveBeskjedEvents(any()) } returns BeskjedResult(emptyList(), emptyList())
+        coEvery { beskjedService.getInactiveBeskjedEvents(any()) } returns BeskjedResult(emptyList(), emptyList())
+        coEvery { beskjedMedVarselService.getActiveEvents(any()) } returns BeskjedResult(emptyList(), emptyList())
+        coEvery { beskjedMedVarselService.getInactiveEvents(any()) } returns BeskjedResult(emptyList(), emptyList())
     }
 
     @Test

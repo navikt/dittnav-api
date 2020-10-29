@@ -38,12 +38,12 @@ object BeskjedDtoObjectMother {
         )
     }
 
-    fun createNumberOfInactiveBeskjed(number: Int, baseEventId: String = "beskjed"): List<BeskjedDTO> {
+    fun createNumberOfInactiveBeskjed(number: Int, baseEventId: String = "beskjed"): BeskjedResult {
         val list = mutableListOf<BeskjedDTO>()
         for (i in 1..number) {
             list.add(createInactiveBeskjed("$baseEventId-$i"))
         }
-        return list
+        return BeskjedResult(list)
     }
 
 }

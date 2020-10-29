@@ -64,7 +64,7 @@ internal class MergeBeskjedMedVarselServiceTest {
     @Test
     fun `Skal kaste intern exception hvis minst en av kildene for aktive eventer feiler`() {
         coEvery { beskjedService.getActiveBeskjedEvents(any()) } throws Exception("Simulert feil")
-        coEvery { varselService.getActiveVarselEvents(any()) } returns emptyList()
+        coEvery { varselService.getActiveVarselEvents(any()) } returns BeskjedResult(emptyList(), emptyList())
 
         val service = MergeBeskjedMedVarselService(beskjedService, varselService)
 
@@ -77,7 +77,7 @@ internal class MergeBeskjedMedVarselServiceTest {
 
     @Test
     fun `Skal kaste intern exception hvis minst en av kildene for inaktive eventer feiler`() {
-        coEvery { beskjedService.getActiveBeskjedEvents(any()) } returns emptyList()
+        coEvery { beskjedService.getActiveBeskjedEvents(any()) } returns BeskjedResult(emptyList(), emptyList())
         coEvery { varselService.getActiveVarselEvents(any()) } throws Exception("Simulert feil")
 
         val service = MergeBeskjedMedVarselService(beskjedService, varselService)
@@ -88,5 +88,7 @@ internal class MergeBeskjedMedVarselServiceTest {
             }
         } `should throw` ConsumeEventException::class `with message containing` "Uventet feil ved sammenslåing av inaktive"
     }
+
+    //TODO nye tester
 
 }
