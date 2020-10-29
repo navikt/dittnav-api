@@ -32,8 +32,11 @@ fun Route.beskjed(
 
     get("/beskjed/inaktiv") {
         try {
-            val beskjedEvents = beskjedVarselSwitcher.getInactiveEvents(innloggetBruker)
-            call.respond(HttpStatusCode.OK, beskjedEvents)
+            val result = beskjedVarselSwitcher.getInactiveEvents(innloggetBruker)
+            if(result.hasErrors()) {
+                log.warn("En eller flere kilder feilet: ${result.errors()}")
+            }
+            call.respond(result.determineHttpCode(), result.results())
 
         } catch (exception: Exception) {
             respondWithError(call, log, exception)
