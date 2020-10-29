@@ -16,6 +16,3 @@ data class BeskjedResult(
 }
 
 enum class KildeType { VARSELINNBOKS, EVENTHANDLER }
-
-
-

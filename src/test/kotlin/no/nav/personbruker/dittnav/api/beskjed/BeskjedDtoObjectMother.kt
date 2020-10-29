@@ -17,14 +17,6 @@ object BeskjedDtoObjectMother {
         )
     }
 
-    fun createNumberOfActiveBeskjed(number: Int, baseEventId: String = "beskjed"): List<BeskjedDTO> {
-        val list = mutableListOf<BeskjedDTO>()
-        for (i in 1..number) {
-            list.add(createActiveBeskjed("$baseEventId-$i"))
-        }
-        return list
-    }
-
     fun createInactiveBeskjed(eventId: String): BeskjedDTO {
         return BeskjedDTO(
             ZonedDateTime.now().minusDays(3),
@@ -36,14 +28,6 @@ object BeskjedDtoObjectMother {
             3,
             false
         )
-    }
-
-    fun createNumberOfInactiveBeskjed(number: Int, baseEventId: String = "beskjed"): BeskjedResult {
-        val list = mutableListOf<BeskjedDTO>()
-        for (i in 1..number) {
-            list.add(createInactiveBeskjed("$baseEventId-$i"))
-        }
-        return BeskjedResult(list)
     }
 
 }

@@ -24,8 +24,8 @@ internal class MergeBeskjedMedVarselServiceTest {
 
     @Test
     fun `Skal vise aktive beskjeder og varsler sammen`() {
-        val expectedBeskjeder = BeskjedDtoObjectMother.createNumberOfInactiveBeskjed(1)
-        val expectedVarslerAsBeskjed = BeskjedDtoObjectMother.createNumberOfInactiveBeskjed(2, "varsel")
+        val expectedBeskjeder = BeskjedResultObjectMother.createNumberOfInactiveBeskjed(1)
+        val expectedVarslerAsBeskjed = BeskjedResultObjectMother.createNumberOfInactiveBeskjed(2, "varsel")
         coEvery { beskjedService.getActiveBeskjedEvents(any()) } returns expectedBeskjeder
         coEvery { varselService.getActiveVarselEvents(any()) } returns expectedVarslerAsBeskjed
 
@@ -43,8 +43,8 @@ internal class MergeBeskjedMedVarselServiceTest {
 
     @Test
     fun `Skal vise inaktive beskjeder og varsler sammen`() {
-        val expectedBeskjeder = BeskjedDtoObjectMother.createNumberOfInactiveBeskjed(2)
-        val expectedVarslerAsBeskjed = BeskjedDtoObjectMother.createNumberOfInactiveBeskjed(3, "varsel")
+        val expectedBeskjeder = BeskjedResultObjectMother.createNumberOfInactiveBeskjed(2)
+        val expectedVarslerAsBeskjed = BeskjedResultObjectMother.createNumberOfInactiveBeskjed(3, "varsel")
         coEvery { beskjedService.getActiveBeskjedEvents(any()) } returns expectedBeskjeder
         coEvery { varselService.getActiveVarselEvents(any()) } returns expectedVarslerAsBeskjed
 
@@ -62,8 +62,8 @@ internal class MergeBeskjedMedVarselServiceTest {
 
     @Test
     fun `Skal returnere returnere svar og info om feil for aktive eventer, varselinnboks feiler`() {
-        val expectedBeskjeder = BeskjedDtoObjectMother.createNumberOfActiveBeskjed(2)
-        coEvery { beskjedService.getActiveBeskjedEvents(any()) } returns BeskjedResult(expectedBeskjeder, emptyList())
+        val expectedBeskjeder = BeskjedResultObjectMother.createNumberOfActiveBeskjed(2)
+        coEvery { beskjedService.getActiveBeskjedEvents(any()) } returns expectedBeskjeder
         coEvery { varselService.getActiveVarselEvents(any()) } returns BeskjedResult(emptyList(), listOf(KildeType.VARSELINNBOKS))
 
         val service = MergeBeskjedMedVarselService(beskjedService, varselService)
@@ -79,9 +79,9 @@ internal class MergeBeskjedMedVarselServiceTest {
 
     @Test
     fun `Skal returnere returnere svar og info om feil for aktive eventer, event-handler feiler`() {
-        val expectedBeskjeder = BeskjedDtoObjectMother.createNumberOfActiveBeskjed(2)
+        val expectedBeskjeder = BeskjedResultObjectMother.createNumberOfActiveBeskjed(2)
         coEvery { beskjedService.getActiveBeskjedEvents(any()) } returns BeskjedResult(emptyList(), listOf(KildeType.EVENTHANDLER))
-        coEvery { varselService.getActiveVarselEvents(any()) } returns BeskjedResult(expectedBeskjeder, emptyList())
+        coEvery { varselService.getActiveVarselEvents(any()) } returns expectedBeskjeder
 
         val service = MergeBeskjedMedVarselService(beskjedService, varselService)
 
@@ -96,8 +96,8 @@ internal class MergeBeskjedMedVarselServiceTest {
 
     @Test
     fun `Skal returnere returnere svar og info om feil for inaktive eventer, varselinnboks feiler`() {
-        val expectedBeskjeder = BeskjedDtoObjectMother.createNumberOfActiveBeskjed(2)
-        coEvery { beskjedService.getInactiveBeskjedEvents(any()) } returns BeskjedResult(expectedBeskjeder, emptyList())
+        val expectedBeskjeder = BeskjedResultObjectMother.createNumberOfActiveBeskjed(2)
+        coEvery { beskjedService.getInactiveBeskjedEvents(any()) } returns expectedBeskjeder
         coEvery { varselService.getInactiveVarselEvents(any()) } returns BeskjedResult(emptyList(), listOf(KildeType.VARSELINNBOKS))
 
         val service = MergeBeskjedMedVarselService(beskjedService, varselService)
@@ -113,9 +113,9 @@ internal class MergeBeskjedMedVarselServiceTest {
 
     @Test
     fun `Skal returnere returnere svar og info om feil for inaktive eventer, event-handler feiler`() {
-        val expectedBeskjeder = BeskjedDtoObjectMother.createNumberOfActiveBeskjed(2)
+        val expectedBeskjeder = BeskjedResultObjectMother.createNumberOfActiveBeskjed(2)
         coEvery { beskjedService.getInactiveBeskjedEvents(any()) } returns BeskjedResult(emptyList(), listOf(KildeType.EVENTHANDLER))
-        coEvery { varselService.getInactiveVarselEvents(any()) } returns BeskjedResult(expectedBeskjeder, emptyList())
+        coEvery { varselService.getInactiveVarselEvents(any()) } returns expectedBeskjeder
 
         val service = MergeBeskjedMedVarselService(beskjedService, varselService)
 
