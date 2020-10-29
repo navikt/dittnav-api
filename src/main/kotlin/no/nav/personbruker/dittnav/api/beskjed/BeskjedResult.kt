@@ -9,6 +9,7 @@ data class BeskjedResult(
     operator fun plus(result: BeskjedResult): BeskjedResult = BeskjedResult(this.results + result.results, this.errors + result.errors)
     fun first() = results.first()
     val size: Int = results.size
+    fun hasResults() = results.isNotEmpty()
 
     fun hasErrors() = errors.isNotEmpty()
     fun errors() = mutableListOf<KildeType>().apply { addAll(errors) }
