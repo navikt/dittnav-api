@@ -3,12 +3,9 @@ package no.nav.personbruker.dittnav.api.beskjed
 import io.mockk.coEvery
 import io.mockk.mockk
 import kotlinx.coroutines.runBlocking
-import no.nav.personbruker.dittnav.api.common.ConsumeEventException
 import no.nav.personbruker.dittnav.api.common.InnloggetBrukerObjectMother
 import org.amshove.kluent.`should be equal to`
 import org.amshove.kluent.`should contain`
-import org.amshove.kluent.`should throw`
-import org.amshove.kluent.invoking
 import org.junit.jupiter.api.Test
 
 class BeskjedServiceTest {
@@ -25,7 +22,7 @@ class BeskjedServiceTest {
         coEvery { beskjedConsumer.getExternalActiveEvents(innloggetBruker) } returns listOf(beskjed1, beskjed2)
         runBlocking {
             val beskjedResult = beskjedService.getActiveBeskjedEvents(innloggetBruker)
-            beskjedResult.size `should be equal to` 2
+            beskjedResult.size() `should be equal to` 2
         }
     }
 
@@ -36,7 +33,7 @@ class BeskjedServiceTest {
         coEvery { beskjedConsumer.getExternalInactiveEvents(innloggetBruker) } returns listOf(beskjed1, beskjed2)
         runBlocking {
             val beskjedResult = beskjedService.getInactiveBeskjedEvents(innloggetBruker)
-            beskjedResult.size `should be equal to` 2
+            beskjedResult.size() `should be equal to` 2
         }
     }
 

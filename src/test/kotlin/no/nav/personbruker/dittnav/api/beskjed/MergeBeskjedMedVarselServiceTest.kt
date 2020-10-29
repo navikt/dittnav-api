@@ -36,7 +36,7 @@ internal class MergeBeskjedMedVarselServiceTest {
         }
 
         result.shouldNotBeNull()
-        result.size `should be` expectedBeskjeder.size + expectedVarslerAsBeskjed.size
+        result.size() `should be` expectedBeskjeder.size() + expectedVarslerAsBeskjed.size()
         result.hasErrors().`should be false`()
         result.errors().`should be empty`()
     }
@@ -55,7 +55,7 @@ internal class MergeBeskjedMedVarselServiceTest {
         }
 
         result.shouldNotBeNull()
-        result.size `should be` expectedBeskjeder.size + expectedVarslerAsBeskjed.size
+        result.size() `should be` expectedBeskjeder.size() + expectedVarslerAsBeskjed.size()
         result.hasErrors().`should be false`()
         result.errors().`should be empty`()
     }
@@ -72,7 +72,7 @@ internal class MergeBeskjedMedVarselServiceTest {
             service.getActiveEvents(innloggetBruker)
         }
 
-        beskjedResult.size `should be equal to` expectedBeskjeder.size
+        beskjedResult.size() `should be equal to` expectedBeskjeder.size()
         beskjedResult.hasErrors().`should be true`()
         beskjedResult.errors() `should contain` KildeType.VARSELINNBOKS
     }
@@ -89,7 +89,7 @@ internal class MergeBeskjedMedVarselServiceTest {
             service.getActiveEvents(innloggetBruker)
         }
 
-        beskjedResult.size `should be equal to` expectedBeskjeder.size
+        beskjedResult.size() `should be equal to` expectedBeskjeder.size()
         beskjedResult.hasErrors().`should be true`()
         beskjedResult.errors() `should contain` KildeType.EVENTHANDLER
     }
@@ -106,7 +106,7 @@ internal class MergeBeskjedMedVarselServiceTest {
             service.getInactiveEvents(innloggetBruker)
         }
 
-        beskjedResult.size `should be equal to` expectedBeskjeder.size
+        beskjedResult.size() `should be equal to` expectedBeskjeder.size()
         beskjedResult.hasErrors().`should be true`()
         beskjedResult.errors() `should contain` KildeType.VARSELINNBOKS
     }
@@ -123,7 +123,7 @@ internal class MergeBeskjedMedVarselServiceTest {
             service.getInactiveEvents(innloggetBruker)
         }
 
-        beskjedResult.size `should be equal to` expectedBeskjeder.size
+        beskjedResult.size() `should be equal to` expectedBeskjeder.size()
         beskjedResult.hasErrors().`should be true`()
         beskjedResult.errors() `should contain` KildeType.EVENTHANDLER
     }

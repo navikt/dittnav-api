@@ -19,8 +19,11 @@ fun Route.beskjed(
 
     get("/beskjed") {
         try {
-            val beskjedEvents = beskjedVarselSwitcher.getActiveEvents(innloggetBruker)
-            call.respond(HttpStatusCode.OK, beskjedEvents)
+            val result = beskjedVarselSwitcher.getActiveEvents(innloggetBruker)
+            if(result.hasErrors()) {
+                log.warn("En eller flere kilder feilet: ${result.errors()}")
+            }
+            call.respond(result.determineHttpCode(), result.results())
 
         } catch (exception: Exception) {
             respondWithError(call, log, exception)
