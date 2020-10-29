@@ -23,7 +23,7 @@ class VarselServiceTest {
         coEvery { varselConsumer.getSisteVarsler(innloggetBruker) } returns listOf(varsel1, varsel2)
         runBlocking {
             val varselList = varselService.getActiveVarselEvents(innloggetBruker)
-            varselList.size() `should be equal to` 2
+            varselList.results().size `should be equal to` 2
         }
     }
 
@@ -34,7 +34,7 @@ class VarselServiceTest {
         coEvery { varselConsumer.getSisteVarsler(innloggetBruker) } returns listOf(varsel1, varsel2)
         runBlocking {
             val varselList = varselService.getInactiveVarselEvents(innloggetBruker)
-            varselList.size() `should be equal to` 2
+            varselList.results().size `should be equal to` 2
         }
     }
 

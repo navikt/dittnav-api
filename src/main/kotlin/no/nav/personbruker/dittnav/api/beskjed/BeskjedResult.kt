@@ -11,9 +11,6 @@ data class BeskjedResult(
     operator fun plus(result: BeskjedResult): BeskjedResult =
         BeskjedResult(this.results + result.results, this.errors + result.errors)
 
-    fun first() = results.first()
-    fun size(): Int = results.size
-    fun hasResults() = results.isNotEmpty()
     fun results() = mutableListOf<BeskjedDTO>().apply { addAll(results) }
 
     fun hasErrors() = errors.isNotEmpty()
@@ -21,17 +18,9 @@ data class BeskjedResult(
 
     fun determineHttpCode(): HttpStatusCode {
         return when {
-            hasPartialResult() -> {
-                HttpStatusCode.PartialContent
-
-            }
-            allSourcesFailed() -> {
-                HttpStatusCode.ServiceUnavailable
-
-            }
-            else -> {
-                HttpStatusCode.OK
-            }
+            hasPartialResult() -> HttpStatusCode.PartialContent
+            allSourcesFailed() -> HttpStatusCode.ServiceUnavailable
+            else -> HttpStatusCode.OK
         }
     }
 

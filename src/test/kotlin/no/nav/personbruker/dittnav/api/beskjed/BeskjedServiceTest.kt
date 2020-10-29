@@ -22,7 +22,7 @@ class BeskjedServiceTest {
         coEvery { beskjedConsumer.getExternalActiveEvents(innloggetBruker) } returns listOf(beskjed1, beskjed2)
         runBlocking {
             val beskjedResult = beskjedService.getActiveBeskjedEvents(innloggetBruker)
-            beskjedResult.size() `should be equal to` 2
+            beskjedResult.results().size `should be equal to` 2
         }
     }
 
@@ -33,7 +33,7 @@ class BeskjedServiceTest {
         coEvery { beskjedConsumer.getExternalInactiveEvents(innloggetBruker) } returns listOf(beskjed1, beskjed2)
         runBlocking {
             val beskjedResult = beskjedService.getInactiveBeskjedEvents(innloggetBruker)
-            beskjedResult.size() `should be equal to` 2
+            beskjedResult.results().size `should be equal to` 2
         }
     }
 
@@ -46,7 +46,7 @@ class BeskjedServiceTest {
         coEvery { beskjedConsumer.getExternalActiveEvents(innloggetBruker) } returns listOf(beskjed)
         runBlocking {
             val beskjedResult = beskjedService.getActiveBeskjedEvents(innloggetBruker)
-            val beskjedDTO = beskjedResult.first()
+            val beskjedDTO = beskjedResult.results().first()
             beskjedDTO.tekst `should be equal to` "***"
             beskjedDTO.link `should be equal to` "***"
             beskjedDTO.sikkerhetsnivaa `should be equal to` 4
@@ -60,7 +60,7 @@ class BeskjedServiceTest {
         coEvery { beskjedConsumer.getExternalActiveEvents(innloggetBruker) } returns listOf(beskjed)
         runBlocking {
             val beskjedResult = beskjedService.getActiveBeskjedEvents(innloggetBruker)
-            val beskjedDTO = beskjedResult.first()
+            val beskjedDTO = beskjedResult.results().first()
             beskjedDTO.tekst `should be equal to` beskjed.tekst
             beskjedDTO.link `should be equal to` beskjed.link
             beskjedDTO.sikkerhetsnivaa `should be equal to` 3
@@ -73,7 +73,7 @@ class BeskjedServiceTest {
         coEvery { beskjedConsumer.getExternalActiveEvents(innloggetBruker) } returns listOf(beskjed)
         runBlocking {
             val beskjedResult = beskjedService.getActiveBeskjedEvents(innloggetBruker)
-            val beskjedDTO = beskjedResult.first()
+            val beskjedDTO = beskjedResult.results().first()
             beskjedDTO.tekst `should be equal to` beskjed.tekst
             beskjedDTO.link `should be equal to` beskjed.link
             beskjedDTO.sikkerhetsnivaa `should be equal to` 4
