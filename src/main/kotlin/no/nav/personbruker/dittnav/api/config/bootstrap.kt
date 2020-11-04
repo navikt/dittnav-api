@@ -87,7 +87,7 @@ fun Application.mainModule() {
         authenticate {
             legacyApi(legacyConsumer)
             oppgave(oppgaveService)
-            beskjed(mergeBeskjedMedVarselService, beskjedVarselSwitcher, environment)
+            beskjed(beskjedVarselSwitcher)
             innboks(innboksService)
             brukernotifikasjoner(brukernotifikasjonService)
             authenticationCheck()

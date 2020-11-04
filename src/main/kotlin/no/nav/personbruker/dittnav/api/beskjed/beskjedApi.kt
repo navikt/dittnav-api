@@ -10,9 +10,7 @@ import no.nav.personbruker.dittnav.api.config.innloggetBruker
 import org.slf4j.LoggerFactory
 
 fun Route.beskjed(
-    mergeBeskjedMedVarselService: MergeBeskjedMedVarselService,
-    beskjedVarselSwitcher: BeskjedVarselSwitcher,
-    environment: Environment
+    beskjedVarselSwitcher: BeskjedVarselSwitcher
 ) {
 
     val log = LoggerFactory.getLogger(BeskjedService::class.java)
@@ -40,30 +38,6 @@ fun Route.beskjed(
 
         } catch (exception: Exception) {
             respondWithError(call, log, exception)
-        }
-    }
-
-    if (environment.isRunningInDev) {
-        log.info("Kjører i et dev-miljø, aktiverer grensesnittet for varsler sammen med beskjeder.")
-
-        get("/beskjed/merged") {
-            try {
-                val events = mergeBeskjedMedVarselService.getActiveEvents(innloggetBruker)
-                call.respond(HttpStatusCode.OK, events)
-
-            } catch (exception: Exception) {
-                respondWithError(call, log, exception)
-            }
-        }
-
-        get("/beskjed/merged/inaktiv") {
-            try {
-                val events = mergeBeskjedMedVarselService.getInactiveEvents(innloggetBruker)
-                call.respond(HttpStatusCode.OK, events)
-
-            } catch (exception: Exception) {
-                respondWithError(call, log, exception)
-            }
         }
     }
 
