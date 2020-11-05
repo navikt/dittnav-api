@@ -61,7 +61,7 @@ internal class MergeBeskjedMedVarselServiceTest {
     }
 
     @Test
-    fun `Skal returnere returnere svar og info om feil for aktive eventer, varselinnboks feiler`() {
+    fun `Skal returnere svar og info om feil for aktive eventer, varselinnboks feiler`() {
         val expectedBeskjeder = BeskjedResultObjectMother.createBeskjedResultWithoutErrors(2)
         coEvery { beskjedService.getActiveBeskjedEvents(any()) } returns expectedBeskjeder
         coEvery { varselService.getActiveVarselEvents(any()) } returns BeskjedResult(listOf(KildeType.VARSELINNBOKS))
@@ -78,7 +78,7 @@ internal class MergeBeskjedMedVarselServiceTest {
     }
 
     @Test
-    fun `Skal returnere returnere svar og info om feil for aktive eventer, event-handler feiler`() {
+    fun `Skal returnere svar og info om feil for aktive eventer, event-handler feiler`() {
         val expectedBeskjeder = BeskjedResultObjectMother.createBeskjedResultWithoutErrors(2)
         coEvery { beskjedService.getActiveBeskjedEvents(any()) } returns BeskjedResult(listOf(KildeType.EVENTHANDLER))
         coEvery { varselService.getActiveVarselEvents(any()) } returns expectedBeskjeder
@@ -95,7 +95,7 @@ internal class MergeBeskjedMedVarselServiceTest {
     }
 
     @Test
-    fun `Skal returnere returnere svar og info om feil for inaktive eventer, varselinnboks feiler`() {
+    fun `Skal returnere svar og info om feil for inaktive eventer, varselinnboks feiler`() {
         val expectedBeskjeder = BeskjedResultObjectMother.createBeskjedResultWithoutErrors(2)
         coEvery { beskjedService.getInactiveBeskjedEvents(any()) } returns expectedBeskjeder
         coEvery { varselService.getInactiveVarselEvents(any()) } returns BeskjedResult(listOf(KildeType.VARSELINNBOKS))
@@ -112,7 +112,7 @@ internal class MergeBeskjedMedVarselServiceTest {
     }
 
     @Test
-    fun `Skal returnere returnere svar og info om feil for inaktive eventer, event-handler feiler`() {
+    fun `Skal returnere svar og info om feil for inaktive eventer, event-handler feiler`() {
         val expectedBeskjeder = BeskjedResultObjectMother.createBeskjedResultWithoutErrors(2)
         coEvery { beskjedService.getInactiveBeskjedEvents(any()) } returns BeskjedResult(listOf(KildeType.EVENTHANDLER))
         coEvery { varselService.getInactiveVarselEvents(any()) } returns expectedBeskjeder
