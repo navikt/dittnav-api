@@ -20,7 +20,7 @@ class BeskjedVarselSwitcher(
         }
     }
 
-    suspend fun getActiveEvents(innloggetBruker: InnloggetBruker): List<BeskjedDTO> {
+    suspend fun getActiveEvents(innloggetBruker: InnloggetBruker): BeskjedResult {
         return if (includeVarsel) {
             beskjedMedVarselService.getActiveEvents(innloggetBruker)
 
@@ -29,7 +29,7 @@ class BeskjedVarselSwitcher(
         }
     }
 
-    suspend fun getInactiveEvents(innloggetBruker: InnloggetBruker): List<BeskjedDTO> {
+    suspend fun getInactiveEvents(innloggetBruker: InnloggetBruker): BeskjedResult {
         return if (includeVarsel) {
             beskjedMedVarselService.getInactiveEvents(innloggetBruker)
 

@@ -3,11 +3,10 @@ package no.nav.personbruker.dittnav.api.varsel
 import io.mockk.coEvery
 import io.mockk.mockk
 import kotlinx.coroutines.runBlocking
-import no.nav.personbruker.dittnav.api.common.ConsumeEventException
+import no.nav.personbruker.dittnav.api.beskjed.KildeType
 import no.nav.personbruker.dittnav.api.common.InnloggetBrukerObjectMother
 import org.amshove.kluent.`should be equal to`
-import org.amshove.kluent.`should throw`
-import org.amshove.kluent.invoking
+import org.amshove.kluent.`should contain`
 import org.junit.jupiter.api.Test
 
 class VarselServiceTest {
@@ -24,7 +23,7 @@ class VarselServiceTest {
         coEvery { varselConsumer.getSisteVarsler(innloggetBruker) } returns listOf(varsel1, varsel2)
         runBlocking {
             val varselList = varselService.getActiveVarselEvents(innloggetBruker)
-            varselList.size `should be equal to` 2
+            varselList.results().size `should be equal to` 2
         }
     }
 
@@ -35,20 +34,28 @@ class VarselServiceTest {
         coEvery { varselConsumer.getSisteVarsler(innloggetBruker) } returns listOf(varsel1, varsel2)
         runBlocking {
             val varselList = varselService.getInactiveVarselEvents(innloggetBruker)
-            varselList.size `should be equal to` 2
+            varselList.results().size `should be equal to` 2
         }
     }
 
     @Test
     fun `Skal kaste en exception hvis henting av aktive eventer feiler`() {
         coEvery { varselConsumer.getSisteVarsler(innloggetBruker) } throws Exception("error")
-        invoking { runBlocking { varselService.getActiveVarselEvents(innloggetBruker) } } `should throw` ConsumeEventException::class
+        runBlocking {
+            val beskjedResult = varselService.getActiveVarselEvents(innloggetBruker)
+            beskjedResult.hasErrors() `should be equal to` true
+            beskjedResult.errors() `should contain` KildeType.VARSELINNBOKS
+        }
     }
 
     @Test
     fun `Skal kaste en exception hvis henting av inaktive eventer feiler`() {
         coEvery { varselConsumer.getSisteVarsler(innloggetBruker) } throws Exception("error")
-        invoking { runBlocking { varselService.getInactiveVarselEvents(innloggetBruker) } } `should throw` ConsumeEventException::class
+        runBlocking {
+            val beskjedResult = varselService.getInactiveVarselEvents(innloggetBruker)
+            beskjedResult.hasErrors() `should be equal to` true
+            beskjedResult.errors() `should contain` KildeType.VARSELINNBOKS
+        }
     }
 
 }

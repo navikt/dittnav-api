@@ -4,14 +4,9 @@ import io.mockk.clearMocks
 import io.mockk.coEvery
 import io.mockk.mockk
 import kotlinx.coroutines.runBlocking
-import no.nav.personbruker.dittnav.common.test.`with message containing`
-import no.nav.personbruker.dittnav.api.common.ConsumeEventException
 import no.nav.personbruker.dittnav.api.common.InnloggetBrukerObjectMother
 import no.nav.personbruker.dittnav.api.varsel.VarselService
-import org.amshove.kluent.`should be`
-import org.amshove.kluent.`should throw`
-import org.amshove.kluent.invoking
-import org.amshove.kluent.shouldNotBeNull
+import org.amshove.kluent.*
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 
@@ -29,64 +24,142 @@ internal class MergeBeskjedMedVarselServiceTest {
 
     @Test
     fun `Skal vise aktive beskjeder og varsler sammen`() {
-        val expectedBeskjeder = BeskjedDtoObjectMother.createNumberOfInactiveBeskjed(1)
-        val expectedVarslerAsBeskjed = BeskjedDtoObjectMother.createNumberOfInactiveBeskjed(2, "varsel")
+        val expectedBeskjeder = BeskjedResultObjectMother.createBeskjedResultWithoutErrors(1)
+        val expectedVarslerAsBeskjed = BeskjedResultObjectMother.createBeskjedResultWithoutErrors(2, "varsel")
         coEvery { beskjedService.getActiveBeskjedEvents(any()) } returns expectedBeskjeder
         coEvery { varselService.getActiveVarselEvents(any()) } returns expectedVarslerAsBeskjed
 
         val service = MergeBeskjedMedVarselService(beskjedService, varselService)
 
-        val alleAktive = runBlocking {
+        val result = runBlocking {
             service.getActiveEvents(innloggetBruker)
         }
 
-        alleAktive.shouldNotBeNull()
-        alleAktive.size `should be` expectedBeskjeder.size + expectedVarslerAsBeskjed.size
+        result.shouldNotBeNull()
+        result.results().size `should be` expectedBeskjeder.results().size + expectedVarslerAsBeskjed.results().size
+        result.hasErrors().`should be false`()
+        result.errors().`should be empty`()
     }
 
     @Test
     fun `Skal vise inaktive beskjeder og varsler sammen`() {
-        val expectedBeskjeder = BeskjedDtoObjectMother.createNumberOfInactiveBeskjed(2)
-        val expectedVarslerAsBeskjed = BeskjedDtoObjectMother.createNumberOfInactiveBeskjed(3, "varsel")
+        val expectedBeskjeder = BeskjedResultObjectMother.createBeskjedResultWithoutErrors(2)
+        val expectedVarslerAsBeskjed = BeskjedResultObjectMother.createBeskjedResultWithoutErrors(3, "varsel")
         coEvery { beskjedService.getActiveBeskjedEvents(any()) } returns expectedBeskjeder
         coEvery { varselService.getActiveVarselEvents(any()) } returns expectedVarslerAsBeskjed
 
         val service = MergeBeskjedMedVarselService(beskjedService, varselService)
 
-        val alleInaktive = runBlocking {
+        val result = runBlocking {
             service.getActiveEvents(innloggetBruker)
         }
 
-        alleInaktive.shouldNotBeNull()
-        alleInaktive.size `should be` expectedBeskjeder.size + expectedVarslerAsBeskjed.size
+        result.shouldNotBeNull()
+        result.results().size `should be` expectedBeskjeder.results().size + expectedVarslerAsBeskjed.results().size
+        result.hasErrors().`should be false`()
+        result.errors().`should be empty`()
     }
 
     @Test
-    fun `Skal kaste intern exception hvis minst en av kildene for aktive eventer feiler`() {
-        coEvery { beskjedService.getActiveBeskjedEvents(any()) } throws Exception("Simulert feil")
-        coEvery { varselService.getActiveVarselEvents(any()) } returns emptyList()
+    fun `Skal returnere svar og info om feil for aktive eventer, varselinnboks feiler`() {
+        val expectedBeskjeder = BeskjedResultObjectMother.createBeskjedResultWithoutErrors(2)
+        coEvery { beskjedService.getActiveBeskjedEvents(any()) } returns expectedBeskjeder
+        coEvery { varselService.getActiveVarselEvents(any()) } returns BeskjedResult(listOf(KildeType.VARSELINNBOKS))
 
         val service = MergeBeskjedMedVarselService(beskjedService, varselService)
 
-        invoking {
-            runBlocking {
-                service.getActiveEvents(innloggetBruker)
-            }
-        } `should throw` ConsumeEventException::class `with message containing` "Uventet feil ved sammenslåing av aktive"
+        val beskjedResult = runBlocking {
+            service.getActiveEvents(innloggetBruker)
+        }
+
+        beskjedResult.results().size `should be equal to` expectedBeskjeder.results().size
+        beskjedResult.hasErrors().`should be true`()
+        beskjedResult.errors() `should contain` KildeType.VARSELINNBOKS
     }
 
     @Test
-    fun `Skal kaste intern exception hvis minst en av kildene for inaktive eventer feiler`() {
-        coEvery { beskjedService.getActiveBeskjedEvents(any()) } returns emptyList()
-        coEvery { varselService.getActiveVarselEvents(any()) } throws Exception("Simulert feil")
+    fun `Skal returnere svar og info om feil for aktive eventer, event-handler feiler`() {
+        val expectedBeskjeder = BeskjedResultObjectMother.createBeskjedResultWithoutErrors(2)
+        coEvery { beskjedService.getActiveBeskjedEvents(any()) } returns BeskjedResult(listOf(KildeType.EVENTHANDLER))
+        coEvery { varselService.getActiveVarselEvents(any()) } returns expectedBeskjeder
 
         val service = MergeBeskjedMedVarselService(beskjedService, varselService)
 
-        invoking {
-            runBlocking {
-                service.getInactiveEvents(innloggetBruker)
-            }
-        } `should throw` ConsumeEventException::class `with message containing` "Uventet feil ved sammenslåing av inaktive"
+        val beskjedResult = runBlocking {
+            service.getActiveEvents(innloggetBruker)
+        }
+
+        beskjedResult.results().size `should be equal to` expectedBeskjeder.results().size
+        beskjedResult.hasErrors().`should be true`()
+        beskjedResult.errors() `should contain` KildeType.EVENTHANDLER
+    }
+
+    @Test
+    fun `Skal returnere svar og info om feil for inaktive eventer, varselinnboks feiler`() {
+        val expectedBeskjeder = BeskjedResultObjectMother.createBeskjedResultWithoutErrors(2)
+        coEvery { beskjedService.getInactiveBeskjedEvents(any()) } returns expectedBeskjeder
+        coEvery { varselService.getInactiveVarselEvents(any()) } returns BeskjedResult(listOf(KildeType.VARSELINNBOKS))
+
+        val service = MergeBeskjedMedVarselService(beskjedService, varselService)
+
+        val beskjedResult = runBlocking {
+            service.getInactiveEvents(innloggetBruker)
+        }
+
+        beskjedResult.results().size `should be equal to` expectedBeskjeder.results().size
+        beskjedResult.hasErrors().`should be true`()
+        beskjedResult.errors() `should contain` KildeType.VARSELINNBOKS
+    }
+
+    @Test
+    fun `Skal returnere svar og info om feil for inaktive eventer, event-handler feiler`() {
+        val expectedBeskjeder = BeskjedResultObjectMother.createBeskjedResultWithoutErrors(2)
+        coEvery { beskjedService.getInactiveBeskjedEvents(any()) } returns BeskjedResult(listOf(KildeType.EVENTHANDLER))
+        coEvery { varselService.getInactiveVarselEvents(any()) } returns expectedBeskjeder
+
+        val service = MergeBeskjedMedVarselService(beskjedService, varselService)
+
+        val beskjedResult = runBlocking {
+            service.getInactiveEvents(innloggetBruker)
+        }
+
+        beskjedResult.results().size `should be equal to` expectedBeskjeder.results().size
+        beskjedResult.hasErrors().`should be true`()
+        beskjedResult.errors() `should contain` KildeType.EVENTHANDLER
+    }
+
+    @Test
+    fun `Skal stotte at begge kilder feiler for aktive eventer`() {
+        coEvery { beskjedService.getActiveBeskjedEvents(any()) } returns BeskjedResult(listOf(KildeType.EVENTHANDLER))
+        coEvery { varselService.getActiveVarselEvents(any()) } returns BeskjedResult(listOf(KildeType.VARSELINNBOKS))
+
+        val service = MergeBeskjedMedVarselService(beskjedService, varselService)
+
+        val beskjedResult = runBlocking {
+            service.getActiveEvents(innloggetBruker)
+        }
+
+        beskjedResult.results().isEmpty().`should be true`()
+        beskjedResult.hasErrors().`should be true`()
+        beskjedResult.errors() `should contain` KildeType.EVENTHANDLER
+        beskjedResult.errors() `should contain` KildeType.VARSELINNBOKS
+    }
+
+    @Test
+    fun `Skal stotte at begge kilder feiler for inaktive eventer`() {
+        coEvery { beskjedService.getInactiveBeskjedEvents(any()) } returns BeskjedResult(listOf(KildeType.EVENTHANDLER))
+        coEvery { varselService.getInactiveVarselEvents(any()) } returns BeskjedResult(listOf(KildeType.VARSELINNBOKS))
+
+        val service = MergeBeskjedMedVarselService(beskjedService, varselService)
+
+        val beskjedResult = runBlocking {
+            service.getInactiveEvents(innloggetBruker)
+        }
+
+        beskjedResult.results().isEmpty().`should be true`()
+        beskjedResult.hasErrors().`should be true`()
+        beskjedResult.errors() `should contain` KildeType.EVENTHANDLER
+        beskjedResult.errors() `should contain` KildeType.VARSELINNBOKS
     }
 
 }

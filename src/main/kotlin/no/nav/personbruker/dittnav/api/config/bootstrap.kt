@@ -30,7 +30,6 @@ import no.nav.personbruker.dittnav.api.oppgave.OppgaveService
 import no.nav.personbruker.dittnav.api.oppgave.oppgave
 import no.nav.personbruker.dittnav.api.varsel.VarselConsumer
 import no.nav.personbruker.dittnav.api.varsel.VarselService
-import no.nav.personbruker.dittnav.api.varsel.varsel
 import no.nav.security.token.support.ktor.tokenValidationSupport
 
 @KtorExperimentalAPI
@@ -88,11 +87,7 @@ fun Application.mainModule() {
         authenticate {
             legacyApi(legacyConsumer)
             oppgave(oppgaveService)
-            beskjed(mergeBeskjedMedVarselService, beskjedVarselSwitcher, environment)
-            if (environment.isRunningInDev) {
-                log.info("Kjører i et dev-miljø, aktiverer grensesnittet for varsler.")
-                varsel(varselService)
-            }
+            beskjed(beskjedVarselSwitcher)
             innboks(innboksService)
             brukernotifikasjoner(brukernotifikasjonService)
             authenticationCheck()
