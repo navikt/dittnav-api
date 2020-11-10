@@ -45,6 +45,9 @@ dependencies {
     implementation(Prometheus.common)
     implementation(Prometheus.hotspot)
     implementation(Prometheus.logback)
+    implementation(DittNAV.Common.logging)
+    implementation(DittNAV.Common.security)
+    implementation(DittNAV.Common.utils)
 
     testImplementation(Junit.api)
     testImplementation(Ktor.clientMock)

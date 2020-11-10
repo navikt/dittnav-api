@@ -6,7 +6,7 @@ import io.ktor.response.respond
 import io.ktor.routing.Route
 import io.ktor.routing.get
 import no.nav.personbruker.dittnav.api.common.respondWithError
-import no.nav.personbruker.dittnav.api.config.innloggetBruker
+import no.nav.personbruker.dittnav.api.config.authenticatedUser
 import org.slf4j.LoggerFactory
 
 fun Route.oppgave(oppgaveService: OppgaveService) {
@@ -15,7 +15,7 @@ fun Route.oppgave(oppgaveService: OppgaveService) {
 
     get("/oppgave") {
         try {
-            val oppgaveEvents = oppgaveService.getActiveOppgaveEvents(innloggetBruker)
+            val oppgaveEvents = oppgaveService.getActiveOppgaveEvents(authenticatedUser)
             call.respond(HttpStatusCode.OK, oppgaveEvents)
         } catch(exception: Exception) {
             respondWithError(call, log, exception)
@@ -24,7 +24,7 @@ fun Route.oppgave(oppgaveService: OppgaveService) {
 
     get("/oppgave/inaktiv") {
         try {
-            val oppgaveEvents = oppgaveService.getInactiveOppgaveEvents(innloggetBruker)
+            val oppgaveEvents = oppgaveService.getInactiveOppgaveEvents(authenticatedUser)
             call.respond(HttpStatusCode.OK, oppgaveEvents)
         } catch(exception: Exception) {
             respondWithError(call, log, exception)

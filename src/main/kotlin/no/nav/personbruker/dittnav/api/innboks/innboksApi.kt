@@ -6,7 +6,7 @@ import io.ktor.response.respond
 import io.ktor.routing.Route
 import io.ktor.routing.get
 import no.nav.personbruker.dittnav.api.common.respondWithError
-import no.nav.personbruker.dittnav.api.config.innloggetBruker
+import no.nav.personbruker.dittnav.api.config.authenticatedUser
 import org.slf4j.LoggerFactory
 
 fun Route.innboks(innboksService: InnboksService) {
@@ -15,7 +15,7 @@ fun Route.innboks(innboksService: InnboksService) {
 
     get("/innboks") {
         try {
-            val innboksEvents = innboksService.getActiveInnboksEvents(innloggetBruker)
+            val innboksEvents = innboksService.getActiveInnboksEvents(authenticatedUser)
             call.respond(HttpStatusCode.OK, innboksEvents)
         } catch(exception: Exception) {
             respondWithError(call, log, exception)
@@ -24,7 +24,7 @@ fun Route.innboks(innboksService: InnboksService) {
 
     get("/innboks/inaktiv") {
         try {
-            val innboksEvents = innboksService.getInactiveInnboksEvents(innloggetBruker)
+            val innboksEvents = innboksService.getInactiveInnboksEvents(authenticatedUser)
             call.respond(HttpStatusCode.OK, innboksEvents)
         } catch(exception: Exception) {
             respondWithError(call, log, exception)

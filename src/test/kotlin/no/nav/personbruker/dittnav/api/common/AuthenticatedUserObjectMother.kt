@@ -3,32 +3,33 @@ package no.nav.personbruker.dittnav.api.common
 import io.jsonwebtoken.Jwts
 import io.jsonwebtoken.SignatureAlgorithm
 import io.jsonwebtoken.security.Keys
+import no.nav.personbruker.dittnav.common.security.AuthenticatedUser
 import no.nav.security.token.support.core.jwt.JwtToken
 import java.security.Key
 import java.time.ZoneId
 import java.time.ZonedDateTime
 import java.util.*
 
-object InnloggetBrukerObjectMother {
+object AuthenticatedUserObjectMother {
 
     private val key: Key = Keys.secretKeyFor(SignatureAlgorithm.HS256)
 
-    fun createInnloggetBruker(): InnloggetBruker {
+    fun createAuthenticatedUser(): AuthenticatedUser {
         val ident = "12345"
-        return createInnloggetBruker(ident)
+        return createAuthenticatedUser(ident)
     }
 
-    fun createInnloggetBruker(ident: String): InnloggetBruker {
+    fun createAuthenticatedUser(ident: String): AuthenticatedUser {
         val innloggingsnivaa = 4
-        return createInnloggetBruker(ident, innloggingsnivaa)
+        return createAuthenticatedUser(ident, innloggingsnivaa)
     }
 
-    fun createInnloggetBruker(ident: String, innloggingsnivaa: Int): InnloggetBruker {
+    fun createAuthenticatedUser(ident: String, innloggingsnivaa: Int): AuthenticatedUser {
         val inTwoMinutes = ZonedDateTime.now().plusMinutes(2)
-        return createInnloggetBrukerWithValidTokenUntil(ident, innloggingsnivaa, inTwoMinutes)
+        return createAuthenticatedUserWithValidTokenUntil(ident, innloggingsnivaa, inTwoMinutes)
     }
 
-    fun createInnloggetBrukerWithValidTokenUntil(ident: String, innloggingsnivaa: Int, tokensUtlopstidspunkt: ZonedDateTime): InnloggetBruker {
+    fun createAuthenticatedUserWithValidTokenUntil(ident: String, innloggingsnivaa: Int, tokensUtlopstidspunkt: ZonedDateTime): AuthenticatedUser {
         val jws = Jwts.builder()
                 .setSubject(ident)
                 .addClaims(mutableMapOf(Pair("acr", "Level$innloggingsnivaa")) as Map<String, Any>?)
@@ -38,9 +39,7 @@ object InnloggetBrukerObjectMother {
         val expirationTime = token.jwtTokenClaims
                                                 .expirationTime
                                                 .toInstant()
-                                                .atZone(ZoneId.of("Europe/Oslo"))
-                                                .toLocalDateTime()
-        return InnloggetBruker(ident, innloggingsnivaa, token.tokenAsString, expirationTime)
+        return AuthenticatedUser(ident, innloggingsnivaa, token.tokenAsString, expirationTime)
     }
 
 }

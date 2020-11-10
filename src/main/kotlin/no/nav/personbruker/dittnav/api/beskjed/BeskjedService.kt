@@ -1,44 +1,50 @@
 package no.nav.personbruker.dittnav.api.beskjed
 
-import no.nav.personbruker.dittnav.api.common.InnloggetBruker
+import no.nav.personbruker.dittnav.api.loginstatus.LoginLevelService
+import no.nav.personbruker.dittnav.common.security.AuthenticatedUser
 
-class BeskjedService(private val beskjedConsumer: BeskjedConsumer) {
+class BeskjedService(private val beskjedConsumer: BeskjedConsumer, private val loginLevelService: LoginLevelService) {
 
-    suspend fun getActiveBeskjedEvents(innloggetBruker: InnloggetBruker): BeskjedResult {
-        return getBeskjedEvents(innloggetBruker) {
+    suspend fun getActiveBeskjedEvents(user: AuthenticatedUser): BeskjedResult {
+        return getBeskjedEvents(user) {
             beskjedConsumer.getExternalActiveEvents(it)
         }
     }
 
-    suspend fun getInactiveBeskjedEvents(innloggetBruker: InnloggetBruker): BeskjedResult {
-        return getBeskjedEvents(innloggetBruker) {
+    suspend fun getInactiveBeskjedEvents(user: AuthenticatedUser): BeskjedResult {
+        return getBeskjedEvents(user) {
             beskjedConsumer.getExternalInactiveEvents(it)
         }
     }
 
     private suspend fun getBeskjedEvents(
-            innloggetBruker: InnloggetBruker,
-            getEvents: suspend (InnloggetBruker) -> List<Beskjed>
+            user: AuthenticatedUser,
+            getEvents: suspend (AuthenticatedUser) -> List<Beskjed>
     ): BeskjedResult {
         return try {
-            val externalEvents = getEvents(innloggetBruker)
-            val results = externalEvents.map { beskjed -> transformToDTO(beskjed, innloggetBruker) }
+            val externalEvents = getEvents(user)
+            val highestRequiredLoginLevel = getHighestRequiredLoginLevel(externalEvents)
+            val operatingLoginLevel = loginLevelService.getOperatingLoginLevel(user, highestRequiredLoginLevel)
+            val results = externalEvents.map { beskjed -> transformToDTO(beskjed, operatingLoginLevel) }
             BeskjedResult(results)
-
         } catch(exception: Exception) {
             BeskjedResult(listOf(KildeType.EVENTHANDLER))
         }
     }
 
-    private fun transformToDTO(beskjed: Beskjed, innloggetBruker: InnloggetBruker): BeskjedDTO {
-        return if(innloggetBrukerIsAllowedToViewAllDataInEvent(beskjed, innloggetBruker)) {
+    private fun transformToDTO(beskjed: Beskjed, operatingLoginLevel: Int): BeskjedDTO {
+        return if(userIsAllowedToViewAllDataInEvent(beskjed, operatingLoginLevel)) {
             toBeskjedDTO(beskjed)
         } else {
             toMaskedBeskjedDTO(beskjed)
         }
     }
 
-    private fun innloggetBrukerIsAllowedToViewAllDataInEvent(beskjed: Beskjed, innloggetBruker: InnloggetBruker): Boolean {
-        return innloggetBruker.innloggingsnivaa >= beskjed.sikkerhetsnivaa
+    private fun userIsAllowedToViewAllDataInEvent(beskjed: Beskjed, operatingLoginLevel: Int): Boolean {
+        return operatingLoginLevel >= beskjed.sikkerhetsnivaa
+    }
+
+    private fun getHighestRequiredLoginLevel(innboksList: List<Beskjed>): Int {
+        return innboksList.maxOf { it.sikkerhetsnivaa }
     }
 }

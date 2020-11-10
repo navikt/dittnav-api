@@ -1,8 +1,8 @@
 package no.nav.personbruker.dittnav.api.beskjed
 
 import io.ktor.client.*
-import no.nav.personbruker.dittnav.api.common.InnloggetBruker
 import no.nav.personbruker.dittnav.api.config.get
+import no.nav.personbruker.dittnav.common.security.AuthenticatedUser
 import java.net.URL
 
 class BeskjedConsumer(
@@ -11,19 +11,17 @@ class BeskjedConsumer(
         private val pathToEndpoint: URL = URL("$eventHandlerBaseURL/fetch/beskjed")
 ) {
 
-    suspend fun getExternalActiveEvents(innloggetBruker: InnloggetBruker): List<Beskjed> {
+    suspend fun getExternalActiveEvents(user: AuthenticatedUser): List<Beskjed> {
         val completePathToEndpoint = URL("$pathToEndpoint/aktive")
-        val externalActiveEvents = getExternalEvents(innloggetBruker, completePathToEndpoint)
-        return externalActiveEvents
+        return getExternalEvents(user, completePathToEndpoint)
     }
 
-    suspend fun getExternalInactiveEvents(innloggetBruker: InnloggetBruker): List<Beskjed> {
+    suspend fun getExternalInactiveEvents(user: AuthenticatedUser): List<Beskjed> {
         val completePathToEndpoint = URL("$pathToEndpoint/inaktive")
-        val externalInactiveEvents = getExternalEvents(innloggetBruker, completePathToEndpoint)
-        return externalInactiveEvents
+        return getExternalEvents(user, completePathToEndpoint)
     }
 
-    private suspend fun getExternalEvents(innloggetBruker: InnloggetBruker, completePathToEndpoint: URL): List<Beskjed> {
-        return client.get(completePathToEndpoint, innloggetBruker)
+    private suspend fun getExternalEvents(user: AuthenticatedUser, completePathToEndpoint: URL): List<Beskjed> {
+        return client.get(completePathToEndpoint, user)
     }
 }

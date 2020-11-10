@@ -1,8 +1,8 @@
 package no.nav.personbruker.dittnav.api.innboks
 
 import io.ktor.client.HttpClient
-import no.nav.personbruker.dittnav.api.common.InnloggetBruker
 import no.nav.personbruker.dittnav.api.config.get
+import no.nav.personbruker.dittnav.common.security.AuthenticatedUser
 import java.net.URL
 
 class InnboksConsumer(
@@ -11,19 +11,19 @@ class InnboksConsumer(
         private val pathToEndpoint: URL = URL("$eventHandlerBaseURL/fetch/innboks")
 ) {
 
-    suspend fun getExternalActiveEvents(innloggetBruker: InnloggetBruker): List<Innboks> {
+    suspend fun getExternalActiveEvents(user: AuthenticatedUser): List<Innboks> {
         val completePathToEndpoint = URL("$pathToEndpoint/aktive")
-        val externalActiveEvents = getExternalEvents(innloggetBruker, completePathToEndpoint)
+        val externalActiveEvents = getExternalEvents(user, completePathToEndpoint)
         return externalActiveEvents
     }
 
-    suspend fun getExternalInactiveEvents(innloggetBruker: InnloggetBruker): List<Innboks> {
+    suspend fun getExternalInactiveEvents(user: AuthenticatedUser): List<Innboks> {
         val completePathToEndpoint = URL("$pathToEndpoint/inaktive")
-        val externalInactiveEvents = getExternalEvents(innloggetBruker, completePathToEndpoint)
+        val externalInactiveEvents = getExternalEvents(user, completePathToEndpoint)
         return externalInactiveEvents
     }
 
-    private suspend fun getExternalEvents(innloggetBruker: InnloggetBruker, completePathToEndpoint: URL): List<Innboks> {
-        return client.get(completePathToEndpoint, innloggetBruker)
+    private suspend fun getExternalEvents(user: AuthenticatedUser, completePathToEndpoint: URL): List<Innboks> {
+        return client.get(completePathToEndpoint, user)
     }
 }

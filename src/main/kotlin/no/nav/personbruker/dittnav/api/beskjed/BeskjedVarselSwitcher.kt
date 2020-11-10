@@ -1,6 +1,6 @@
 package no.nav.personbruker.dittnav.api.beskjed
 
-import no.nav.personbruker.dittnav.api.common.InnloggetBruker
+import no.nav.personbruker.dittnav.common.security.AuthenticatedUser
 import org.slf4j.LoggerFactory
 
 class BeskjedVarselSwitcher(
@@ -20,21 +20,21 @@ class BeskjedVarselSwitcher(
         }
     }
 
-    suspend fun getActiveEvents(innloggetBruker: InnloggetBruker): BeskjedResult {
+    suspend fun getActiveEvents(user: AuthenticatedUser): BeskjedResult {
         return if (includeVarsel) {
-            beskjedMedVarselService.getActiveEvents(innloggetBruker)
+            beskjedMedVarselService.getActiveEvents(user)
 
         } else {
-            beskjedService.getActiveBeskjedEvents(innloggetBruker)
+            beskjedService.getActiveBeskjedEvents(user)
         }
     }
 
-    suspend fun getInactiveEvents(innloggetBruker: InnloggetBruker): BeskjedResult {
+    suspend fun getInactiveEvents(user: AuthenticatedUser): BeskjedResult {
         return if (includeVarsel) {
-            beskjedMedVarselService.getInactiveEvents(innloggetBruker)
+            beskjedMedVarselService.getInactiveEvents(user)
 
         } else {
-            beskjedService.getInactiveBeskjedEvents(innloggetBruker)
+            beskjedService.getInactiveBeskjedEvents(user)
         }
     }
 

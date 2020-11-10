@@ -8,13 +8,13 @@ import io.ktor.response.respond
 import io.ktor.routing.Route
 import io.ktor.routing.post
 import io.ktor.util.pipeline.PipelineContext
-import no.nav.personbruker.dittnav.api.config.innloggetBruker
+import no.nav.personbruker.dittnav.api.config.authenticatedUser
 
 fun Route.doneApi(doneProducer: DoneProducer) {
 
     post("/produce/done") {
         respondForParameterType<DoneDto> { doneDto ->
-            val response = doneProducer.postDoneEvents(doneDto, innloggetBruker)
+            val response = doneProducer.postDoneEvents(doneDto, authenticatedUser)
             response
         }
     }

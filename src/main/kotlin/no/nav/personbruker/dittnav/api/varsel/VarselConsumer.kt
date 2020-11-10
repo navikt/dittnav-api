@@ -1,8 +1,8 @@
 package no.nav.personbruker.dittnav.api.varsel
 
 import io.ktor.client.*
-import no.nav.personbruker.dittnav.api.common.InnloggetBruker
 import no.nav.personbruker.dittnav.api.config.get
+import no.nav.personbruker.dittnav.common.security.AuthenticatedUser
 import java.net.URL
 
 class VarselConsumer(
@@ -11,13 +11,13 @@ class VarselConsumer(
     private val pathToEndpoint: URL = URL("$legacyApiBaseURL/varselinnboks")
 ) {
 
-    suspend fun getSisteVarsler(innloggetBruker: InnloggetBruker): List<Varsel> {
+    suspend fun getSisteVarsler(user: AuthenticatedUser): List<Varsel> {
         val completePathToEndpoint = URL("$pathToEndpoint/siste")
-        return getSisteVarsler(innloggetBruker, completePathToEndpoint)
+        return getSisteVarsler(user, completePathToEndpoint)
     }
 
-    private suspend fun getSisteVarsler(innloggetBruker: InnloggetBruker, completePathToEndpoint: URL): List<Varsel> {
-        return client.get(completePathToEndpoint, innloggetBruker)
+    private suspend fun getSisteVarsler(user: AuthenticatedUser, completePathToEndpoint: URL): List<Varsel> {
+        return client.get(completePathToEndpoint, user)
     }
 
 }

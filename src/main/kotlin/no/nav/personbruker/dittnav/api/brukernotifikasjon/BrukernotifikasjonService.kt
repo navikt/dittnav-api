@@ -1,31 +1,31 @@
 package no.nav.personbruker.dittnav.api.brukernotifikasjon
 
 import no.nav.personbruker.dittnav.api.common.ConsumeEventException
-import no.nav.personbruker.dittnav.api.common.InnloggetBruker
+import no.nav.personbruker.dittnav.common.security.AuthenticatedUser
 
 class BrukernotifikasjonService(private val brukernotifikasjonConsumer: BrukernotifikasjonConsumer) {
 
-    suspend fun totalNumberOfEvents(innloggetBruker: InnloggetBruker): Int {
+    suspend fun totalNumberOfEvents(user: AuthenticatedUser): Int {
         return try {
-            brukernotifikasjonConsumer.count(innloggetBruker)
+            brukernotifikasjonConsumer.count(user)
 
         } catch (exception: Exception) {
             throw ConsumeEventException("Klarte ikke å finne ut om brukeren har brukernotifikasjoner", exception)
         }
     }
 
-    suspend fun numberOfInactive(innloggetBruker: InnloggetBruker): Int {
+    suspend fun numberOfInactive(user: AuthenticatedUser): Int {
         return try {
-            brukernotifikasjonConsumer.countInactive(innloggetBruker)
+            brukernotifikasjonConsumer.countInactive(user)
 
         } catch (exception: Exception) {
             throw ConsumeEventException("Klarte ikke å finne ut om brukeren har inaktive brukernotifikasjoner", exception)
         }
     }
 
-    suspend fun numberOfActive(innloggetBruker: InnloggetBruker): Int {
+    suspend fun numberOfActive(user: AuthenticatedUser): Int {
         return try {
-            brukernotifikasjonConsumer.countActive(innloggetBruker)
+            brukernotifikasjonConsumer.countActive(user)
 
         } catch (exception: Exception) {
             throw ConsumeEventException("Klarte ikke å finne ut om brukeren har aktive brukernotifikasjoner", exception)
