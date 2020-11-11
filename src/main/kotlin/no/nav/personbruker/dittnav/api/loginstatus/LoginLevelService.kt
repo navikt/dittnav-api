@@ -9,13 +9,13 @@ class LoginLevelService(private val innloggingsstatusConsumer: Innloggingsstatus
 
     suspend fun getOperatingLoginLevel(user: AuthenticatedUser, highestRequiredLevel: Int): Int {
         return when {
-            providedLoginLevelIsSufficient(user, highestRequiredLevel) -> user.loginLevel
+            currentLoginLevelIsSufficient(user, highestRequiredLevel) -> user.loginLevel
             userHasPossibleStepUp(user) -> fetchOperatingLoginLevel(user)
             else -> user.loginLevel
         }
     }
 
-    private fun providedLoginLevelIsSufficient(user: AuthenticatedUser, requiredLevel: Int): Boolean {
+    private fun currentLoginLevelIsSufficient(user: AuthenticatedUser, requiredLevel: Int): Boolean {
         return user.loginLevel >= requiredLevel
     }
 

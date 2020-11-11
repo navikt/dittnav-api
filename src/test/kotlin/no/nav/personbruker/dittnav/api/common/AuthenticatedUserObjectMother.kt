@@ -26,10 +26,15 @@ object AuthenticatedUserObjectMother {
 
     fun createAuthenticatedUser(ident: String, innloggingsnivaa: Int): AuthenticatedUser {
         val inTwoMinutes = ZonedDateTime.now().plusMinutes(2)
-        return createAuthenticatedUserWithValidTokenUntil(ident, innloggingsnivaa, inTwoMinutes)
+        return createAuthenticatedUserWithValidTokenUntil(ident, innloggingsnivaa, inTwoMinutes, null)
     }
 
-    fun createAuthenticatedUserWithValidTokenUntil(ident: String, innloggingsnivaa: Int, tokensUtlopstidspunkt: ZonedDateTime): AuthenticatedUser {
+    fun createAuthenticatedUserWithValidTokenUntil(
+            ident: String,
+            innloggingsnivaa: Int,
+            tokensUtlopstidspunkt: ZonedDateTime,
+            auxiliaryToken: String?
+    ): AuthenticatedUser {
         val jws = Jwts.builder()
                 .setSubject(ident)
                 .addClaims(mutableMapOf(Pair("acr", "Level$innloggingsnivaa")) as Map<String, Any>?)
@@ -39,7 +44,13 @@ object AuthenticatedUserObjectMother {
         val expirationTime = token.jwtTokenClaims
                                                 .expirationTime
                                                 .toInstant()
-        return AuthenticatedUser(ident, innloggingsnivaa, token.tokenAsString, expirationTime)
+        return AuthenticatedUser(ident, innloggingsnivaa, token.tokenAsString, expirationTime, auxiliaryToken)
     }
 
+    fun createAuthenticatedUserWithAuxiliaryToken(loginLevel: Int, auxiliaryToken: String?): AuthenticatedUser {
+        val ident = "123"
+        val inTwoMinutes = ZonedDateTime.now().plusMinutes(2)
+
+        return createAuthenticatedUserWithValidTokenUntil(ident, loginLevel, inTwoMinutes, auxiliaryToken)
+    }
 }
