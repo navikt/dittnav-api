@@ -5,6 +5,8 @@ import io.mockk.mockk
 import kotlinx.coroutines.runBlocking
 import no.nav.personbruker.dittnav.api.common.AuthenticatedUserObjectMother
 import no.nav.personbruker.dittnav.api.loginstatus.LoginLevelService
+import org.amshove.kluent.`should be equal to`
+import org.amshove.kluent.`should contain`
 import org.junit.jupiter.api.Test
 
 class BeskjedServiceTest {

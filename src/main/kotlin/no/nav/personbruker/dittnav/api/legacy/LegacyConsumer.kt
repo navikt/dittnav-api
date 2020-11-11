@@ -27,7 +27,7 @@ class LegacyConsumer(private val httpClient: HttpClient, private val dittNAVLega
 
                 }
                 feiletMedHttpStatus408PgaTimeout(response) -> {
-                    log.info("Det oppstod en timeout ved henting av $dittNAVLegacyBaseURL$path: ${response.status.value} ${response.status.description}, $innloggetBruker.")
+                    log.info("Det oppstod en timeout ved henting av $dittNAVLegacyBaseURL$path: ${response.status.value} ${response.status.description}, $user.")
 
                 }
                 else -> {

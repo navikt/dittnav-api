@@ -6,6 +6,7 @@ import io.mockk.mockk
 import kotlinx.coroutines.runBlocking
 import no.nav.personbruker.dittnav.api.common.AuthenticatedUserObjectMother
 import no.nav.personbruker.dittnav.api.varsel.VarselService
+import org.amshove.kluent.*
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 
@@ -50,7 +51,7 @@ internal class MergeBeskjedMedVarselServiceTest {
         val service = MergeBeskjedMedVarselService(beskjedService, varselService)
 
         val result = runBlocking {
-            service.getActiveEvents(innloggetBruker)
+            service.getActiveEvents(user)
         }
 
         result.shouldNotBeNull()
@@ -119,7 +120,7 @@ internal class MergeBeskjedMedVarselServiceTest {
         val service = MergeBeskjedMedVarselService(beskjedService, varselService)
 
         val beskjedResult = runBlocking {
-            service.getInactiveEvents(innloggetBruker)
+            service.getInactiveEvents(user)
         }
 
         beskjedResult.results().size `should be equal to` expectedBeskjeder.results().size
@@ -135,7 +136,7 @@ internal class MergeBeskjedMedVarselServiceTest {
         val service = MergeBeskjedMedVarselService(beskjedService, varselService)
 
         val beskjedResult = runBlocking {
-            service.getActiveEvents(innloggetBruker)
+            service.getActiveEvents(user)
         }
 
         beskjedResult.results().isEmpty().`should be true`()
@@ -152,7 +153,7 @@ internal class MergeBeskjedMedVarselServiceTest {
         val service = MergeBeskjedMedVarselService(beskjedService, varselService)
 
         val beskjedResult = runBlocking {
-            service.getInactiveEvents(innloggetBruker)
+            service.getInactiveEvents(user)
         }
 
         beskjedResult.results().isEmpty().`should be true`()
