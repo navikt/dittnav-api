@@ -17,14 +17,9 @@ internal class InnloggingsstatusResponseTest {
     val authenticatedWithOpenAmOnlyResponse = """
         {
             "openAMToken": { 
-                "subject": "12345678912",
-                "authLevel": 3,
-                "issueTime": null,
-                "expiryTime": null
+                "authLevel": 3
             },
-            "subject": "12345678912",
             "authenticated": true,
-            "stable": true,
             "authLevel": 3
         }
     """.trimIndent()
@@ -39,13 +34,9 @@ internal class InnloggingsstatusResponseTest {
             },
             "openAMToken": { 
                 "subject": "12345678912",
-                "authLevel": 4,
-                "issueTime": "2020-10-10T00:00:00",
-                "expiryTime": "2020-10-10T01:00:00"
+                "authLevel": 4
             },
-            "subject": "12345678912",
             "authenticated": true,
-            "stable": true,
             "authLevel": 4
         }
     """.trimIndent()
