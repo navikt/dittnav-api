@@ -13,19 +13,19 @@ import io.ktor.http.HttpHeaders
 import io.ktor.http.HttpStatusCode
 import io.ktor.http.headersOf
 import kotlinx.coroutines.runBlocking
-import no.nav.personbruker.dittnav.api.common.InnloggetBrukerObjectMother
+import no.nav.personbruker.dittnav.api.common.AuthenticatedUserObjectMother
 import no.nav.personbruker.dittnav.api.config.buildJsonSerializer
 import no.nav.personbruker.dittnav.api.config.enableDittNavJsonConfig
 import org.amshove.kluent.`should be equal to`
 import org.amshove.kluent.`should be false`
 import org.amshove.kluent.`should be true`
-import org.amshove.kluent.`should equal`
+import org.amshove.kluent.`should be equal to`
 import org.junit.jupiter.api.Test
 import java.net.URL
 
 class OppgaveConsumerTest {
 
-    val innloggetBruker = InnloggetBrukerObjectMother.createInnloggetBruker()
+    val user = AuthenticatedUserObjectMother.createAuthenticatedUser()
 
     @Test
     fun `should call oppgave endpoint on event handler`() {
@@ -48,7 +48,7 @@ class OppgaveConsumerTest {
         val oppgaveConsumer = OppgaveConsumer(client, URL("http://event-handler"))
 
         runBlocking {
-            oppgaveConsumer.getExternalActiveEvents(innloggetBruker) `should equal` emptyList()
+            oppgaveConsumer.getExternalActiveEvents(user) `should be equal to` emptyList()
         }
     }
 
@@ -70,7 +70,7 @@ class OppgaveConsumerTest {
         val oppgaveConsumer = OppgaveConsumer(client, URL("http://event-handler"))
 
         runBlocking {
-            val externalActiveEvents = oppgaveConsumer.getExternalActiveEvents(innloggetBruker)
+            val externalActiveEvents = oppgaveConsumer.getExternalActiveEvents(user)
             val event = externalActiveEvents.first()
             externalActiveEvents.size `should be equal to` 2
             event.tekst `should be equal to` oppgaveObject1.tekst
@@ -96,7 +96,7 @@ class OppgaveConsumerTest {
         val oppgaveConsumer = OppgaveConsumer(client, URL("http://event-handler"))
 
         runBlocking {
-            val externalInactiveEvents = oppgaveConsumer.getExternalInactiveEvents(innloggetBruker)
+            val externalInactiveEvents = oppgaveConsumer.getExternalInactiveEvents(user)
             val event = externalInactiveEvents.first()
             externalInactiveEvents.size `should be equal to` 1
             event.tekst `should be equal to` oppgaveObject.tekst

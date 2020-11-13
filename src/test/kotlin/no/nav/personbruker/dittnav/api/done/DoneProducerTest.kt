@@ -8,15 +8,15 @@ import io.ktor.client.features.json.JsonFeature
 import io.ktor.client.statement.request
 import io.ktor.http.*
 import kotlinx.coroutines.runBlocking
-import no.nav.personbruker.dittnav.api.common.InnloggetBrukerObjectMother
+import no.nav.personbruker.dittnav.api.common.AuthenticatedUserObjectMother
 import no.nav.personbruker.dittnav.api.config.buildJsonSerializer
-import org.amshove.kluent.`should equal`
+import org.amshove.kluent.`should be equal to`
 import org.junit.jupiter.api.Test
 import java.net.URL
 
 internal class DoneProducerTest {
 
-    val innloggetBruker = InnloggetBrukerObjectMother.createInnloggetBruker()
+    val user = AuthenticatedUserObjectMother.createAuthenticatedUser()
 
     @Test
     fun `should call post endpoint on event handler`() {
@@ -38,8 +38,8 @@ internal class DoneProducerTest {
         }
         val doneProducer = DoneProducer(client, URL("http://event-handler"))
         runBlocking {
-            doneProducer.postDoneEvents(done, innloggetBruker).status `should equal` HttpStatusCode.OK
-            doneProducer.postDoneEvents(done, innloggetBruker).request.method `should equal` HttpMethod.Post
+            doneProducer.postDoneEvents(done, user).status `should be equal to` HttpStatusCode.OK
+            doneProducer.postDoneEvents(done, user).request.method `should be equal to` HttpMethod.Post
         }
     }
 }

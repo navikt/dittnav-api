@@ -13,17 +13,17 @@ import io.ktor.http.HttpHeaders
 import io.ktor.http.HttpStatusCode
 import io.ktor.http.headersOf
 import kotlinx.coroutines.runBlocking
-import no.nav.personbruker.dittnav.api.common.InnloggetBrukerObjectMother
+import no.nav.personbruker.dittnav.api.common.AuthenticatedUserObjectMother
 import no.nav.personbruker.dittnav.api.config.buildJsonSerializer
 import no.nav.personbruker.dittnav.api.config.enableDittNavJsonConfig
 import org.amshove.kluent.`should be equal to`
-import org.amshove.kluent.`should equal`
+import org.amshove.kluent.`should be equal to`
 import org.junit.jupiter.api.Test
 import java.net.URL
 
 class VarselConsumerTest {
 
-    private val innloggetBruker = InnloggetBrukerObjectMother.createInnloggetBruker()
+    private val user = AuthenticatedUserObjectMother.createAuthenticatedUser()
 
     @Test
     fun `Skal kalle varsel-endepunktet i dittnav-legacy-api`() {
@@ -44,7 +44,7 @@ class VarselConsumerTest {
         val varselConsumer = VarselConsumer(client, URL("http://dittnav-legacy-api"))
 
         runBlocking {
-            varselConsumer.getSisteVarsler(innloggetBruker) `should equal` emptyList()
+            varselConsumer.getSisteVarsler(user) `should be equal to` emptyList()
         }
     }
 
@@ -64,7 +64,7 @@ class VarselConsumerTest {
         val varselConsumer = VarselConsumer(client, URL("http://dittnav-legacy-api"))
 
         runBlocking {
-            val externalActiveEvents = varselConsumer.getSisteVarsler(innloggetBruker)
+            val externalActiveEvents = varselConsumer.getSisteVarsler(user)
             val event = externalActiveEvents.first()
             externalActiveEvents.size `should be equal to` 1
             event.varseltekst `should be equal to` varselObject.varseltekst

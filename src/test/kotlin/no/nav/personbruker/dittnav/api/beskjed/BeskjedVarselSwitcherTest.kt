@@ -4,7 +4,7 @@ import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk
 import kotlinx.coroutines.runBlocking
-import no.nav.personbruker.dittnav.api.common.InnloggetBrukerObjectMother
+import no.nav.personbruker.dittnav.api.common.AuthenticatedUserObjectMother
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 
@@ -13,7 +13,7 @@ internal class BeskjedVarselSwitcherTest {
     private val beskjedService = mockk<BeskjedService>(relaxed = true)
     private val beskjedMedVarselService = mockk<MergeBeskjedMedVarselService>(relaxed = true)
 
-    private val dummyUser = InnloggetBrukerObjectMother.createInnloggetBruker()
+    private val dummyUser = AuthenticatedUserObjectMother.createAuthenticatedUser()
 
     @BeforeEach
     fun setup() {

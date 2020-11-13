@@ -6,7 +6,7 @@ import io.ktor.response.respond
 import io.ktor.routing.Route
 import io.ktor.routing.get
 import no.nav.personbruker.dittnav.api.common.respondWithError
-import no.nav.personbruker.dittnav.api.config.innloggetBruker
+import no.nav.personbruker.dittnav.api.config.authenticatedUser
 import org.slf4j.LoggerFactory
 
 fun Route.brukernotifikasjoner(service: BrukernotifikasjonService) {
@@ -15,7 +15,7 @@ fun Route.brukernotifikasjoner(service: BrukernotifikasjonService) {
 
     get("/brukernotifikasjon/count") {
         try {
-            val totalNumberOfEvents = service.totalNumberOfEvents(innloggetBruker)
+            val totalNumberOfEvents = service.totalNumberOfEvents(authenticatedUser)
             call.respond(HttpStatusCode.OK, totalNumberOfEvents)
 
         } catch(exception: Exception) {
@@ -25,7 +25,7 @@ fun Route.brukernotifikasjoner(service: BrukernotifikasjonService) {
 
     get("/brukernotifikasjon/count/inactive") {
         try {
-            val numberOfInactiveEvents = service.numberOfInactive(innloggetBruker)
+            val numberOfInactiveEvents = service.numberOfInactive(authenticatedUser)
             call.respond(HttpStatusCode.OK, numberOfInactiveEvents)
 
         } catch(exception: Exception) {
@@ -35,7 +35,7 @@ fun Route.brukernotifikasjoner(service: BrukernotifikasjonService) {
 
     get("/brukernotifikasjon/count/active") {
         try {
-            val numberOfActiveEvents = service.numberOfActive(innloggetBruker)
+            val numberOfActiveEvents = service.numberOfActive(authenticatedUser)
             call.respond(HttpStatusCode.OK, numberOfActiveEvents)
 
         } catch(exception: Exception) {

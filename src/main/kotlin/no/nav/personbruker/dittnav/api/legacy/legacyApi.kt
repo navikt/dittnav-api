@@ -8,8 +8,8 @@ import io.ktor.response.respond
 import io.ktor.routing.Route
 import io.ktor.routing.get
 import io.ktor.util.pipeline.PipelineContext
-import no.nav.personbruker.dittnav.api.common.InnloggetBruker
-import no.nav.personbruker.dittnav.api.config.innloggetBruker
+import no.nav.personbruker.dittnav.api.config.authenticatedUser
+import no.nav.personbruker.dittnav.common.security.AuthenticatedUser
 import org.slf4j.LoggerFactory
 import java.net.SocketTimeoutException
 
@@ -26,7 +26,7 @@ fun Route.legacyApi(legacyConsumer: LegacyConsumer) {
     val oppfolgingPath = "/oppfolging"
 
     get(ubehandledeMeldingerPath) {
-        logWhenTokenIsAboutToExpire(innloggetBruker)
+        logWhenTokenIsAboutToExpire(authenticatedUser)
         hentRaattFraLegacyApiOgReturnerResponsen(legacyConsumer, ubehandledeMeldingerPath)
     }
 
@@ -58,7 +58,7 @@ fun Route.legacyApi(legacyConsumer: LegacyConsumer) {
 
 private suspend fun PipelineContext<Unit, ApplicationCall>.hentRaattFraLegacyApiOgReturnerResponsen(consumer: LegacyConsumer, path: String) {
     try {
-        val response = consumer.getLegacyContent(path, innloggetBruker)
+        val response = consumer.getLegacyContent(path, authenticatedUser)
         call.respond(response.status, response.readBytes())
     } catch (e: SocketTimeoutException) {
         log.warn("Forbindelsen mot legacy-endepunkt '$path' har utgått. Feilmelding: [${e.message}]")
@@ -70,10 +70,10 @@ private suspend fun PipelineContext<Unit, ApplicationCall>.hentRaattFraLegacyApi
 
 }
 
-fun logWhenTokenIsAboutToExpire(innloggetBruker: InnloggetBruker) {
+fun logWhenTokenIsAboutToExpire(user: AuthenticatedUser) {
     val expiryThresholdInMinutes = 2L
 
-    if (innloggetBruker.isTokenAboutToExpire(expiryThresholdInMinutes)) {
-        log.info("Det er mindre enn $expiryThresholdInMinutes minutter før token-et går ut for: $innloggetBruker")
+    if (user.isTokenAboutToExpire(expiryThresholdInMinutes)) {
+        log.info("Det er mindre enn $expiryThresholdInMinutes minutter før token-et går ut for: $user")
     }
 }

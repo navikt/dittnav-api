@@ -14,8 +14,6 @@ import no.nav.personbruker.dittnav.api.beskjed.*
 import no.nav.personbruker.dittnav.api.brukernotifikasjon.BrukernotifikasjonConsumer
 import no.nav.personbruker.dittnav.api.brukernotifikasjon.BrukernotifikasjonService
 import no.nav.personbruker.dittnav.api.brukernotifikasjon.brukernotifikasjoner
-import no.nav.personbruker.dittnav.api.common.InnloggetBruker
-import no.nav.personbruker.dittnav.api.common.InnloggetBrukerFactory
 import no.nav.personbruker.dittnav.api.done.DoneProducer
 import no.nav.personbruker.dittnav.api.done.doneApi
 import no.nav.personbruker.dittnav.api.health.authenticationCheck
@@ -25,11 +23,15 @@ import no.nav.personbruker.dittnav.api.innboks.InnboksService
 import no.nav.personbruker.dittnav.api.innboks.innboks
 import no.nav.personbruker.dittnav.api.legacy.LegacyConsumer
 import no.nav.personbruker.dittnav.api.legacy.legacyApi
+import no.nav.personbruker.dittnav.api.loginstatus.InnloggingsstatusConsumer
+import no.nav.personbruker.dittnav.api.loginstatus.LoginLevelService
 import no.nav.personbruker.dittnav.api.oppgave.OppgaveConsumer
 import no.nav.personbruker.dittnav.api.oppgave.OppgaveService
 import no.nav.personbruker.dittnav.api.oppgave.oppgave
 import no.nav.personbruker.dittnav.api.varsel.VarselConsumer
 import no.nav.personbruker.dittnav.api.varsel.VarselService
+import no.nav.personbruker.dittnav.common.security.AuthenticatedUser
+import no.nav.personbruker.dittnav.common.security.AuthenticatedUserFactory
 import no.nav.security.token.support.ktor.tokenValidationSupport
 
 @KtorExperimentalAPI
@@ -49,9 +51,12 @@ fun Application.mainModule() {
 
     val doneProducer = DoneProducer(httpClient, environment.eventHandlerURL)
 
-    val oppgaveService = OppgaveService(oppgaveConsumer)
-    val beskjedService = BeskjedService(beskjedConsumer)
-    val innboksService = InnboksService(innboksConsumer)
+    val innloggingsstatusConsumer = InnloggingsstatusConsumer(httpClient, environment.innloggingsstatusUrl)
+    val loginLevelService = LoginLevelService(innloggingsstatusConsumer)
+
+    val oppgaveService = OppgaveService(oppgaveConsumer, loginLevelService)
+    val beskjedService = BeskjedService(beskjedConsumer, loginLevelService)
+    val innboksService = InnboksService(innboksConsumer, loginLevelService)
     val brukernotifikasjonService = BrukernotifikasjonService(brukernotifikasjonConsumer)
     val varselService = VarselService(varselConsumer)
     val mergeBeskjedMedVarselService = MergeBeskjedMedVarselService(beskjedService, varselService)
@@ -104,5 +109,5 @@ private fun Application.configureShutdownHook(httpClient: HttpClient) {
     }
 }
 
-val PipelineContext<Unit, ApplicationCall>.innloggetBruker: InnloggetBruker
-    get() = InnloggetBrukerFactory.createNewInnloggetBruker(call.authentication.principal())
+val PipelineContext<Unit, ApplicationCall>.authenticatedUser: AuthenticatedUser
+    get() = AuthenticatedUserFactory.createNewAuthenticatedUser(call)

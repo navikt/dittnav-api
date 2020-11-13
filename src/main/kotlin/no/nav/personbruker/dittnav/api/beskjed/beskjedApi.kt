@@ -5,8 +5,7 @@ import io.ktor.http.*
 import io.ktor.response.*
 import io.ktor.routing.*
 import no.nav.personbruker.dittnav.api.common.respondWithError
-import no.nav.personbruker.dittnav.api.config.Environment
-import no.nav.personbruker.dittnav.api.config.innloggetBruker
+import no.nav.personbruker.dittnav.api.config.authenticatedUser
 import org.slf4j.LoggerFactory
 
 fun Route.beskjed(
@@ -17,7 +16,7 @@ fun Route.beskjed(
 
     get("/beskjed") {
         try {
-            val result = beskjedVarselSwitcher.getActiveEvents(innloggetBruker)
+            val result = beskjedVarselSwitcher.getActiveEvents(authenticatedUser)
             if(result.hasErrors()) {
                 log.warn("En eller flere kilder feilet: ${result.errors()}")
             }
@@ -30,7 +29,7 @@ fun Route.beskjed(
 
     get("/beskjed/inaktiv") {
         try {
-            val result = beskjedVarselSwitcher.getInactiveEvents(innloggetBruker)
+            val result = beskjedVarselSwitcher.getInactiveEvents(authenticatedUser)
             if(result.hasErrors()) {
                 log.warn("En eller flere kilder feilet: ${result.errors()}")
             }
