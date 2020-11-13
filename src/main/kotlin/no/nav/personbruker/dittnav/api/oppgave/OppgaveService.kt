@@ -44,7 +44,11 @@ class OppgaveService(private val oppgaveConsumer: OppgaveConsumer, private val l
         return operatingLoginLevel >= beskjed.sikkerhetsnivaa
     }
 
-    private fun getHighestRequiredLoginLevel(innboksList: List<Oppgave>): Int {
-        return innboksList.maxOf { it.sikkerhetsnivaa }
+    private fun getHighestRequiredLoginLevel(oppgaveList: List<Oppgave>): Int {
+        return if (oppgaveList.isEmpty()) {
+            0
+        } else {
+            oppgaveList.maxOf { it.sikkerhetsnivaa }
+        }
     }
 }

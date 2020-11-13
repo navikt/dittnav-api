@@ -45,6 +45,10 @@ class InnboksService (private val innboksConsumer: InnboksConsumer, private val 
     }
 
     private fun getHighestRequiredLoginLevel(innboksList: List<Innboks>): Int {
-        return innboksList.maxOf { it.sikkerhetsnivaa }
+        return if (innboksList.isEmpty()) {
+            0
+        } else {
+            innboksList.maxOf { it.sikkerhetsnivaa }
+        }
     }
 }

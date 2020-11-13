@@ -44,7 +44,11 @@ class BeskjedService(private val beskjedConsumer: BeskjedConsumer, private val l
         return operatingLoginLevel >= beskjed.sikkerhetsnivaa
     }
 
-    private fun getHighestRequiredLoginLevel(innboksList: List<Beskjed>): Int {
-        return innboksList.maxOf { it.sikkerhetsnivaa }
+    private fun getHighestRequiredLoginLevel(beskjedList: List<Beskjed>): Int {
+        return if (beskjedList.isEmpty()) {
+            0
+        } else {
+            beskjedList.maxOf { it.sikkerhetsnivaa }
+        }
     }
 }
