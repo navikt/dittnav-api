@@ -28,6 +28,9 @@ import no.nav.personbruker.dittnav.api.loginstatus.LoginLevelService
 import no.nav.personbruker.dittnav.api.oppgave.OppgaveConsumer
 import no.nav.personbruker.dittnav.api.oppgave.OppgaveService
 import no.nav.personbruker.dittnav.api.oppgave.oppgave
+import no.nav.personbruker.dittnav.api.unleash.StubUnleashService
+import no.nav.personbruker.dittnav.api.unleash.UnleashService
+import no.nav.personbruker.dittnav.api.unleash.UnleashServiceImpl
 import no.nav.personbruker.dittnav.api.varsel.VarselConsumer
 import no.nav.personbruker.dittnav.api.varsel.VarselService
 import no.nav.personbruker.dittnav.common.security.AuthenticatedUser
@@ -54,17 +57,18 @@ fun Application.mainModule() {
     val innloggingsstatusConsumer = InnloggingsstatusConsumer(httpClient, environment.innloggingsstatusUrl)
     val loginLevelService = LoginLevelService(innloggingsstatusConsumer)
 
+    val unleashService = createUnleashService(environment)
+
     val oppgaveService = OppgaveService(oppgaveConsumer, loginLevelService)
     val beskjedService = BeskjedService(beskjedConsumer, loginLevelService)
     val innboksService = InnboksService(innboksConsumer, loginLevelService)
     val brukernotifikasjonService = BrukernotifikasjonService(brukernotifikasjonConsumer)
     val varselService = VarselService(varselConsumer)
     val mergeBeskjedMedVarselService = MergeBeskjedMedVarselService(beskjedService, varselService)
-    val enableVarsel = environment.includeVarselinnboks && environment.isRunningInDev
     val beskjedVarselSwitcher = BeskjedVarselSwitcher(
         beskjedService,
         mergeBeskjedMedVarselService,
-        enableVarsel
+        unleashService
     )
 
     install(DefaultHeaders)
@@ -100,6 +104,16 @@ fun Application.mainModule() {
         }
 
         configureShutdownHook(httpClient)
+    }
+}
+
+private fun createUnleashService(environment: Environment): UnleashService {
+    val unleashUrl = environment.unleashApiUrl
+
+    return if (unleashUrl == "stub") {
+        StubUnleashService(environment.stubunleashIncludeVarselinnboks)
+    } else {
+        UnleashServiceImpl(environment.isRunningInDev, environment.unleashApiUrl)
     }
 }
 
