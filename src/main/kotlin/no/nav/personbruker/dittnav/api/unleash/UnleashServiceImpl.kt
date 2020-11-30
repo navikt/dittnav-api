@@ -5,6 +5,7 @@ import kotlinx.coroutines.withContext
 import no.finn.unleash.DefaultUnleash
 import no.finn.unleash.Unleash
 import no.finn.unleash.UnleashContext
+import no.finn.unleash.strategy.GradualRolloutUserIdStrategy
 import no.finn.unleash.util.UnleashConfig
 import no.nav.personbruker.dittnav.common.security.AuthenticatedUser
 
@@ -17,16 +18,16 @@ class UnleashServiceImpl(isRunningInDev: Boolean, unleashUrl: String): UnleashSe
 
 
     init {
-        val byApplicationStrategy = ByApplicationStrategy(appName)
-        val byEnvironmentParam = ByApplicationStrategy(envContext)
+        val byApplication = ByApplicationStrategy(appName)
+        val byEnvironmentParam = ByEnvironment(envContext)
+        val gradualRolloutUserId = GradualRolloutUserIdStrategy()
 
         val config = UnleashConfig.builder()
                 .appName(appName)
-                .environment(envContext)
                 .unleashAPI(unleashUrl)
                 .build()
 
-        unleashClient = DefaultUnleash(config, byApplicationStrategy, byEnvironmentParam)
+        unleashClient = DefaultUnleash(config, byApplication, byEnvironmentParam, gradualRolloutUserId)
     }
 
     override suspend fun mergeVarselEnabled(user: AuthenticatedUser): Boolean = withContext(Dispatchers.IO) {
