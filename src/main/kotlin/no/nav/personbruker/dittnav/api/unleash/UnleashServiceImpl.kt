@@ -12,14 +12,13 @@ class UnleashServiceImpl(isRunningInDev: Boolean, unleashUrl: String): UnleashSe
 
     private val unleashClient: Unleash
 
-    init {
-        val appName = "dittnav-api"
+    private val appName = "dittnav-api"
+    private val envContext = if (isRunningInDev) "dev" else "prod"
 
-        val envContext = if (isRunningInDev) {
-            "dev"
-        } else {
-            "prod"
-        }
+
+    init {
+        val byApplicationStrategy = ByApplicationStrategy(appName)
+        val byEnvironmentParam = ByApplicationStrategy(envContext)
 
         val config = UnleashConfig.builder()
                 .appName(appName)
@@ -27,7 +26,7 @@ class UnleashServiceImpl(isRunningInDev: Boolean, unleashUrl: String): UnleashSe
                 .unleashAPI(unleashUrl)
                 .build()
 
-        unleashClient = DefaultUnleash(config)
+        unleashClient = DefaultUnleash(config, byApplicationStrategy, byEnvironmentParam)
     }
 
     override suspend fun mergeVarselEnabled(user: AuthenticatedUser): Boolean = withContext(Dispatchers.IO) {
