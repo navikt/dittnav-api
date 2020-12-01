@@ -48,7 +48,7 @@ dependencies {
     implementation(DittNAV.Common.logging)
     implementation(DittNAV.Common.security)
     implementation(DittNAV.Common.utils)
-    implementation("no.finn.unleash:unleash-client-java:3.3.1")
+    implementation(Unleash.clientJava)
 
     testImplementation(Junit.api)
     testImplementation(Ktor.clientMock)
