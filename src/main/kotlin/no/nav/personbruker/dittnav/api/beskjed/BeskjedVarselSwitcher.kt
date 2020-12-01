@@ -11,7 +11,7 @@ class BeskjedVarselSwitcher(
 ) {
 
     suspend fun getActiveEvents(user: AuthenticatedUser): BeskjedResult {
-        return if (unleashService.mergeVarselEnabled(user)) {
+        return if (unleashService.mergeBeskjedVarselEnabled(user)) {
             logger.info("Viser aktive beskjeder og varsler.")
             beskjedMedVarselService.getActiveEvents(user)
 
@@ -22,7 +22,7 @@ class BeskjedVarselSwitcher(
     }
 
     suspend fun getInactiveEvents(user: AuthenticatedUser): BeskjedResult {
-        return if (unleashService.mergeVarselEnabled(user)) {
+        return if (unleashService.mergeBeskjedVarselEnabled(user)) {
             logger.info("Viser inaktive beskjeder og varsler.")
             beskjedMedVarselService.getInactiveEvents(user)
 

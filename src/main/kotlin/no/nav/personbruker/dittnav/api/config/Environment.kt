@@ -11,7 +11,7 @@ data class Environment(
         val innloggingsstatusUrl: URL = getEnvVarAsURL("INNLOGGINGSSTATUS_URL", trimTrailingSlash = true),
         val corsAllowedOrigins: String = getEnvVar("CORS_ALLOWED_ORIGINS"),
         val corsAllowedSchemes: String = getEnvVar("CORS_ALLOWED_SCHEMES", "https"),
-        val stubunleashIncludeVarselinnboks: Boolean = getEnvVarAsBoolean("STUB_UNLEASH_INCLUDE_VARSELINNBOKS", false),
+        val fakeUnleashIncludeVarsel: Boolean = getEnvVarAsBoolean("FAKE_UNLEASH_INCLUDE_VARSEL", false),
         val unleashApiUrl: String = getEnvVar("UNLEASH_API_URL"),
         val isRunningInDev: Boolean = isRunningInDev()
 )

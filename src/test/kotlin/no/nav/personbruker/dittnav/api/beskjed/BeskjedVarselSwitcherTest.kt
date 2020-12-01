@@ -2,7 +2,6 @@ package no.nav.personbruker.dittnav.api.beskjed
 
 import io.mockk.coEvery
 import io.mockk.coVerify
-import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.runBlocking
 import no.nav.personbruker.dittnav.api.common.AuthenticatedUserObjectMother
@@ -31,7 +30,7 @@ internal class BeskjedVarselSwitcherTest {
     fun `Skal kun bruke beskjedMedVarselService hvis varsler er aktivert`() {
         val serviceMedVarsel = BeskjedVarselSwitcher(beskjedService, beskjedMedVarselService, unleashService)
 
-        coEvery { unleashService.mergeVarselEnabled(dummyUser) } returns true
+        coEvery { unleashService.mergeBeskjedVarselEnabled(dummyUser) } returns true
 
         runBlocking {
             serviceMedVarsel.getActiveEvents(dummyUser)
@@ -48,7 +47,7 @@ internal class BeskjedVarselSwitcherTest {
     fun `Skal kun bruke beskjedService hvis varsler er deaktivert`() {
         val serviceUtenVarsel = BeskjedVarselSwitcher(beskjedService, beskjedMedVarselService, unleashService)
 
-        coEvery { unleashService.mergeVarselEnabled(dummyUser) } returns false
+        coEvery { unleashService.mergeBeskjedVarselEnabled(dummyUser) } returns false
 
         runBlocking {
             serviceUtenVarsel.getActiveEvents(dummyUser)

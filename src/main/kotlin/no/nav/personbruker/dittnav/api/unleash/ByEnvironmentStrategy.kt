@@ -2,14 +2,14 @@ package no.nav.personbruker.dittnav.api.unleash
 
 import no.finn.unleash.strategy.Strategy
 
-class ByApplicationStrategy(private val appName: String) : Strategy {
-
-    override fun getName() = "byApplication"
+class ByEnvironmentStrategy(private val environment: String): Strategy {
+    override fun getName() = "byEnvironment"
 
     override fun isEnabled(parameters: MutableMap<String, String>): Boolean {
-        return parameters["app"]
+        return parameters["miljø"]
                 ?.split(",")
-                ?.contains(appName)
+                ?.contains(environment)
                 ?: false
     }
+
 }
