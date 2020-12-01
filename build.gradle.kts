@@ -82,7 +82,7 @@ tasks {
         DockerComposeDefaults.environomentVariables.forEach { (name, value) ->
             println("Setting the environment variable $name")
             environment(name, value)
-            environment("UNLEASH_API_URL", "https://unleash.nais.io/api")
+            environment("UNLEASH_API_URL", "fake")
         }
 
         main = application.mainClassName
