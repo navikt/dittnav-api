@@ -10,6 +10,10 @@ import io.ktor.routing.*
 import io.ktor.util.*
 import io.ktor.util.pipeline.*
 import io.prometheus.client.hotspot.DefaultExports
+import no.finn.unleash.DefaultUnleash
+import no.finn.unleash.FakeUnleash
+import no.finn.unleash.Unleash
+import no.finn.unleash.util.UnleashConfig
 import no.nav.personbruker.dittnav.api.beskjed.*
 import no.nav.personbruker.dittnav.api.brukernotifikasjon.BrukernotifikasjonConsumer
 import no.nav.personbruker.dittnav.api.brukernotifikasjon.BrukernotifikasjonService
@@ -28,6 +32,8 @@ import no.nav.personbruker.dittnav.api.loginstatus.LoginLevelService
 import no.nav.personbruker.dittnav.api.oppgave.OppgaveConsumer
 import no.nav.personbruker.dittnav.api.oppgave.OppgaveService
 import no.nav.personbruker.dittnav.api.oppgave.oppgave
+import no.nav.personbruker.dittnav.api.unleash.ByEnvironmentStrategy
+import no.nav.personbruker.dittnav.api.unleash.UnleashService
 import no.nav.personbruker.dittnav.api.varsel.VarselConsumer
 import no.nav.personbruker.dittnav.api.varsel.VarselService
 import no.nav.personbruker.dittnav.common.security.AuthenticatedUser
@@ -54,17 +60,18 @@ fun Application.mainModule() {
     val innloggingsstatusConsumer = InnloggingsstatusConsumer(httpClient, environment.innloggingsstatusUrl)
     val loginLevelService = LoginLevelService(innloggingsstatusConsumer)
 
+    val unleashService = createUnleashService(environment)
+
     val oppgaveService = OppgaveService(oppgaveConsumer, loginLevelService)
     val beskjedService = BeskjedService(beskjedConsumer, loginLevelService)
     val innboksService = InnboksService(innboksConsumer, loginLevelService)
     val brukernotifikasjonService = BrukernotifikasjonService(brukernotifikasjonConsumer)
     val varselService = VarselService(varselConsumer)
     val mergeBeskjedMedVarselService = MergeBeskjedMedVarselService(beskjedService, varselService)
-    val enableVarsel = environment.includeVarselinnboks && environment.isRunningInDev
     val beskjedVarselSwitcher = BeskjedVarselSwitcher(
         beskjedService,
         mergeBeskjedMedVarselService,
-        enableVarsel
+        unleashService
     )
 
     install(DefaultHeaders)
@@ -100,6 +107,43 @@ fun Application.mainModule() {
         }
 
         configureShutdownHook(httpClient)
+    }
+}
+
+private fun createUnleashService(environment: Environment): UnleashService {
+
+    val unleashClient = if (environment.unleashApiUrl == "fake") {
+        createFakeUnleashClient(environment)
+    } else {
+        createUnleashClient(environment)
+    }
+
+    return UnleashService(unleashClient)
+}
+
+private fun createUnleashClient(environment: Environment): Unleash {
+    val unleashUrl = environment.unleashApiUrl
+
+    val appName = "dittnav-api"
+    val envContext = if (environment.isRunningInDev) "dev" else "prod"
+
+    val byEnvironment = ByEnvironmentStrategy(envContext)
+
+    val config = UnleashConfig.builder()
+            .appName(appName)
+            .unleashAPI(unleashUrl)
+            .build()
+
+    return DefaultUnleash(config, byEnvironment)
+}
+
+private fun createFakeUnleashClient(environment: Environment): Unleash {
+    return FakeUnleash().apply {
+        if (environment.fakeUnleashIncludeVarsel) {
+            enable("mergeBeskjedVarselEnabled")
+        } else {
+            disable("mergeBeskjedVarselEnabled")
+        }
     }
 }
 

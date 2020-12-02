@@ -48,6 +48,7 @@ dependencies {
     implementation(DittNAV.Common.logging)
     implementation(DittNAV.Common.security)
     implementation(DittNAV.Common.utils)
+    implementation(Unleash.clientJava)
 
     testImplementation(Junit.api)
     testImplementation(Ktor.clientMock)
@@ -81,6 +82,7 @@ tasks {
         DockerComposeDefaults.environomentVariables.forEach { (name, value) ->
             println("Setting the environment variable $name")
             environment(name, value)
+            environment("UNLEASH_API_URL", "fake")
         }
 
         main = application.mainClassName
