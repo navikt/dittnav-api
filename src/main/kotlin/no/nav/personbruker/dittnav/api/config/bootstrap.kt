@@ -10,74 +10,27 @@ import io.ktor.routing.*
 import io.ktor.util.*
 import io.ktor.util.pipeline.*
 import io.prometheus.client.hotspot.DefaultExports
-import no.finn.unleash.DefaultUnleash
-import no.finn.unleash.FakeUnleash
-import no.finn.unleash.Unleash
-import no.finn.unleash.util.UnleashConfig
-import no.nav.personbruker.dittnav.api.beskjed.*
-import no.nav.personbruker.dittnav.api.brukernotifikasjon.BrukernotifikasjonConsumer
-import no.nav.personbruker.dittnav.api.brukernotifikasjon.BrukernotifikasjonService
+import no.nav.personbruker.dittnav.api.beskjed.beskjed
 import no.nav.personbruker.dittnav.api.brukernotifikasjon.brukernotifikasjoner
-import no.nav.personbruker.dittnav.api.done.DoneProducer
 import no.nav.personbruker.dittnav.api.done.doneApi
 import no.nav.personbruker.dittnav.api.health.authenticationCheck
 import no.nav.personbruker.dittnav.api.health.healthApi
-import no.nav.personbruker.dittnav.api.innboks.InnboksConsumer
-import no.nav.personbruker.dittnav.api.innboks.InnboksService
 import no.nav.personbruker.dittnav.api.innboks.innboks
-import no.nav.personbruker.dittnav.api.legacy.LegacyConsumer
 import no.nav.personbruker.dittnav.api.legacy.legacyApi
-import no.nav.personbruker.dittnav.api.loginstatus.InnloggingsstatusConsumer
-import no.nav.personbruker.dittnav.api.loginstatus.LoginLevelService
-import no.nav.personbruker.dittnav.api.oppgave.OppgaveConsumer
-import no.nav.personbruker.dittnav.api.oppgave.OppgaveService
 import no.nav.personbruker.dittnav.api.oppgave.oppgave
-import no.nav.personbruker.dittnav.api.unleash.ByEnvironmentStrategy
-import no.nav.personbruker.dittnav.api.unleash.UnleashService
-import no.nav.personbruker.dittnav.api.varsel.VarselConsumer
-import no.nav.personbruker.dittnav.api.varsel.VarselService
 import no.nav.personbruker.dittnav.common.security.AuthenticatedUser
 import no.nav.personbruker.dittnav.common.security.AuthenticatedUserFactory
 import no.nav.security.token.support.ktor.tokenValidationSupport
 
 @KtorExperimentalAPI
-fun Application.mainModule() {
-    val environment = Environment()
+fun Application.mainModule(appContext : ApplicationContext = ApplicationContext()) {
 
     DefaultExports.initialize()
-
-    val httpClient = HttpClientBuilder.build()
-
-    val legacyConsumer = LegacyConsumer(httpClient, environment.legacyApiURL)
-    val oppgaveConsumer = OppgaveConsumer(httpClient, environment.eventHandlerURL)
-    val beskjedConsumer = BeskjedConsumer(httpClient, environment.eventHandlerURL)
-    val innboksConsumer = InnboksConsumer(httpClient, environment.eventHandlerURL)
-    val brukernotifikasjonConsumer = BrukernotifikasjonConsumer(httpClient, environment.eventHandlerURL)
-    val varselConsumer = VarselConsumer(httpClient, environment.legacyApiURL)
-
-    val doneProducer = DoneProducer(httpClient, environment.eventHandlerURL)
-
-    val innloggingsstatusConsumer = InnloggingsstatusConsumer(httpClient, environment.innloggingsstatusUrl)
-    val loginLevelService = LoginLevelService(innloggingsstatusConsumer)
-
-    val unleashService = createUnleashService(environment)
-
-    val oppgaveService = OppgaveService(oppgaveConsumer, loginLevelService)
-    val beskjedService = BeskjedService(beskjedConsumer, loginLevelService)
-    val innboksService = InnboksService(innboksConsumer, loginLevelService)
-    val brukernotifikasjonService = BrukernotifikasjonService(brukernotifikasjonConsumer)
-    val varselService = VarselService(varselConsumer)
-    val mergeBeskjedMedVarselService = MergeBeskjedMedVarselService(beskjedService, varselService)
-    val beskjedVarselSwitcher = BeskjedVarselSwitcher(
-        beskjedService,
-        mergeBeskjedMedVarselService,
-        unleashService
-    )
 
     install(DefaultHeaders)
 
     install(CORS) {
-        host(environment.corsAllowedOrigins, schemes = listOf(environment.corsAllowedSchemes))
+        host(appContext.environment.corsAllowedOrigins, schemes = listOf(appContext.environment.corsAllowedSchemes))
         allowCredentials = true
         header(HttpHeaders.ContentType)
     }
@@ -95,55 +48,18 @@ fun Application.mainModule() {
     }
 
     routing {
-        healthApi(environment)
+        healthApi(appContext.environment)
         authenticate {
-            legacyApi(legacyConsumer)
-            oppgave(oppgaveService)
-            beskjed(beskjedVarselSwitcher)
-            innboks(innboksService)
-            brukernotifikasjoner(brukernotifikasjonService)
+            legacyApi(appContext.legacyConsumer)
+            oppgave(appContext.oppgaveService)
+            beskjed(appContext.beskjedVarselSwitcher)
+            innboks(appContext.innboksService)
+            brukernotifikasjoner(appContext.brukernotifikasjonService)
             authenticationCheck()
-            doneApi(doneProducer)
+            doneApi(appContext.doneProducer)
         }
 
-        configureShutdownHook(httpClient)
-    }
-}
-
-private fun createUnleashService(environment: Environment): UnleashService {
-
-    val unleashClient = if (environment.unleashApiUrl == "fake") {
-        createFakeUnleashClient(environment)
-    } else {
-        createUnleashClient(environment)
-    }
-
-    return UnleashService(unleashClient)
-}
-
-private fun createUnleashClient(environment: Environment): Unleash {
-    val unleashUrl = environment.unleashApiUrl
-
-    val appName = "dittnav-api"
-    val envContext = if (environment.isRunningInDev) "dev" else "prod"
-
-    val byEnvironment = ByEnvironmentStrategy(envContext)
-
-    val config = UnleashConfig.builder()
-            .appName(appName)
-            .unleashAPI(unleashUrl)
-            .build()
-
-    return DefaultUnleash(config, byEnvironment)
-}
-
-private fun createFakeUnleashClient(environment: Environment): Unleash {
-    return FakeUnleash().apply {
-        if (environment.fakeUnleashIncludeVarsel) {
-            enable("mergeBeskjedVarselEnabled")
-        } else {
-            disable("mergeBeskjedVarselEnabled")
-        }
+        configureShutdownHook(appContext.httpClient)
     }
 }
 
