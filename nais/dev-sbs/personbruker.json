@@ -2,6 +2,6 @@
   "namespace": "personbruker",
   "ingresses": [
     "https://www.dev.nav.no/person/dittnav-api",
-    "https://dittnav-api.personbruker.nais.oera-q.local/person/dittnav-api"
+    "https://dittnav-api.dev.nav.no/person/dittnav-api"
   ]
 }

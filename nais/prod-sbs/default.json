@@ -1,8 +1,0 @@
-{
-  "namespace": "personbruker",
-  "ingresses": [
-    "https://dittnav-api.prod-sbs.nais.io/person/dittnav-api",
-    "https://dittnav-api.nais.oera.no/person/dittnav-api",
-    "https://www.nav.no/person/dittnav-api"
-  ]
-}
