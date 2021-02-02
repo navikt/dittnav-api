@@ -46,7 +46,7 @@ dependencies {
     implementation(Prometheus.hotspot)
     implementation(Prometheus.logback)
     implementation(DittNAV.Common.logging)
-    implementation(DittNAV.Common.security)
+    implementation(DittNAV.Common.securityAuthenticatedUser)
     implementation(DittNAV.Common.utils)
     implementation(Unleash.clientJava)
 
@@ -56,7 +56,6 @@ dependencies {
     testImplementation(Kluent.kluent)
     testImplementation(Mockk.mockk)
     testImplementation(Jjwt.api)
-    testImplementation(DittNAV.Common.test)
 
     testRuntimeOnly(Bouncycastle.bcprovJdk15on)
     testRuntimeOnly(Jjwt.impl)
