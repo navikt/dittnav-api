@@ -1,19 +1,14 @@
 package no.nav.personbruker.dittnav.api.config
 
-import com.fasterxml.jackson.databind.ObjectMapper
-import com.fasterxml.jackson.databind.SerializationFeature
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
-import com.fasterxml.jackson.module.kotlin.registerKotlinModule
-import io.ktor.client.features.json.*
+import io.ktor.client.features.json.serializer.*
+import kotlinx.serialization.json.Json
 
-fun buildJsonSerializer(): JacksonSerializer {
-    return JacksonSerializer {
-        enableDittNavJsonConfig()
-    }
+fun buildJsonSerializer(): KotlinxSerializer {
+    return KotlinxSerializer(json())
 }
 
-fun ObjectMapper.enableDittNavJsonConfig() {
-    registerKotlinModule()
-    registerModule(JavaTimeModule())
-    disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS)
+fun json(): Json {
+    return Json {
+        ignoreUnknownKeys = true
+    }
 }

@@ -13,7 +13,7 @@ import no.nav.personbruker.dittnav.api.config.authenticatedUser
 fun Route.doneApi(doneProducer: DoneProducer) {
 
     post("/produce/done") {
-        respondForParameterType<DoneDto> { doneDto ->
+        respondForParameterType<DoneDTO> { doneDto ->
             val response = doneProducer.postDoneEvents(doneDto, authenticatedUser)
             response
         }

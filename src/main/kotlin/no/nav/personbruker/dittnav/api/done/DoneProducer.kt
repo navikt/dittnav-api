@@ -17,7 +17,7 @@ class DoneProducer(private val httpClient: HttpClient, dittNAVBaseURL: URL) {
     private val log = LoggerFactory.getLogger(DoneProducer::class.java)
     private val completePathToEndpoint = URL("$dittNAVBaseURL/produce/done")
 
-    suspend fun postDoneEvents(done: DoneDto, user: AuthenticatedUser): HttpResponse {
+    suspend fun postDoneEvents(done: DoneDTO, user: AuthenticatedUser): HttpResponse {
         val response: HttpResponse = post(completePathToEndpoint, done, user)
 
         if (response.status != HttpStatusCode.OK) {
@@ -26,7 +26,7 @@ class DoneProducer(private val httpClient: HttpClient, dittNAVBaseURL: URL) {
         return response
     }
 
-    private suspend inline fun <reified T> post(url: URL, done: DoneDto, user: AuthenticatedUser): T = withContext(Dispatchers.IO) {
+    private suspend inline fun <reified T> post(url: URL, done: DoneDTO, user: AuthenticatedUser): T = withContext(Dispatchers.IO) {
         httpClient.post<T>() {
             url(url)
             method = HttpMethod.Post

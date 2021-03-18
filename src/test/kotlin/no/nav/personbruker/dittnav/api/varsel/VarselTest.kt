@@ -1,8 +1,11 @@
+@file:UseSerializers(ZonedDateTimeSerializer::class)
 package no.nav.personbruker.dittnav.api.varsel
 
-import com.fasterxml.jackson.databind.ObjectMapper
-import com.fasterxml.jackson.module.kotlin.readValue
-import no.nav.personbruker.dittnav.api.config.enableDittNavJsonConfig
+import kotlinx.serialization.UseSerializers
+import kotlinx.serialization.decodeFromString
+import kotlinx.serialization.encodeToString
+import no.nav.personbruker.dittnav.api.common.serializer.ZonedDateTimeSerializer
+import no.nav.personbruker.dittnav.api.config.json
 import org.amshove.kluent.`should contain`
 import org.amshove.kluent.shouldNotBeNull
 import org.junit.jupiter.api.Test
@@ -20,10 +23,6 @@ class VarselTest {
             |"datoLest":"2020-02-04T08:02:13+01:00[Europe/Oslo]"}
             |""".trimMargin()
 
-    val objectMapper = ObjectMapper().apply {
-        enableDittNavJsonConfig()
-    }
-
     @Test
     fun `skal returnere maskerte data fra toString-metoden`() {
         val varsel = createLestVarsel("1")
@@ -36,18 +35,17 @@ class VarselTest {
     @Test
     fun `skal kunne serialisere og deserialisere`() {
         val varsel = createLestVarsel("1000")
-        val serialized = objectMapper.writeValueAsString(varsel)
+        val serialized = json().encodeToString(varsel)
 
-        val deserialiser = objectMapper.readValue<Varsel>(serialized)
+        val deserialiser = json().decodeFromString<Varsel>(serialized)
 
         deserialiser.shouldNotBeNull()
     }
 
     @Test
     fun `skal kunne deserialisere et eksempel-varsel fra legacy-api`() {
-        val deserialized = objectMapper.readValue<Varsel>(eksempelVarselFraLegacyApi)
+        val deserialized = json().decodeFromString<Varsel>(eksempelVarselFraLegacyApi)
 
         deserialized.shouldNotBeNull()
     }
-
 }

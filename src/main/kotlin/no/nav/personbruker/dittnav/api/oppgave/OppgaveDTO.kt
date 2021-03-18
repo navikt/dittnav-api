@@ -1,10 +1,14 @@
+@file:UseSerializers(ZonedDateTimeSerializer::class)
 package no.nav.personbruker.dittnav.api.oppgave
 
-import com.fasterxml.jackson.annotation.JsonInclude
+import kotlinx.serialization.Serializable
+import kotlinx.serialization.UseSerializers
+import no.nav.personbruker.dittnav.api.common.serializer.ZonedDateTimeSerializer
 import java.time.ZonedDateTime
 
+@Serializable
 data class OppgaveDTO(
-        @JsonInclude(JsonInclude.Include.NON_NULL) val uid: String?,
+        val uid: String?,
         val eventTidspunkt: ZonedDateTime,
         val eventId: String,
         val tekst: String,

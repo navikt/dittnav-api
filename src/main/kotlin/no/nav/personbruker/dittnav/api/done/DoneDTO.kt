@@ -1,6 +1,9 @@
 package no.nav.personbruker.dittnav.api.done
 
-data class DoneDto(
+import kotlinx.serialization.Serializable
+
+@Serializable
+data class DoneDTO(
         val uid: String,
         val eventId: String
 )

@@ -5,11 +5,12 @@ import io.ktor.auth.*
 import io.ktor.client.*
 import io.ktor.features.*
 import io.ktor.http.*
-import io.ktor.jackson.*
 import io.ktor.routing.*
+import io.ktor.serialization.*
 import io.ktor.util.*
 import io.ktor.util.pipeline.*
 import io.prometheus.client.hotspot.DefaultExports
+import kotlinx.serialization.json.Json
 import no.nav.personbruker.dittnav.api.beskjed.beskjed
 import no.nav.personbruker.dittnav.api.brukernotifikasjon.brukernotifikasjoner
 import no.nav.personbruker.dittnav.api.done.doneApi
@@ -42,9 +43,7 @@ fun Application.mainModule(appContext : ApplicationContext = ApplicationContext(
     }
 
     install(ContentNegotiation) {
-        jackson {
-            enableDittNavJsonConfig()
-        }
+        json(no.nav.personbruker.dittnav.api.config.json())
     }
 
     routing {
