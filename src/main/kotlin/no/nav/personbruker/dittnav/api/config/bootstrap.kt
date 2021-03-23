@@ -10,7 +10,6 @@ import io.ktor.serialization.*
 import io.ktor.util.*
 import io.ktor.util.pipeline.*
 import io.prometheus.client.hotspot.DefaultExports
-import kotlinx.serialization.json.Json
 import no.nav.personbruker.dittnav.api.beskjed.beskjed
 import no.nav.personbruker.dittnav.api.brukernotifikasjon.brukernotifikasjoner
 import no.nav.personbruker.dittnav.api.done.doneApi
@@ -47,7 +46,7 @@ fun Application.mainModule(appContext : ApplicationContext = ApplicationContext(
     }
 
     routing {
-        healthApi(appContext.environment)
+        healthApi(appContext.httpClient, appContext.environment)
         authenticate {
             legacyApi(appContext.legacyConsumer)
             oppgave(appContext.oppgaveService)
@@ -58,13 +57,13 @@ fun Application.mainModule(appContext : ApplicationContext = ApplicationContext(
             doneApi(appContext.doneProducer)
         }
 
-        configureShutdownHook(appContext.httpClient)
+        configureShutdownHook(listOf(appContext.httpClient, appContext.httpClientIgnoreUnknownKeys))
     }
 }
 
-private fun Application.configureShutdownHook(httpClient: HttpClient) {
+private fun Application.configureShutdownHook(httpClients: List<HttpClient> ) {
     environment.monitor.subscribe(ApplicationStopping) {
-        httpClient.close()
+        httpClients.forEach { httpClient -> httpClient.close() }
     }
 }
 

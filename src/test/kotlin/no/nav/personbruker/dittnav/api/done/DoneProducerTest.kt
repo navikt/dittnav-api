@@ -7,7 +7,6 @@ import io.ktor.client.statement.*
 import io.ktor.http.*
 import kotlinx.coroutines.runBlocking
 import no.nav.personbruker.dittnav.api.common.AuthenticatedUserObjectMother
-import no.nav.personbruker.dittnav.api.config.buildJsonSerializer
 import org.amshove.kluent.`should be equal to`
 import org.junit.jupiter.api.Test
 import java.net.URL
@@ -30,9 +29,7 @@ internal class DoneProducerTest {
                     }
                 }
             }
-            install(JsonFeature) {
-                serializer = buildJsonSerializer()
-            }
+            install(JsonFeature)
         }
         val doneProducer = DoneProducer(client, URL("http://event-handler"))
         runBlocking {

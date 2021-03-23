@@ -66,6 +66,6 @@ internal class InnloggingsstatusResponseTest {
     }
 
     private fun readResponse(json: String): InnloggingsstatusResponse {
-        return json().decodeFromString(json)
+        return json(ignoreUnknownKeys = true).decodeFromString(json)
     }
 }

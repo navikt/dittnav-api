@@ -1,5 +1,7 @@
 package no.nav.personbruker.dittnav.api.config
 
+import io.ktor.client.features.json.serializer.*
+import kotlinx.serialization.json.Json
 import no.finn.unleash.DefaultUnleash
 import no.finn.unleash.FakeUnleash
 import no.finn.unleash.Unleash
@@ -27,7 +29,8 @@ class ApplicationContext {
 
     val environment = Environment()
 
-    val httpClient = HttpClientBuilder.build()
+    val httpClient = HttpClientBuilder.build(KotlinxSerializer(json()))
+    val httpClientIgnoreUnknownKeys = HttpClientBuilder.build(KotlinxSerializer(json(ignoreUnknownKeys = true)))
 
     val legacyConsumer = LegacyConsumer(httpClient, environment.legacyApiURL)
     val oppgaveConsumer = OppgaveConsumer(httpClient, environment.eventHandlerURL)
@@ -38,7 +41,7 @@ class ApplicationContext {
 
     val doneProducer = DoneProducer(httpClient, environment.eventHandlerURL)
 
-    val innloggingsstatusConsumer = InnloggingsstatusConsumer(httpClient, environment.innloggingsstatusUrl)
+    val innloggingsstatusConsumer = InnloggingsstatusConsumer(httpClientIgnoreUnknownKeys, environment.innloggingsstatusUrl)
     val loginLevelService = LoginLevelService(innloggingsstatusConsumer)
 
     val unleashService = createUnleashService(environment)
