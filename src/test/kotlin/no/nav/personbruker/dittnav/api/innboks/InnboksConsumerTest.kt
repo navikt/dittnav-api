@@ -8,7 +8,6 @@ import io.ktor.http.*
 import kotlinx.coroutines.runBlocking
 import kotlinx.serialization.encodeToString
 import no.nav.personbruker.dittnav.api.common.AuthenticatedUserObjectMother
-import no.nav.personbruker.dittnav.api.config.buildJsonSerializer
 import no.nav.personbruker.dittnav.api.config.json
 import org.amshove.kluent.`should be equal to`
 import org.amshove.kluent.`should be false`
@@ -32,9 +31,7 @@ class InnboksConsumerTest {
                     }
                 }
             }
-            install(JsonFeature) {
-                serializer = buildJsonSerializer()
-            }
+            install(JsonFeature)
         }
         val innboksConsumer = InnboksConsumer(client, URL("http://event-handler"))
 
@@ -97,9 +94,7 @@ class InnboksConsumerTest {
                     respond()
                 }
             }
-            install(JsonFeature) {
-                serializer = buildJsonSerializer()
-            }
+            install(JsonFeature)
         }
     }
 }

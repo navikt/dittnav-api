@@ -8,7 +8,6 @@ import io.ktor.http.*
 import kotlinx.coroutines.runBlocking
 import kotlinx.serialization.encodeToString
 import no.nav.personbruker.dittnav.api.common.AuthenticatedUserObjectMother
-import no.nav.personbruker.dittnav.api.config.buildJsonSerializer
 import no.nav.personbruker.dittnav.api.config.json
 import org.amshove.kluent.`should be equal to`
 import org.junit.jupiter.api.Test
@@ -30,9 +29,7 @@ class VarselConsumerTest {
                     }
                 }
             }
-            install(JsonFeature) {
-                serializer = buildJsonSerializer()
-            }
+            install(JsonFeature)
         }
         val varselConsumer = VarselConsumer(client, URL("http://dittnav-legacy-api"))
 
@@ -42,7 +39,7 @@ class VarselConsumerTest {
     }
 
     @Test
-    fun `Skal mottat en liste av aktive Varsel`() {
+    fun `Skal motta en liste av aktive Varsel`() {
         val varselObject = createLestVarsel("1")
         val client = getClient {
             respond(
@@ -69,9 +66,7 @@ class VarselConsumerTest {
                     respond()
                 }
             }
-            install(JsonFeature) {
-                serializer = buildJsonSerializer()
-            }
+            install(JsonFeature)
         }
     }
 }

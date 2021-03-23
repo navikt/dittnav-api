@@ -1,6 +1,7 @@
 package no.nav.personbruker.dittnav.api.health
 
 import io.ktor.application.call
+import io.ktor.client.*
 import io.ktor.http.ContentType
 import io.ktor.http.HttpStatusCode
 import io.ktor.response.respondText
@@ -11,7 +12,7 @@ import io.prometheus.client.CollectorRegistry
 import io.prometheus.client.exporter.common.TextFormat
 import no.nav.personbruker.dittnav.api.config.Environment
 
-fun Routing.healthApi(environment: Environment, collectorRegistry: CollectorRegistry = CollectorRegistry.defaultRegistry) {
+fun Routing.healthApi(client: HttpClient, environment: Environment, collectorRegistry: CollectorRegistry = CollectorRegistry.defaultRegistry) {
 
     val pingJsonResponse = """{"ping": "pong"}"""
 
@@ -28,7 +29,7 @@ fun Routing.healthApi(environment: Environment, collectorRegistry: CollectorRegi
     }
 
     get("/internal/selftest") {
-        call.pingDependencies(environment)
+        call.pingDependencies(client, environment)
     }
 
     get("/metrics") {
