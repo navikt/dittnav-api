@@ -5,8 +5,8 @@ import io.ktor.auth.*
 import io.ktor.client.*
 import io.ktor.features.*
 import io.ktor.http.*
-import io.ktor.jackson.*
 import io.ktor.routing.*
+import io.ktor.serialization.*
 import io.ktor.util.*
 import io.ktor.util.pipeline.*
 import io.prometheus.client.hotspot.DefaultExports
@@ -42,13 +42,11 @@ fun Application.mainModule(appContext : ApplicationContext = ApplicationContext(
     }
 
     install(ContentNegotiation) {
-        jackson {
-            enableDittNavJsonConfig()
-        }
+        json(no.nav.personbruker.dittnav.api.config.json())
     }
 
     routing {
-        healthApi(appContext.environment)
+        healthApi(appContext.httpClient, appContext.environment)
         authenticate {
             legacyApi(appContext.legacyConsumer)
             oppgave(appContext.oppgaveService)
@@ -59,13 +57,13 @@ fun Application.mainModule(appContext : ApplicationContext = ApplicationContext(
             doneApi(appContext.doneProducer)
         }
 
-        configureShutdownHook(appContext.httpClient)
+        configureShutdownHook(listOf(appContext.httpClient, appContext.httpClientIgnoreUnknownKeys))
     }
 }
 
-private fun Application.configureShutdownHook(httpClient: HttpClient) {
+private fun Application.configureShutdownHook(httpClients: List<HttpClient> ) {
     environment.monitor.subscribe(ApplicationStopping) {
-        httpClient.close()
+        httpClients.forEach { httpClient -> httpClient.close() }
     }
 }
 

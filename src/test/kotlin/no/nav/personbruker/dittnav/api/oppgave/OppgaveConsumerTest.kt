@@ -1,25 +1,17 @@
 package no.nav.personbruker.dittnav.api.oppgave
 
-import com.fasterxml.jackson.databind.ObjectMapper
-import io.ktor.client.HttpClient
-import io.ktor.client.engine.mock.MockEngine
-import io.ktor.client.engine.mock.MockRequestHandleScope
-import io.ktor.client.engine.mock.respond
-import io.ktor.client.engine.mock.respondError
-import io.ktor.client.features.json.JsonFeature
-import io.ktor.client.request.HttpResponseData
-import io.ktor.http.ContentType
-import io.ktor.http.HttpHeaders
-import io.ktor.http.HttpStatusCode
-import io.ktor.http.headersOf
+import io.ktor.client.*
+import io.ktor.client.engine.mock.*
+import io.ktor.client.features.json.*
+import io.ktor.client.request.*
+import io.ktor.http.*
 import kotlinx.coroutines.runBlocking
+import kotlinx.serialization.encodeToString
 import no.nav.personbruker.dittnav.api.common.AuthenticatedUserObjectMother
-import no.nav.personbruker.dittnav.api.config.buildJsonSerializer
-import no.nav.personbruker.dittnav.api.config.enableDittNavJsonConfig
+import no.nav.personbruker.dittnav.api.config.json
 import org.amshove.kluent.`should be equal to`
 import org.amshove.kluent.`should be false`
 import org.amshove.kluent.`should be true`
-import org.amshove.kluent.`should be equal to`
 import org.junit.jupiter.api.Test
 import java.net.URL
 
@@ -40,9 +32,7 @@ class OppgaveConsumerTest {
                     }
                 }
             }
-            install(JsonFeature) {
-                serializer = buildJsonSerializer()
-            }
+            install(JsonFeature)
         }
 
         val oppgaveConsumer = OppgaveConsumer(client, URL("http://event-handler"))
@@ -56,13 +46,10 @@ class OppgaveConsumerTest {
     fun `should get list of active Oppgave`() {
         val oppgaveObject1 = createOppgave("1", "1", true)
         val oppgaveObject2 = createOppgave("2", "2", true)
-        val objectMapper = ObjectMapper().apply {
-            enableDittNavJsonConfig()
-        }
 
         val client = getClient {
             respond(
-                    objectMapper.writeValueAsString(listOf(oppgaveObject1, oppgaveObject2)),
+                    json().encodeToString(listOf(oppgaveObject1, oppgaveObject2)),
                     headers = headersOf(HttpHeaders.ContentType,
                             ContentType.Application.Json.toString())
             )
@@ -82,13 +69,10 @@ class OppgaveConsumerTest {
     @Test
     fun `should get list of inactive Oppgave`() {
         val oppgaveObject = createOppgave("1", "1", false)
-        val objectMapper = ObjectMapper().apply {
-            enableDittNavJsonConfig()
-        }
 
         val client = getClient {
             respond(
-                    objectMapper.writeValueAsString(listOf(oppgaveObject)),
+                    json().encodeToString(listOf(oppgaveObject)),
                     headers = headersOf(HttpHeaders.ContentType,
                             ContentType.Application.Json.toString())
             )
@@ -112,9 +96,7 @@ class OppgaveConsumerTest {
                     respond()
                 }
             }
-            install(JsonFeature) {
-                serializer = buildJsonSerializer()
-            }
+            install(JsonFeature)
         }
     }
 }

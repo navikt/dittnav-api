@@ -1,7 +1,7 @@
 package no.nav.personbruker.dittnav.api.loginstatus
 
-import com.fasterxml.jackson.databind.ObjectMapper
-import no.nav.personbruker.dittnav.api.config.enableDittNavJsonConfig
+import kotlinx.serialization.decodeFromString
+import no.nav.personbruker.dittnav.api.config.json
 import org.amshove.kluent.`should be equal to`
 import org.junit.jupiter.api.Test
 
@@ -41,10 +41,6 @@ internal class InnloggingsstatusResponseTest {
         }
     """.trimIndent()
 
-    val objectMapper = ObjectMapper().apply {
-        enableDittNavJsonConfig()
-    }
-
     @Test
     fun `Can deserialize unauthenticated response`() {
         val response: InnloggingsstatusResponse = readResponse(unauthenticatedResponse)
@@ -70,6 +66,6 @@ internal class InnloggingsstatusResponseTest {
     }
 
     private fun readResponse(json: String): InnloggingsstatusResponse {
-        return objectMapper.readValue(json, InnloggingsstatusResponse::class.java)
+        return json(ignoreUnknownKeys = true).decodeFromString(json)
     }
 }

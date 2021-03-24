@@ -5,6 +5,7 @@ plugins {
     // Apply the Kotlin JVM plugin to add support for Kotlin on the JVM.
     kotlin("jvm").version(Kotlin.version)
     kotlin("plugin.allopen").version(Kotlin.version)
+    kotlin("plugin.serialization").version(Kotlin.version)
 
     id(Shadow.pluginId) version (Shadow.version)
     // Apply the application plugin to add support for building a CLI application.
@@ -25,19 +26,17 @@ repositories {
 }
 
 dependencies {
-    implementation(Jackson.dataTypeJsr310)
     implementation(Kotlinx.coroutines)
     implementation(Kotlinx.htmlJvm)
     implementation(Ktor.auth)
     implementation(Ktor.authJwt)
     implementation(Ktor.clientApache)
-    implementation(Ktor.clientJackson)
     implementation(Ktor.clientJson)
     implementation(Ktor.clientLogging)
     implementation(Ktor.clientLoggingJvm)
     implementation(Ktor.clientSerializationJvm)
     implementation(Ktor.htmlBuilder)
-    implementation(Ktor.jackson)
+    implementation(Ktor.serialization)
     implementation(Ktor.serverNetty)
     implementation(Logback.classic)
     implementation(Logstash.logbackEncoder)
@@ -59,7 +58,7 @@ dependencies {
 
     testRuntimeOnly(Bouncycastle.bcprovJdk15on)
     testRuntimeOnly(Jjwt.impl)
-    testRuntimeOnly(Jjwt.jackson)
+    testRuntimeOnly(Jjwt.orgjson)
     testRuntimeOnly(Junit.engine)
 }
 

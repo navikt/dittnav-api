@@ -1,8 +1,8 @@
 package no.nav.personbruker.dittnav.api.loginstatus
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties
+import kotlinx.serialization.Serializable
 
-@JsonIgnoreProperties(ignoreUnknown = true)
+@Serializable
 data class InnloggingsstatusResponse (
         val authenticated: Boolean,
         val authLevel : Int? = null

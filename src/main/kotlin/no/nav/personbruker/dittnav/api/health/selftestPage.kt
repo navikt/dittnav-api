@@ -1,6 +1,7 @@
 package no.nav.personbruker.dittnav.api.health
 
 import io.ktor.application.ApplicationCall
+import io.ktor.client.*
 import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
 import no.nav.personbruker.dittnav.api.config.Environment
@@ -10,8 +11,8 @@ import io.ktor.http.HttpStatusCode
 import kotlinx.html.*
 import java.net.URL
 
-suspend fun ApplicationCall.pingDependencies(environment: Environment) = coroutineScope {
-    val client = HttpClientBuilder.build()
+suspend fun ApplicationCall.pingDependencies(client: HttpClient, environment: Environment) = coroutineScope {
+
 
     val legacyApiPingableURL = URL("${environment.legacyApiURL}/internal/isAlive")
     val legacySelftestStatus = async { getStatus(legacyApiPingableURL, client) }
@@ -21,7 +22,6 @@ suspend fun ApplicationCall.pingDependencies(environment: Environment) = corouti
     val eventHandlerSelftestStatus = async { getStatus(eventHandlerPingableURL, client) }
     services.put("DITTNAV_EVENT_HANDLER:", eventHandlerSelftestStatus.await())
 
-    client.close()
 
     val serviceStatus = if (services.values.any { it.status == Status.ERROR }) Status.ERROR else Status.OK
 
