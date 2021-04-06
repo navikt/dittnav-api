@@ -61,10 +61,10 @@ private suspend fun PipelineContext<Unit, ApplicationCall>.hentRaattFraLegacyApi
         val response = consumer.getLegacyContent(path, authenticatedUser)
         call.respond(response.status, response.readBytes())
     } catch (e: SocketTimeoutException) {
-        log.warn("Forbindelsen mot legacy-endepunkt '$path' har utgått. Feilmelding: [${e.message}]")
+        log.warn("Forbindelsen mot legacy-endepunkt '$path' har utgått. Feilmelding: [${e.message}]. $authenticatedUser", e)
         call.respond(HttpStatusCode.GatewayTimeout)
     } catch (e: Exception) {
-        log.warn("Det skjedde en feil mot legacy-endepunkt '$path'. Feilmelding: [${e.message}]")
+        log.warn("Det skjedde en feil mot legacy-endepunkt '$path'. Feilmelding: [${e.message}]. $authenticatedUser", e)
         call.respond(HttpStatusCode.InternalServerError)
     }
 
