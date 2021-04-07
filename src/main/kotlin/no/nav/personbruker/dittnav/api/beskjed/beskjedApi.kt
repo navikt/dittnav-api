@@ -5,7 +5,6 @@ import io.ktor.response.*
 import io.ktor.routing.*
 import no.nav.personbruker.dittnav.api.common.respondWithError
 import no.nav.personbruker.dittnav.api.config.authenticatedUser
-import no.nav.personbruker.dittnav.api.legacy.logWhenTokenIsAboutToExpire
 import org.slf4j.LoggerFactory
 
 fun Route.beskjed(
@@ -15,7 +14,6 @@ fun Route.beskjed(
     val log = LoggerFactory.getLogger(BeskjedService::class.java)
 
     get("/beskjed") {
-        log.logWhenTokenIsAboutToExpire(authenticatedUser)
         try {
             val result = beskjedVarselSwitcher.getActiveEvents(authenticatedUser)
             if(result.hasErrors()) {
@@ -29,7 +27,6 @@ fun Route.beskjed(
     }
 
     get("/beskjed/inaktiv") {
-        log.logWhenTokenIsAboutToExpire(authenticatedUser)
         try {
             val result = beskjedVarselSwitcher.getInactiveEvents(authenticatedUser)
             if(result.hasErrors()) {
