@@ -21,9 +21,13 @@ import no.nav.personbruker.dittnav.api.oppgave.oppgave
 import no.nav.personbruker.dittnav.common.security.AuthenticatedUser
 import no.nav.personbruker.dittnav.common.security.AuthenticatedUserFactory
 import no.nav.security.token.support.ktor.tokenValidationSupport
+import org.slf4j.LoggerFactory
+import java.time.Instant
+
+val log = LoggerFactory.getLogger(ApplicationContext::class.java)
 
 @KtorExperimentalAPI
-fun Application.mainModule(appContext : ApplicationContext = ApplicationContext()) {
+fun Application.mainModule(appContext: ApplicationContext = ApplicationContext()) {
 
     DefaultExports.initialize()
 
@@ -48,6 +52,13 @@ fun Application.mainModule(appContext : ApplicationContext = ApplicationContext(
     routing {
         healthApi(appContext.httpClient, appContext.environment)
         authenticate {
+            intercept(ApplicationCallPipeline.Call) {
+                if (authenticatedUser.isTokenExpired()) {
+                    val delta = authenticatedUser.tokenExpirationTime.epochSecond - Instant.now().epochSecond
+                    log.info("Mottok kall fra en bruker med et utløpt token. Delta: $delta sekunder, $authenticatedUser")
+                }
+            }
+
             legacyApi(appContext.legacyConsumer)
             oppgave(appContext.oppgaveService)
             beskjed(appContext.beskjedVarselSwitcher)
@@ -61,7 +72,7 @@ fun Application.mainModule(appContext : ApplicationContext = ApplicationContext(
     }
 }
 
-private fun Application.configureShutdownHook(httpClients: List<HttpClient> ) {
+private fun Application.configureShutdownHook(httpClients: List<HttpClient>) {
     environment.monitor.subscribe(ApplicationStopping) {
         httpClients.forEach { httpClient -> httpClient.close() }
     }
