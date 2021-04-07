@@ -7,6 +7,7 @@ import io.ktor.routing.Route
 import io.ktor.routing.get
 import no.nav.personbruker.dittnav.api.common.respondWithError
 import no.nav.personbruker.dittnav.api.config.authenticatedUser
+import no.nav.personbruker.dittnav.api.legacy.logWhenTokenIsAboutToExpire
 import org.slf4j.LoggerFactory
 
 fun Route.innboks(innboksService: InnboksService) {
@@ -14,6 +15,7 @@ fun Route.innboks(innboksService: InnboksService) {
     val log = LoggerFactory.getLogger(InnboksService::class.java)
 
     get("/innboks") {
+        log.logWhenTokenIsAboutToExpire(authenticatedUser)
         try {
             val innboksEvents = innboksService.getActiveInnboksEvents(authenticatedUser)
             call.respond(HttpStatusCode.OK, innboksEvents)
@@ -23,6 +25,7 @@ fun Route.innboks(innboksService: InnboksService) {
     }
 
     get("/innboks/inaktiv") {
+        log.logWhenTokenIsAboutToExpire(authenticatedUser)
         try {
             val innboksEvents = innboksService.getInactiveInnboksEvents(authenticatedUser)
             call.respond(HttpStatusCode.OK, innboksEvents)
