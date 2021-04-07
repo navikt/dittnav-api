@@ -1,7 +1,6 @@
 package no.nav.personbruker.dittnav.api.beskjed
 
 import io.ktor.application.*
-import io.ktor.http.*
 import io.ktor.response.*
 import io.ktor.routing.*
 import no.nav.personbruker.dittnav.api.common.respondWithError

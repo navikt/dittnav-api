@@ -1,18 +1,21 @@
 package no.nav.personbruker.dittnav.api.done
 
-import io.ktor.application.ApplicationCall
-import io.ktor.application.call
-import io.ktor.client.statement.HttpResponse
-import io.ktor.request.receive
-import io.ktor.response.respond
-import io.ktor.routing.Route
-import io.ktor.routing.post
-import io.ktor.util.pipeline.PipelineContext
+import io.ktor.application.*
+import io.ktor.client.statement.*
+import io.ktor.request.*
+import io.ktor.response.*
+import io.ktor.routing.*
+import io.ktor.util.pipeline.*
 import no.nav.personbruker.dittnav.api.config.authenticatedUser
+import no.nav.personbruker.dittnav.api.legacy.logWhenTokenIsAboutToExpire
+import org.slf4j.LoggerFactory
 
 fun Route.doneApi(doneProducer: DoneProducer) {
 
+    val log = LoggerFactory.getLogger(DoneProducer::class.java)
+
     post("/produce/done") {
+        log.logWhenTokenIsAboutToExpire(authenticatedUser)
         respondForParameterType<DoneDTO> { doneDto ->
             val response = doneProducer.postDoneEvents(doneDto, authenticatedUser)
             response
