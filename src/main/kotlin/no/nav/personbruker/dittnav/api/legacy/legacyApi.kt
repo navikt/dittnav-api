@@ -7,8 +7,6 @@ import io.ktor.response.*
 import io.ktor.routing.*
 import io.ktor.util.pipeline.*
 import no.nav.personbruker.dittnav.api.config.authenticatedUser
-import no.nav.personbruker.dittnav.common.security.AuthenticatedUser
-import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import java.net.SocketTimeoutException
 
@@ -25,7 +23,6 @@ fun Route.legacyApi(legacyConsumer: LegacyConsumer) {
     val oppfolgingPath = "/oppfolging"
 
     get(ubehandledeMeldingerPath) {
-        log.logWhenTokenIsAboutToExpire(authenticatedUser)
         hentRaattFraLegacyApiOgReturnerResponsen(legacyConsumer, ubehandledeMeldingerPath)
     }
 
