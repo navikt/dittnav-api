@@ -68,7 +68,7 @@ private suspend fun PipelineContext<Unit, ApplicationCall>.hentRaattFraLegacyApi
     }
 }
 
-private suspend fun PipelineContext<Unit, ApplicationCall>.executeOnUnexpiredTokensOnly(block: suspend () -> Unit) {
+suspend fun PipelineContext<Unit, ApplicationCall>.executeOnUnexpiredTokensOnly(block: suspend () -> Unit) {
     if (authenticatedUser.isTokenExpired()) {
         val delta = authenticatedUser.tokenExpirationTime.epochSecond - Instant.now().epochSecond
         log.info("Mottok kall fra en bruker med et utløpt token. Tid siden tokenet løp ut: $delta sekunder, $authenticatedUser")

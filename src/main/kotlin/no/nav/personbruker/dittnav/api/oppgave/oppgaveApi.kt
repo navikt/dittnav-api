@@ -6,6 +6,7 @@ import io.ktor.response.*
 import io.ktor.routing.*
 import no.nav.personbruker.dittnav.api.common.respondWithError
 import no.nav.personbruker.dittnav.api.config.authenticatedUser
+import no.nav.personbruker.dittnav.api.legacy.executeOnUnexpiredTokensOnly
 import org.slf4j.LoggerFactory
 
 fun Route.oppgave(oppgaveService: OppgaveService) {
@@ -13,20 +14,24 @@ fun Route.oppgave(oppgaveService: OppgaveService) {
     val log = LoggerFactory.getLogger(OppgaveService::class.java)
 
     get("/oppgave") {
-        try {
-            val oppgaveEvents = oppgaveService.getActiveOppgaveEvents(authenticatedUser)
-            call.respond(HttpStatusCode.OK, oppgaveEvents)
-        } catch(exception: Exception) {
-            respondWithError(call, log, exception)
+        executeOnUnexpiredTokensOnly {
+            try {
+                val oppgaveEvents = oppgaveService.getActiveOppgaveEvents(authenticatedUser)
+                call.respond(HttpStatusCode.OK, oppgaveEvents)
+            } catch(exception: Exception) {
+                respondWithError(call, log, exception)
+            }
         }
     }
 
     get("/oppgave/inaktiv") {
-        try {
-            val oppgaveEvents = oppgaveService.getInactiveOppgaveEvents(authenticatedUser)
-            call.respond(HttpStatusCode.OK, oppgaveEvents)
-        } catch(exception: Exception) {
-            respondWithError(call, log, exception)
+        executeOnUnexpiredTokensOnly {
+            try {
+                val oppgaveEvents = oppgaveService.getInactiveOppgaveEvents(authenticatedUser)
+                call.respond(HttpStatusCode.OK, oppgaveEvents)
+            } catch(exception: Exception) {
+                respondWithError(call, log, exception)
+            }
         }
     }
 }
