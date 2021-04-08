@@ -7,10 +7,9 @@ import io.ktor.response.*
 import io.ktor.routing.*
 import io.ktor.util.pipeline.*
 import no.nav.personbruker.dittnav.api.config.authenticatedUser
-import no.nav.personbruker.dittnav.common.security.AuthenticatedUser
-import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import java.net.SocketTimeoutException
+import java.time.Instant
 
 val log = LoggerFactory.getLogger(LegacyConsumer::class.java)
 
@@ -25,7 +24,6 @@ fun Route.legacyApi(legacyConsumer: LegacyConsumer) {
     val oppfolgingPath = "/oppfolging"
 
     get(ubehandledeMeldingerPath) {
-        log.logWhenTokenIsAboutToExpire(authenticatedUser)
         hentRaattFraLegacyApiOgReturnerResponsen(legacyConsumer, ubehandledeMeldingerPath)
     }
 
@@ -56,23 +54,27 @@ fun Route.legacyApi(legacyConsumer: LegacyConsumer) {
 }
 
 private suspend fun PipelineContext<Unit, ApplicationCall>.hentRaattFraLegacyApiOgReturnerResponsen(consumer: LegacyConsumer, path: String) {
-    try {
-        val response = consumer.getLegacyContent(path, authenticatedUser)
-        call.respond(response.status, response.readBytes())
-    } catch (e: SocketTimeoutException) {
-        log.warn("Forbindelsen mot legacy-endepunkt '$path' har utgått. Feilmelding: [${e.message}]. $authenticatedUser", e)
-        call.respond(HttpStatusCode.GatewayTimeout)
-    } catch (e: Exception) {
-        log.warn("Det skjedde en feil mot legacy-endepunkt '$path'. Feilmelding: [${e.message}]. $authenticatedUser", e)
-        call.respond(HttpStatusCode.InternalServerError)
+    executeOnUnexpiredTokensOnly {
+        try {
+            val response = consumer.getLegacyContent(path, authenticatedUser)
+            call.respond(response.status, response.readBytes())
+        } catch (e: SocketTimeoutException) {
+            log.warn("Forbindelsen mot legacy-endepunkt '$path' har utgått. Feilmelding: [${e.message}]. $authenticatedUser", e)
+            call.respond(HttpStatusCode.GatewayTimeout)
+        } catch (e: Exception) {
+            log.warn("Det skjedde en feil mot legacy-endepunkt '$path'. Feilmelding: [${e.message}]. $authenticatedUser", e)
+            call.respond(HttpStatusCode.InternalServerError)
+        }
     }
-
 }
 
-fun Logger.logWhenTokenIsAboutToExpire(user: AuthenticatedUser) {
-    val expiryThresholdInSeconds = 30L
+suspend fun PipelineContext<Unit, ApplicationCall>.executeOnUnexpiredTokensOnly(block: suspend () -> Unit) {
+    if (authenticatedUser.isTokenExpired()) {
+        val delta = authenticatedUser.tokenExpirationTime.epochSecond - Instant.now().epochSecond
+        log.info("Mottok kall fra en bruker med et utløpt token. Tid siden tokenet løp ut: $delta sekunder, $authenticatedUser")
+        call.respond(HttpStatusCode.Unauthorized)
 
-    if (user.isTokenAboutToExpire(expiryThresholdInSeconds)) {
-        info("Det er mindre enn $expiryThresholdInSeconds sekunder før token-et går ut for: $user")
+    } else {
+        block.invoke()
     }
 }

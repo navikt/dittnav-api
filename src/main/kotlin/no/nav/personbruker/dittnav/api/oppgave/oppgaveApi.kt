@@ -1,13 +1,12 @@
 package no.nav.personbruker.dittnav.api.oppgave
 
-import io.ktor.application.call
-import io.ktor.http.HttpStatusCode
-import io.ktor.response.respond
-import io.ktor.routing.Route
-import io.ktor.routing.get
+import io.ktor.application.*
+import io.ktor.http.*
+import io.ktor.response.*
+import io.ktor.routing.*
 import no.nav.personbruker.dittnav.api.common.respondWithError
 import no.nav.personbruker.dittnav.api.config.authenticatedUser
-import no.nav.personbruker.dittnav.api.legacy.logWhenTokenIsAboutToExpire
+import no.nav.personbruker.dittnav.api.legacy.executeOnUnexpiredTokensOnly
 import org.slf4j.LoggerFactory
 
 fun Route.oppgave(oppgaveService: OppgaveService) {
@@ -15,22 +14,24 @@ fun Route.oppgave(oppgaveService: OppgaveService) {
     val log = LoggerFactory.getLogger(OppgaveService::class.java)
 
     get("/oppgave") {
-        log.logWhenTokenIsAboutToExpire(authenticatedUser)
-        try {
-            val oppgaveEvents = oppgaveService.getActiveOppgaveEvents(authenticatedUser)
-            call.respond(HttpStatusCode.OK, oppgaveEvents)
-        } catch(exception: Exception) {
-            respondWithError(call, log, exception)
+        executeOnUnexpiredTokensOnly {
+            try {
+                val oppgaveEvents = oppgaveService.getActiveOppgaveEvents(authenticatedUser)
+                call.respond(HttpStatusCode.OK, oppgaveEvents)
+            } catch(exception: Exception) {
+                respondWithError(call, log, exception)
+            }
         }
     }
 
     get("/oppgave/inaktiv") {
-        log.logWhenTokenIsAboutToExpire(authenticatedUser)
-        try {
-            val oppgaveEvents = oppgaveService.getInactiveOppgaveEvents(authenticatedUser)
-            call.respond(HttpStatusCode.OK, oppgaveEvents)
-        } catch(exception: Exception) {
-            respondWithError(call, log, exception)
+        executeOnUnexpiredTokensOnly {
+            try {
+                val oppgaveEvents = oppgaveService.getInactiveOppgaveEvents(authenticatedUser)
+                call.respond(HttpStatusCode.OK, oppgaveEvents)
+            } catch(exception: Exception) {
+                respondWithError(call, log, exception)
+            }
         }
     }
 }

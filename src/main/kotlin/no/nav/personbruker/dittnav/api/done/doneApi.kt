@@ -7,18 +7,16 @@ import io.ktor.response.*
 import io.ktor.routing.*
 import io.ktor.util.pipeline.*
 import no.nav.personbruker.dittnav.api.config.authenticatedUser
-import no.nav.personbruker.dittnav.api.legacy.logWhenTokenIsAboutToExpire
-import org.slf4j.LoggerFactory
+import no.nav.personbruker.dittnav.api.legacy.executeOnUnexpiredTokensOnly
 
 fun Route.doneApi(doneProducer: DoneProducer) {
 
-    val log = LoggerFactory.getLogger(DoneProducer::class.java)
-
     post("/produce/done") {
-        log.logWhenTokenIsAboutToExpire(authenticatedUser)
-        respondForParameterType<DoneDTO> { doneDto ->
-            val response = doneProducer.postDoneEvents(doneDto, authenticatedUser)
-            response
+        executeOnUnexpiredTokensOnly {
+            respondForParameterType<DoneDTO> { doneDto ->
+                val response = doneProducer.postDoneEvents(doneDto, authenticatedUser)
+                response
+            }
         }
     }
 }
