@@ -71,7 +71,9 @@ private suspend fun PipelineContext<Unit, ApplicationCall>.hentRaattFraLegacyApi
 suspend fun PipelineContext<Unit, ApplicationCall>.executeOnUnexpiredTokensOnly(block: suspend () -> Unit) {
     if (authenticatedUser.isTokenExpired()) {
         val delta = authenticatedUser.tokenExpirationTime.epochSecond - Instant.now().epochSecond
-        log.info("Mottok kall fra en bruker med et utløpt token. Tid siden tokenet løp ut: $delta sekunder, $authenticatedUser")
+        val msg = "Mottok kall fra en bruker med et utløpt token, avviser request-en med en 401-respons. " +
+                "Tid siden tokenet løp ut: $delta sekunder, $authenticatedUser"
+        no.nav.personbruker.dittnav.api.config.log.info(msg)
         call.respond(HttpStatusCode.Unauthorized)
 
     } else {
