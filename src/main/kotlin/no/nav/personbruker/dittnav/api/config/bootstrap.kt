@@ -5,6 +5,7 @@ import io.ktor.auth.*
 import io.ktor.client.*
 import io.ktor.features.*
 import io.ktor.http.*
+import io.ktor.response.*
 import io.ktor.routing.*
 import io.ktor.serialization.*
 import io.ktor.util.*
@@ -80,3 +81,16 @@ private fun Application.configureShutdownHook(httpClients: List<HttpClient>) {
 
 val PipelineContext<Unit, ApplicationCall>.authenticatedUser: AuthenticatedUser
     get() = AuthenticatedUserFactory.createNewAuthenticatedUser(call)
+
+suspend fun PipelineContext<Unit, ApplicationCall>.executeOnUnexpiredTokensOnly(block: suspend () -> Unit) {
+    if (authenticatedUser.isTokenExpired()) {
+        val delta = authenticatedUser.tokenExpirationTime.epochSecond - Instant.now().epochSecond
+        val msg = "Mottok kall fra en bruker med et utløpt token, avviser request-en med en 401-respons. " +
+                "Tid siden tokenet løp ut: $delta sekunder, $authenticatedUser"
+        log.info(msg)
+        call.respond(HttpStatusCode.Unauthorized)
+
+    } else {
+        block.invoke()
+    }
+}
