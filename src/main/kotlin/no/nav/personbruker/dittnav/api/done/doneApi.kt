@@ -7,7 +7,7 @@ import io.ktor.response.*
 import io.ktor.routing.*
 import io.ktor.util.pipeline.*
 import no.nav.personbruker.dittnav.api.config.authenticatedUser
-import no.nav.personbruker.dittnav.api.legacy.executeOnUnexpiredTokensOnly
+import no.nav.personbruker.dittnav.api.config.executeOnUnexpiredTokensOnly
 
 fun Route.doneApi(doneProducer: DoneProducer) {
 

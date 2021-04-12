@@ -7,9 +7,9 @@ import io.ktor.response.*
 import io.ktor.routing.*
 import io.ktor.util.pipeline.*
 import no.nav.personbruker.dittnav.api.config.authenticatedUser
+import no.nav.personbruker.dittnav.api.config.executeOnUnexpiredTokensOnly
 import org.slf4j.LoggerFactory
 import java.net.SocketTimeoutException
-import java.time.Instant
 
 val log = LoggerFactory.getLogger(LegacyConsumer::class.java)
 
@@ -65,18 +65,5 @@ private suspend fun PipelineContext<Unit, ApplicationCall>.hentRaattFraLegacyApi
             log.warn("Det skjedde en feil mot legacy-endepunkt '$path'. Feilmelding: [${e.message}]. $authenticatedUser", e)
             call.respond(HttpStatusCode.InternalServerError)
         }
-    }
-}
-
-suspend fun PipelineContext<Unit, ApplicationCall>.executeOnUnexpiredTokensOnly(block: suspend () -> Unit) {
-    if (authenticatedUser.isTokenExpired()) {
-        val delta = authenticatedUser.tokenExpirationTime.epochSecond - Instant.now().epochSecond
-        val msg = "Mottok kall fra en bruker med et utløpt token, avviser request-en med en 401-respons. " +
-                "Tid siden tokenet løp ut: $delta sekunder, $authenticatedUser"
-        no.nav.personbruker.dittnav.api.config.log.info(msg)
-        call.respond(HttpStatusCode.Unauthorized)
-
-    } else {
-        block.invoke()
     }
 }
