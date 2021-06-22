@@ -13,6 +13,7 @@ data class Environment(
         val corsAllowedSchemes: String = getEnvVar("CORS_ALLOWED_SCHEMES", "https"),
         val fakeUnleashIncludeVarsel: Boolean = getEnvVarAsBoolean("FAKE_UNLEASH_INCLUDE_VARSEL", false),
         val unleashApiUrl: String = getEnvVar("UNLEASH_API_URL"),
+        val digiSosBaseURL: URL = getEnvVarAsURL("DIGISOS_API_URL", trimTrailingSlash = true),
         val isRunningInDev: Boolean = isRunningInDev()
 )
 

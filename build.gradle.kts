@@ -80,8 +80,9 @@ tasks {
         DockerComposeDefaults.environomentVariables.forEach { (name, value) ->
             println("Setting the environment variable $name")
             environment(name, value)
-            environment("UNLEASH_API_URL", "fake")
         }
+        environment("DIGISOS_API_URL", "https://digisos/dummy")
+        environment("UNLEASH_API_URL", "fake")
 
         main = application.mainClass.get()
         classpath = sourceSets["main"].runtimeClasspath
