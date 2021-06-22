@@ -7,11 +7,10 @@ import java.net.URL
 
 class DigiSosConsumer(
     private val client: HttpClient,
-    private val digiSosBaseURL: URL,
-    pathToEndpoint: URL = URL("$digiSosBaseURL/dittnav")
+    digiSosBaseURL: URL,
 ) {
 
-    private val paabegynteEndpoint = URL("$pathToEndpoint/pabegynte")
+    private val paabegynteEndpoint = URL("$digiSosBaseURL/dittnav/pabegynte")
 
     suspend fun getPaabegynte(user: AuthenticatedUser): List<Paabegynte> {
         return client.get(paabegynteEndpoint, user)
