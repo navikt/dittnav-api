@@ -18,7 +18,7 @@ suspend inline fun <reified T> HttpClient.get(url: URL, user: AuthenticatedUser)
     }
 }
 
-suspend inline fun <reified T> HttpClient.getExtendedTimeout(url: URL, user: AuthenticatedUser): T = withContext(Dispatchers.IO) {
+suspend inline fun <reified T> HttpClient.getExtendedTimeout(url: String, user: AuthenticatedUser): T = withContext(Dispatchers.IO) {
     request {
         url(url)
         method = HttpMethod.Get

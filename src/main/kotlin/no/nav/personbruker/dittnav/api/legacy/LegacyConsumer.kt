@@ -13,7 +13,7 @@ class LegacyConsumer(private val httpClient: HttpClient, private val dittNAVLega
     private val log = LoggerFactory.getLogger(LegacyConsumer::class.java)
 
     suspend fun getLegacyContent(path: String, user: AuthenticatedUser): HttpResponse {
-        val endpoint = URL("$dittNAVLegacyBaseURL$path")
+        val endpoint = "$dittNAVLegacyBaseURL$path"
         val response: HttpResponse = httpClient.getExtendedTimeout(endpoint, user)
         logContextInCaseOfErrors(response, path, user)
         return response
