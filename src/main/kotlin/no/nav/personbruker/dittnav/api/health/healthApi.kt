@@ -5,10 +5,9 @@ import io.ktor.http.*
 import io.ktor.response.*
 import io.ktor.routing.Routing
 import io.ktor.routing.get
-import io.prometheus.client.CollectorRegistry
-import io.prometheus.client.exporter.common.TextFormat
+import io.micrometer.prometheus.PrometheusMeterRegistry
 
-fun Routing.healthApi(dependencyPinger: DependencyPinger, collectorRegistry: CollectorRegistry = CollectorRegistry.defaultRegistry) {
+fun Routing.healthApi(dependencyPinger: DependencyPinger, collectorRegistry: PrometheusMeterRegistry) {
 
     val pingJsonResponse = """{"ping": "pong"}"""
 
@@ -29,10 +28,7 @@ fun Routing.healthApi(dependencyPinger: DependencyPinger, collectorRegistry: Col
     }
 
     get("/metrics") {
-        val names = call.request.queryParameters.getAll("name")?.toSet() ?: emptySet()
-        call.respondTextWriter(ContentType.parse(TextFormat.CONTENT_TYPE_004), HttpStatusCode.OK) {
-            TextFormat.write004(this, collectorRegistry.filteredMetricFamilySamples(names))
-        }
+        call.respond(collectorRegistry.scrape())
     }
 
 }

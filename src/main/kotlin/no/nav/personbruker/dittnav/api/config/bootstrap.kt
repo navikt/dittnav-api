@@ -5,6 +5,7 @@ import io.ktor.auth.*
 import io.ktor.client.*
 import io.ktor.features.*
 import io.ktor.http.*
+import io.ktor.metrics.micrometer.*
 import io.ktor.response.*
 import io.ktor.routing.*
 import io.ktor.serialization.*
@@ -50,8 +51,12 @@ fun Application.mainModule(appContext: ApplicationContext = ApplicationContext()
         json(no.nav.personbruker.dittnav.api.config.json())
     }
 
+    install(MicrometerMetrics) {
+        registry = appContext.appMicrometerRegistry
+    }
+
     routing {
-        healthApi(appContext.dependencyPinger)
+        healthApi(appContext.dependencyPinger, appContext.appMicrometerRegistry)
         authenticate {
             intercept(ApplicationCallPipeline.Call) {
                 if (authenticatedUser.isTokenExpired()) {

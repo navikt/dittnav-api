@@ -1,6 +1,8 @@
 package no.nav.personbruker.dittnav.api.config
 
 import io.ktor.client.features.json.serializer.*
+import io.micrometer.prometheus.PrometheusConfig
+import io.micrometer.prometheus.PrometheusMeterRegistry
 import no.finn.unleash.DefaultUnleash
 import no.finn.unleash.FakeUnleash
 import no.finn.unleash.Unleash
@@ -28,6 +30,7 @@ import no.nav.personbruker.dittnav.api.varsel.VarselService
 class ApplicationContext {
 
     val environment = Environment()
+    val appMicrometerRegistry = PrometheusMeterRegistry(PrometheusConfig.DEFAULT)
 
     val httpClient = HttpClientBuilder.build(KotlinxSerializer(json()))
     val httpClientIgnoreUnknownKeys = HttpClientBuilder.build(KotlinxSerializer(json(ignoreUnknownKeys = true)))
