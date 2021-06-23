@@ -7,23 +7,23 @@ import java.net.URL
 
 class BrukernotifikasjonConsumer(
         private val client: HttpClient,
-        private val eventHandlerBaseURL: URL,
-        private val pathToEndpoint: URL = URL("$eventHandlerBaseURL/count/brukernotifikasjoner")
+        eventHandlerBaseURL: URL
 ) {
 
+    private val countInactiveEndpoint = URL("$eventHandlerBaseURL/count/brukernotifikasjoner/inactive")
+    private val countActiveEndpoint = URL("$eventHandlerBaseURL/count/brukernotifikasjoner/active")
+    private val countEndpoint = URL("$eventHandlerBaseURL/count/brukernotifikasjoner")
+
     suspend fun countInactive(user: AuthenticatedUser): Int {
-        val completePathToEndpoint = URL("$pathToEndpoint/inactive")
-        return client.get(completePathToEndpoint, user)
+        return client.get(countInactiveEndpoint, user)
     }
 
     suspend fun countActive(user: AuthenticatedUser): Int {
-        val completePathToEndpoint = URL("$pathToEndpoint/active")
-        return client.get(completePathToEndpoint, user)
+        return client.get(countActiveEndpoint, user)
     }
 
     suspend fun count(user: AuthenticatedUser): Int {
-        val completePathToEndpoint = URL("$pathToEndpoint")
-        return client.get(completePathToEndpoint, user)
+        return client.get(countEndpoint, user)
     }
 
 }

@@ -7,13 +7,13 @@ import java.net.URL
 
 class VarselConsumer(
     private val client: HttpClient,
-    private val legacyApiBaseURL: URL,
-    private val pathToEndpoint: URL = URL("$legacyApiBaseURL/varselinnboks")
+    legacyApiBaseURL: URL,
 ) {
 
+    private val endpoint = URL("$legacyApiBaseURL/varselinnboks/siste")
+
     suspend fun getSisteVarsler(user: AuthenticatedUser): List<Varsel> {
-        val completePathToEndpoint = URL("$pathToEndpoint/siste")
-        return getSisteVarsler(user, completePathToEndpoint)
+        return getSisteVarsler(user, endpoint)
     }
 
     private suspend fun getSisteVarsler(user: AuthenticatedUser, completePathToEndpoint: URL): List<Varsel> {

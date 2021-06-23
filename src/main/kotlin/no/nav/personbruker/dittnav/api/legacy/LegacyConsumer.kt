@@ -12,26 +12,48 @@ class LegacyConsumer(private val httpClient: HttpClient, private val dittNAVLega
 
     private val log = LoggerFactory.getLogger(LegacyConsumer::class.java)
 
-    suspend fun getLegacyContent(path: String, user: AuthenticatedUser): HttpResponse {
-        val endpoint = URL("$dittNAVLegacyBaseURL$path")
+    private val legacyApiEndpoints: Map<LegacyApiOperations, URL>
+
+    init {
+        legacyApiEndpoints = mutableMapOf()
+        LegacyApiOperations.values().forEach { operation ->
+            val currentCompleteEndpoint = URL("$dittNAVLegacyBaseURL${operation.path}")
+            legacyApiEndpoints.put(operation, currentCompleteEndpoint)
+        }
+        validateCompleteEndpointsForAllOperations()
+    }
+
+    private fun validateCompleteEndpointsForAllOperations() {
+        if (LegacyApiOperations.values().size != legacyApiEndpoints.size) {
+            throw IllegalStateException("Det må finnes komplette endepunkter for alle operasjoner.")
+        }
+    }
+
+    suspend fun getLegacyContent(operation: LegacyApiOperations, user: AuthenticatedUser): HttpResponse {
+        val endpoint = legacyApiEndpoints[operation]
+            ?: throw IllegalStateException("Fant ikke komplett endepunkt for operasjonen $operation")
         val response: HttpResponse = httpClient.getExtendedTimeout(endpoint, user)
-        logContextInCaseOfErrors(response, path, user)
+        logContextInCaseOfErrors(response, operation, user)
         return response
     }
 
-    private fun logContextInCaseOfErrors(response: HttpResponse, path: String, user: AuthenticatedUser) {
+    private fun logContextInCaseOfErrors(
+        response: HttpResponse,
+        endpoint: LegacyApiOperations,
+        user: AuthenticatedUser
+    ) {
         if (enFeilOppstod(response)) {
             when {
                 feiletMedHttpStatus401PgaUtloptToken(response, user) -> {
-                    log.info("Token-et utløp mens request-en pågikk. Feil mot $dittNAVLegacyBaseURL$path: ${response.status.value} ${response.status.description}, $user.")
+                    log.info("Token-et utløp mens request-en pågikk. Feil mot $dittNAVLegacyBaseURL${endpoint.path}: ${response.status.value} ${response.status.description}, $user.")
 
                 }
                 feiletMedHttpStatus408PgaTimeout(response) -> {
-                    log.info("Det oppstod en timeout ved henting av $dittNAVLegacyBaseURL$path: ${response.status.value} ${response.status.description}, $user.")
+                    log.info("Det oppstod en timeout ved henting av $dittNAVLegacyBaseURL${endpoint.path}: ${response.status.value} ${response.status.description}, $user.")
 
                 }
                 else -> {
-                    log.warn("Feil mot $dittNAVLegacyBaseURL$path: ${response.status.value} ${response.status.description}, $user.")
+                    log.warn("Feil mot $dittNAVLegacyBaseURL${endpoint.path}: ${response.status.value} ${response.status.description}, $user.")
                 }
             }
         }

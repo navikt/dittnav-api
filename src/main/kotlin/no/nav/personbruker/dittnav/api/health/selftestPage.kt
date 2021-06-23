@@ -1,36 +1,28 @@
 package no.nav.personbruker.dittnav.api.health
 
-import io.ktor.application.ApplicationCall
-import io.ktor.client.*
-import kotlinx.coroutines.async
+import io.ktor.application.*
+import io.ktor.html.*
+import io.ktor.http.*
 import kotlinx.coroutines.coroutineScope
-import no.nav.personbruker.dittnav.api.config.Environment
-import no.nav.personbruker.dittnav.api.config.HttpClientBuilder
-import io.ktor.html.respondHtml
-import io.ktor.http.HttpStatusCode
 import kotlinx.html.*
-import java.net.URL
 
-suspend fun ApplicationCall.pingDependencies(client: HttpClient, environment: Environment) = coroutineScope {
+suspend fun ApplicationCall.pingDependencies(dependencyPinger: DependencyPinger) = coroutineScope {
+    val pingResults = dependencyPinger.pingAll()
+    val serviceStatus = if (pingResults.values.any {result -> result.status == Status.ERROR }) Status.ERROR else Status.OK
+    buildSelftestpage(serviceStatus, pingResults)
+}
 
-
-    val legacyApiPingableURL = URL("${environment.legacyApiURL}/internal/isAlive")
-    val legacySelftestStatus = async { getStatus(legacyApiPingableURL, client) }
-    var services = mutableMapOf("DITTNAV_LEGACY_API:" to legacySelftestStatus.await())
-
-    val eventHandlerPingableURL = URL("${environment.eventHandlerURL}/internal/isAlive")
-    val eventHandlerSelftestStatus = async { getStatus(eventHandlerPingableURL, client) }
-    services.put("DITTNAV_EVENT_HANDLER:", eventHandlerSelftestStatus.await())
-
-
-    val serviceStatus = if (services.values.any { it.status == Status.ERROR }) Status.ERROR else Status.OK
-
+private suspend fun ApplicationCall.buildSelftestpage(
+    serviceStatus: Status,
+    services: MutableMap<String, SelftestStatus>
+) {
     respondHtml(status =
-    if(Status.ERROR == serviceStatus) {
-        HttpStatusCode.ServiceUnavailable
-    } else {
-        HttpStatusCode.OK
-    })
+        if (Status.ERROR == serviceStatus) {
+            HttpStatusCode.ServiceUnavailable
+        } else {
+            HttpStatusCode.OK
+        }
+    )
     {
         head {
             title { +"Selftest dittnav-api" }
@@ -50,7 +42,8 @@ suspend fun ApplicationCall.pingDependencies(client: HttpClient, environment: En
                             td { +it.key }
                             td { +it.value.pingedURL.toString() }
                             td {
-                                style = if (it.value.status == Status.OK) "background: green" else "background: red;font-weight:bold"
+                                style =
+                                    if (it.value.status == Status.OK) "background: green" else "background: red;font-weight:bold"
                                 +it.value.status.toString()
                             }
                             td { +it.value.statusMessage }
@@ -61,4 +54,3 @@ suspend fun ApplicationCall.pingDependencies(client: HttpClient, environment: En
         }
     }
 }
-

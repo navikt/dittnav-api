@@ -36,6 +36,8 @@ dependencies {
     implementation(Ktor.clientLoggingJvm)
     implementation(Ktor.clientSerializationJvm)
     implementation(Ktor.htmlBuilder)
+    implementation("io.ktor:ktor-metrics-micrometer:1.5.2")
+    implementation("io.micrometer:micrometer-registry-prometheus:1.7.0")
     implementation(Ktor.serialization)
     implementation(Ktor.serverNetty)
     implementation(Logback.classic)
@@ -80,8 +82,8 @@ tasks {
         DockerComposeDefaults.environomentVariables.forEach { (name, value) ->
             println("Setting the environment variable $name")
             environment(name, value)
-            environment("UNLEASH_API_URL", "fake")
         }
+        environment("UNLEASH_API_URL", "fake")
 
         main = application.mainClass.get()
         classpath = sourceSets["main"].runtimeClasspath
