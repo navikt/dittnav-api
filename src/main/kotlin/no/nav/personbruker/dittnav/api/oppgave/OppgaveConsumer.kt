@@ -7,20 +7,18 @@ import java.net.URL
 
 class OppgaveConsumer(
         private val client: HttpClient,
-        private val eventHandlerBaseURL: URL,
-        private val pathToEndpoint: URL = URL("$eventHandlerBaseURL/fetch/oppgave")
+        eventHandlerBaseURL: URL,
 ) {
 
+    private val inactiveEventsEndpoint = URL("$eventHandlerBaseURL/fetch/oppgave/inaktive")
+    private val activeEventsEndpoint = URL("$eventHandlerBaseURL/fetch/oppgave/aktive")
+
     suspend fun getExternalActiveEvents(user: AuthenticatedUser): List<Oppgave> {
-        val completePathToEndpoint = URL("$pathToEndpoint/aktive")
-        val externalActiveEvents = getExternalEvents(user, completePathToEndpoint)
-        return externalActiveEvents
+        return getExternalEvents(user, activeEventsEndpoint)
     }
 
     suspend fun getExternalInactiveEvents(user: AuthenticatedUser): List<Oppgave> {
-        val completePathToEndpoint = URL("$pathToEndpoint/inaktive")
-        val externalInactiveEvents = getExternalEvents(user, completePathToEndpoint)
-        return externalInactiveEvents
+        return getExternalEvents(user, inactiveEventsEndpoint)
     }
 
     private suspend fun getExternalEvents(user: AuthenticatedUser, comletePathToEndpoint: URL): List<Oppgave> {

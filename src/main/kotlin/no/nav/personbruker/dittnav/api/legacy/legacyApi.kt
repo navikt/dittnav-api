@@ -15,54 +15,46 @@ val log = LoggerFactory.getLogger(LegacyConsumer::class.java)
 
 fun Route.legacyApi(legacyConsumer: LegacyConsumer) {
 
-    val ubehandledeMeldingerPath = "/meldinger/ubehandlede"
-    val paabegynteSakerPath = "/saker/paabegynte"
-    val sakstemaPath = "/saker/sakstema"
-    val navnPath = "/personalia/navn"
-    val identPath = "/personalia/ident"
-    val meldekortPath = "/meldekortinfo"
-    val oppfolgingPath = "/oppfolging"
-
-    get(ubehandledeMeldingerPath) {
-        hentRaattFraLegacyApiOgReturnerResponsen(legacyConsumer, ubehandledeMeldingerPath)
+    get(LegacyApiOperations.UBEHANDLEDE_MELDINGER.path) {
+        hentRaattFraLegacyApiOgReturnerResponsen(legacyConsumer, LegacyApiOperations.UBEHANDLEDE_MELDINGER)
     }
 
-    get(paabegynteSakerPath) {
-        hentRaattFraLegacyApiOgReturnerResponsen(legacyConsumer, paabegynteSakerPath)
+    get(LegacyApiOperations.PAABEGYNTESAKER.path) {
+        hentRaattFraLegacyApiOgReturnerResponsen(legacyConsumer, LegacyApiOperations.PAABEGYNTESAKER)
     }
 
-    get(sakstemaPath) {
-        hentRaattFraLegacyApiOgReturnerResponsen(legacyConsumer, sakstemaPath)
+    get(LegacyApiOperations.SAKSTEMA.path) {
+        hentRaattFraLegacyApiOgReturnerResponsen(legacyConsumer, LegacyApiOperations.SAKSTEMA)
     }
 
-    get(navnPath) {
-        hentRaattFraLegacyApiOgReturnerResponsen(legacyConsumer, navnPath)
+    get(LegacyApiOperations.NAVN.path) {
+        hentRaattFraLegacyApiOgReturnerResponsen(legacyConsumer, LegacyApiOperations.NAVN)
     }
 
-    get(identPath) {
-        hentRaattFraLegacyApiOgReturnerResponsen(legacyConsumer, identPath)
+    get(LegacyApiOperations.IDENT.path) {
+        hentRaattFraLegacyApiOgReturnerResponsen(legacyConsumer, LegacyApiOperations.IDENT)
     }
 
-    get(meldekortPath) {
-        hentRaattFraLegacyApiOgReturnerResponsen(legacyConsumer, meldekortPath)
+    get(LegacyApiOperations.MELDEKORT.path) {
+        hentRaattFraLegacyApiOgReturnerResponsen(legacyConsumer, LegacyApiOperations.MELDEKORT)
     }
 
-    get(oppfolgingPath) {
-        hentRaattFraLegacyApiOgReturnerResponsen(legacyConsumer, oppfolgingPath)
+    get(LegacyApiOperations.OPPFOLGING.path) {
+        hentRaattFraLegacyApiOgReturnerResponsen(legacyConsumer, LegacyApiOperations.OPPFOLGING)
     }
 
 }
 
-private suspend fun PipelineContext<Unit, ApplicationCall>.hentRaattFraLegacyApiOgReturnerResponsen(consumer: LegacyConsumer, path: String) {
+private suspend fun PipelineContext<Unit, ApplicationCall>.hentRaattFraLegacyApiOgReturnerResponsen(consumer: LegacyConsumer, operation: LegacyApiOperations) {
     executeOnUnexpiredTokensOnly {
         try {
-            val response = consumer.getLegacyContent(path, authenticatedUser)
+            val response = consumer.getLegacyContent(operation, authenticatedUser)
             call.respond(response.status, response.readBytes())
         } catch (e: SocketTimeoutException) {
-            log.warn("Forbindelsen mot legacy-endepunkt '$path' har utgått. Feilmelding: [${e.message}]. $authenticatedUser", e)
+            log.warn("Forbindelsen mot legacy-endepunkt '$operation' har utgått. Feilmelding: [${e.message}]. $authenticatedUser", e)
             call.respond(HttpStatusCode.GatewayTimeout)
         } catch (e: Exception) {
-            log.warn("Det skjedde en feil mot legacy-endepunkt '$path'. Feilmelding: [${e.message}]. $authenticatedUser", e)
+            log.warn("Det skjedde en feil mot legacy-endepunkt '$operation'. Feilmelding: [${e.message}]. $authenticatedUser", e)
             call.respond(HttpStatusCode.InternalServerError)
         }
     }

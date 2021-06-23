@@ -36,6 +36,8 @@ dependencies {
     implementation(Ktor.clientLoggingJvm)
     implementation(Ktor.clientSerializationJvm)
     implementation(Ktor.htmlBuilder)
+    implementation("io.ktor:ktor-metrics-micrometer:1.5.2")
+    implementation("io.micrometer:micrometer-registry-prometheus:1.7.0")
     implementation(Ktor.serialization)
     implementation(Ktor.serverNetty)
     implementation(Logback.classic)
@@ -81,8 +83,8 @@ tasks {
             println("Setting the environment variable $name")
             environment(name, value)
         }
-        environment("DIGISOS_API_URL", "https://digisos/dummy")
         environment("UNLEASH_API_URL", "fake")
+        environment("DIGISOS_API_URL", "https://digisos/dummy")
 
         main = application.mainClass.get()
         classpath = sourceSets["main"].runtimeClasspath
