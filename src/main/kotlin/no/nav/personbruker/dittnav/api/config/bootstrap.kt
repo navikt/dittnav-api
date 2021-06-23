@@ -51,7 +51,7 @@ fun Application.mainModule(appContext: ApplicationContext = ApplicationContext()
     }
 
     routing {
-        healthApi(appContext.httpClient, appContext.environment)
+        healthApi(appContext.dependencyPinger)
         authenticate {
             intercept(ApplicationCallPipeline.Call) {
                 if (authenticatedUser.isTokenExpired()) {

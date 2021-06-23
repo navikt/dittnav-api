@@ -1,18 +1,14 @@
 package no.nav.personbruker.dittnav.api.health
 
-import io.ktor.application.call
-import io.ktor.client.*
-import io.ktor.http.ContentType
-import io.ktor.http.HttpStatusCode
-import io.ktor.response.respondText
-import io.ktor.response.respondTextWriter
+import io.ktor.application.*
+import io.ktor.http.*
+import io.ktor.response.*
 import io.ktor.routing.Routing
 import io.ktor.routing.get
 import io.prometheus.client.CollectorRegistry
 import io.prometheus.client.exporter.common.TextFormat
-import no.nav.personbruker.dittnav.api.config.Environment
 
-fun Routing.healthApi(client: HttpClient, environment: Environment, collectorRegistry: CollectorRegistry = CollectorRegistry.defaultRegistry) {
+fun Routing.healthApi(dependencyPinger: DependencyPinger, collectorRegistry: CollectorRegistry = CollectorRegistry.defaultRegistry) {
 
     val pingJsonResponse = """{"ping": "pong"}"""
 
@@ -29,7 +25,7 @@ fun Routing.healthApi(client: HttpClient, environment: Environment, collectorReg
     }
 
     get("/internal/selftest") {
-        call.pingDependencies(client, environment)
+        call.pingDependencies(dependencyPinger)
     }
 
     get("/metrics") {

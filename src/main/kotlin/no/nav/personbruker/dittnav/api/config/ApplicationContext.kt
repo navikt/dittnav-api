@@ -1,7 +1,6 @@
 package no.nav.personbruker.dittnav.api.config
 
 import io.ktor.client.features.json.serializer.*
-import kotlinx.serialization.json.Json
 import no.finn.unleash.DefaultUnleash
 import no.finn.unleash.FakeUnleash
 import no.finn.unleash.Unleash
@@ -13,6 +12,7 @@ import no.nav.personbruker.dittnav.api.beskjed.MergeBeskjedMedVarselService
 import no.nav.personbruker.dittnav.api.brukernotifikasjon.BrukernotifikasjonConsumer
 import no.nav.personbruker.dittnav.api.brukernotifikasjon.BrukernotifikasjonService
 import no.nav.personbruker.dittnav.api.done.DoneProducer
+import no.nav.personbruker.dittnav.api.health.DependencyPinger
 import no.nav.personbruker.dittnav.api.innboks.InnboksConsumer
 import no.nav.personbruker.dittnav.api.innboks.InnboksService
 import no.nav.personbruker.dittnav.api.legacy.LegacyConsumer
@@ -31,6 +31,7 @@ class ApplicationContext {
 
     val httpClient = HttpClientBuilder.build(KotlinxSerializer(json()))
     val httpClientIgnoreUnknownKeys = HttpClientBuilder.build(KotlinxSerializer(json(ignoreUnknownKeys = true)))
+    val dependencyPinger = DependencyPinger(environment, httpClient)
 
     val legacyConsumer = LegacyConsumer(httpClient, environment.legacyApiURL)
     val oppgaveConsumer = OppgaveConsumer(httpClient, environment.eventHandlerURL)
