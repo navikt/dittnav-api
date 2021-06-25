@@ -9,24 +9,32 @@ class DigiSosService(private val digiSosConsumer: DigiSosConsumer) {
     private val log = LoggerFactory.getLogger(DigiSosService::class.java)
 
     suspend fun getActiveEvents(user: AuthenticatedUser): BeskjedResult {
-        return getVarselEvents(user) {
-            digiSosConsumer.getPaabegynte(it).filter { varsel -> varsel.synligFremTil.isAfter(LocalDateTime.now()) }
+        return fetchEvents(user) { user ->
+            val results = digiSosConsumer.getPaabegynte(user)
+            results.filter { result ->
+                result.synligFremTil.isAfter(LocalDateTime.now())
+            }
         }
     }
 
     suspend fun getInactiveEvents(user: AuthenticatedUser): BeskjedResult {
-        return getVarselEvents(user) {
-            digiSosConsumer.getPaabegynte(it).filter { varsel -> varsel.synligFremTil.isBefore(LocalDateTime.now()) }
+        return fetchEvents(user) { user ->
+            val results = digiSosConsumer.getPaabegynte(user)
+            results.filter { result ->
+                result.synligFremTil.isBefore(LocalDateTime.now())
+            }
         }
     }
 
-    private suspend fun getVarselEvents(
+    private suspend fun fetchEvents(
         user: AuthenticatedUser,
         getEvents: suspend (AuthenticatedUser) -> List<Paabegynte>
     ): BeskjedResult {
         return try {
             val externalEvents = getEvents(user)
-            val results = externalEvents.map { varsel -> toVarselDTO(varsel) }
+            val results = externalEvents.map { external ->
+                external.toInternal()
+            }
             BeskjedResult(results)
 
         } catch (e: Exception) {

@@ -6,20 +6,17 @@ import java.time.ZoneId
 import java.time.ZonedDateTime
 import java.util.*
 
-fun toVarselDTO(externalVarsel: Paabegynte): BeskjedDTO =
-    externalVarsel.let { varsel ->
-        BeskjedDTO(
+fun Paabegynte.toInternal() = BeskjedDTO(
             uid = UUID.randomUUID().toString(),
-            eventTidspunkt = varsel.tidspunkt.toZonedDateTime(),
-            eventId = varsel.grupperingsId,
-            tekst = cropTextIfOverMaxLengthOfBeskjed(varsel.tekst),
-            link = varsel.link,
+            eventTidspunkt = tidspunkt.toZonedDateTime(),
+            eventId = grupperingsId,
+            tekst = cropTextIfOverMaxLengthOfBeskjed(tekst),
+            link = link,
             produsent = "digiSos",
-            sistOppdatert = varsel.tidspunkt.toZonedDateTime(),
+            sistOppdatert = tidspunkt.toZonedDateTime(),
             sikkerhetsnivaa = 3,
-            aktiv = varsel.synligFremTil.isAfter(LocalDateTime.now())
+            aktiv = synligFremTil.isAfter(LocalDateTime.now())
         )
-    }
 
 private fun cropTextIfOverMaxLengthOfBeskjed(text: String): String {
     return if (text.length <= 150) {
