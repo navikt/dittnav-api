@@ -5,6 +5,7 @@ import io.mockk.coVerify
 import io.mockk.mockk
 import kotlinx.coroutines.runBlocking
 import no.nav.personbruker.dittnav.api.common.AuthenticatedUserObjectMother
+import no.nav.personbruker.dittnav.api.common.MultiSourceResult
 import no.nav.personbruker.dittnav.api.unleash.UnleashService
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -20,10 +21,10 @@ internal class BeskjedVarselSwitcherTest {
 
     @BeforeEach
     fun setup() {
-        coEvery { beskjedService.getActiveBeskjedEvents(any()) } returns BeskjedResult(emptyList(), emptyList())
-        coEvery { beskjedService.getInactiveBeskjedEvents(any()) } returns BeskjedResult(emptyList(), emptyList())
-        coEvery { beskjedMedVarselService.getActiveEvents(any()) } returns BeskjedResult(emptyList(), emptyList())
-        coEvery { beskjedMedVarselService.getInactiveEvents(any()) } returns BeskjedResult(emptyList(), emptyList())
+        coEvery { beskjedService.getActiveBeskjedEvents(any()) } returns MultiSourceResult(emptyList(), emptyList())
+        coEvery { beskjedService.getInactiveBeskjedEvents(any()) } returns MultiSourceResult(emptyList(), emptyList())
+        coEvery { beskjedMedVarselService.getActiveEvents(any()) } returns MultiSourceResult(emptyList(), emptyList())
+        coEvery { beskjedMedVarselService.getInactiveEvents(any()) } returns MultiSourceResult(emptyList(), emptyList())
     }
 
     @Test

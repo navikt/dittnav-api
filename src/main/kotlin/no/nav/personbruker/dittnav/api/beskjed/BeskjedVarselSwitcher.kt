@@ -1,5 +1,6 @@
 package no.nav.personbruker.dittnav.api.beskjed
 
+import no.nav.personbruker.dittnav.api.common.MultiSourceResult
 import no.nav.personbruker.dittnav.api.unleash.UnleashService
 import no.nav.personbruker.dittnav.common.security.AuthenticatedUser
 
@@ -9,7 +10,7 @@ class BeskjedVarselSwitcher(
     private val unleashService: UnleashService
 ) {
 
-    suspend fun getActiveEvents(user: AuthenticatedUser): BeskjedResult {
+    suspend fun getActiveEvents(user: AuthenticatedUser): MultiSourceResult<BeskjedDTO, KildeType> {
         return if (unleashService.mergeBeskjedVarselEnabled(user)) {
             beskjedMedVarselService.getActiveEvents(user)
 
@@ -18,7 +19,7 @@ class BeskjedVarselSwitcher(
         }
     }
 
-    suspend fun getInactiveEvents(user: AuthenticatedUser): BeskjedResult {
+    suspend fun getInactiveEvents(user: AuthenticatedUser): MultiSourceResult<BeskjedDTO, KildeType> {
         return if (unleashService.mergeBeskjedVarselEnabled(user)) {
             beskjedMedVarselService.getInactiveEvents(user)
 

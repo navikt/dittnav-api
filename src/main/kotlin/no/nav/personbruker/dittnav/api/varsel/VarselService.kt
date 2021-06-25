@@ -1,18 +1,21 @@
 package no.nav.personbruker.dittnav.api.varsel
 
-import no.nav.personbruker.dittnav.api.beskjed.BeskjedResult
+import no.nav.personbruker.dittnav.api.beskjed.BeskjedDTO
 import no.nav.personbruker.dittnav.api.beskjed.KildeType
+import no.nav.personbruker.dittnav.api.common.MultiSourceResult
 import no.nav.personbruker.dittnav.common.security.AuthenticatedUser
 
 class VarselService(private val varselConsumer: VarselConsumer) {
 
-    suspend fun getActiveVarselEvents(user: AuthenticatedUser): BeskjedResult {
+    private val kildetype = KildeType.VARSELINNBOKS
+
+    suspend fun getActiveVarselEvents(user: AuthenticatedUser): MultiSourceResult<BeskjedDTO, KildeType> {
         return getVarselEvents(user) {
             varselConsumer.getSisteVarsler(it).filter { varsel -> varsel.datoLest == null }
         }
     }
 
-    suspend fun getInactiveVarselEvents(user: AuthenticatedUser): BeskjedResult {
+    suspend fun getInactiveVarselEvents(user: AuthenticatedUser): MultiSourceResult<BeskjedDTO, KildeType> {
         return getVarselEvents(user) {
             varselConsumer.getSisteVarsler(it).filter { varsel -> varsel.datoLest != null }
         }
@@ -21,13 +24,13 @@ class VarselService(private val varselConsumer: VarselConsumer) {
     private suspend fun getVarselEvents(
         user: AuthenticatedUser,
         getEvents: suspend (AuthenticatedUser) -> List<Varsel>
-    ): BeskjedResult {
+    ): MultiSourceResult<BeskjedDTO, KildeType> {
         return try {
             val externalEvents = getEvents(user)
             val results = externalEvents.map { varsel -> toVarselDTO(varsel) }
-            BeskjedResult(results)
+            MultiSourceResult.createSuccessfulResult(results, kildetype)
         } catch (exception: Exception) {
-            BeskjedResult(listOf(KildeType.VARSELINNBOKS))
+            MultiSourceResult.createErrorResult(kildetype)
         }
     }
 }

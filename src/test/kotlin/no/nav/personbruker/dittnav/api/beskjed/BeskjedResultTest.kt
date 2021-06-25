@@ -22,7 +22,7 @@ internal class BeskjedResultTest {
 
     @Test
     fun `Skal returnere http-kode service unavailable hvis ingen kilder svarer`() {
-        val result = BeskjedResultObjectMother.createBeskjedResultWithTwoErrors(1)
+        val result = BeskjedResultObjectMother.createBeskjedResultWithTwoErrors()
 
         result.determineHttpCode() `should be equal to` HttpStatusCode.ServiceUnavailable
     }
