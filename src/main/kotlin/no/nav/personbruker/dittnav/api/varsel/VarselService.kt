@@ -10,7 +10,7 @@ class VarselService(private val varselConsumer: VarselConsumer) {
 
     private val log = LoggerFactory.getLogger(VarselService::class.java)
 
-    private val kildetype = KildeType.VARSELINNBOKS
+    private val kilde = KildeType.VARSELINNBOKS
 
     suspend fun getActiveVarselEvents(user: AuthenticatedUser): MultiSourceResult<BeskjedDTO, KildeType> {
         return getVarselEvents(user) {
@@ -31,11 +31,11 @@ class VarselService(private val varselConsumer: VarselConsumer) {
         return try {
             val externalEvents = getEvents(user)
             val results = externalEvents.map { varsel -> toVarselDTO(varsel) }
-            MultiSourceResult.createSuccessfulResult(results, kildetype)
+            MultiSourceResult.createSuccessfulResult(results, kilde)
 
         } catch (e: Exception) {
-            log.warn("Klarte ikke å hente data fra $kildetype: $e", e)
-            MultiSourceResult.createErrorResult(kildetype)
+            log.warn("Klarte ikke å hente data fra $kilde: $e", e)
+            MultiSourceResult.createErrorResult(kilde)
         }
     }
 }

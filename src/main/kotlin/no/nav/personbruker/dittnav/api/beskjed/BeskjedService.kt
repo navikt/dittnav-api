@@ -9,7 +9,7 @@ class BeskjedService(private val beskjedConsumer: BeskjedConsumer, private val l
 
     private val log = LoggerFactory.getLogger(BeskjedService::class.java)
 
-    private val kildetype = KildeType.EVENTHANDLER
+    private val kilde = KildeType.EVENTHANDLER
 
     suspend fun getActiveBeskjedEvents(user: AuthenticatedUser): MultiSourceResult<BeskjedDTO, KildeType> {
         return getBeskjedEvents(user) {
@@ -32,11 +32,11 @@ class BeskjedService(private val beskjedConsumer: BeskjedConsumer, private val l
             val highestRequiredLoginLevel = getHighestRequiredLoginLevel(externalEvents)
             val operatingLoginLevel = loginLevelService.getOperatingLoginLevel(user, highestRequiredLoginLevel)
             val results = externalEvents.map { beskjed -> transformToDTO(beskjed, operatingLoginLevel) }
-            MultiSourceResult.createSuccessfulResult(results, kildetype)
+            MultiSourceResult.createSuccessfulResult(results, kilde)
 
         } catch (e: Exception) {
-            log.warn("Klarte ikke å hente data fra $kildetype: $e", e)
-            MultiSourceResult.createErrorResult(kildetype)
+            log.warn("Klarte ikke å hente data fra $kilde: $e", e)
+            MultiSourceResult.createErrorResult(kilde)
         }
     }
 
