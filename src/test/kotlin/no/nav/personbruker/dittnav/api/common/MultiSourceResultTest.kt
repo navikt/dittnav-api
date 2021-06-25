@@ -13,8 +13,8 @@ internal class MultiSourceResultTest {
         val expectedSource1 = KildeType.EVENTHANDLER
         val expectedSource2 = KildeType.VARSELINNBOKS
 
-        val source1 = MultiSourceResultObjectMother.giveMeNumberOfSuccessEventsForSource(1, expectedSource1)
-        val source2 = MultiSourceResultObjectMother.giveMeNumberOfSuccessEventsForSource(2, expectedSource2)
+        val source1 = MultiSourceResultObjectMother.giveMeNumberOfSuccessEventsForSource(1, expectedSource1, baseEventId = "beskjed")
+        val source2 = MultiSourceResultObjectMother.giveMeNumberOfSuccessEventsForSource(2, expectedSource2, baseEventId = "varsel")
 
         val tilsammen = source1 + source2
 

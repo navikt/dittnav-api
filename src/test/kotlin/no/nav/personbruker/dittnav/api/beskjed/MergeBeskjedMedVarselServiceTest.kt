@@ -6,6 +6,7 @@ import io.mockk.mockk
 import kotlinx.coroutines.runBlocking
 import no.nav.personbruker.dittnav.api.common.AuthenticatedUserObjectMother
 import no.nav.personbruker.dittnav.api.common.MultiSourceResult
+import no.nav.personbruker.dittnav.api.common.MultiSourceResultObjectMother
 import no.nav.personbruker.dittnav.api.varsel.VarselService
 import org.amshove.kluent.*
 import org.junit.jupiter.api.BeforeEach
@@ -25,8 +26,8 @@ internal class MergeBeskjedMedVarselServiceTest {
 
     @Test
     fun `Skal vise aktive beskjeder og varsler sammen`() {
-        val expectedBeskjeder = BeskjedResultObjectMother.createBeskjedResultWithoutErrors(1)
-        val expectedVarslerAsBeskjed = BeskjedResultObjectMother.createBeskjedResultWithoutErrors(2, "varsel")
+        val expectedBeskjeder = MultiSourceResultObjectMother.giveMeNumberOfSuccessEventsForSource(1, KildeType.EVENTHANDLER)
+        val expectedVarslerAsBeskjed = MultiSourceResultObjectMother.giveMeNumberOfSuccessEventsForSource(2, KildeType.VARSELINNBOKS, "varsel")
         coEvery { beskjedService.getActiveBeskjedEvents(any()) } returns expectedBeskjeder
         coEvery { varselService.getActiveVarselEvents(any()) } returns expectedVarslerAsBeskjed
 
@@ -44,8 +45,8 @@ internal class MergeBeskjedMedVarselServiceTest {
 
     @Test
     fun `Skal vise inaktive beskjeder og varsler sammen`() {
-        val expectedBeskjeder = BeskjedResultObjectMother.createBeskjedResultWithoutErrors(2)
-        val expectedVarslerAsBeskjed = BeskjedResultObjectMother.createBeskjedResultWithoutErrors(3, "varsel")
+        val expectedBeskjeder = MultiSourceResultObjectMother.giveMeNumberOfSuccessEventsForSource(2, KildeType.EVENTHANDLER)
+        val expectedVarslerAsBeskjed = MultiSourceResultObjectMother.giveMeNumberOfSuccessEventsForSource(3, KildeType.VARSELINNBOKS, "varsel")
         coEvery { beskjedService.getActiveBeskjedEvents(any()) } returns expectedBeskjeder
         coEvery { varselService.getActiveVarselEvents(any()) } returns expectedVarslerAsBeskjed
 
@@ -63,7 +64,7 @@ internal class MergeBeskjedMedVarselServiceTest {
 
     @Test
     fun `Skal returnere svar og info om feil for aktive eventer, varselinnboks feiler`() {
-        val expectedBeskjeder = BeskjedResultObjectMother.createBeskjedResultWithoutErrors(2)
+        val expectedBeskjeder = MultiSourceResultObjectMother.giveMeNumberOfSuccessEventsForSource(2, KildeType.EVENTHANDLER)
         coEvery { beskjedService.getActiveBeskjedEvents(any()) } returns expectedBeskjeder
         coEvery { varselService.getActiveVarselEvents(any()) } returns MultiSourceResult.createErrorResult(KildeType.VARSELINNBOKS)
 
@@ -80,7 +81,7 @@ internal class MergeBeskjedMedVarselServiceTest {
 
     @Test
     fun `Skal returnere svar og info om feil for aktive eventer, event-handler feiler`() {
-        val expectedBeskjeder = BeskjedResultObjectMother.createBeskjedResultWithoutErrors(2)
+        val expectedBeskjeder = MultiSourceResultObjectMother.giveMeNumberOfSuccessEventsForSource(2, KildeType.VARSELINNBOKS)
         coEvery { beskjedService.getActiveBeskjedEvents(any()) } returns MultiSourceResult.createErrorResult(KildeType.EVENTHANDLER)
         coEvery { varselService.getActiveVarselEvents(any()) } returns expectedBeskjeder
 
@@ -97,7 +98,7 @@ internal class MergeBeskjedMedVarselServiceTest {
 
     @Test
     fun `Skal returnere svar og info om feil for inaktive eventer, varselinnboks feiler`() {
-        val expectedBeskjeder = BeskjedResultObjectMother.createBeskjedResultWithoutErrors(2)
+        val expectedBeskjeder = MultiSourceResultObjectMother.giveMeNumberOfSuccessEventsForSource(2, KildeType.EVENTHANDLER)
         coEvery { beskjedService.getInactiveBeskjedEvents(any()) } returns expectedBeskjeder
         coEvery { varselService.getInactiveVarselEvents(any()) } returns MultiSourceResult.createErrorResult(KildeType.VARSELINNBOKS)
 
@@ -114,7 +115,7 @@ internal class MergeBeskjedMedVarselServiceTest {
 
     @Test
     fun `Skal returnere svar og info om feil for inaktive eventer, event-handler feiler`() {
-        val expectedBeskjeder = BeskjedResultObjectMother.createBeskjedResultWithoutErrors(2)
+        val expectedBeskjeder = MultiSourceResultObjectMother.giveMeNumberOfSuccessEventsForSource(2, KildeType.VARSELINNBOKS)
         coEvery { beskjedService.getInactiveBeskjedEvents(any()) } returns MultiSourceResult.createErrorResult(KildeType.EVENTHANDLER)
         coEvery { varselService.getInactiveVarselEvents(any()) } returns expectedBeskjeder
 
