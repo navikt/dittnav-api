@@ -4,7 +4,6 @@ import io.ktor.application.*
 import io.ktor.response.*
 import io.ktor.routing.*
 import no.nav.personbruker.dittnav.api.common.respondWithError
-import no.nav.personbruker.dittnav.api.config.Environment
 import no.nav.personbruker.dittnav.api.config.authenticatedUser
 import no.nav.personbruker.dittnav.api.config.executeOnUnexpiredTokensOnly
 import org.slf4j.LoggerFactory
@@ -20,7 +19,7 @@ fun Route.digiSos(
             try {
                 val result = service.getActiveEvents(authenticatedUser)
                 if(result.hasErrors()) {
-                    log.warn("En eller flere kilder feilet: ${result.errors()}")
+                    log.warn("En eller flere kilder feilet: ${result.failedSources()}")
                 }
                 call.respond(result.determineHttpCode(), result.results())
 
@@ -35,7 +34,7 @@ fun Route.digiSos(
             try {
                 val result = service.getInactiveEvents(authenticatedUser)
                 if(result.hasErrors()) {
-                    log.warn("En eller flere kilder feilet: ${result.errors()}")
+                    log.warn("En eller flere kilder feilet: ${result.failedSources()}")
                 }
                 call.respond(result.determineHttpCode(), result.results())
 

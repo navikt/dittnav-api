@@ -2,10 +2,23 @@ package no.nav.personbruker.dittnav.api.common
 
 import io.ktor.http.*
 
+/**
+ * Resultatobjekt som kan brukes for å samle sammen resultater fra flere kilder, og enkelt gi en fornuftig http-respons-kode.
+ *
+ * Hver kilde må bruke denne resultatobjekttypen, da kan resultatene fra de forskellige kilene helt enklet adderes sammen.
+ *
+ * Resultatojbketet inneholder oversikt over:
+ * * results: alle resultater som kom tilbake.
+ * * successFullSources: navnet på kildene som svarte uten feil.
+ * * failedSources: navnet på kilene som feilet.
+ *
+ * R: Resultattypen, som er den egentlige typen man får svar i
+ * S: kildetypen, kildetypen som brukes for å angi kilder som svarte uten feil og kilder som feilet
+ */
 data class MultiSourceResult<R, S>(
     private val results: List<R>,
     private val successFullSources: List<S>,
-    private val errors: List<S> = emptyList(),
+    private val failedSources: List<S> = emptyList(),
 ) {
 
     companion object {
@@ -25,14 +38,14 @@ data class MultiSourceResult<R, S>(
         MultiSourceResult(
             this.results + other.results,
             this.successFullSources + other.successFullSources,
-            this.errors + other.errors
+            this.failedSources + other.failedSources
         )
 
     fun results() = mutableListOf<R>().apply { addAll(results) }
     fun successFullSources() = mutableListOf<S>().apply { addAll(successFullSources) }
 
-    fun hasErrors() = errors.isNotEmpty()
-    fun errors() = mutableListOf<S>().apply { addAll(errors) }
+    fun hasErrors() = failedSources.isNotEmpty()
+    fun failedSources() = mutableListOf<S>().apply { addAll(failedSources) }
 
 
     fun determineHttpCode(): HttpStatusCode {
@@ -43,7 +56,7 @@ data class MultiSourceResult<R, S>(
         }
     }
 
-    private fun hasPartialResult(): Boolean = successFullSources.isNotEmpty() && errors.isNotEmpty()
-    private fun allSourcesFailed(): Boolean = successFullSources.isEmpty() && errors.isNotEmpty()
+    private fun hasPartialResult(): Boolean = successFullSources.isNotEmpty() && failedSources.isNotEmpty()
+    private fun allSourcesFailed(): Boolean = successFullSources.isEmpty() && failedSources.isNotEmpty()
 
 }

@@ -23,7 +23,7 @@ internal class MultiSourceResultTest {
         tilsammen.results() `should contain all` source1.results()
         tilsammen.results() `should contain all` source2.results()
 
-        tilsammen.errors().size `should be equal to` (source1.errors().size + source2.errors().size)
+        tilsammen.failedSources().size `should be equal to` (source1.failedSources().size + source2.failedSources().size)
 
         tilsammen.successFullSources().size `should be equal to` 2
         tilsammen.successFullSources() `should contain all` listOf(expectedSource1, expectedSource2)
@@ -47,7 +47,7 @@ internal class MultiSourceResultTest {
         tilsammen.results() `should contain all` source1.results()
         tilsammen.results() `should contain all` source2.results()
 
-        tilsammen.errors().size `should be equal to` (source1.errors().size + source2.errors().size)
+        tilsammen.failedSources().size `should be equal to` (source1.failedSources().size + source2.failedSources().size)
 
         tilsammen.successFullSources().size `should be equal to` 1
         tilsammen.successFullSources() `should contain` expectedSource1
@@ -70,12 +70,12 @@ internal class MultiSourceResultTest {
         tilsammen.results().size `should be equal to` (source1.results().size + source2.results().size)
         tilsammen.results().`should be empty`()
 
-        tilsammen.errors().size `should be equal to` (source1.errors().size + source2.errors().size)
+        tilsammen.failedSources().size `should be equal to` (source1.failedSources().size + source2.failedSources().size)
 
         tilsammen.successFullSources().size `should be equal to` 0
 
         tilsammen.hasErrors() `should be equal to` true
-        tilsammen.errors() `should contain all` listOf(expectedSource1, expectedSource2)
+        tilsammen.failedSources() `should contain all` listOf(expectedSource1, expectedSource2)
         tilsammen.determineHttpCode() `should be equal to` HttpStatusCode.ServiceUnavailable
     }
 

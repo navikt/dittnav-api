@@ -39,7 +39,7 @@ internal class MergeBeskjedMedVarselServiceTest {
         result.shouldNotBeNull()
         result.results().size `should be` expectedBeskjeder.results().size + expectedVarslerAsBeskjed.results().size
         result.hasErrors().`should be false`()
-        result.errors().`should be empty`()
+        result.failedSources().`should be empty`()
     }
 
     @Test
@@ -58,7 +58,7 @@ internal class MergeBeskjedMedVarselServiceTest {
         result.shouldNotBeNull()
         result.results().size `should be` expectedBeskjeder.results().size + expectedVarslerAsBeskjed.results().size
         result.hasErrors().`should be false`()
-        result.errors().`should be empty`()
+        result.failedSources().`should be empty`()
     }
 
     @Test
@@ -75,7 +75,7 @@ internal class MergeBeskjedMedVarselServiceTest {
 
         beskjedResult.results().size `should be equal to` expectedBeskjeder.results().size
         beskjedResult.hasErrors().`should be true`()
-        beskjedResult.errors() `should contain` KildeType.VARSELINNBOKS
+        beskjedResult.failedSources() `should contain` KildeType.VARSELINNBOKS
     }
 
     @Test
@@ -92,7 +92,7 @@ internal class MergeBeskjedMedVarselServiceTest {
 
         beskjedResult.results().size `should be equal to` expectedBeskjeder.results().size
         beskjedResult.hasErrors().`should be true`()
-        beskjedResult.errors() `should contain` KildeType.EVENTHANDLER
+        beskjedResult.failedSources() `should contain` KildeType.EVENTHANDLER
     }
 
     @Test
@@ -109,7 +109,7 @@ internal class MergeBeskjedMedVarselServiceTest {
 
         beskjedResult.results().size `should be equal to` expectedBeskjeder.results().size
         beskjedResult.hasErrors().`should be true`()
-        beskjedResult.errors() `should contain` KildeType.VARSELINNBOKS
+        beskjedResult.failedSources() `should contain` KildeType.VARSELINNBOKS
     }
 
     @Test
@@ -126,7 +126,7 @@ internal class MergeBeskjedMedVarselServiceTest {
 
         beskjedResult.results().size `should be equal to` expectedBeskjeder.results().size
         beskjedResult.hasErrors().`should be true`()
-        beskjedResult.errors() `should contain` KildeType.EVENTHANDLER
+        beskjedResult.failedSources() `should contain` KildeType.EVENTHANDLER
     }
 
     @Test
@@ -142,8 +142,8 @@ internal class MergeBeskjedMedVarselServiceTest {
 
         beskjedResult.results().isEmpty().`should be true`()
         beskjedResult.hasErrors().`should be true`()
-        beskjedResult.errors() `should contain` KildeType.EVENTHANDLER
-        beskjedResult.errors() `should contain` KildeType.VARSELINNBOKS
+        beskjedResult.failedSources() `should contain` KildeType.EVENTHANDLER
+        beskjedResult.failedSources() `should contain` KildeType.VARSELINNBOKS
     }
 
     @Test
@@ -159,8 +159,8 @@ internal class MergeBeskjedMedVarselServiceTest {
 
         beskjedResult.results().isEmpty().`should be true`()
         beskjedResult.hasErrors().`should be true`()
-        beskjedResult.errors() `should contain` KildeType.EVENTHANDLER
-        beskjedResult.errors() `should contain` KildeType.VARSELINNBOKS
+        beskjedResult.failedSources() `should contain` KildeType.EVENTHANDLER
+        beskjedResult.failedSources() `should contain` KildeType.VARSELINNBOKS
     }
 
 }
