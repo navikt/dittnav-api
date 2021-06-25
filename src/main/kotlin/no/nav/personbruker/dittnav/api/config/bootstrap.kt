@@ -14,6 +14,7 @@ import io.ktor.util.pipeline.*
 import io.prometheus.client.hotspot.DefaultExports
 import no.nav.personbruker.dittnav.api.beskjed.beskjed
 import no.nav.personbruker.dittnav.api.brukernotifikasjon.brukernotifikasjoner
+import no.nav.personbruker.dittnav.api.digisos.digiSos
 import no.nav.personbruker.dittnav.api.done.doneApi
 import no.nav.personbruker.dittnav.api.health.authenticationCheck
 import no.nav.personbruker.dittnav.api.health.healthApi
@@ -70,6 +71,9 @@ fun Application.mainModule(appContext: ApplicationContext = ApplicationContext()
             beskjed(appContext.beskjedVarselSwitcher)
             innboks(appContext.innboksService)
             brukernotifikasjoner(appContext.brukernotifikasjonService)
+            if(appContext.environment.isRunningInDev) {
+                digiSos(appContext.digiSosService)
+            }
             authenticationCheck()
             doneApi(appContext.doneProducer)
         }

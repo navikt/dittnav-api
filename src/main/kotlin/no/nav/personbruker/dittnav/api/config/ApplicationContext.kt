@@ -13,6 +13,8 @@ import no.nav.personbruker.dittnav.api.beskjed.BeskjedVarselSwitcher
 import no.nav.personbruker.dittnav.api.beskjed.MergeBeskjedMedVarselService
 import no.nav.personbruker.dittnav.api.brukernotifikasjon.BrukernotifikasjonConsumer
 import no.nav.personbruker.dittnav.api.brukernotifikasjon.BrukernotifikasjonService
+import no.nav.personbruker.dittnav.api.digisos.DigiSosConsumer
+import no.nav.personbruker.dittnav.api.digisos.DigiSosService
 import no.nav.personbruker.dittnav.api.done.DoneProducer
 import no.nav.personbruker.dittnav.api.health.DependencyPinger
 import no.nav.personbruker.dittnav.api.innboks.InnboksConsumer
@@ -61,6 +63,9 @@ class ApplicationContext {
         mergeBeskjedMedVarselService,
         unleashService
     )
+
+    val digiSosConsumer = DigiSosConsumer(httpClient, environment.digiSosBaseURL)
+    val digiSosService = DigiSosService(digiSosConsumer)
 
     private fun createUnleashService(environment: Environment): UnleashService {
 
