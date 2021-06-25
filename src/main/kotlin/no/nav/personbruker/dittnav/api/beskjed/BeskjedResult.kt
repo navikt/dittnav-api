@@ -28,5 +28,3 @@ data class BeskjedResult(
     private fun allSourcesFailed(): Boolean = errors.size == KildeType.values().size
 
 }
-
-enum class KildeType { VARSELINNBOKS, EVENTHANDLER }
