@@ -3,20 +3,23 @@ package no.nav.personbruker.dittnav.api.beskjed
 import no.nav.personbruker.dittnav.api.common.MultiSourceResult
 import no.nav.personbruker.dittnav.api.loginstatus.LoginLevelService
 import no.nav.personbruker.dittnav.common.security.AuthenticatedUser
+import org.slf4j.LoggerFactory
 
 class BeskjedService(private val beskjedConsumer: BeskjedConsumer, private val loginLevelService: LoginLevelService) {
+
+    private val log = LoggerFactory.getLogger(BeskjedService::class.java)
 
     private val kildetype = KildeType.EVENTHANDLER
 
     suspend fun getActiveBeskjedEvents(user: AuthenticatedUser): MultiSourceResult<BeskjedDTO, KildeType> {
         return getBeskjedEvents(user) {
-            beskjedConsumer.getExternalActiveEvents(it)
+            beskjedConsumer.getExternalActiveEvents(user)
         }
     }
 
     suspend fun getInactiveBeskjedEvents(user: AuthenticatedUser): MultiSourceResult<BeskjedDTO, KildeType> {
         return getBeskjedEvents(user) {
-            beskjedConsumer.getExternalInactiveEvents(it)
+            beskjedConsumer.getExternalInactiveEvents(user)
         }
     }
 
@@ -30,8 +33,10 @@ class BeskjedService(private val beskjedConsumer: BeskjedConsumer, private val l
             val operatingLoginLevel = loginLevelService.getOperatingLoginLevel(user, highestRequiredLoginLevel)
             val results = externalEvents.map { beskjed -> transformToDTO(beskjed, operatingLoginLevel) }
             MultiSourceResult.createSuccessfulResult(results, kildetype)
-        } catch (exception: Exception) {
-            MultiSourceResult.createErrorResult(KildeType.EVENTHANDLER)
+
+        } catch (e: Exception) {
+            log.warn("Klarte ikke å hente data fra $kildetype: $e", e)
+            MultiSourceResult.createErrorResult(kildetype)
         }
     }
 
