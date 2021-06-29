@@ -7,10 +7,7 @@ import no.finn.unleash.DefaultUnleash
 import no.finn.unleash.FakeUnleash
 import no.finn.unleash.Unleash
 import no.finn.unleash.util.UnleashConfig
-import no.nav.personbruker.dittnav.api.beskjed.BeskjedConsumer
-import no.nav.personbruker.dittnav.api.beskjed.BeskjedService
-import no.nav.personbruker.dittnav.api.beskjed.BeskjedVarselSwitcher
-import no.nav.personbruker.dittnav.api.beskjed.MergeBeskjedMedVarselService
+import no.nav.personbruker.dittnav.api.beskjed.*
 import no.nav.personbruker.dittnav.api.brukernotifikasjon.BrukernotifikasjonConsumer
 import no.nav.personbruker.dittnav.api.brukernotifikasjon.BrukernotifikasjonService
 import no.nav.personbruker.dittnav.api.digisos.DigiSosConsumer
@@ -57,15 +54,11 @@ class ApplicationContext {
     val innboksService = InnboksService(innboksConsumer, loginLevelService)
     val brukernotifikasjonService = BrukernotifikasjonService(brukernotifikasjonConsumer)
     val varselService = VarselService(varselConsumer)
-    val mergeBeskjedMedVarselService = MergeBeskjedMedVarselService(beskjedService, varselService)
-    val beskjedVarselSwitcher = BeskjedVarselSwitcher(
-        beskjedService,
-        mergeBeskjedMedVarselService,
-        unleashService
-    )
 
     val digiSosConsumer = DigiSosConsumer(httpClient, environment.digiSosBaseURL)
     val digiSosService = DigiSosService(digiSosConsumer)
+
+    val beskjedMergerService = BeskjedMergerService(beskjedService, varselService, digiSosService, unleashService)
 
     private fun createUnleashService(environment: Environment): UnleashService {
 
