@@ -12,9 +12,14 @@ class UnleashService(private val unleashClient: Unleash) {
         unleashClient.isEnabled("mergeBeskjedVarselEnabled", createUnleashContext(user), false)
     }
 
+    suspend fun digiSosEnabled(user: AuthenticatedUser): Boolean = withContext(Dispatchers.IO) {
+        unleashClient.isEnabled("digiSosEnabled", createUnleashContext(user), false)
+    }
+
     private fun createUnleashContext(user: AuthenticatedUser): UnleashContext {
         return UnleashContext.builder()
                 .userId(user.ident)
                 .build()
     }
+
 }
