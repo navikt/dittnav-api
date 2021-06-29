@@ -2,6 +2,7 @@ package no.nav.personbruker.dittnav.api.beskjed
 
 import io.mockk.*
 import kotlinx.coroutines.runBlocking
+import no.finn.unleash.FakeUnleash
 import no.nav.personbruker.dittnav.api.common.AuthenticatedUserObjectMother
 import no.nav.personbruker.dittnav.api.common.MultiSourceResultObjectMother
 import no.nav.personbruker.dittnav.api.digisos.DigiSosService
@@ -17,7 +18,6 @@ internal class BeskjedMergerServiceTest {
     private val beskjedService = mockk<BeskjedService>(relaxed = true)
     private val varselService = mockk<VarselService>(relaxed = true)
     private val digiSosService = mockk<DigiSosService>(relaxed = true)
-    private val unleashService = mockk<UnleashService>(relaxed = true)
 
     private val innloggetBruker = AuthenticatedUserObjectMother.createAuthenticatedUser()
 
@@ -41,7 +41,7 @@ internal class BeskjedMergerServiceTest {
 
     @BeforeEach
     fun setup() {
-        clearMocks(beskjedService, varselService, digiSosService, unleashService)
+        clearMocks(beskjedService, varselService, digiSosService)
 
         coEvery { beskjedService.getActiveBeskjedEvents(any()) } returns eventHandlerDefaultResult
         coEvery { beskjedService.getInactiveBeskjedEvents(any()) } returns eventHandlerDefaultResult
@@ -55,8 +55,8 @@ internal class BeskjedMergerServiceTest {
 
     @Test
     fun `Hent aktive alltid fra event-handler`() {
-        coEvery { unleashService.mergeBeskjedVarselEnabled(any()) } returns false
-        coEvery { unleashService.digiSosEnabled(any()) } returns false
+        val fakeUnleash = FakeUnleash()
+        val unleashService = UnleashService(fakeUnleash)
 
         val beskjedMerger = BeskjedMergerService(beskjedService, varselService, digiSosService, unleashService)
 
@@ -68,13 +68,9 @@ internal class BeskjedMergerServiceTest {
         coVerify(exactly = 0) { varselService.getActiveVarselEvents(any()) }
         coVerify(exactly = 0) { digiSosService.getActiveEvents(any()) }
 
-        coVerify(exactly = 1) { unleashService.mergeBeskjedVarselEnabled(any()) }
-        coVerify(exactly = 1) { unleashService.digiSosEnabled(any()) }
-
         confirmVerified(beskjedService)
         confirmVerified(varselService)
         confirmVerified(digiSosService)
-        confirmVerified(unleashService)
 
         result.successFullSources().size `should be equal to` 1
         result.successFullSources() `should contain all` listOf(KildeType.EVENTHANDLER)
@@ -82,8 +78,10 @@ internal class BeskjedMergerServiceTest {
 
     @Test
     fun `Hent aktive fra Varselinnboks hvis aktivert`() {
-        coEvery { unleashService.mergeBeskjedVarselEnabled(any()) } returns true
-        coEvery { unleashService.digiSosEnabled(any()) } returns false
+        val fakeUnleash = FakeUnleash().apply {
+            enable("mergeBeskjedVarselEnabled")
+        }
+        val unleashService = UnleashService(fakeUnleash)
 
         val beskjedMerger = BeskjedMergerService(beskjedService, varselService, digiSosService, unleashService)
 
@@ -95,13 +93,9 @@ internal class BeskjedMergerServiceTest {
         coVerify(exactly = 1) { varselService.getActiveVarselEvents(any()) }
         coVerify(exactly = 0) { digiSosService.getActiveEvents(any()) }
 
-        coVerify(exactly = 1) { unleashService.mergeBeskjedVarselEnabled(any()) }
-        coVerify(exactly = 1) { unleashService.digiSosEnabled(any()) }
-
         confirmVerified(beskjedService)
         confirmVerified(varselService)
         confirmVerified(digiSosService)
-        confirmVerified(unleashService)
 
         result.successFullSources().size `should be equal to` 2
         result.successFullSources() `should contain all` listOf(KildeType.EVENTHANDLER, KildeType.VARSELINNBOKS)
@@ -109,8 +103,10 @@ internal class BeskjedMergerServiceTest {
 
     @Test
     fun `Hent aktive fra DigiSos hvis aktivert`() {
-        coEvery { unleashService.mergeBeskjedVarselEnabled(any()) } returns false
-        coEvery { unleashService.digiSosEnabled(any()) } returns true
+        val fakeUnleash = FakeUnleash().apply {
+            enable("digiSosEnabled")
+        }
+        val unleashService = UnleashService(fakeUnleash)
 
         val beskjedMerger = BeskjedMergerService(beskjedService, varselService, digiSosService, unleashService)
 
@@ -122,13 +118,9 @@ internal class BeskjedMergerServiceTest {
         coVerify(exactly = 0) { varselService.getActiveVarselEvents(any()) }
         coVerify(exactly = 1) { digiSosService.getActiveEvents(any()) }
 
-        coVerify(exactly = 1) { unleashService.mergeBeskjedVarselEnabled(any()) }
-        coVerify(exactly = 1) { unleashService.digiSosEnabled(any()) }
-
         confirmVerified(beskjedService)
         confirmVerified(varselService)
         confirmVerified(digiSosService)
-        confirmVerified(unleashService)
 
         result.successFullSources().size `should be equal to` 2
         result.successFullSources() `should contain all` listOf(KildeType.EVENTHANDLER, KildeType.DIGISOS)
@@ -136,8 +128,11 @@ internal class BeskjedMergerServiceTest {
 
     @Test
     fun `Hent aktive fra alle kilder hvis aktivert`() {
-        coEvery { unleashService.mergeBeskjedVarselEnabled(any()) } returns true
-        coEvery { unleashService.digiSosEnabled(any()) } returns true
+        val fakeUnleash = FakeUnleash().apply {
+            enable("mergeBeskjedVarselEnabled")
+            enable("digiSosEnabled")
+        }
+        val unleashService = UnleashService(fakeUnleash)
 
         val beskjedMerger = BeskjedMergerService(beskjedService, varselService, digiSosService, unleashService)
 
@@ -149,13 +144,9 @@ internal class BeskjedMergerServiceTest {
         coVerify(exactly = 1) { varselService.getActiveVarselEvents(any()) }
         coVerify(exactly = 1) { digiSosService.getActiveEvents(any()) }
 
-        coVerify(exactly = 1) { unleashService.mergeBeskjedVarselEnabled(any()) }
-        coVerify(exactly = 1) { unleashService.digiSosEnabled(any()) }
-
         confirmVerified(beskjedService)
         confirmVerified(varselService)
         confirmVerified(digiSosService)
-        confirmVerified(unleashService)
 
         result.successFullSources().size `should be equal to` 3
         result.successFullSources() `should contain all` listOf(KildeType.EVENTHANDLER, KildeType.VARSELINNBOKS, KildeType.DIGISOS)
@@ -163,8 +154,8 @@ internal class BeskjedMergerServiceTest {
 
     @Test
     fun `Hent inaktive alltid fra event-handler`() {
-        coEvery { unleashService.mergeBeskjedVarselEnabled(any()) } returns false
-        coEvery { unleashService.digiSosEnabled(any()) } returns false
+        val fakeUnleash = FakeUnleash()
+        val unleashService = UnleashService(fakeUnleash)
 
         val beskjedMerger = BeskjedMergerService(beskjedService, varselService, digiSosService, unleashService)
 
@@ -176,13 +167,9 @@ internal class BeskjedMergerServiceTest {
         coVerify(exactly = 0) { varselService.getInactiveVarselEvents(any()) }
         coVerify(exactly = 0) { digiSosService.getInactiveEvents(any()) }
 
-        coVerify(exactly = 1) { unleashService.mergeBeskjedVarselEnabled(any()) }
-        coVerify(exactly = 1) { unleashService.digiSosEnabled(any()) }
-
         confirmVerified(beskjedService)
         confirmVerified(varselService)
         confirmVerified(digiSosService)
-        confirmVerified(unleashService)
 
         result.successFullSources().size `should be equal to` 1
         result.successFullSources() `should contain all` listOf(KildeType.EVENTHANDLER)
@@ -190,8 +177,10 @@ internal class BeskjedMergerServiceTest {
 
     @Test
     fun `Hent inaktive fra Varselinnboks hvis aktivert`() {
-        coEvery { unleashService.mergeBeskjedVarselEnabled(any()) } returns true
-        coEvery { unleashService.digiSosEnabled(any()) } returns false
+        val fakeUnleash = FakeUnleash().apply {
+            enable("mergeBeskjedVarselEnabled")
+        }
+        val unleashService = UnleashService(fakeUnleash)
 
         val beskjedMerger = BeskjedMergerService(beskjedService, varselService, digiSosService, unleashService)
 
@@ -203,13 +192,9 @@ internal class BeskjedMergerServiceTest {
         coVerify(exactly = 1) { varselService.getInactiveVarselEvents(any()) }
         coVerify(exactly = 0) { digiSosService.getInactiveEvents(any()) }
 
-        coVerify(exactly = 1) { unleashService.mergeBeskjedVarselEnabled(any()) }
-        coVerify(exactly = 1) { unleashService.digiSosEnabled(any()) }
-
         confirmVerified(beskjedService)
         confirmVerified(varselService)
         confirmVerified(digiSosService)
-        confirmVerified(unleashService)
 
         result.successFullSources().size `should be equal to` 2
         result.successFullSources() `should contain all` listOf(KildeType.EVENTHANDLER, KildeType.VARSELINNBOKS)
@@ -217,8 +202,10 @@ internal class BeskjedMergerServiceTest {
 
     @Test
     fun `Hent inaktive fra DigiSos hvis aktivert`() {
-        coEvery { unleashService.mergeBeskjedVarselEnabled(any()) } returns false
-        coEvery { unleashService.digiSosEnabled(any()) } returns true
+        val fakeUnleash = FakeUnleash().apply {
+            enable("digiSosEnabled")
+        }
+        val unleashService = UnleashService(fakeUnleash)
 
         val beskjedMerger = BeskjedMergerService(beskjedService, varselService, digiSosService, unleashService)
 
@@ -230,13 +217,9 @@ internal class BeskjedMergerServiceTest {
         coVerify(exactly = 0) { varselService.getInactiveVarselEvents(any()) }
         coVerify(exactly = 1) { digiSosService.getInactiveEvents(any()) }
 
-        coVerify(exactly = 1) { unleashService.mergeBeskjedVarselEnabled(any()) }
-        coVerify(exactly = 1) { unleashService.digiSosEnabled(any()) }
-
         confirmVerified(beskjedService)
         confirmVerified(varselService)
         confirmVerified(digiSosService)
-        confirmVerified(unleashService)
 
         result.successFullSources().size `should be equal to` 2
         result.successFullSources() `should contain all` listOf(KildeType.EVENTHANDLER, KildeType.DIGISOS)
@@ -244,9 +227,11 @@ internal class BeskjedMergerServiceTest {
 
     @Test
     fun `Hent inaktive fra alle kilder hvis aktivert`() {
-        coEvery { unleashService.mergeBeskjedVarselEnabled(any()) } returns true
-        coEvery { unleashService.digiSosEnabled(any()) } returns true
-
+        val fakeUnleash = FakeUnleash().apply {
+            enable("mergeBeskjedVarselEnabled")
+            enable("digiSosEnabled")
+        }
+        val unleashService = UnleashService(fakeUnleash)
         val beskjedMerger = BeskjedMergerService(beskjedService, varselService, digiSosService, unleashService)
 
         val result = runBlocking {
@@ -257,13 +242,9 @@ internal class BeskjedMergerServiceTest {
         coVerify(exactly = 1) { varselService.getInactiveVarselEvents(any()) }
         coVerify(exactly = 1) { digiSosService.getInactiveEvents(any()) }
 
-        coVerify(exactly = 1) { unleashService.mergeBeskjedVarselEnabled(any()) }
-        coVerify(exactly = 1) { unleashService.digiSosEnabled(any()) }
-
         confirmVerified(beskjedService)
         confirmVerified(varselService)
         confirmVerified(digiSosService)
-        confirmVerified(unleashService)
 
         result.successFullSources().size `should be equal to` 3
         result.successFullSources() `should contain all` listOf(KildeType.EVENTHANDLER, KildeType.VARSELINNBOKS, KildeType.DIGISOS)
