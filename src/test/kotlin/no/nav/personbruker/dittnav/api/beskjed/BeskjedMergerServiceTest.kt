@@ -40,7 +40,7 @@ internal class BeskjedMergerServiceTest {
     )
 
     @BeforeEach
-    fun init() {
+    fun setup() {
         clearMocks(beskjedService, varselService, digiSosService, unleashService)
 
         coEvery { beskjedService.getActiveBeskjedEvents(any()) } returns eventHandlerDefaultResult
