@@ -8,18 +8,25 @@ import no.nav.personbruker.dittnav.common.security.AuthenticatedUser
 
 class UnleashService(private val unleashClient: Unleash) {
 
-    suspend fun mergeBeskjedVarselEnabled(user: AuthenticatedUser): Boolean = withContext(Dispatchers.IO) {
-        unleashClient.isEnabled("mergeBeskjedVarselEnabled", createUnleashContext(user), false)
+    companion object {
+        const val digiSosToggleName: String = "digiSosEnabled"
+        const val varselinnboksToggleName: String = "mergeBeskjedVarselEnabled"
+    }
+
+    suspend fun mergeBeskjedVarselEnabled(user: AuthenticatedUser): Boolean {
+        return withContext(Dispatchers.IO) {
+            unleashClient.isEnabled(varselinnboksToggleName, createUnleashContext(user), false)
+        }
     }
 
     suspend fun digiSosEnabled(user: AuthenticatedUser): Boolean = withContext(Dispatchers.IO) {
-        unleashClient.isEnabled("digiSosEnabled", createUnleashContext(user), false)
+        unleashClient.isEnabled(digiSosToggleName, createUnleashContext(user), false)
     }
 
     private fun createUnleashContext(user: AuthenticatedUser): UnleashContext {
         return UnleashContext.builder()
-                .userId(user.ident)
-                .build()
+            .userId(user.ident)
+            .build()
     }
 
 }

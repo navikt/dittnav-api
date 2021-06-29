@@ -90,9 +90,14 @@ class ApplicationContext {
     private fun createFakeUnleashClient(environment: Environment): Unleash {
         return FakeUnleash().apply {
             if (environment.fakeUnleashIncludeVarsel) {
-                enable("mergeBeskjedVarselEnabled")
+                enable(UnleashService.varselinnboksToggleName)
             } else {
-                disable("mergeBeskjedVarselEnabled")
+                disable(UnleashService.varselinnboksToggleName)
+            }
+            if (environment.fakeUnleashIncludeDigiSos) {
+                enable(UnleashService.digiSosToggleName)
+            } else {
+                disable(UnleashService.digiSosToggleName)
             }
         }
     }

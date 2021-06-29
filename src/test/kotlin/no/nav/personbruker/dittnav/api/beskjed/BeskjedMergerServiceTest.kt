@@ -79,7 +79,7 @@ internal class BeskjedMergerServiceTest {
     @Test
     fun `Hent aktive fra Varselinnboks hvis aktivert`() {
         val fakeUnleash = FakeUnleash().apply {
-            enable("mergeBeskjedVarselEnabled")
+            enable(UnleashService.varselinnboksToggleName)
         }
         val unleashService = UnleashService(fakeUnleash)
 
@@ -104,7 +104,7 @@ internal class BeskjedMergerServiceTest {
     @Test
     fun `Hent aktive fra DigiSos hvis aktivert`() {
         val fakeUnleash = FakeUnleash().apply {
-            enable("digiSosEnabled")
+            enable(UnleashService.digiSosToggleName)
         }
         val unleashService = UnleashService(fakeUnleash)
 
@@ -129,8 +129,8 @@ internal class BeskjedMergerServiceTest {
     @Test
     fun `Hent aktive fra alle kilder hvis aktivert`() {
         val fakeUnleash = FakeUnleash().apply {
-            enable("mergeBeskjedVarselEnabled")
-            enable("digiSosEnabled")
+            enable(UnleashService.varselinnboksToggleName)
+            enable(UnleashService.digiSosToggleName)
         }
         val unleashService = UnleashService(fakeUnleash)
 
@@ -178,7 +178,7 @@ internal class BeskjedMergerServiceTest {
     @Test
     fun `Hent inaktive fra Varselinnboks hvis aktivert`() {
         val fakeUnleash = FakeUnleash().apply {
-            enable("mergeBeskjedVarselEnabled")
+            enable(UnleashService.varselinnboksToggleName)
         }
         val unleashService = UnleashService(fakeUnleash)
 
@@ -203,7 +203,7 @@ internal class BeskjedMergerServiceTest {
     @Test
     fun `Hent inaktive fra DigiSos hvis aktivert`() {
         val fakeUnleash = FakeUnleash().apply {
-            enable("digiSosEnabled")
+            enable(UnleashService.digiSosToggleName)
         }
         val unleashService = UnleashService(fakeUnleash)
 
@@ -228,8 +228,8 @@ internal class BeskjedMergerServiceTest {
     @Test
     fun `Hent inaktive fra alle kilder hvis aktivert`() {
         val fakeUnleash = FakeUnleash().apply {
-            enable("mergeBeskjedVarselEnabled")
-            enable("digiSosEnabled")
+            enable(UnleashService.varselinnboksToggleName)
+            enable(UnleashService.digiSosToggleName)
         }
         val unleashService = UnleashService(fakeUnleash)
         val beskjedMerger = BeskjedMergerService(beskjedService, varselService, digiSosService, unleashService)
