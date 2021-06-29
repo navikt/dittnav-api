@@ -10,10 +10,15 @@ class DigiSosConsumer(
     digiSosBaseURL: URL,
 ) {
 
-    private val paabegynteEndpoint = URL("$digiSosBaseURL/dittnav/pabegynte")
+    private val aktivePaabegynteEndpoint = URL("$digiSosBaseURL/dittnav/pabegynte")
+    private val inaktivePaabegynteEndpoint = URL("$digiSosBaseURL/dittnav/pabegynte/inaktive")
 
-    suspend fun getPaabegynte(user: AuthenticatedUser): List<Paabegynte> {
-        return client.get(paabegynteEndpoint, user)
+    suspend fun getPaabegynteActive(user: AuthenticatedUser): List<Paabegynte> {
+        return client.get(aktivePaabegynteEndpoint, user)
+    }
+
+    suspend fun getPaabegynteInactive(user: AuthenticatedUser): List<Paabegynte> {
+        return client.get(inaktivePaabegynteEndpoint, user)
     }
 
 }

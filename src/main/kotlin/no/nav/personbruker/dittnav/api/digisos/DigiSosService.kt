@@ -5,27 +5,20 @@ import no.nav.personbruker.dittnav.api.beskjed.KildeType
 import no.nav.personbruker.dittnav.api.common.MultiSourceResult
 import no.nav.personbruker.dittnav.common.security.AuthenticatedUser
 import org.slf4j.LoggerFactory
-import java.time.LocalDateTime
 
 class DigiSosService(private val digiSosConsumer: DigiSosConsumer) {
 
     private val log = LoggerFactory.getLogger(DigiSosService::class.java)
 
-    suspend fun getActiveEvents(user: AuthenticatedUser): MultiSourceResult<BeskjedDTO, KildeType> {
+    suspend fun getPaabegynteActive(user: AuthenticatedUser): MultiSourceResult<BeskjedDTO, KildeType> {
         return fetchEvents(user) {
-            val results = digiSosConsumer.getPaabegynte(user)
-            results.filter { result ->
-                result.synligFremTil.isAfter(LocalDateTime.now())
-            }
+            digiSosConsumer.getPaabegynteActive(user)
         }
     }
 
-    suspend fun getInactiveEvents(user: AuthenticatedUser): MultiSourceResult<BeskjedDTO, KildeType> {
+    suspend fun getPaabegynteInactive(user: AuthenticatedUser): MultiSourceResult<BeskjedDTO, KildeType> {
         return fetchEvents(user) {
-            val results = digiSosConsumer.getPaabegynte(user)
-            results.filter { result ->
-                result.synligFremTil.isBefore(LocalDateTime.now())
-            }
+            digiSosConsumer.getPaabegynteInactive(user)
         }
     }
 

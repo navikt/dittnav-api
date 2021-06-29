@@ -49,8 +49,8 @@ internal class BeskjedMergerServiceTest {
         coEvery { varselService.getActiveVarselEvents(any()) } returns varslerDefaultResult
         coEvery { varselService.getInactiveVarselEvents(any()) } returns varslerDefaultResult
 
-        coEvery { digiSosService.getActiveEvents(any()) } returns digiSosDefaultResult
-        coEvery { digiSosService.getInactiveEvents(any()) } returns digiSosDefaultResult
+        coEvery { digiSosService.getPaabegynteActive(any()) } returns digiSosDefaultResult
+        coEvery { digiSosService.getPaabegynteInactive(any()) } returns digiSosDefaultResult
     }
 
     @Test
@@ -66,7 +66,7 @@ internal class BeskjedMergerServiceTest {
 
         coVerify(exactly = 1) { beskjedService.getActiveBeskjedEvents(any()) }
         coVerify(exactly = 0) { varselService.getActiveVarselEvents(any()) }
-        coVerify(exactly = 0) { digiSosService.getActiveEvents(any()) }
+        coVerify(exactly = 0) { digiSosService.getPaabegynteActive(any()) }
 
         confirmVerified(beskjedService)
         confirmVerified(varselService)
@@ -91,7 +91,7 @@ internal class BeskjedMergerServiceTest {
 
         coVerify(exactly = 1) { beskjedService.getActiveBeskjedEvents(any()) }
         coVerify(exactly = 1) { varselService.getActiveVarselEvents(any()) }
-        coVerify(exactly = 0) { digiSosService.getActiveEvents(any()) }
+        coVerify(exactly = 0) { digiSosService.getPaabegynteActive(any()) }
 
         confirmVerified(beskjedService)
         confirmVerified(varselService)
@@ -116,7 +116,7 @@ internal class BeskjedMergerServiceTest {
 
         coVerify(exactly = 1) { beskjedService.getActiveBeskjedEvents(any()) }
         coVerify(exactly = 0) { varselService.getActiveVarselEvents(any()) }
-        coVerify(exactly = 1) { digiSosService.getActiveEvents(any()) }
+        coVerify(exactly = 1) { digiSosService.getPaabegynteActive(any()) }
 
         confirmVerified(beskjedService)
         confirmVerified(varselService)
@@ -142,7 +142,7 @@ internal class BeskjedMergerServiceTest {
 
         coVerify(exactly = 1) { beskjedService.getActiveBeskjedEvents(any()) }
         coVerify(exactly = 1) { varselService.getActiveVarselEvents(any()) }
-        coVerify(exactly = 1) { digiSosService.getActiveEvents(any()) }
+        coVerify(exactly = 1) { digiSosService.getPaabegynteActive(any()) }
 
         confirmVerified(beskjedService)
         confirmVerified(varselService)
@@ -165,7 +165,7 @@ internal class BeskjedMergerServiceTest {
 
         coVerify(exactly = 1) { beskjedService.getInactiveBeskjedEvents(any()) }
         coVerify(exactly = 0) { varselService.getInactiveVarselEvents(any()) }
-        coVerify(exactly = 0) { digiSosService.getInactiveEvents(any()) }
+        coVerify(exactly = 0) { digiSosService.getPaabegynteInactive(any()) }
 
         confirmVerified(beskjedService)
         confirmVerified(varselService)
@@ -190,7 +190,7 @@ internal class BeskjedMergerServiceTest {
 
         coVerify(exactly = 1) { beskjedService.getInactiveBeskjedEvents(any()) }
         coVerify(exactly = 1) { varselService.getInactiveVarselEvents(any()) }
-        coVerify(exactly = 0) { digiSosService.getInactiveEvents(any()) }
+        coVerify(exactly = 0) { digiSosService.getPaabegynteInactive(any()) }
 
         confirmVerified(beskjedService)
         confirmVerified(varselService)
@@ -215,7 +215,7 @@ internal class BeskjedMergerServiceTest {
 
         coVerify(exactly = 1) { beskjedService.getInactiveBeskjedEvents(any()) }
         coVerify(exactly = 0) { varselService.getInactiveVarselEvents(any()) }
-        coVerify(exactly = 1) { digiSosService.getInactiveEvents(any()) }
+        coVerify(exactly = 1) { digiSosService.getPaabegynteInactive(any()) }
 
         confirmVerified(beskjedService)
         confirmVerified(varselService)
@@ -240,7 +240,7 @@ internal class BeskjedMergerServiceTest {
 
         coVerify(exactly = 1) { beskjedService.getInactiveBeskjedEvents(any()) }
         coVerify(exactly = 1) { varselService.getInactiveVarselEvents(any()) }
-        coVerify(exactly = 1) { digiSosService.getInactiveEvents(any()) }
+        coVerify(exactly = 1) { digiSosService.getPaabegynteInactive(any()) }
 
         confirmVerified(beskjedService)
         confirmVerified(varselService)

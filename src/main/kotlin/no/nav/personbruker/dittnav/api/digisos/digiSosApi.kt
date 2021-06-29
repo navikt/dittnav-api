@@ -17,7 +17,7 @@ fun Route.digiSos(
     get("/digisos/paabegynte") {
         executeOnUnexpiredTokensOnly {
             try {
-                val result = service.getActiveEvents(authenticatedUser)
+                val result = service.getPaabegynteActive(authenticatedUser)
                 if(result.hasErrors()) {
                     log.warn("En eller flere kilder feilet: ${result.failedSources()}")
                 }
@@ -32,7 +32,7 @@ fun Route.digiSos(
     get("/digisos/paabegynte/inaktiv") {
         executeOnUnexpiredTokensOnly {
             try {
-                val result = service.getInactiveEvents(authenticatedUser)
+                val result = service.getPaabegynteInactive(authenticatedUser)
                 if(result.hasErrors()) {
                     log.warn("En eller flere kilder feilet: ${result.failedSources()}")
                 }
