@@ -9,7 +9,7 @@ import no.nav.personbruker.dittnav.api.config.executeOnUnexpiredTokensOnly
 import org.slf4j.LoggerFactory
 
 fun Route.beskjed(
-    beskjedVarselSwitcher: BeskjedVarselSwitcher
+    beskjedMergerService: BeskjedMergerService
 ) {
 
     val log = LoggerFactory.getLogger(BeskjedService::class.java)
@@ -17,7 +17,7 @@ fun Route.beskjed(
     get("/beskjed") {
         executeOnUnexpiredTokensOnly {
             try {
-                val result = beskjedVarselSwitcher.getActiveEvents(authenticatedUser)
+                val result = beskjedMergerService.getActiveEvents(authenticatedUser)
                 if(result.hasErrors()) {
                     log.warn("En eller flere kilder feilet: ${result.failedSources()}")
                 }
@@ -32,7 +32,7 @@ fun Route.beskjed(
     get("/beskjed/inaktiv") {
         executeOnUnexpiredTokensOnly {
             try {
-                val result = beskjedVarselSwitcher.getInactiveEvents(authenticatedUser)
+                val result = beskjedMergerService.getInactiveEvents(authenticatedUser)
                 if(result.hasErrors()) {
                     log.warn("En eller flere kilder feilet: ${result.failedSources()}")
                 }

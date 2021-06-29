@@ -1,6 +1,8 @@
 package no.nav.personbruker.dittnav.api.common
 
 import io.ktor.http.*
+import no.nav.personbruker.dittnav.api.beskjed.BeskjedDTO
+import no.nav.personbruker.dittnav.api.beskjed.KildeType
 
 /**
  * Resultatobjekt som kan brukes for å samle sammen resultater fra flere kilder, og enkelt gi en fornuftig http-respons-kode.
@@ -32,6 +34,12 @@ data class MultiSourceResult<R, S>(
             emptyList<S>(),
             listOf(source)
         )
+
+        fun createEmptyResult(): MultiSourceResult<BeskjedDTO, KildeType> = MultiSourceResult(
+            emptyList(),
+            emptyList(),
+            emptyList()
+        )
     }
 
     operator fun plus(other: MultiSourceResult<R, S>): MultiSourceResult<R, S> =
@@ -46,7 +54,6 @@ data class MultiSourceResult<R, S>(
 
     fun hasErrors() = failedSources.isNotEmpty()
     fun failedSources() = mutableListOf<S>().apply { addAll(failedSources) }
-
 
     fun determineHttpCode(): HttpStatusCode {
         return when {

@@ -16,20 +16,20 @@ internal class MultiSourceResultTest {
         val source1 = MultiSourceResultObjectMother.giveMeNumberOfSuccessEventsForSource(1, expectedSource1, baseEventId = "beskjed")
         val source2 = MultiSourceResultObjectMother.giveMeNumberOfSuccessEventsForSource(2, expectedSource2, baseEventId = "varsel")
 
-        val tilsammen = source1 + source2
+        val sum = source1 + source2
 
-        tilsammen.shouldNotBeNull()
-        tilsammen.results().size `should be equal to` (source1.results().size + source2.results().size)
-        tilsammen.results() `should contain all` source1.results()
-        tilsammen.results() `should contain all` source2.results()
+        sum.shouldNotBeNull()
+        sum.results().size `should be equal to` (source1.results().size + source2.results().size)
+        sum.results() `should contain all` source1.results()
+        sum.results() `should contain all` source2.results()
 
-        tilsammen.failedSources().size `should be equal to` (source1.failedSources().size + source2.failedSources().size)
+        sum.failedSources().size `should be equal to` (source1.failedSources().size + source2.failedSources().size)
 
-        tilsammen.successFullSources().size `should be equal to` 2
-        tilsammen.successFullSources() `should contain all` listOf(expectedSource1, expectedSource2)
+        sum.successFullSources().size `should be equal to` 2
+        sum.successFullSources() `should contain all` listOf(expectedSource1, expectedSource2)
 
-        tilsammen.hasErrors() `should be equal to` false
-        tilsammen.determineHttpCode() `should be equal to` HttpStatusCode.OK
+        sum.hasErrors() `should be equal to` false
+        sum.determineHttpCode() `should be equal to` HttpStatusCode.OK
     }
 
     @Test
@@ -40,20 +40,20 @@ internal class MultiSourceResultTest {
         val source1 = MultiSourceResultObjectMother.giveMeNumberOfSuccessEventsForSource(1, expectedSource1)
         val source2 = MultiSourceResult.createErrorResult<BeskjedDTO, KildeType>(expectedSource2)
 
-        val tilsammen = source1 + source2
+        val sum = source1 + source2
 
-        tilsammen.shouldNotBeNull()
-        tilsammen.results().size `should be equal to` (source1.results().size + source2.results().size)
-        tilsammen.results() `should contain all` source1.results()
-        tilsammen.results() `should contain all` source2.results()
+        sum.shouldNotBeNull()
+        sum.results().size `should be equal to` (source1.results().size + source2.results().size)
+        sum.results() `should contain all` source1.results()
+        sum.results() `should contain all` source2.results()
 
-        tilsammen.failedSources().size `should be equal to` (source1.failedSources().size + source2.failedSources().size)
+        sum.failedSources().size `should be equal to` (source1.failedSources().size + source2.failedSources().size)
 
-        tilsammen.successFullSources().size `should be equal to` 1
-        tilsammen.successFullSources() `should contain` expectedSource1
+        sum.successFullSources().size `should be equal to` 1
+        sum.successFullSources() `should contain` expectedSource1
 
-        tilsammen.hasErrors() `should be equal to` true
-        tilsammen.determineHttpCode() `should be equal to` HttpStatusCode.PartialContent
+        sum.hasErrors() `should be equal to` true
+        sum.determineHttpCode() `should be equal to` HttpStatusCode.PartialContent
     }
 
     @Test
@@ -77,6 +77,28 @@ internal class MultiSourceResultTest {
         tilsammen.hasErrors() `should be equal to` true
         tilsammen.failedSources() `should contain all` listOf(expectedSource1, expectedSource2)
         tilsammen.determineHttpCode() `should be equal to` HttpStatusCode.ServiceUnavailable
+    }
+
+    @Test
+    fun `Skal kunne addere et tomt resultatobjekt til et annet resultat uten at resultatet endrer seg`() {
+        val expectedSource1 = KildeType.EVENTHANDLER
+
+        val validResult = MultiSourceResultObjectMother.giveMeNumberOfSuccessEventsForSource(1, expectedSource1)
+        val emptyResult = MultiSourceResult.createEmptyResult()
+
+        val sum = validResult + emptyResult
+
+        sum.shouldNotBeNull()
+        sum.results().size `should be equal to` validResult.results().size
+        sum.results() `should contain all` validResult.results()
+
+        sum.failedSources().size `should be equal to` validResult.failedSources().size
+
+        sum.successFullSources().size `should be equal to` validResult.successFullSources().size
+        sum.successFullSources() `should contain` expectedSource1
+
+        sum.hasErrors() `should be equal to` false
+        sum.determineHttpCode() `should be equal to` HttpStatusCode.OK
     }
 
 }
