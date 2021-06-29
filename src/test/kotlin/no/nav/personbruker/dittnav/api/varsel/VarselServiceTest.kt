@@ -44,7 +44,7 @@ class VarselServiceTest {
         runBlocking {
             val beskjedResult = varselService.getActiveVarselEvents(user)
             beskjedResult.hasErrors() `should be equal to` true
-            beskjedResult.errors() `should contain` KildeType.VARSELINNBOKS
+            beskjedResult.failedSources() `should contain` KildeType.VARSELINNBOKS
         }
     }
 
@@ -54,7 +54,7 @@ class VarselServiceTest {
         runBlocking {
             val beskjedResult = varselService.getInactiveVarselEvents(user)
             beskjedResult.hasErrors() `should be equal to` true
-            beskjedResult.errors() `should contain` KildeType.VARSELINNBOKS
+            beskjedResult.failedSources() `should contain` KildeType.VARSELINNBOKS
         }
     }
 

@@ -1,33 +1,41 @@
 package no.nav.personbruker.dittnav.api.varsel
 
-import no.nav.personbruker.dittnav.api.beskjed.BeskjedResult
+import no.nav.personbruker.dittnav.api.beskjed.BeskjedDTO
 import no.nav.personbruker.dittnav.api.beskjed.KildeType
+import no.nav.personbruker.dittnav.api.common.MultiSourceResult
 import no.nav.personbruker.dittnav.common.security.AuthenticatedUser
+import org.slf4j.LoggerFactory
 
 class VarselService(private val varselConsumer: VarselConsumer) {
 
-    suspend fun getActiveVarselEvents(user: AuthenticatedUser): BeskjedResult {
+    private val log = LoggerFactory.getLogger(VarselService::class.java)
+
+    private val kilde = KildeType.VARSELINNBOKS
+
+    suspend fun getActiveVarselEvents(user: AuthenticatedUser): MultiSourceResult<BeskjedDTO, KildeType> {
         return getVarselEvents(user) {
-            varselConsumer.getSisteVarsler(it).filter { varsel -> varsel.datoLest == null }
+            varselConsumer.getSisteVarsler(user).filter { varsel -> varsel.datoLest == null }
         }
     }
 
-    suspend fun getInactiveVarselEvents(user: AuthenticatedUser): BeskjedResult {
+    suspend fun getInactiveVarselEvents(user: AuthenticatedUser): MultiSourceResult<BeskjedDTO, KildeType> {
         return getVarselEvents(user) {
-            varselConsumer.getSisteVarsler(it).filter { varsel -> varsel.datoLest != null }
+            varselConsumer.getSisteVarsler(user).filter { varsel -> varsel.datoLest != null }
         }
     }
 
     private suspend fun getVarselEvents(
         user: AuthenticatedUser,
         getEvents: suspend (AuthenticatedUser) -> List<Varsel>
-    ): BeskjedResult {
+    ): MultiSourceResult<BeskjedDTO, KildeType> {
         return try {
             val externalEvents = getEvents(user)
             val results = externalEvents.map { varsel -> toVarselDTO(varsel) }
-            BeskjedResult(results)
-        } catch (exception: Exception) {
-            BeskjedResult(listOf(KildeType.VARSELINNBOKS))
+            MultiSourceResult.createSuccessfulResult(results, kilde)
+
+        } catch (e: Exception) {
+            log.warn("Klarte ikke å hente data fra $kilde: $e", e)
+            MultiSourceResult.createErrorResult(kilde)
         }
     }
 }

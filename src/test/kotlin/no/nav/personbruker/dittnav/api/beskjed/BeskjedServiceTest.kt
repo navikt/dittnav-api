@@ -94,7 +94,7 @@ class BeskjedServiceTest {
         runBlocking {
             val beskjedResult = beskjedService.getActiveBeskjedEvents(user)
             beskjedResult.hasErrors() `should be equal to` true
-            beskjedResult.errors() `should contain` KildeType.EVENTHANDLER
+            beskjedResult.failedSources() `should contain` KildeType.EVENTHANDLER
         }
     }
 
@@ -105,7 +105,7 @@ class BeskjedServiceTest {
         runBlocking {
             val beskjedResult = beskjedService.getInactiveBeskjedEvents(user)
             beskjedResult.hasErrors() `should be equal to` true
-            beskjedResult.errors() `should contain` KildeType.EVENTHANDLER
+            beskjedResult.failedSources() `should contain` KildeType.EVENTHANDLER
         }
     }
 }

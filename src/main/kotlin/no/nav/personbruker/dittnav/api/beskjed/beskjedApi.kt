@@ -19,7 +19,7 @@ fun Route.beskjed(
             try {
                 val result = beskjedVarselSwitcher.getActiveEvents(authenticatedUser)
                 if(result.hasErrors()) {
-                    log.warn("En eller flere kilder feilet: ${result.errors()}")
+                    log.warn("En eller flere kilder feilet: ${result.failedSources()}")
                 }
                 call.respond(result.determineHttpCode(), result.results())
 
@@ -34,7 +34,7 @@ fun Route.beskjed(
             try {
                 val result = beskjedVarselSwitcher.getInactiveEvents(authenticatedUser)
                 if(result.hasErrors()) {
-                    log.warn("En eller flere kilder feilet: ${result.errors()}")
+                    log.warn("En eller flere kilder feilet: ${result.failedSources()}")
                 }
                 call.respond(result.determineHttpCode(), result.results())
 
