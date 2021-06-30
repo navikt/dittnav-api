@@ -12,7 +12,7 @@ import org.junit.jupiter.api.Test
 
 internal class DigiSosServiceTest {
 
-    private val digiSosConsumer = mockk<DigiSosConsumer>()
+    private val digiSosConsumer = mockk<DigiSosClient>()
     private val innloggetBruker = AuthenticatedUserObjectMother.createAuthenticatedUser()
     private val digiSosService = DigiSosService(digiSosConsumer)
 
