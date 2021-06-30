@@ -19,6 +19,7 @@ class VarselTransformerTest {
         beskjedDTO.produsent!! `should be equal to` "varselinnboks"
         beskjedDTO.sistOppdatert.toString() `should be equal to` original.datoLest!!.toString()
         beskjedDTO.sikkerhetsnivaa `should be` 3
+        beskjedDTO.grupperingsId `should be equal to` original.meldingsType
     }
 
 }

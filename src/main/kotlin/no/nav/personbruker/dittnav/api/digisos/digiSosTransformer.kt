@@ -4,10 +4,9 @@ import no.nav.personbruker.dittnav.api.beskjed.BeskjedDTO
 import java.time.LocalDateTime
 import java.time.ZoneId
 import java.time.ZonedDateTime
-import java.util.*
 
 fun Paabegynte.toInternal() = BeskjedDTO(
-            uid = grupperingsId,
+            uid = "ikke i bruk",
             eventTidspunkt = eventTidspunkt.toZonedDateTime(),
             eventId = eventId,
             tekst = cropTextIfOverMaxLengthOfBeskjed(tekst),
@@ -15,7 +14,8 @@ fun Paabegynte.toInternal() = BeskjedDTO(
             produsent = "digiSos",
             sistOppdatert = sistOppdatert.toZonedDateTime(),
             sikkerhetsnivaa = 3,
-            aktiv = aktiv
+            aktiv = aktiv,
+            grupperingsId = grupperingsId
         )
 
 private fun cropTextIfOverMaxLengthOfBeskjed(text: String): String {

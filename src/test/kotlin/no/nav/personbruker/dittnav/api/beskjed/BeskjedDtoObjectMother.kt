@@ -13,7 +13,8 @@ object BeskjedDtoObjectMother {
             "dummy-produsent",
             ZonedDateTime.now().minusDays(3),
             3,
-            true
+            true,
+            "321"
         )
     }
 
@@ -26,7 +27,8 @@ object BeskjedDtoObjectMother {
             "dummy-produsent",
             ZonedDateTime.now().minusDays(1),
             3,
-            false
+            false,
+            "654"
         )
     }
 

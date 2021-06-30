@@ -13,7 +13,7 @@ internal class DigiSosTransformerTest {
 
         internal.eventId `should be equal to` external.eventId
         internal.eventTidspunkt `should be equal to` external.eventTidspunkt.toZonedDateTime()
-        internal.uid `should be equal to` external.grupperingsId // Gjør dette midlertidig til vi har tatt inn grupperingsid
+        internal.grupperingsId `should be equal to` external.grupperingsId
         internal.tekst `should be equal to` external.tekst
         internal.link `should be equal to` external.link
         internal.aktiv `should be equal to` external.aktiv
