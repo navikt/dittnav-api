@@ -14,6 +14,6 @@ data class Paabegynte(
     val tekst: String,
     val link: String,
     val sikkerhetsnivaa: Int,
-    val sisteOppdatert: LocalDateTime,
+    val sistOppdatert: LocalDateTime,
     val aktiv : Boolean
 )
