@@ -8,14 +8,14 @@ import java.util.*
 
 fun Paabegynte.toInternal() = BeskjedDTO(
             uid = UUID.randomUUID().toString(),
-            eventTidspunkt = tidspunkt.toZonedDateTime(),
+            eventTidspunkt = eventTidspunkt.toZonedDateTime(),
             eventId = grupperingsId,
             tekst = cropTextIfOverMaxLengthOfBeskjed(tekst),
             link = link,
             produsent = "digiSos",
-            sistOppdatert = tidspunkt.toZonedDateTime(),
+            sistOppdatert = eventTidspunkt.toZonedDateTime(),
             sikkerhetsnivaa = 3,
-            aktiv = synligFremTil.isAfter(LocalDateTime.now())
+            aktiv = sisteOppdatert.isAfter(LocalDateTime.now())
         )
 
 private fun cropTextIfOverMaxLengthOfBeskjed(text: String): String {

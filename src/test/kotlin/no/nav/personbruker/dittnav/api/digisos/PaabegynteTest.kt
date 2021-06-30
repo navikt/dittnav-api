@@ -9,13 +9,14 @@ internal class PaabegynteTest {
 
     private val respons = """
         {
-            "tidspunkt": "2021-06-17T09:32:35.416897",
+            "eventTidspunkt": "2021-06-17T09:32:35.416897",
+            "eventId": "123456",
             "grupperingsId": "enId",
             "tekst": "Søknad om økonomisk sosialhjelp",
             "link": "https://dummy/enId",
             "sikkerhetsnivaa": 3,
-            "synligFremTil": "2021-07-01T09:32:35.416856",
-            "eksternVarsling": false
+            "sisteOppdatert": "2021-07-01T09:32:35.416856",
+            "aktiv": false
         }""".trimIndent()
 
     @Test

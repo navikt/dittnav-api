@@ -7,6 +7,7 @@ object PaabegynteObjectMother {
     fun giveMeOne() = Paabegynte(
         LocalDateTime.now(),
         "123",
+        "987",
         "Dette er en dummytekst",
         "https://nav.no/lenke",
         4,
