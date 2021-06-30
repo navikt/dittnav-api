@@ -7,15 +7,15 @@ import java.time.ZonedDateTime
 import java.util.*
 
 fun Paabegynte.toInternal() = BeskjedDTO(
-            uid = UUID.randomUUID().toString(),
+            uid = grupperingsId,
             eventTidspunkt = eventTidspunkt.toZonedDateTime(),
-            eventId = grupperingsId,
+            eventId = eventId,
             tekst = cropTextIfOverMaxLengthOfBeskjed(tekst),
             link = link,
             produsent = "digiSos",
-            sistOppdatert = eventTidspunkt.toZonedDateTime(),
+            sistOppdatert = sistOppdatert.toZonedDateTime(),
             sikkerhetsnivaa = 3,
-            aktiv = sisteOppdatert.isAfter(LocalDateTime.now())
+            aktiv = aktiv
         )
 
 private fun cropTextIfOverMaxLengthOfBeskjed(text: String): String {
