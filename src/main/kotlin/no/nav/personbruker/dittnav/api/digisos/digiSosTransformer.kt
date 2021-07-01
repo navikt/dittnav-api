@@ -6,7 +6,7 @@ import java.time.ZoneId
 import java.time.ZonedDateTime
 
 fun Paabegynte.toInternal() = BeskjedDTO(
-            uid = "ikke i bruk",
+            uid = eventId,
             eventTidspunkt = eventTidspunkt.toZonedDateTime(),
             eventId = eventId,
             tekst = cropTextIfOverMaxLengthOfBeskjed(tekst),

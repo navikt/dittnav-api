@@ -19,6 +19,7 @@ internal class DigiSosTransformerTest {
         internal.aktiv `should be equal to` external.aktiv
         internal.sistOppdatert `should be equal to` external.sistOppdatert.toZonedDateTime()
         internal.produsent `should be equal to` "digiSos"
+        internal.uid `should be equal to` external.eventId
     }
 
 }
