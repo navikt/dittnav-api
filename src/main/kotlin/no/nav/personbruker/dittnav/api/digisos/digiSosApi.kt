@@ -16,36 +16,6 @@ fun Route.digiSos(
 
     val log = LoggerFactory.getLogger(DigiSosService::class.java)
 
-    get("/digisos/paabegynte") {
-        executeOnUnexpiredTokensOnly {
-            try {
-                val result = service.getPaabegynteActive(authenticatedUser)
-                if(result.hasErrors()) {
-                    log.warn("En eller flere kilder feilet: ${result.failedSources()}")
-                }
-                call.respond(result.determineHttpCode(), result.results())
-
-            } catch (exception: Exception) {
-                respondWithError(call, log, exception)
-            }
-        }
-    }
-
-    get("/digisos/paabegynte/inaktiv") {
-        executeOnUnexpiredTokensOnly {
-            try {
-                val result = service.getPaabegynteInactive(authenticatedUser)
-                if(result.hasErrors()) {
-                    log.warn("En eller flere kilder feilet: ${result.failedSources()}")
-                }
-                call.respond(result.determineHttpCode(), result.results())
-
-            } catch (exception: Exception) {
-                respondWithError(call, log, exception)
-            }
-        }
-    }
-
     post("/digisos/paabegynte/done") {
         executeOnUnexpiredTokensOnly {
             try {
