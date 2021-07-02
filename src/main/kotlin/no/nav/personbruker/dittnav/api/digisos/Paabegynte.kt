@@ -8,11 +8,12 @@ import java.time.LocalDateTime
 
 @Serializable
 data class Paabegynte(
-    val tidspunkt: LocalDateTime,
+    val eventTidspunkt: LocalDateTime,
+    val eventId : String,
     val grupperingsId : String,
     val tekst: String,
     val link: String,
     val sikkerhetsnivaa: Int,
-    val synligFremTil: LocalDateTime,
-    val eksternVarsling : Boolean
+    val sistOppdatert: LocalDateTime,
+    val aktiv : Boolean
 )

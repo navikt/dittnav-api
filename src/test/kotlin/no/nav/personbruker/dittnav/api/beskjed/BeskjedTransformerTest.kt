@@ -21,6 +21,7 @@ class BeskjedTransformerTest {
         beskjedDTO.produsent!! `should be equal to` beskjed1.produsent!!
         beskjedDTO.sistOppdatert `should be` beskjed1.sistOppdatert
         beskjedDTO.sikkerhetsnivaa `should be` beskjed1.sikkerhetsnivaa
+        beskjedDTO.grupperingsId `should be` beskjed1.grupperingsId
     }
 
     @Test
@@ -34,5 +35,6 @@ class BeskjedTransformerTest {
         beskjedDTO.produsent!! `should be equal to` "***"
         beskjedDTO.sistOppdatert `should be` beskjed.sistOppdatert
         beskjedDTO.sikkerhetsnivaa `should be` beskjed.sikkerhetsnivaa
+        beskjedDTO.grupperingsId `should be` beskjed.grupperingsId
     }
 }

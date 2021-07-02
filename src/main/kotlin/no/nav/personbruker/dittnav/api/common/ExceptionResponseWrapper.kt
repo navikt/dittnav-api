@@ -10,7 +10,11 @@ suspend fun respondWithError(call: ApplicationCall, log: Logger, exception: Exce
     when(exception) {
         is ConsumeEventException -> {
             call.respond(HttpStatusCode.ServiceUnavailable)
-            log.warn("Klarte ikke hente eventer. Returnerer feilkode til frontend", exception)
+            log.warn("Klarte ikke hente eventer. Returnerer feilkode til frontend. $exception", exception)
+        }
+        is ProduceEventException -> {
+            call.respond(HttpStatusCode.ServiceUnavailable)
+            log.warn("Klarte ikke å produsere done-event. Returnerer feilkode til frontend. $exception", exception)
         }
         else -> {
             call.respond(HttpStatusCode.InternalServerError)

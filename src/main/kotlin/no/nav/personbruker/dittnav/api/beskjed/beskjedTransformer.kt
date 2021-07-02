@@ -11,7 +11,8 @@ fun toBeskjedDTO(beskjed: Beskjed): BeskjedDTO =
                     produsent = it.produsent,
                     sistOppdatert = it.sistOppdatert,
                     sikkerhetsnivaa = it.sikkerhetsnivaa,
-                    aktiv = it.aktiv
+                    aktiv = it.aktiv,
+                    grupperingsId = it.grupperingsId
             )
         }
 

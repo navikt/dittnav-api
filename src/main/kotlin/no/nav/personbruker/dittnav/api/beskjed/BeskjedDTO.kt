@@ -16,7 +16,8 @@ data class BeskjedDTO(
         val produsent: String?,
         val sistOppdatert: ZonedDateTime,
         val sikkerhetsnivaa: Int,
-        val aktiv: Boolean
+        val aktiv: Boolean,
+        val grupperingsId : String
 ) {
     constructor(
             eventTidspunkt: ZonedDateTime,
@@ -26,7 +27,8 @@ data class BeskjedDTO(
             produsent: String?,
             sistOppdatert: ZonedDateTime,
             sikkerhetsnivaa: Int,
-            aktiv: Boolean
+            aktiv: Boolean,
+            grupperingsId: String
     ) : this(
             null,
             eventTidspunkt,
@@ -36,6 +38,7 @@ data class BeskjedDTO(
             produsent,
             sistOppdatert,
             sikkerhetsnivaa,
-            aktiv
+            aktiv,
+            grupperingsId
     )
 }

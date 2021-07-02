@@ -1,32 +1,38 @@
 package no.nav.personbruker.dittnav.api.digisos
 
+import io.ktor.client.statement.*
 import no.nav.personbruker.dittnav.api.beskjed.BeskjedDTO
 import no.nav.personbruker.dittnav.api.beskjed.KildeType
 import no.nav.personbruker.dittnav.api.common.MultiSourceResult
+import no.nav.personbruker.dittnav.api.common.ProduceEventException
 import no.nav.personbruker.dittnav.common.security.AuthenticatedUser
 import org.slf4j.LoggerFactory
-import java.time.LocalDateTime
 
-class DigiSosService(private val digiSosConsumer: DigiSosConsumer) {
+class DigiSosService(private val digiSosClient: DigiSosClient) {
 
     private val log = LoggerFactory.getLogger(DigiSosService::class.java)
 
-    suspend fun getActiveEvents(user: AuthenticatedUser): MultiSourceResult<BeskjedDTO, KildeType> {
+    suspend fun getPaabegynteActive(user: AuthenticatedUser): MultiSourceResult<BeskjedDTO, KildeType> {
         return fetchEvents(user) {
-            val results = digiSosConsumer.getPaabegynte(user)
-            results.filter { result ->
-                result.synligFremTil.isAfter(LocalDateTime.now())
-            }
+            digiSosClient.getPaabegynteActive(user)
         }
     }
 
-    suspend fun getInactiveEvents(user: AuthenticatedUser): MultiSourceResult<BeskjedDTO, KildeType> {
+    suspend fun getPaabegynteInactive(user: AuthenticatedUser): MultiSourceResult<BeskjedDTO, KildeType> {
         return fetchEvents(user) {
-            val results = digiSosConsumer.getPaabegynte(user)
-            results.filter { result ->
-                result.synligFremTil.isBefore(LocalDateTime.now())
-            }
+            digiSosClient.getPaabegynteInactive(user)
         }
+    }
+
+    suspend fun markEventAsDone(user: AuthenticatedUser, dto: DoneDTO): HttpResponse {
+        val res = runCatching {
+            digiSosClient.markEventAsDone(user, dto)
+
+        }.onFailure { cause ->
+            throw ProduceEventException("Klarte ikke å markere event hos DigiSos som lest.", cause)
+        }
+
+        return res.getOrThrow()
     }
 
     private suspend fun fetchEvents(

@@ -10,7 +10,7 @@ import no.finn.unleash.util.UnleashConfig
 import no.nav.personbruker.dittnav.api.beskjed.*
 import no.nav.personbruker.dittnav.api.brukernotifikasjon.BrukernotifikasjonConsumer
 import no.nav.personbruker.dittnav.api.brukernotifikasjon.BrukernotifikasjonService
-import no.nav.personbruker.dittnav.api.digisos.DigiSosConsumer
+import no.nav.personbruker.dittnav.api.digisos.DigiSosClient
 import no.nav.personbruker.dittnav.api.digisos.DigiSosService
 import no.nav.personbruker.dittnav.api.done.DoneProducer
 import no.nav.personbruker.dittnav.api.health.DependencyPinger
@@ -55,7 +55,7 @@ class ApplicationContext {
     val brukernotifikasjonService = BrukernotifikasjonService(brukernotifikasjonConsumer)
     val varselService = VarselService(varselConsumer)
 
-    val digiSosConsumer = DigiSosConsumer(httpClient, environment.digiSosBaseURL)
+    val digiSosConsumer = DigiSosClient(httpClient, environment.digiSosBaseURL)
     val digiSosService = DigiSosService(digiSosConsumer)
 
     val beskjedMergerService = BeskjedMergerService(beskjedService, varselService, digiSosService, unleashService)

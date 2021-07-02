@@ -16,7 +16,8 @@ fun toVarselDTO(externalVarsel: Varsel): BeskjedDTO =
             produsent = "varselinnboks",
             sistOppdatert = chooseSistOppdatert(varsel),
             sikkerhetsnivaa = 3,
-            aktiv = varsel.datoLest == null
+            aktiv = varsel.datoLest == null,
+            varsel.meldingsType
         )
     }
 
