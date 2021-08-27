@@ -9,6 +9,7 @@ import kotlinx.coroutines.runBlocking
 import kotlinx.serialization.encodeToString
 import no.nav.personbruker.dittnav.api.common.AuthenticatedUserObjectMother
 import no.nav.personbruker.dittnav.api.config.json
+import no.nav.personbruker.dittnav.api.util.createBasicMockedHttpClient
 import org.amshove.kluent.`should be equal to`
 import org.amshove.kluent.`should be false`
 import org.amshove.kluent.`should be true`
@@ -47,7 +48,7 @@ class OppgaveConsumerTest {
         val oppgaveObject1 = createOppgave("1", "1", true)
         val oppgaveObject2 = createOppgave("2", "2", true)
 
-        val client = getClient {
+        val client = createBasicMockedHttpClient {
             respond(
                     json().encodeToString(listOf(oppgaveObject1, oppgaveObject2)),
                     headers = headersOf(HttpHeaders.ContentType,
@@ -70,7 +71,7 @@ class OppgaveConsumerTest {
     fun `should get list of inactive Oppgave`() {
         val oppgaveObject = createOppgave("1", "1", false)
 
-        val client = getClient {
+        val client = createBasicMockedHttpClient {
             respond(
                     json().encodeToString(listOf(oppgaveObject)),
                     headers = headersOf(HttpHeaders.ContentType,
@@ -89,14 +90,4 @@ class OppgaveConsumerTest {
         }
     }
 
-    private fun getClient(respond: MockRequestHandleScope.() -> HttpResponseData): HttpClient {
-        return HttpClient(MockEngine) {
-            engine {
-                addHandler {
-                    respond()
-                }
-            }
-            install(JsonFeature)
-        }
-    }
 }
