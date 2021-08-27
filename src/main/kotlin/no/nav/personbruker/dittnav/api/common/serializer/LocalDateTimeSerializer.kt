@@ -17,7 +17,7 @@ class LocalDateTimeSerializer : KSerializer<LocalDateTime> {
     }
 
     override fun serialize(encoder: Encoder, value: LocalDateTime) {
-        encoder.encodeString(value.format(DateTimeFormatter.ISO_OFFSET_DATE_TIME))
+        encoder.encodeString(value.format(DateTimeFormatter.ISO_DATE_TIME))
     }
 
     override val descriptor: SerialDescriptor
