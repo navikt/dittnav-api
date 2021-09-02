@@ -8,6 +8,7 @@ import kotlinx.coroutines.runBlocking
 import no.nav.personbruker.dittnav.api.beskjed.BeskjedDtoObjectMother
 import no.nav.personbruker.dittnav.api.beskjed.KildeType
 import no.nav.personbruker.dittnav.api.common.AuthenticatedUserObjectMother
+import no.nav.personbruker.dittnav.api.oppgave.OppgaveDtoObjectMother
 import org.amshove.kluent.`should contain`
 import org.junit.jupiter.api.Test
 
@@ -41,6 +42,36 @@ internal class DigiSosServiceTest {
         }
 
         coVerify { digiSosConsumer.getPaabegynteInactive(any()) }
+
+        confirmVerified(digiSosConsumer)
+
+        result.successFullSources() `should contain` KildeType.DIGISOS
+    }
+
+    @Test
+    fun `Skal hente alle ettersendelser som er aktive`() {
+        coEvery { digiSosConsumer.getEttersendelserActive(any()) } returns listOf(OppgaveDtoObjectMother.createActiveOppgave("eidAct"))
+
+        val result = runBlocking {
+            digiSosService.getEttersendelseActive(innloggetBruker)
+        }
+
+        coVerify { digiSosConsumer.getEttersendelserActive(any()) }
+
+        confirmVerified(digiSosConsumer)
+
+        result.successFullSources() `should contain` KildeType.DIGISOS
+    }
+
+    @Test
+    fun `Skal hente alle ettersendelser som er inaktive`() {
+        coEvery { digiSosConsumer.getEttersendelserInactive(any()) } returns listOf(OppgaveDtoObjectMother.createInactiveOppgave("eidInact"))
+
+        val result = runBlocking {
+            digiSosService.getEttersendelseInactive(innloggetBruker)
+        }
+
+        coVerify { digiSosConsumer.getEttersendelserInactive(any()) }
 
         confirmVerified(digiSosConsumer)
 

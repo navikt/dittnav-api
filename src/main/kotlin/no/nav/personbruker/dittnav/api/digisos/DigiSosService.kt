@@ -5,6 +5,7 @@ import no.nav.personbruker.dittnav.api.beskjed.BeskjedDTO
 import no.nav.personbruker.dittnav.api.beskjed.KildeType
 import no.nav.personbruker.dittnav.api.common.MultiSourceResult
 import no.nav.personbruker.dittnav.api.common.ProduceEventException
+import no.nav.personbruker.dittnav.api.oppgave.OppgaveDTO
 import no.nav.personbruker.dittnav.common.security.AuthenticatedUser
 import org.slf4j.LoggerFactory
 
@@ -13,14 +14,26 @@ class DigiSosService(private val digiSosClient: DigiSosClient) {
     private val log = LoggerFactory.getLogger(DigiSosService::class.java)
 
     suspend fun getPaabegynteActive(user: AuthenticatedUser): MultiSourceResult<BeskjedDTO, KildeType> {
-        return fetchEvents(user) {
+        return wrapAsMultiSourceResult(user) {
             digiSosClient.getPaabegynteActive(user)
         }
     }
 
     suspend fun getPaabegynteInactive(user: AuthenticatedUser): MultiSourceResult<BeskjedDTO, KildeType> {
-        return fetchEvents(user) {
+        return wrapAsMultiSourceResult(user) {
             digiSosClient.getPaabegynteInactive(user)
+        }
+    }
+
+    suspend fun getEttersendelseActive(user: AuthenticatedUser): MultiSourceResult<OppgaveDTO, KildeType> {
+        return wrapAsMultiSourceResult(user) {
+            digiSosClient.getEttersendelserActive(user)
+        }
+    }
+
+    suspend fun getEttersendelseInactive(user: AuthenticatedUser): MultiSourceResult<OppgaveDTO, KildeType> {
+        return wrapAsMultiSourceResult(user) {
+            digiSosClient.getEttersendelserInactive(user)
         }
     }
 
@@ -35,10 +48,10 @@ class DigiSosService(private val digiSosClient: DigiSosClient) {
         return res.getOrThrow()
     }
 
-    private suspend fun fetchEvents(
+    private suspend fun <T> wrapAsMultiSourceResult(
         user: AuthenticatedUser,
-        getEvents: suspend (AuthenticatedUser) -> List<BeskjedDTO>
-    ): MultiSourceResult<BeskjedDTO, KildeType> {
+        getEvents: suspend (AuthenticatedUser) -> List<T>
+    ): MultiSourceResult<T, KildeType> {
         return try {
             val results = getEvents(user)
             MultiSourceResult.createSuccessfulResult(results, KildeType.DIGISOS)
@@ -48,4 +61,5 @@ class DigiSosService(private val digiSosClient: DigiSosClient) {
             MultiSourceResult.createErrorResult(KildeType.DIGISOS)
         }
     }
+
 }
