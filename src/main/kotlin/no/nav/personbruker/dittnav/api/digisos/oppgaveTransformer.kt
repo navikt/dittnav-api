@@ -2,8 +2,8 @@ package no.nav.personbruker.dittnav.api.digisos
 
 import no.nav.personbruker.dittnav.api.oppgave.OppgaveDTO
 
-fun List<Ettersendelse>.toInternals() : List<OppgaveDTO> {
-    return map {external ->
+fun List<Ettersendelse>.toInternals(): List<OppgaveDTO> {
+    return map { external ->
         external.toInternal()
     }
 }
@@ -28,6 +28,6 @@ fun cropTextIfOverMaxLengthOfOppgave(text: String): String {
         text
 
     } else {
-        text.substring(0, maxOppgaveTextLength)
+        text.substring(0, maxOppgaveTextLength - 3) + "..."
     }
 }

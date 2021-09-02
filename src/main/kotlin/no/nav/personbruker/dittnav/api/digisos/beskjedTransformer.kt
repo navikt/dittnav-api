@@ -5,8 +5,8 @@ import java.time.LocalDateTime
 import java.time.ZoneId
 import java.time.ZonedDateTime
 
-fun List<Paabegynte>.toInternals() : List<BeskjedDTO> {
-    return map {external ->
+fun List<Paabegynte>.toInternals(): List<BeskjedDTO> {
+    return map { external ->
         external.toInternal()
     }
 }
@@ -31,7 +31,7 @@ private fun cropTextIfOverMaxLengthOfBeskjed(text: String): String {
         text
 
     } else {
-        text.substring(0, maxBeskjedTextLength)
+        text.substring(0, maxBeskjedTextLength - 3) + "..."
     }
 }
 

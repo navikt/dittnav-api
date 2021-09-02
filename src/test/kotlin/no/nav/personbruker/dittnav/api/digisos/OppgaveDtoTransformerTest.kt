@@ -47,6 +47,7 @@ internal class OppgaveDtoTransformerTest {
         val internal = eventMedForLangTekst.toInternal()
 
         internal.tekst.length `should be equal to` maxOppgaveTextLength
+        internal.tekst.endsWith("...") `should be equal to` true
     }
 
 }
