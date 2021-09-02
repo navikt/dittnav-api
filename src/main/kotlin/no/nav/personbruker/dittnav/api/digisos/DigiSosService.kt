@@ -37,13 +37,10 @@ class DigiSosService(private val digiSosClient: DigiSosClient) {
 
     private suspend fun fetchEvents(
         user: AuthenticatedUser,
-        getEvents: suspend (AuthenticatedUser) -> List<Paabegynte>
+        getEvents: suspend (AuthenticatedUser) -> List<BeskjedDTO>
     ): MultiSourceResult<BeskjedDTO, KildeType> {
         return try {
-            val externalEvents = getEvents(user)
-            val results = externalEvents.map { external ->
-                external.toInternal()
-            }
+            val results = getEvents(user)
             MultiSourceResult.createSuccessfulResult(results, KildeType.DIGISOS)
 
         } catch (e: Exception) {

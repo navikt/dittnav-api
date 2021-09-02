@@ -1,9 +1,10 @@
 package no.nav.personbruker.dittnav.api.digisos
 
 import org.amshove.kluent.`should be equal to`
+import org.amshove.kluent.shouldNotBeNull
 import org.junit.jupiter.api.Test
 
-internal class DigiSosTransformerTest {
+internal class BeskjedDtoTransformerTest {
 
     @Test
     fun `Skal kunne konvertere til intern modell`() {
@@ -20,6 +21,32 @@ internal class DigiSosTransformerTest {
         internal.sistOppdatert `should be equal to` external.sistOppdatert.toZonedDateTime()
         internal.produsent `should be equal to` "digiSos"
         internal.uid `should be equal to` external.eventId
+    }
+
+    @Test
+    fun `Skal konvertere flere eksterne til interne samtidig`() {
+        val externals = listOf(
+            PaabegynteObjectMother.giveMeOne(true),
+            PaabegynteObjectMother.giveMeOne(false)
+        )
+
+        val internals = externals.toInternals()
+
+        internals.shouldNotBeNull()
+        internals.size `should be equal to` externals.size
+        internals[0].shouldNotBeNull()
+        internals[1].shouldNotBeNull()
+    }
+
+    @Test
+    fun `Skal kappe tekster som er for lange`() {
+        val eventMedForLangTekst = PaabegynteObjectMother.giveMeOne().copy(
+            tekst = "A".repeat(maxBeskjedTextLength + 1)
+        )
+
+        val internal = eventMedForLangTekst.toInternal()
+
+        internal.tekst.length `should be equal to` maxBeskjedTextLength
     }
 
 }

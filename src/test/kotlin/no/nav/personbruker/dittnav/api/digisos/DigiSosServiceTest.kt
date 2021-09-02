@@ -5,6 +5,7 @@ import io.mockk.coVerify
 import io.mockk.confirmVerified
 import io.mockk.mockk
 import kotlinx.coroutines.runBlocking
+import no.nav.personbruker.dittnav.api.beskjed.BeskjedDtoObjectMother
 import no.nav.personbruker.dittnav.api.beskjed.KildeType
 import no.nav.personbruker.dittnav.api.common.AuthenticatedUserObjectMother
 import org.amshove.kluent.`should contain`
@@ -18,7 +19,7 @@ internal class DigiSosServiceTest {
 
     @Test
     fun `Skal hente alle paabegynte soknader som er aktive`() {
-        coEvery { digiSosConsumer.getPaabegynteActive(any()) } returns listOf(PaabegynteObjectMother.giveMeOne())
+        coEvery { digiSosConsumer.getPaabegynteActive(any()) } returns listOf(BeskjedDtoObjectMother.createActiveBeskjed("eidAct"))
 
         val result = runBlocking {
             digiSosService.getPaabegynteActive(innloggetBruker)
@@ -33,7 +34,7 @@ internal class DigiSosServiceTest {
 
     @Test
     fun `Skal hente alle paabegynte soknader som er inaktive`() {
-        coEvery { digiSosConsumer.getPaabegynteInactive(any()) } returns listOf(PaabegynteObjectMother.giveMeOne())
+        coEvery { digiSosConsumer.getPaabegynteInactive(any()) } returns listOf(BeskjedDtoObjectMother.createInactiveBeskjed("eidInact"))
 
         val result = runBlocking {
             digiSosService.getPaabegynteInactive(innloggetBruker)
