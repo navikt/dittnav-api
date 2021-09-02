@@ -13,14 +13,18 @@ import java.net.URL
 
 class DigiSosClient(
     private val client: HttpClient,
-    digiSosBaseURL: URL,
+    digiSosSoknadBaseURL: URL,
+    digiSosInnsynBaseURL: URL,
 ) {
 
     private val log = LoggerFactory.getLogger(DigiSosClient::class.java)
 
-    private val aktivePaabegynteEndpoint = URL("$digiSosBaseURL/dittnav/pabegynte/aktive")
-    private val inaktivePaabegynteEndpoint = URL("$digiSosBaseURL/dittnav/pabegynte/inaktive")
-    private val donePaabegynteEndpoint = URL("$digiSosBaseURL/dittnav/pabegynte/lest")
+    private val aktivePaabegynteEndpoint = URL("$digiSosSoknadBaseURL/dittnav/pabegynte/aktive")
+    private val inaktivePaabegynteEndpoint = URL("$digiSosSoknadBaseURL/dittnav/pabegynte/inaktive")
+    private val donePaabegynteEndpoint = URL("$digiSosSoknadBaseURL/dittnav/pabegynte/lest")
+
+    private val aktiveEttersendelserEndpoint = URL("$digiSosInnsynBaseURL/dittnav/oppgaver/aktive")
+    private val inaktiveEttersendelserEndpoint = URL("$digiSosInnsynBaseURL/dittnav/oppgaver/inaktive")
 
     suspend fun getPaabegynteActive(user: AuthenticatedUser): List<Paabegynte> {
         return client.get(aktivePaabegynteEndpoint, user)
@@ -28,6 +32,14 @@ class DigiSosClient(
 
     suspend fun getPaabegynteInactive(user: AuthenticatedUser): List<Paabegynte> {
         return client.get(inaktivePaabegynteEndpoint, user)
+    }
+
+    suspend fun getEttersendelserActive(user: AuthenticatedUser): List<Ettersendelse> {
+        return client.get(aktiveEttersendelserEndpoint, user)
+    }
+
+    suspend fun getEttersendelserInactive(user: AuthenticatedUser): List<Ettersendelse> {
+        return client.get(inaktiveEttersendelserEndpoint, user)
     }
 
     suspend fun markEventAsDone(user: AuthenticatedUser, done: DoneDTO): HttpResponse {

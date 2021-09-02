@@ -55,7 +55,7 @@ class ApplicationContext {
     val brukernotifikasjonService = BrukernotifikasjonService(brukernotifikasjonConsumer)
     val varselService = VarselService(varselConsumer)
 
-    val digiSosConsumer = DigiSosClient(httpClient, environment.digiSosBaseURL)
+    val digiSosConsumer = DigiSosClient(httpClient, environment.digiSosSoknadBaseURL, environment.digiSosInnsynBaseURL)
     val digiSosService = DigiSosService(digiSosConsumer)
 
     val beskjedMergerService = BeskjedMergerService(beskjedService, varselService, digiSosService, unleashService)
