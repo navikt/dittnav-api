@@ -16,8 +16,12 @@ fun Route.oppgave(oppgaveService: OppgaveService) {
     get("/oppgave") {
         executeOnUnexpiredTokensOnly {
             try {
-                val oppgaveEvents = oppgaveService.getActiveOppgaveEvents(authenticatedUser)
-                call.respond(HttpStatusCode.OK, oppgaveEvents)
+                val result = oppgaveService.getActiveOppgaveEvents(authenticatedUser)
+                if(result.hasErrors()) {
+                    log.warn("En eller flere kilder feilet: ${result.failedSources()}")
+                }
+                call.respond(HttpStatusCode.OK, result)
+
             } catch(exception: Exception) {
                 respondWithError(call, log, exception)
             }
@@ -27,11 +31,16 @@ fun Route.oppgave(oppgaveService: OppgaveService) {
     get("/oppgave/inaktiv") {
         executeOnUnexpiredTokensOnly {
             try {
-                val oppgaveEvents = oppgaveService.getInactiveOppgaveEvents(authenticatedUser)
-                call.respond(HttpStatusCode.OK, oppgaveEvents)
+                val result = oppgaveService.getInactiveOppgaveEvents(authenticatedUser)
+                if(result.hasErrors()) {
+                    log.warn("En eller flere kilder feilet: ${result.failedSources()}")
+                }
+                call.respond(HttpStatusCode.OK, result)
+
             } catch(exception: Exception) {
                 respondWithError(call, log, exception)
             }
         }
     }
+
 }

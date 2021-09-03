@@ -3,12 +3,10 @@ package no.nav.personbruker.dittnav.api.oppgave
 import io.mockk.coEvery
 import io.mockk.mockk
 import kotlinx.coroutines.runBlocking
-import no.nav.personbruker.dittnav.api.common.ConsumeEventException
+import no.nav.personbruker.dittnav.api.beskjed.KildeType
 import no.nav.personbruker.dittnav.api.common.AuthenticatedUserObjectMother
 import no.nav.personbruker.dittnav.api.loginstatus.LoginLevelService
 import org.amshove.kluent.`should be equal to`
-import org.amshove.kluent.`should throw`
-import org.amshove.kluent.invoking
 import org.junit.jupiter.api.Test
 
 class OppgaveServiceTest {
@@ -26,7 +24,7 @@ class OppgaveServiceTest {
         coEvery { loginLevelService.getOperatingLoginLevel(any(), any()) } returns user.loginLevel
         runBlocking {
             val oppgaveList = oppgaveService.getActiveOppgaveEvents(user)
-            oppgaveList.size `should be equal to` 2
+            oppgaveList.results().size `should be equal to` 2
         }
     }
 
@@ -38,7 +36,7 @@ class OppgaveServiceTest {
         coEvery { loginLevelService.getOperatingLoginLevel(any(), any()) } returns user.loginLevel
         runBlocking {
             val oppgaveList = oppgaveService.getInactiveOppgaveEvents(user)
-            oppgaveList.size `should be equal to` 2
+            oppgaveList.results().size `should be equal to` 2
         }
     }
 
@@ -52,7 +50,7 @@ class OppgaveServiceTest {
         coEvery { loginLevelService.getOperatingLoginLevel(any(), any()) } returns user.loginLevel
         runBlocking {
             val oppgaveList = oppgaveService.getActiveOppgaveEvents(user)
-            val oppgaveDTO = oppgaveList.first()
+            val oppgaveDTO = oppgaveList.results().first()
             oppgaveDTO.tekst `should be equal to` "***"
             oppgaveDTO.link `should be equal to` "***"
             oppgaveDTO.sikkerhetsnivaa `should be equal to` 4
@@ -67,7 +65,7 @@ class OppgaveServiceTest {
         coEvery { loginLevelService.getOperatingLoginLevel(any(), any()) } returns user.loginLevel
         runBlocking {
             val oppgaveList = oppgaveService.getActiveOppgaveEvents(user)
-            val oppgaveDTO = oppgaveList.first()
+            val oppgaveDTO = oppgaveList.results().first()
             oppgaveDTO.tekst `should be equal to` oppgave.tekst
             oppgaveDTO.link `should be equal to` oppgave.link
             oppgaveDTO.sikkerhetsnivaa `should be equal to` 3
@@ -81,7 +79,7 @@ class OppgaveServiceTest {
         coEvery { loginLevelService.getOperatingLoginLevel(any(), any()) } returns user.loginLevel
         runBlocking {
             val oppgaveList = oppgaveService.getActiveOppgaveEvents(user)
-            val oppgaveDTO = oppgaveList.first()
+            val oppgaveDTO = oppgaveList.results().first()
             oppgaveDTO.tekst `should be equal to` oppgave.tekst
             oppgaveDTO.link `should be equal to` oppgave.link
             oppgaveDTO.sikkerhetsnivaa `should be equal to` 4
@@ -89,16 +87,29 @@ class OppgaveServiceTest {
     }
 
     @Test
-    fun `should throw exception if fetching active events fails`() {
+    fun `should return error-result if fetching active events fails`() {
         coEvery { oppgaveConsumer.getExternalActiveEvents(user) } throws Exception("error")
         coEvery { loginLevelService.getOperatingLoginLevel(any(), any()) } returns user.loginLevel
-        invoking { runBlocking { oppgaveService.getActiveOppgaveEvents(user) } } `should throw` ConsumeEventException::class
+
+        val result = runBlocking {
+            oppgaveService.getActiveOppgaveEvents(user)
+        }
+
+        result.hasErrors() `should be equal to` true
+        result.failedSources()[0] `should be equal to` KildeType.EVENTHANDLER
     }
 
     @Test
-    fun `should throw exception if fetching inactive events fails`() {
+    fun `should return error-result if fetching inactive events fails`() {
         coEvery { oppgaveConsumer.getExternalInactiveEvents(user) } throws Exception("error")
         coEvery { loginLevelService.getOperatingLoginLevel(any(), any()) } returns user.loginLevel
-        invoking { runBlocking { oppgaveService.getInactiveOppgaveEvents(user) } } `should throw` ConsumeEventException::class
+
+        val result = runBlocking {
+            oppgaveService.getInactiveOppgaveEvents(user)
+        }
+
+        result.hasErrors() `should be equal to` true
+        result.failedSources()[0] `should be equal to` KildeType.EVENTHANDLER
     }
+
 }
