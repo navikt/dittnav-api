@@ -29,4 +29,34 @@ fun Route.digiSos(
         }
     }
 
+    get("/digisos/ettersendelser") {
+        executeOnUnexpiredTokensOnly {
+            try {
+                val result = service.getEttersendelseActive(authenticatedUser)
+                if(result.hasErrors()) {
+                    log.warn("En eller flere kilder feilet: ${result.failedSources()}")
+                }
+                call.respond(result.determineHttpCode(), result.results())
+
+            } catch (exception: Exception) {
+                respondWithError(call, log, exception)
+            }
+        }
+    }
+
+    get("/digisos/ettersendelser/inaktive") {
+        executeOnUnexpiredTokensOnly {
+            try {
+                val result = service.getEttersendelseInactive(authenticatedUser)
+                if(result.hasErrors()) {
+                    log.warn("En eller flere kilder feilet: ${result.failedSources()}")
+                }
+                call.respond(result.determineHttpCode(), result.results())
+
+            } catch (exception: Exception) {
+                respondWithError(call, log, exception)
+            }
+        }
+    }
+
 }
