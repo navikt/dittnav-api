@@ -9,14 +9,14 @@ import no.nav.personbruker.dittnav.api.config.authenticatedUser
 import no.nav.personbruker.dittnav.api.config.executeOnUnexpiredTokensOnly
 import org.slf4j.LoggerFactory
 
-fun Route.oppgave(oppgaveService: OppgaveService) {
+fun Route.oppgave(oppgaveMergerService: OppgaveMergerService) {
 
     val log = LoggerFactory.getLogger(OppgaveService::class.java)
 
     get("/oppgave") {
         executeOnUnexpiredTokensOnly {
             try {
-                val result = oppgaveService.getActiveOppgaveEvents(authenticatedUser)
+                val result = oppgaveMergerService.getActiveEvents(authenticatedUser)
                 if(result.hasErrors()) {
                     log.warn("En eller flere kilder feilet: ${result.failedSources()}")
                 }
@@ -31,7 +31,7 @@ fun Route.oppgave(oppgaveService: OppgaveService) {
     get("/oppgave/inaktiv") {
         executeOnUnexpiredTokensOnly {
             try {
-                val result = oppgaveService.getInactiveOppgaveEvents(authenticatedUser)
+                val result = oppgaveMergerService.getInactiveEvents(authenticatedUser)
                 if(result.hasErrors()) {
                     log.warn("En eller flere kilder feilet: ${result.failedSources()}")
                 }

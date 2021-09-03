@@ -20,6 +20,7 @@ import no.nav.personbruker.dittnav.api.legacy.LegacyConsumer
 import no.nav.personbruker.dittnav.api.loginstatus.InnloggingsstatusConsumer
 import no.nav.personbruker.dittnav.api.loginstatus.LoginLevelService
 import no.nav.personbruker.dittnav.api.oppgave.OppgaveConsumer
+import no.nav.personbruker.dittnav.api.oppgave.OppgaveMergerService
 import no.nav.personbruker.dittnav.api.oppgave.OppgaveService
 import no.nav.personbruker.dittnav.api.unleash.ByEnvironmentStrategy
 import no.nav.personbruker.dittnav.api.unleash.UnleashService
@@ -59,6 +60,7 @@ class ApplicationContext {
     val digiSosService = DigiSosService(digiSosConsumer)
 
     val beskjedMergerService = BeskjedMergerService(beskjedService, varselService, digiSosService, unleashService)
+    val oppgaveMergerService = OppgaveMergerService(oppgaveService, digiSosService, unleashService)
 
     private fun createUnleashService(environment: Environment): UnleashService {
 

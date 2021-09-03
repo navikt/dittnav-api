@@ -67,7 +67,7 @@ fun Application.mainModule(appContext: ApplicationContext = ApplicationContext()
             }
 
             legacyApi(appContext.legacyConsumer)
-            oppgave(appContext.oppgaveService)
+            oppgave(appContext.oppgaveMergerService)
             beskjed(appContext.beskjedMergerService)
             innboks(appContext.innboksService)
             brukernotifikasjoner(appContext.brukernotifikasjonService)
