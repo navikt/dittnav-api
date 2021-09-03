@@ -35,7 +35,7 @@ data class MultiSourceResult<R, S>(
             listOf(source)
         )
 
-        fun createEmptyResult(): MultiSourceResult<BeskjedDTO, KildeType> = MultiSourceResult(
+        fun <R> createEmptyResult(): MultiSourceResult<R, KildeType> = MultiSourceResult(
             emptyList(),
             emptyList(),
             emptyList()

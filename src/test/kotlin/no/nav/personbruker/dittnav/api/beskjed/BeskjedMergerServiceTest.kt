@@ -21,19 +21,19 @@ internal class BeskjedMergerServiceTest {
 
     private val innloggetBruker = AuthenticatedUserObjectMother.createAuthenticatedUser()
 
-    private val eventHandlerDefaultResult = MultiSourceResultObjectMother.giveMeNumberOfSuccessEventsForSource(
+    private val eventHandlerDefaultResult = MultiSourceResultObjectMother.giveMeNumberOfSuccessfulBeskjedEventsForSource(
         1,
         KildeType.EVENTHANDLER,
         "handler"
     )
 
-    private val varslerDefaultResult = MultiSourceResultObjectMother.giveMeNumberOfSuccessEventsForSource(
+    private val varslerDefaultResult = MultiSourceResultObjectMother.giveMeNumberOfSuccessfulBeskjedEventsForSource(
         2,
         KildeType.VARSELINNBOKS,
         "varsel"
     )
 
-    private val digiSosDefaultResult = MultiSourceResultObjectMother.giveMeNumberOfSuccessEventsForSource(
+    private val digiSosDefaultResult = MultiSourceResultObjectMother.giveMeNumberOfSuccessfulBeskjedEventsForSource(
         3,
         KildeType.DIGISOS,
         "digiSos"
