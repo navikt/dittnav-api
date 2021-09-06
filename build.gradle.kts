@@ -84,7 +84,8 @@ tasks {
             environment(name, value)
         }
         environment("UNLEASH_API_URL", "fake")
-        environment("DIGISOS_API_URL", "https://digisos/dummy")
+        environment("DIGISOS_API_URL", "https://digisos/dummy/soknad")
+        environment("DIGISOS_INNSYN_API_URL", "https://digisos/dummy/innsyn")
 
         main = application.mainClass.get()
         classpath = sourceSets["main"].runtimeClasspath
