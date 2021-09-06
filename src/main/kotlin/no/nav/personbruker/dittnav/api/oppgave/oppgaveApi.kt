@@ -16,11 +16,11 @@ fun Route.oppgave(oppgaveMergerService: OppgaveMergerService) {
     get("/oppgave") {
         executeOnUnexpiredTokensOnly {
             try {
-                val result = oppgaveMergerService.getActiveEvents(authenticatedUser)
-                if(result.hasErrors()) {
-                    log.warn("En eller flere kilder feilet: ${result.failedSources()}")
+                val multiSourceResult = oppgaveMergerService.getActiveEvents(authenticatedUser)
+                if(multiSourceResult.hasErrors()) {
+                    log.warn("En eller flere kilder feilet: ${multiSourceResult.failedSources()}")
                 }
-                call.respond(HttpStatusCode.OK, result)
+                call.respond(HttpStatusCode.OK, multiSourceResult.results())
 
             } catch(exception: Exception) {
                 respondWithError(call, log, exception)
@@ -31,11 +31,11 @@ fun Route.oppgave(oppgaveMergerService: OppgaveMergerService) {
     get("/oppgave/inaktiv") {
         executeOnUnexpiredTokensOnly {
             try {
-                val result = oppgaveMergerService.getInactiveEvents(authenticatedUser)
-                if(result.hasErrors()) {
-                    log.warn("En eller flere kilder feilet: ${result.failedSources()}")
+                val multiSourceResult = oppgaveMergerService.getInactiveEvents(authenticatedUser)
+                if(multiSourceResult.hasErrors()) {
+                    log.warn("En eller flere kilder feilet: ${multiSourceResult.failedSources()}")
                 }
-                call.respond(HttpStatusCode.OK, result)
+                call.respond(HttpStatusCode.OK, multiSourceResult.results())
 
             } catch(exception: Exception) {
                 respondWithError(call, log, exception)
