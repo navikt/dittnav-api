@@ -1,0 +1,34 @@
+apiVersion: "nais.io/v1alpha1"
+kind: "Application"
+metadata:
+  name: dittnav-api
+  namespace: personbruker
+  labels:
+    team: personbruker
+spec:
+  envFrom:
+    - secret: dittnav-api-secrets
+    - configmap: loginservice-idporten
+  image: {{version}}
+  port: 8080
+  liveness:
+    path: /person/dittnav-api/internal/isAlive
+    initialDelay: 10
+  readiness:
+    path: /person/dittnav-api/internal/isReady
+    initialDelay: 10
+  prometheus:
+    enabled: true
+    path: /person/dittnav-api/metrics
+  replicas:
+    min: 2
+    max: 4
+  ingresses:
+    - "https://dittnav-api-gcp.dev.nav.no/person/dittnav-api"
+  resources:
+    limits:
+      cpu: "3"
+      memory: 768Mi
+    requests:
+      cpu: "500m"
+      memory: 580Mi
