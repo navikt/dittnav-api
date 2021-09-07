@@ -13,7 +13,6 @@ import io.ktor.util.*
 import io.ktor.util.pipeline.*
 import io.prometheus.client.hotspot.DefaultExports
 import no.nav.personbruker.dittnav.api.beskjed.beskjed
-import no.nav.personbruker.dittnav.api.brukernotifikasjon.brukernotifikasjoner
 import no.nav.personbruker.dittnav.api.digisos.digiSos
 import no.nav.personbruker.dittnav.api.done.doneApi
 import no.nav.personbruker.dittnav.api.health.authenticationCheck
@@ -70,7 +69,6 @@ fun Application.mainModule(appContext: ApplicationContext = ApplicationContext()
             oppgave(appContext.oppgaveService)
             beskjed(appContext.beskjedMergerService)
             innboks(appContext.innboksService)
-            brukernotifikasjoner(appContext.brukernotifikasjonService)
             if(appContext.environment.isRunningInDev) {
                 digiSos(appContext.digiSosService)
             }

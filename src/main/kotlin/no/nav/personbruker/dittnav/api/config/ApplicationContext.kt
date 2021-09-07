@@ -8,8 +8,6 @@ import no.finn.unleash.FakeUnleash
 import no.finn.unleash.Unleash
 import no.finn.unleash.util.UnleashConfig
 import no.nav.personbruker.dittnav.api.beskjed.*
-import no.nav.personbruker.dittnav.api.brukernotifikasjon.BrukernotifikasjonConsumer
-import no.nav.personbruker.dittnav.api.brukernotifikasjon.BrukernotifikasjonService
 import no.nav.personbruker.dittnav.api.digisos.DigiSosClient
 import no.nav.personbruker.dittnav.api.digisos.DigiSosService
 import no.nav.personbruker.dittnav.api.done.DoneProducer
@@ -39,7 +37,6 @@ class ApplicationContext {
     val oppgaveConsumer = OppgaveConsumer(httpClient, environment.eventHandlerURL)
     val beskjedConsumer = BeskjedConsumer(httpClient, environment.eventHandlerURL)
     val innboksConsumer = InnboksConsumer(httpClient, environment.eventHandlerURL)
-    val brukernotifikasjonConsumer = BrukernotifikasjonConsumer(httpClient, environment.eventHandlerURL)
     val varselConsumer = VarselConsumer(httpClient, environment.legacyApiURL)
 
     val doneProducer = DoneProducer(httpClient, environment.eventHandlerURL)
@@ -52,7 +49,6 @@ class ApplicationContext {
     val oppgaveService = OppgaveService(oppgaveConsumer, loginLevelService)
     val beskjedService = BeskjedService(beskjedConsumer, loginLevelService)
     val innboksService = InnboksService(innboksConsumer, loginLevelService)
-    val brukernotifikasjonService = BrukernotifikasjonService(brukernotifikasjonConsumer)
     val varselService = VarselService(varselConsumer)
 
     val digiSosConsumer = DigiSosClient(httpClient, environment.digiSosBaseURL)
