@@ -9,6 +9,7 @@ import kotlinx.coroutines.runBlocking
 import kotlinx.serialization.encodeToString
 import no.nav.personbruker.dittnav.api.common.AuthenticatedUserObjectMother
 import no.nav.personbruker.dittnav.api.config.json
+import no.nav.personbruker.dittnav.api.util.createBasicMockedHttpClient
 import org.amshove.kluent.`should be equal to`
 import org.amshove.kluent.`should be false`
 import org.amshove.kluent.`should be true`
@@ -43,7 +44,7 @@ class BeskjedConsumerTest {
     @Test
     fun `Skal motta en liste over aktive Beskjeder`() {
         val beskjedObject = createBeskjed("1", "1", "1", true)
-        val client = getClient {
+        val client = createBasicMockedHttpClient {
             respond(
                     json().encodeToString(listOf(beskjedObject)),
                     headers = headersOf(HttpHeaders.ContentType,
@@ -66,7 +67,7 @@ class BeskjedConsumerTest {
     fun `Skal motta en liste over inaktive Beskjeder`() {
         val beskjedObject = createBeskjed("1", "1", "1", false)
 
-        val client = getClient {
+        val client = createBasicMockedHttpClient {
             respond(
                     json().encodeToString(listOf(beskjedObject)),
                     headers = headersOf(HttpHeaders.ContentType,
@@ -85,14 +86,4 @@ class BeskjedConsumerTest {
         }
     }
 
-    private fun getClient(respond: MockRequestHandleScope.() -> HttpResponseData): HttpClient {
-        return HttpClient(MockEngine) {
-            engine {
-                addHandler {
-                    respond()
-                }
-            }
-            install(JsonFeature)
-        }
-    }
 }

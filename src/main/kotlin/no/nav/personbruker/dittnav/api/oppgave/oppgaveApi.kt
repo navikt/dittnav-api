@@ -9,15 +9,19 @@ import no.nav.personbruker.dittnav.api.config.authenticatedUser
 import no.nav.personbruker.dittnav.api.config.executeOnUnexpiredTokensOnly
 import org.slf4j.LoggerFactory
 
-fun Route.oppgave(oppgaveService: OppgaveService) {
+fun Route.oppgave(oppgaveMergerService: OppgaveMergerService) {
 
     val log = LoggerFactory.getLogger(OppgaveService::class.java)
 
     get("/oppgave") {
         executeOnUnexpiredTokensOnly {
             try {
-                val oppgaveEvents = oppgaveService.getActiveOppgaveEvents(authenticatedUser)
-                call.respond(HttpStatusCode.OK, oppgaveEvents)
+                val multiSourceResult = oppgaveMergerService.getActiveEvents(authenticatedUser)
+                if(multiSourceResult.hasErrors()) {
+                    log.warn("En eller flere kilder feilet: ${multiSourceResult.failedSources()}")
+                }
+                call.respond(HttpStatusCode.OK, multiSourceResult.results())
+
             } catch(exception: Exception) {
                 respondWithError(call, log, exception)
             }
@@ -27,11 +31,16 @@ fun Route.oppgave(oppgaveService: OppgaveService) {
     get("/oppgave/inaktiv") {
         executeOnUnexpiredTokensOnly {
             try {
-                val oppgaveEvents = oppgaveService.getInactiveOppgaveEvents(authenticatedUser)
-                call.respond(HttpStatusCode.OK, oppgaveEvents)
+                val multiSourceResult = oppgaveMergerService.getInactiveEvents(authenticatedUser)
+                if(multiSourceResult.hasErrors()) {
+                    log.warn("En eller flere kilder feilet: ${multiSourceResult.failedSources()}")
+                }
+                call.respond(HttpStatusCode.OK, multiSourceResult.results())
+
             } catch(exception: Exception) {
                 respondWithError(call, log, exception)
             }
         }
     }
+
 }

@@ -15,7 +15,9 @@ data class OppgaveDTO(
         val link: String,
         val produsent: String?,
         val sistOppdatert: ZonedDateTime,
-        val sikkerhetsnivaa: Int
+        val sikkerhetsnivaa: Int,
+        val aktiv: Boolean,
+        val grupperingsId : String
 ) {
     constructor(
             eventTidspunkt: ZonedDateTime,
@@ -24,7 +26,9 @@ data class OppgaveDTO(
             link: String,
             produsent: String?,
             sistOppdatert: ZonedDateTime,
-            sikkerhetsnivaa: Int
+            sikkerhetsnivaa: Int,
+            aktiv: Boolean,
+            grupperingsId : String
     ) : this(
             null,
             eventTidspunkt,
@@ -33,6 +37,8 @@ data class OppgaveDTO(
             link,
             produsent,
             sistOppdatert,
-            sikkerhetsnivaa
+            sikkerhetsnivaa,
+            aktiv,
+            grupperingsId
     )
 }

@@ -20,6 +20,8 @@ class OppgaveTransformerTest {
         oppgaveDTO.produsent!! `should be equal to` oppgave1.produsent!!
         oppgaveDTO.sistOppdatert `should be` oppgave1.sistOppdatert
         oppgaveDTO.sikkerhetsnivaa `should be` oppgave1.sikkerhetsnivaa
+        oppgaveDTO.aktiv `should be` oppgave1.aktiv
+        oppgaveDTO.grupperingsId `should be` oppgave1.grupperingsId
     }
 
     @Test
