@@ -7,6 +7,7 @@ metadata:
     team: personbruker
 spec:
   envFrom:
+    - secret: dittnav-api-secrets
     - configmap: loginservice-idporten
   image: {{version}}
   port: 8080
@@ -22,12 +23,8 @@ spec:
   replicas:
     min: 2
     max: 4
-  webproxy: true
   ingresses:
-    - "https://www.dev.nav.no/person/dittnav-api"
-    - "https://dittnav-api.dev.nav.no/person/dittnav-api"
-  vault:
-    enabled: true
+    - "https://dittnav-api-gcp.nais.oera.no/person/dittnav-api"
   resources:
     limits:
       cpu: "3"
