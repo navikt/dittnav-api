@@ -1,18 +1,24 @@
 package no.nav.personbruker.dittnav.api.oppgave
 
-import no.nav.personbruker.dittnav.api.common.ConsumeEventException
+import no.nav.personbruker.dittnav.api.beskjed.KildeType
+import no.nav.personbruker.dittnav.api.common.MultiSourceResult
 import no.nav.personbruker.dittnav.api.loginstatus.LoginLevelService
 import no.nav.personbruker.dittnav.common.security.AuthenticatedUser
+import org.slf4j.LoggerFactory
 
 class OppgaveService(private val oppgaveConsumer: OppgaveConsumer, private val loginLevelService: LoginLevelService) {
 
-    suspend fun getActiveOppgaveEvents(user: AuthenticatedUser): List<OppgaveDTO> {
+    private val log = LoggerFactory.getLogger(OppgaveService::class.java)
+
+    private val kilde = KildeType.EVENTHANDLER
+
+    suspend fun getActiveOppgaveEvents(user: AuthenticatedUser): MultiSourceResult<OppgaveDTO, KildeType> {
         return getOppgaveEvents(user) {
             oppgaveConsumer.getExternalActiveEvents(it)
         }
     }
 
-    suspend fun getInactiveOppgaveEvents(user: AuthenticatedUser): List<OppgaveDTO> {
+    suspend fun getInactiveOppgaveEvents(user: AuthenticatedUser): MultiSourceResult<OppgaveDTO, KildeType> {
         return getOppgaveEvents(user) {
             oppgaveConsumer.getExternalInactiveEvents(it)
         }
@@ -21,14 +27,17 @@ class OppgaveService(private val oppgaveConsumer: OppgaveConsumer, private val l
     private suspend fun getOppgaveEvents(
             user: AuthenticatedUser,
             getEvents: suspend (AuthenticatedUser) -> List<Oppgave>
-    ): List<OppgaveDTO> {
+    ): MultiSourceResult<OppgaveDTO, KildeType> {
         return try {
             val externalEvents = getEvents(user)
             val highestRequiredLoginLevel = getHighestRequiredLoginLevel(externalEvents)
             val operatingLoginLevel = loginLevelService.getOperatingLoginLevel(user, highestRequiredLoginLevel)
-            externalEvents.map { oppgave -> transformToDTO(oppgave, operatingLoginLevel) }
-        } catch (exception: Exception) {
-            throw ConsumeEventException("Klarte ikke hente eventer av type Oppgave", exception)
+            val oppgaver = externalEvents.map { oppgave -> transformToDTO(oppgave, operatingLoginLevel) }
+            MultiSourceResult.createSuccessfulResult(oppgaver, kilde)
+
+        } catch (e: Exception) {
+            log.warn("Klarte ikke å hente data fra $kilde: $e", e)
+            MultiSourceResult.createErrorResult(kilde)
         }
     }
 
