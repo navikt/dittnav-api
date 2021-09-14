@@ -1,8 +1,8 @@
 package no.nav.personbruker.dittnav.api.innboks
 
-import io.ktor.client.HttpClient
+import io.ktor.client.*
 import no.nav.personbruker.dittnav.api.config.get
-import no.nav.personbruker.dittnav.common.security.AuthenticatedUser
+import no.nav.personbruker.dittnav.api.tokenx.AccessToken
 import java.net.URL
 
 class InnboksConsumer(
@@ -13,15 +13,15 @@ class InnboksConsumer(
     private val activeEventsEndpoint = URL("$eventHandlerBaseURL/fetch/innboks/aktive")
     private val inactiveEventsEndpoint = URL("$eventHandlerBaseURL/fetch/innboks/inaktive")
 
-    suspend fun getExternalActiveEvents(user: AuthenticatedUser): List<Innboks> {
-        return getExternalEvents(user, activeEventsEndpoint)
+    suspend fun getExternalActiveEvents(accessToken: AccessToken): List<Innboks> {
+        return getExternalEvents(accessToken, activeEventsEndpoint)
     }
 
-    suspend fun getExternalInactiveEvents(user: AuthenticatedUser): List<Innboks> {
-        return getExternalEvents(user, inactiveEventsEndpoint)
+    suspend fun getExternalInactiveEvents(accessToken: AccessToken): List<Innboks> {
+        return getExternalEvents(accessToken, inactiveEventsEndpoint)
     }
 
-    private suspend fun getExternalEvents(user: AuthenticatedUser, completePathToEndpoint: URL): List<Innboks> {
-        return client.get(completePathToEndpoint, user)
+    private suspend fun getExternalEvents(accessToken: AccessToken, completePathToEndpoint: URL): List<Innboks> {
+        return client.get(completePathToEndpoint, accessToken)
     }
 }

@@ -3,33 +3,41 @@ package no.nav.personbruker.dittnav.api.oppgave
 import no.nav.personbruker.dittnav.api.beskjed.KildeType
 import no.nav.personbruker.dittnav.api.common.MultiSourceResult
 import no.nav.personbruker.dittnav.api.loginstatus.LoginLevelService
+import no.nav.personbruker.dittnav.api.tokenx.AccessToken
+import no.nav.personbruker.dittnav.api.tokenx.EventhandlerTokendings
 import no.nav.personbruker.dittnav.common.security.AuthenticatedUser
 import org.slf4j.LoggerFactory
 
-class OppgaveService(private val oppgaveConsumer: OppgaveConsumer, private val loginLevelService: LoginLevelService) {
+class OppgaveService(
+    private val oppgaveConsumer: OppgaveConsumer,
+    private val eventhandlerTokendings: EventhandlerTokendings,
+    private val loginLevelService: LoginLevelService) {
 
     private val log = LoggerFactory.getLogger(OppgaveService::class.java)
 
     private val kilde = KildeType.EVENTHANDLER
 
     suspend fun getActiveOppgaveEvents(user: AuthenticatedUser): MultiSourceResult<OppgaveDTO, KildeType> {
-        return getOppgaveEvents(user) {
+        val exchangedToken = eventhandlerTokendings.exchangeToken(user)
+        return getOppgaveEvents(user, exchangedToken) {
             oppgaveConsumer.getExternalActiveEvents(it)
         }
     }
 
     suspend fun getInactiveOppgaveEvents(user: AuthenticatedUser): MultiSourceResult<OppgaveDTO, KildeType> {
-        return getOppgaveEvents(user) {
+        val exchangedToken = eventhandlerTokendings.exchangeToken(user)
+        return getOppgaveEvents(user, exchangedToken) {
             oppgaveConsumer.getExternalInactiveEvents(it)
         }
     }
 
     private suspend fun getOppgaveEvents(
-            user: AuthenticatedUser,
-            getEvents: suspend (AuthenticatedUser) -> List<Oppgave>
+        user: AuthenticatedUser,
+        exchangedToken: AccessToken,
+        getEvents: suspend (AccessToken) -> List<Oppgave>
     ): MultiSourceResult<OppgaveDTO, KildeType> {
         return try {
-            val externalEvents = getEvents(user)
+            val externalEvents = getEvents(exchangedToken)
             val highestRequiredLoginLevel = getHighestRequiredLoginLevel(externalEvents)
             val operatingLoginLevel = loginLevelService.getOperatingLoginLevel(user, highestRequiredLoginLevel)
             val oppgaver = externalEvents.map { oppgave -> transformToDTO(oppgave, operatingLoginLevel) }

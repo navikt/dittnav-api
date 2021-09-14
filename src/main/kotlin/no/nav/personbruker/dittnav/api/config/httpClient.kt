@@ -3,10 +3,11 @@ package no.nav.personbruker.dittnav.api.config
 import io.ktor.client.HttpClient
 import io.ktor.client.features.timeout
 import io.ktor.client.request.*
-import io.ktor.http.HttpHeaders
-import io.ktor.http.HttpMethod
+import io.ktor.http.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import no.nav.personbruker.dittnav.api.done.DoneDTO
+import no.nav.personbruker.dittnav.api.tokenx.AccessToken
 import no.nav.personbruker.dittnav.common.security.AuthenticatedUser
 import java.net.URL
 
@@ -15,6 +16,14 @@ suspend inline fun <reified T> HttpClient.get(url: URL, user: AuthenticatedUser)
         url(url)
         method = HttpMethod.Get
         header(HttpHeaders.Authorization, user.createAuthenticationHeader())
+    }
+}
+
+suspend inline fun <reified T> HttpClient.get(url: URL, accessToken: AccessToken): T = withContext(Dispatchers.IO) {
+    request {
+        url(url)
+        method = HttpMethod.Get
+        header(HttpHeaders.Authorization, "Bearer ${accessToken.value}")
     }
 }
 
@@ -40,5 +49,15 @@ suspend inline fun <reified T> HttpClient.getWithEssoTokenHeader(url: URL, user:
         method = HttpMethod.Get
         header(HttpHeaders.Authorization, user.createAuthenticationHeader())
         header("nav-esso", user.auxiliaryEssoToken)
+    }
+}
+
+suspend inline fun <reified T> HttpClient.post(url: URL, done: DoneDTO, accessToken: AccessToken): T = withContext(Dispatchers.IO) {
+    post {
+        url(url)
+        method = HttpMethod.Post
+        header(HttpHeaders.Authorization, "Bearer ${accessToken.value}")
+        contentType(ContentType.Application.Json)
+        body = done
     }
 }
