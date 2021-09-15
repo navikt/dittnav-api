@@ -36,6 +36,7 @@ spec:
           cluster: "dev-gcp"
   ingresses:
     - "https://dittnav-api-gcp.dev.nav.no/person/dittnav-api"
+    - "https://www-gcp.dev.nav.no/person/dittnav-api"
   resources:
     limits:
       cpu: "3"
