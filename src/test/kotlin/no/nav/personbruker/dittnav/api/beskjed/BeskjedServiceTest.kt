@@ -5,23 +5,33 @@ import io.mockk.mockk
 import kotlinx.coroutines.runBlocking
 import no.nav.personbruker.dittnav.api.common.AuthenticatedUserObjectMother
 import no.nav.personbruker.dittnav.api.loginstatus.LoginLevelService
+import no.nav.personbruker.dittnav.api.tokenx.AccessToken
+import no.nav.personbruker.dittnav.api.tokenx.EventhandlerTokendings
 import org.amshove.kluent.`should be equal to`
 import org.amshove.kluent.`should contain`
+import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 
-class BeskjedServiceTest {
+internal class BeskjedServiceTest {
 
-    var user = AuthenticatedUserObjectMother.createAuthenticatedUser()
+    private var user = AuthenticatedUserObjectMother.createAuthenticatedUser()
+    private val dummyToken = AccessToken("<access_token>")
 
-    val beskjedConsumer = mockk<BeskjedConsumer>()
-    val loginLevelService = mockk<LoginLevelService>()
-    val beskjedService = BeskjedService(beskjedConsumer, loginLevelService)
+    private val beskjedConsumer = mockk<BeskjedConsumer>()
+    private val loginLevelService = mockk<LoginLevelService>()
+    private val eventhandlerTokendings = mockk<EventhandlerTokendings>()
+    private val beskjedService = BeskjedService(beskjedConsumer, eventhandlerTokendings, loginLevelService)
+
+    @BeforeEach
+    fun setup() {
+        coEvery { eventhandlerTokendings.exchangeToken(user) } returns dummyToken
+    }
 
     @Test
     fun `should return list of BeskjedDTO when active Events are received`() {
         val beskjed1 = createBeskjed("1", "1", "1", true)
         val beskjed2 = createBeskjed("2", "2", "2", true)
-        coEvery { beskjedConsumer.getExternalActiveEvents(user) } returns listOf(beskjed1, beskjed2)
+        coEvery { beskjedConsumer.getExternalActiveEvents(dummyToken) } returns listOf(beskjed1, beskjed2)
         coEvery { loginLevelService.getOperatingLoginLevel(any(), any()) } returns user.loginLevel
         runBlocking {
             val beskjedResult = beskjedService.getActiveBeskjedEvents(user)
@@ -33,7 +43,7 @@ class BeskjedServiceTest {
     fun `should return list of BeskjedDTO when inactive Events are received`() {
         val beskjed1 = createBeskjed("1", "1", "1", false)
         val beskjed2 = createBeskjed("2", "2", "2", false)
-        coEvery { beskjedConsumer.getExternalInactiveEvents(user) } returns listOf(beskjed1, beskjed2)
+        coEvery { beskjedConsumer.getExternalInactiveEvents(dummyToken) } returns listOf(beskjed1, beskjed2)
         coEvery { loginLevelService.getOperatingLoginLevel(any(), any()) } returns user.loginLevel
         runBlocking {
             val beskjedResult = beskjedService.getInactiveBeskjedEvents(user)
@@ -47,7 +57,8 @@ class BeskjedServiceTest {
         var beskjed = createBeskjed("1", ident, "1", true)
         beskjed = beskjed.copy(sikkerhetsnivaa = 4)
         user = AuthenticatedUserObjectMother.createAuthenticatedUser(ident, 3)
-        coEvery { beskjedConsumer.getExternalActiveEvents(user) } returns listOf(beskjed)
+        coEvery { eventhandlerTokendings.exchangeToken(user) } returns dummyToken
+        coEvery { beskjedConsumer.getExternalActiveEvents(dummyToken) } returns listOf(beskjed)
         coEvery { loginLevelService.getOperatingLoginLevel(any(), any()) } returns user.loginLevel
         runBlocking {
             val beskjedResult = beskjedService.getActiveBeskjedEvents(user)
@@ -62,7 +73,7 @@ class BeskjedServiceTest {
     fun `should not mask events with security level lower than current user`() {
         var beskjed = createBeskjed("1", "1", "1", true)
         beskjed = beskjed.copy(sikkerhetsnivaa = 3)
-        coEvery { beskjedConsumer.getExternalActiveEvents(user) } returns listOf(beskjed)
+        coEvery { beskjedConsumer.getExternalActiveEvents(dummyToken) } returns listOf(beskjed)
         coEvery { loginLevelService.getOperatingLoginLevel(any(), any()) } returns user.loginLevel
         runBlocking {
             val beskjedResult = beskjedService.getActiveBeskjedEvents(user)
@@ -76,7 +87,7 @@ class BeskjedServiceTest {
     @Test
     fun `should not mask events with security level equal than current user`() {
         val beskjed = createBeskjed("1", "1", "1", true)
-        coEvery { beskjedConsumer.getExternalActiveEvents(user) } returns listOf(beskjed)
+        coEvery { beskjedConsumer.getExternalActiveEvents(dummyToken) } returns listOf(beskjed)
         coEvery { loginLevelService.getOperatingLoginLevel(any(), any()) } returns user.loginLevel
         runBlocking {
             val beskjedResult = beskjedService.getActiveBeskjedEvents(user)
@@ -89,7 +100,7 @@ class BeskjedServiceTest {
 
     @Test
     fun `should throw exception if fetching active events fails`() {
-        coEvery { beskjedConsumer.getExternalActiveEvents(user) } throws Exception("error")
+        coEvery { beskjedConsumer.getExternalActiveEvents(dummyToken) } throws Exception("error")
         coEvery { loginLevelService.getOperatingLoginLevel(any(), any()) } returns user.loginLevel
         runBlocking {
             val beskjedResult = beskjedService.getActiveBeskjedEvents(user)
@@ -100,7 +111,7 @@ class BeskjedServiceTest {
 
     @Test
     fun `should throw exception if fetching inactive events fails`() {
-        coEvery { beskjedConsumer.getExternalInactiveEvents(user) } throws Exception("error")
+        coEvery { beskjedConsumer.getExternalInactiveEvents(dummyToken) } throws Exception("error")
         coEvery { loginLevelService.getOperatingLoginLevel(any(), any()) } returns user.loginLevel
         runBlocking {
             val beskjedResult = beskjedService.getInactiveBeskjedEvents(user)

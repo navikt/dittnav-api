@@ -3,12 +3,11 @@ package no.nav.personbruker.dittnav.api.innboks
 import io.ktor.client.*
 import io.ktor.client.engine.mock.*
 import io.ktor.client.features.json.*
-import io.ktor.client.request.*
 import io.ktor.http.*
 import kotlinx.coroutines.runBlocking
 import kotlinx.serialization.encodeToString
-import no.nav.personbruker.dittnav.api.common.AuthenticatedUserObjectMother
 import no.nav.personbruker.dittnav.api.config.json
+import no.nav.personbruker.dittnav.api.tokenx.AccessToken
 import no.nav.personbruker.dittnav.api.util.createBasicMockedHttpClient
 import org.amshove.kluent.`should be equal to`
 import org.amshove.kluent.`should be false`
@@ -16,9 +15,9 @@ import org.amshove.kluent.`should be true`
 import org.junit.jupiter.api.Test
 import java.net.URL
 
-class InnboksConsumerTest {
+internal class InnboksConsumerTest {
 
-    val user = AuthenticatedUserObjectMother.createAuthenticatedUser()
+    private val dummyToken = AccessToken("<access_token>")
 
     @Test
     fun `should call innboks endpoint on event handler`() {
@@ -37,7 +36,7 @@ class InnboksConsumerTest {
         val innboksConsumer = InnboksConsumer(client, URL("http://event-handler"))
 
         runBlocking {
-            innboksConsumer.getExternalActiveEvents(user) `should be equal to` emptyList()
+            innboksConsumer.getExternalActiveEvents(dummyToken) `should be equal to` emptyList()
         }
     }
 
@@ -56,7 +55,7 @@ class InnboksConsumerTest {
         val innboksConsumer = InnboksConsumer(client, URL("http://event-handler"))
 
         runBlocking {
-            val externalActiveEvents = innboksConsumer.getExternalActiveEvents(user)
+            val externalActiveEvents = innboksConsumer.getExternalActiveEvents(dummyToken)
             val event = externalActiveEvents.first()
             externalActiveEvents.size `should be equal to` 2
             event.tekst `should be equal to` innboksObject1.tekst
@@ -79,7 +78,7 @@ class InnboksConsumerTest {
         val innboksConsumer = InnboksConsumer(client, URL("http://event-handler"))
 
         runBlocking {
-            val externalInactiveEvents = innboksConsumer.getExternalInactiveEvents(user)
+            val externalInactiveEvents = innboksConsumer.getExternalInactiveEvents(dummyToken)
             val event = externalInactiveEvents.first()
             externalInactiveEvents.size `should be equal to` 1
             event.tekst `should be equal to` innboksObject.tekst
@@ -87,5 +86,4 @@ class InnboksConsumerTest {
             event.aktiv.`should be false`()
         }
     }
-
 }

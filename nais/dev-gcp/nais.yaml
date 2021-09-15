@@ -23,6 +23,17 @@ spec:
   replicas:
     min: 2
     max: 4
+  tokenx:
+    enabled: true
+  accessPolicy:
+    inbound:
+      rules:
+        - application: dittnav
+    outbound:
+      rules:
+        - application: "dittnav-event-handler"
+          namespace: "personbruker"
+          cluster: "dev-gcp"
   ingresses:
     - "https://dittnav-api-gcp.dev.nav.no/person/dittnav-api"
   resources:

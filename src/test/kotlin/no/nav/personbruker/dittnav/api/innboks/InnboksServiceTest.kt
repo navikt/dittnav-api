@@ -6,23 +6,34 @@ import kotlinx.coroutines.runBlocking
 import no.nav.personbruker.dittnav.api.common.ConsumeEventException
 import no.nav.personbruker.dittnav.api.common.AuthenticatedUserObjectMother
 import no.nav.personbruker.dittnav.api.loginstatus.LoginLevelService
+import no.nav.personbruker.dittnav.api.tokenx.AccessToken
+import no.nav.personbruker.dittnav.api.tokenx.EventhandlerTokendings
 import org.amshove.kluent.`should be equal to`
 import org.amshove.kluent.`should throw`
 import org.amshove.kluent.invoking
+import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 
-class InnboksServiceTest {
-    val innboksConsumer = mockk<InnboksConsumer>()
-    val loginLevelService = mockk<LoginLevelService>()
-    val innboksService = InnboksService(innboksConsumer, loginLevelService)
+internal class InnboksServiceTest {
 
-    var user = AuthenticatedUserObjectMother.createAuthenticatedUser()
+    private var user = AuthenticatedUserObjectMother.createAuthenticatedUser()
+    private val dummyToken = AccessToken("<access_token>")
+
+    private val innboksConsumer = mockk<InnboksConsumer>()
+    private val loginLevelService = mockk<LoginLevelService>()
+    private val eventhandlerTokendings = mockk<EventhandlerTokendings>()
+    private val innboksService = InnboksService(innboksConsumer, eventhandlerTokendings, loginLevelService)
+
+    @BeforeEach
+    fun setup() {
+        coEvery { eventhandlerTokendings.exchangeToken(user) } returns dummyToken
+    }
 
     @Test
     fun `should return list of InnboksDTO when active Events are received`() {
         val innboks1 = createInnboks("1", "1", true)
         val innboks2 = createInnboks("2", "2", true)
-        coEvery { innboksConsumer.getExternalActiveEvents(user) } returns listOf(innboks1, innboks2)
+        coEvery { innboksConsumer.getExternalActiveEvents(dummyToken) } returns listOf(innboks1, innboks2)
         coEvery { loginLevelService.getOperatingLoginLevel(any(), any()) } returns user.loginLevel
         runBlocking {
             val innboksList = innboksService.getActiveInnboksEvents(user)
@@ -34,7 +45,7 @@ class InnboksServiceTest {
     fun `should return list of InnboksDTO when inactive Events are received`() {
         val innboks1 = createInnboks("1", "1", false)
         val innboks2 = createInnboks("2", "2", false)
-        coEvery { innboksConsumer.getExternalInactiveEvents(user) } returns listOf(innboks1, innboks2)
+        coEvery { innboksConsumer.getExternalInactiveEvents(dummyToken) } returns listOf(innboks1, innboks2)
         coEvery { loginLevelService.getOperatingLoginLevel(any(), any()) } returns user.loginLevel
         runBlocking {
             val innboksList = innboksService.getInactiveInnboksEvents(user)
@@ -48,7 +59,8 @@ class InnboksServiceTest {
         var innboks = createInnboks("1", ident, true)
         innboks = innboks.copy(sikkerhetsnivaa = 4)
         user = AuthenticatedUserObjectMother.createAuthenticatedUser(ident, 3)
-        coEvery { innboksConsumer.getExternalActiveEvents(user) } returns listOf(innboks)
+        coEvery { eventhandlerTokendings.exchangeToken(user) } returns dummyToken
+        coEvery { innboksConsumer.getExternalActiveEvents(dummyToken) } returns listOf(innboks)
         coEvery { loginLevelService.getOperatingLoginLevel(any(), any()) } returns user.loginLevel
         runBlocking {
             val innboksList = innboksService.getActiveInnboksEvents(user)
@@ -63,7 +75,7 @@ class InnboksServiceTest {
     fun `should not mask events with security level lower than current user`() {
         var innboks = createInnboks("1", "1", true)
         innboks = innboks.copy(sikkerhetsnivaa = 3)
-        coEvery { innboksConsumer.getExternalActiveEvents(user) } returns listOf(innboks)
+        coEvery { innboksConsumer.getExternalActiveEvents(dummyToken) } returns listOf(innboks)
         coEvery { loginLevelService.getOperatingLoginLevel(any(), any()) } returns user.loginLevel
         runBlocking {
             val innboksList = innboksService.getActiveInnboksEvents(user)
@@ -77,7 +89,7 @@ class InnboksServiceTest {
     @Test
     fun `should not mask events with security level equal than current user`() {
         val innboks = createInnboks("1", "1", true)
-        coEvery { innboksConsumer.getExternalActiveEvents(user) } returns listOf(innboks)
+        coEvery { innboksConsumer.getExternalActiveEvents(dummyToken) } returns listOf(innboks)
         coEvery { loginLevelService.getOperatingLoginLevel(any(), any()) } returns user.loginLevel
         runBlocking {
             val innboksList = innboksService.getActiveInnboksEvents(user)
@@ -90,13 +102,13 @@ class InnboksServiceTest {
 
     @Test
     fun `should throw exception if fetching active events fails`() {
-        coEvery { innboksConsumer.getExternalActiveEvents(user) } throws Exception("error")
+        coEvery { innboksConsumer.getExternalActiveEvents(dummyToken) } throws Exception("error")
         invoking { runBlocking { innboksService.getActiveInnboksEvents(user) } } `should throw` ConsumeEventException::class
     }
 
     @Test
     fun `should throw exception if fetching inactive events fails`() {
-        coEvery { innboksConsumer.getExternalInactiveEvents(user) } throws Exception("error")
+        coEvery { innboksConsumer.getExternalInactiveEvents(dummyToken) } throws Exception("error")
         invoking { runBlocking { innboksService.getInactiveInnboksEvents(user) } } `should throw` ConsumeEventException::class
     }
 }

@@ -3,12 +3,11 @@ package no.nav.personbruker.dittnav.api.oppgave
 import io.ktor.client.*
 import io.ktor.client.engine.mock.*
 import io.ktor.client.features.json.*
-import io.ktor.client.request.*
 import io.ktor.http.*
 import kotlinx.coroutines.runBlocking
 import kotlinx.serialization.encodeToString
-import no.nav.personbruker.dittnav.api.common.AuthenticatedUserObjectMother
 import no.nav.personbruker.dittnav.api.config.json
+import no.nav.personbruker.dittnav.api.tokenx.AccessToken
 import no.nav.personbruker.dittnav.api.util.createBasicMockedHttpClient
 import org.amshove.kluent.`should be equal to`
 import org.amshove.kluent.`should be false`
@@ -16,9 +15,9 @@ import org.amshove.kluent.`should be true`
 import org.junit.jupiter.api.Test
 import java.net.URL
 
-class OppgaveConsumerTest {
+internal class OppgaveConsumerTest {
 
-    val user = AuthenticatedUserObjectMother.createAuthenticatedUser()
+    private val dummyToken = AccessToken("<access_token>")
 
     @Test
     fun `should call oppgave endpoint on event handler`() {
@@ -39,7 +38,7 @@ class OppgaveConsumerTest {
         val oppgaveConsumer = OppgaveConsumer(client, URL("http://event-handler"))
 
         runBlocking {
-            oppgaveConsumer.getExternalActiveEvents(user) `should be equal to` emptyList()
+            oppgaveConsumer.getExternalActiveEvents(dummyToken) `should be equal to` emptyList()
         }
     }
 
@@ -58,7 +57,7 @@ class OppgaveConsumerTest {
         val oppgaveConsumer = OppgaveConsumer(client, URL("http://event-handler"))
 
         runBlocking {
-            val externalActiveEvents = oppgaveConsumer.getExternalActiveEvents(user)
+            val externalActiveEvents = oppgaveConsumer.getExternalActiveEvents(dummyToken)
             val event = externalActiveEvents.first()
             externalActiveEvents.size `should be equal to` 2
             event.tekst `should be equal to` oppgaveObject1.tekst
@@ -81,7 +80,7 @@ class OppgaveConsumerTest {
         val oppgaveConsumer = OppgaveConsumer(client, URL("http://event-handler"))
 
         runBlocking {
-            val externalInactiveEvents = oppgaveConsumer.getExternalInactiveEvents(user)
+            val externalInactiveEvents = oppgaveConsumer.getExternalInactiveEvents(dummyToken)
             val event = externalInactiveEvents.first()
             externalInactiveEvents.size `should be equal to` 1
             event.tekst `should be equal to` oppgaveObject.tekst
@@ -89,5 +88,4 @@ class OppgaveConsumerTest {
             event.aktiv.`should be false`()
         }
     }
-
 }

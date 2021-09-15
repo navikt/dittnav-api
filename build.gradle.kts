@@ -26,6 +26,9 @@ repositories {
 }
 
 dependencies {
+    implementation(DittNAV.Common.logging)
+    implementation(DittNAV.Common.securityAuthenticatedUser)
+    implementation(DittNAV.Common.utils)
     implementation(Kotlinx.coroutines)
     implementation(Kotlinx.htmlJvm)
     implementation(Ktor.auth)
@@ -46,9 +49,7 @@ dependencies {
     implementation(Prometheus.common)
     implementation(Prometheus.hotspot)
     implementation(Prometheus.logback)
-    implementation(DittNAV.Common.logging)
-    implementation(DittNAV.Common.securityAuthenticatedUser)
-    implementation(DittNAV.Common.utils)
+    implementation(Tms.KtorTokenSupport.tokendingsExchange)
     implementation(Unleash.clientJava)
 
     testImplementation(Junit.api)

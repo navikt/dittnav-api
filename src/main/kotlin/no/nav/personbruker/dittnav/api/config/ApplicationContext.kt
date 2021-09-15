@@ -7,7 +7,9 @@ import no.finn.unleash.DefaultUnleash
 import no.finn.unleash.FakeUnleash
 import no.finn.unleash.Unleash
 import no.finn.unleash.util.UnleashConfig
-import no.nav.personbruker.dittnav.api.beskjed.*
+import no.nav.personbruker.dittnav.api.beskjed.BeskjedConsumer
+import no.nav.personbruker.dittnav.api.beskjed.BeskjedMergerService
+import no.nav.personbruker.dittnav.api.beskjed.BeskjedService
 import no.nav.personbruker.dittnav.api.digisos.DigiSosClient
 import no.nav.personbruker.dittnav.api.digisos.DigiSosService
 import no.nav.personbruker.dittnav.api.done.DoneProducer
@@ -20,10 +22,12 @@ import no.nav.personbruker.dittnav.api.loginstatus.LoginLevelService
 import no.nav.personbruker.dittnav.api.oppgave.OppgaveConsumer
 import no.nav.personbruker.dittnav.api.oppgave.OppgaveMergerService
 import no.nav.personbruker.dittnav.api.oppgave.OppgaveService
+import no.nav.personbruker.dittnav.api.tokenx.EventhandlerTokendings
 import no.nav.personbruker.dittnav.api.unleash.ByEnvironmentStrategy
 import no.nav.personbruker.dittnav.api.unleash.UnleashService
 import no.nav.personbruker.dittnav.api.varsel.VarselConsumer
 import no.nav.personbruker.dittnav.api.varsel.VarselService
+import no.nav.tms.token.support.tokendings.exchange.TokendingsServiceBuilder
 
 class ApplicationContext {
 
@@ -34,22 +38,25 @@ class ApplicationContext {
     val httpClientIgnoreUnknownKeys = HttpClientBuilder.build(KotlinxSerializer(json(ignoreUnknownKeys = true)))
     val dependencyPinger = DependencyPinger(environment, httpClient)
 
+    val tokendingsService = TokendingsServiceBuilder.buildTokendingsService()
+    val eventhandlerTokendings = EventhandlerTokendings(tokendingsService, environment.eventhandlerClientId)
+
     val legacyConsumer = LegacyConsumer(httpClient, environment.legacyApiURL)
     val oppgaveConsumer = OppgaveConsumer(httpClient, environment.eventHandlerURL)
     val beskjedConsumer = BeskjedConsumer(httpClient, environment.eventHandlerURL)
     val innboksConsumer = InnboksConsumer(httpClient, environment.eventHandlerURL)
     val varselConsumer = VarselConsumer(httpClient, environment.legacyApiURL)
 
-    val doneProducer = DoneProducer(httpClient, environment.eventHandlerURL)
+    val doneProducer = DoneProducer(httpClient, eventhandlerTokendings, environment.eventHandlerURL)
 
     val innloggingsstatusConsumer = InnloggingsstatusConsumer(httpClientIgnoreUnknownKeys, environment.innloggingsstatusUrl)
     val loginLevelService = LoginLevelService(innloggingsstatusConsumer)
 
     val unleashService = createUnleashService(environment)
 
-    val oppgaveService = OppgaveService(oppgaveConsumer, loginLevelService)
-    val beskjedService = BeskjedService(beskjedConsumer, loginLevelService)
-    val innboksService = InnboksService(innboksConsumer, loginLevelService)
+    val oppgaveService = OppgaveService(oppgaveConsumer, eventhandlerTokendings, loginLevelService)
+    val beskjedService = BeskjedService(beskjedConsumer, eventhandlerTokendings, loginLevelService)
+    val innboksService = InnboksService(innboksConsumer, eventhandlerTokendings, loginLevelService)
     val varselService = VarselService(varselConsumer)
 
     val digiSosConsumer = DigiSosClient(httpClient, environment.digiSosSoknadBaseURL, environment.digiSosInnsynBaseURL)
