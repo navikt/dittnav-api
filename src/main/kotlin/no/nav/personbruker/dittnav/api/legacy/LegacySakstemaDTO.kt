@@ -1,4 +1,4 @@
-package no.nav.personbruker.dittnav.api.saker.legacy
+package no.nav.personbruker.dittnav.api.legacy
 import kotlinx.serialization.Serializable
 
 @Serializable

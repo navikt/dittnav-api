@@ -1,6 +1,6 @@
 package no.nav.personbruker.dittnav.api.saker
 
-import no.nav.personbruker.dittnav.api.saker.legacy.LegacySakstemaDTO
+import no.nav.personbruker.dittnav.api.legacy.LegacySakstemaDTO
 import java.net.URL
 
 fun toSakerDTO(inbound: Saker): SakerDTO =

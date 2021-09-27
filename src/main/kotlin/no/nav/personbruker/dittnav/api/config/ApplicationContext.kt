@@ -58,7 +58,7 @@ class ApplicationContext {
     val innboksService = InnboksService(innboksConsumer, loginLevelService)
     val brukernotifikasjonService = BrukernotifikasjonService(brukernotifikasjonConsumer)
     val varselService = VarselService(varselConsumer)
-    val sakerService = SakerService(mineSakerClient, unleashService)
+    val sakerService = SakerService(mineSakerClient, legacyConsumer, unleashService)
 
     val digiSosConsumer = DigiSosClient(httpClient, environment.digiSosSoknadBaseURL, environment.digiSosInnsynBaseURL)
     val digiSosService = DigiSosService(digiSosConsumer)
