@@ -11,14 +11,14 @@ class SakerClient(
         sakerApiURL: URL
 ) {
 
-    private val sakerEndpoint = URL("$sakerApiURL/saker")
+    private val sisteEndredeSakerEndpoint = URL("$sakerApiURL/sakstemaer/sistendret")
 
     suspend fun getExternalLegacySaker(user: AuthenticatedUser): LegacySaker {
-        return client.get(sakerEndpoint, user)
+        return client.get(sisteEndredeSakerEndpoint, user)
     }
 
     suspend fun getExternalSaker(user: AuthenticatedUser): List<Saker> {
-        return client.get(sakerEndpoint, user)
+        return client.get(sisteEndredeSakerEndpoint, user)
     }
 
 }

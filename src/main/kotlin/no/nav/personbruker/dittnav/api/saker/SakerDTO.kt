@@ -6,5 +6,6 @@ import kotlinx.serialization.Serializable
 data class SakerDTO(
         val navn: String,
         val kode: String,
-        val sistEndret: String
+        val sistEndret: String,
+        val detaljvisningUrl : String
 )

@@ -18,4 +18,9 @@ class SakerService(
         return externalSaker.sakstemaList.map { sak -> toSakerDTOFromLegacy(sak) }
     }
 
+    suspend fun getMineSaker(user: AuthenticatedUser): List<SakerDTO> {
+        val externalSaker = sakerClient.getExternalSaker(user)
+        return externalSaker.map { sak -> toSakerDTO(sak) }
+    }
+
 }
