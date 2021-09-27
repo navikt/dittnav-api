@@ -12,7 +12,7 @@ class MineSakerConsumer(
 
     private val sisteEndredeSakerEndpoint = URL("$mineSakerApiURL/sakstemaer/sistendret")
 
-    suspend fun hentSistEndret(user: AuthenticatedUser): List<SakerDTO> {
+    suspend fun hentSistEndret(user: AuthenticatedUser): List<SakstemaDTO> {
         val externals = client.get<List<Sakstema>>(sisteEndredeSakerEndpoint, user)
         val internal = externals.map { external ->
             external.toInternal()

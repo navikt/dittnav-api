@@ -10,7 +10,7 @@ class SakerService(
     private val unleashService: UnleashService
 ) {
 
-    suspend fun getSaker(user: AuthenticatedUser): List<SakerDTO> {
+    suspend fun getSaker(user: AuthenticatedUser): List<SakstemaDTO> {
         return if (unleashService.mineSakerEnabled(user)) {
             mineSakerConsumer.hentSistEndret(user)
 
@@ -19,11 +19,11 @@ class SakerService(
         }
     }
 
-    suspend fun getMineSaker(user: AuthenticatedUser): List<SakerDTO> {
+    suspend fun getMineSaker(user: AuthenticatedUser): List<SakstemaDTO> {
         return mineSakerConsumer.hentSistEndret(user)
     }
 
-    suspend fun getLegacySaker(user: AuthenticatedUser): List<SakerDTO> {
+    suspend fun getLegacySaker(user: AuthenticatedUser): List<SakstemaDTO> {
         return legacyConsumer.hentSiste(user)
     }
 

@@ -9,7 +9,7 @@ import java.net.URL
 import java.time.ZonedDateTime
 
 @Serializable
-data class SakerDTO(
+data class SakstemaDTO(
         val navn: String,
         val kode: String,
         val sistEndret: ZonedDateTime,

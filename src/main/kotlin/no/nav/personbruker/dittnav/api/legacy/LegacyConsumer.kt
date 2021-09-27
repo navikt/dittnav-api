@@ -4,7 +4,7 @@ import io.ktor.client.*
 import io.ktor.client.statement.*
 import io.ktor.http.*
 import no.nav.personbruker.dittnav.api.config.getExtendedTimeout
-import no.nav.personbruker.dittnav.api.saker.SakerDTO
+import no.nav.personbruker.dittnav.api.saker.SakstemaDTO
 import no.nav.personbruker.dittnav.common.security.AuthenticatedUser
 import org.slf4j.LoggerFactory
 import java.net.URL
@@ -38,7 +38,7 @@ class LegacyConsumer(private val httpClient: HttpClient, private val dittNAVLega
         return response
     }
 
-    suspend fun hentSiste(user: AuthenticatedUser): List<SakerDTO> {
+    suspend fun hentSiste(user: AuthenticatedUser): List<SakstemaDTO> {
         val operation = LegacyApiOperations.SAKSTEMA
         val endpoint = legacyApiEndpoints[operation]
             ?: throw IllegalStateException("Fant ikke komplett endepunkt for operasjonen $operation")
