@@ -22,7 +22,7 @@ import no.nav.personbruker.dittnav.api.loginstatus.LoginLevelService
 import no.nav.personbruker.dittnav.api.oppgave.OppgaveConsumer
 import no.nav.personbruker.dittnav.api.oppgave.OppgaveMergerService
 import no.nav.personbruker.dittnav.api.oppgave.OppgaveService
-import no.nav.personbruker.dittnav.api.saker.MineSakerClient
+import no.nav.personbruker.dittnav.api.saker.MineSakerConsumer
 import no.nav.personbruker.dittnav.api.saker.SakerService
 import no.nav.personbruker.dittnav.api.unleash.ByEnvironmentStrategy
 import no.nav.personbruker.dittnav.api.unleash.UnleashService
@@ -44,7 +44,7 @@ class ApplicationContext {
     val innboksConsumer = InnboksConsumer(httpClient, environment.eventHandlerURL)
     val brukernotifikasjonConsumer = BrukernotifikasjonConsumer(httpClient, environment.eventHandlerURL)
     val varselConsumer = VarselConsumer(httpClient, environment.legacyApiURL)
-    val mineSakerClient = MineSakerClient(httpClient, environment.sakerApiUrl)
+    val mineSakerConsumer = MineSakerConsumer(httpClient, environment.sakerApiUrl)
 
     val doneProducer = DoneProducer(httpClient, environment.eventHandlerURL)
 
@@ -58,7 +58,7 @@ class ApplicationContext {
     val innboksService = InnboksService(innboksConsumer, loginLevelService)
     val brukernotifikasjonService = BrukernotifikasjonService(brukernotifikasjonConsumer)
     val varselService = VarselService(varselConsumer)
-    val sakerService = SakerService(mineSakerClient, legacyConsumer, unleashService)
+    val sakerService = SakerService(mineSakerConsumer, legacyConsumer, unleashService)
 
     val digiSosConsumer = DigiSosClient(httpClient, environment.digiSosSoknadBaseURL, environment.digiSosInnsynBaseURL)
     val digiSosService = DigiSosService(digiSosConsumer)

@@ -5,7 +5,7 @@ import no.nav.personbruker.dittnav.api.config.get
 import no.nav.personbruker.dittnav.common.security.AuthenticatedUser
 import java.net.URL
 
-class MineSakerClient(
+class MineSakerConsumer(
         private val client: HttpClient,
         sakerApiURL: URL
 ) {

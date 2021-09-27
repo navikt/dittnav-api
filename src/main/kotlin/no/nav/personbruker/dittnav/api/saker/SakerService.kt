@@ -5,14 +5,14 @@ import no.nav.personbruker.dittnav.api.unleash.UnleashService
 import no.nav.personbruker.dittnav.common.security.AuthenticatedUser
 
 class SakerService(
-    private val mineSakerClient: MineSakerClient,
+    private val mineSakerConsumer: MineSakerConsumer,
     private val legacyConsumer: LegacyConsumer,
     private val unleashService: UnleashService
 ) {
 
     suspend fun getSaker(user: AuthenticatedUser): List<SakerDTO> {
         if (unleashService.sakerEnabled(user)) {
-            val externalSaker = mineSakerClient.getExternalSaker(user)
+            val externalSaker = mineSakerConsumer.getExternalSaker(user)
             return externalSaker.map { sak -> toSakerDTO(sak) }
         }
 
@@ -21,7 +21,7 @@ class SakerService(
     }
 
     suspend fun getMineSaker(user: AuthenticatedUser): List<SakerDTO> {
-        val externalSaker = mineSakerClient.getExternalSaker(user)
+        val externalSaker = mineSakerConsumer.getExternalSaker(user)
         return externalSaker.map { sak -> toSakerDTO(sak) }
     }
 
