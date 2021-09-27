@@ -11,7 +11,7 @@ import no.nav.personbruker.dittnav.common.security.AuthenticatedUser
 import java.net.URL
 
 suspend inline fun <reified T> HttpClient.get(url: URL, user: AuthenticatedUser): T = withContext(Dispatchers.IO) {
-    request {
+    request<T> {
         url(url)
         method = HttpMethod.Get
         header(HttpHeaders.Authorization, user.createAuthenticationHeader())
@@ -19,7 +19,7 @@ suspend inline fun <reified T> HttpClient.get(url: URL, user: AuthenticatedUser)
 }
 
 suspend inline fun <reified T> HttpClient.getExtendedTimeout(url: URL, user: AuthenticatedUser): T = withContext(Dispatchers.IO) {
-    request {
+    request<T> {
         url(url)
         method = HttpMethod.Get
         header(HttpHeaders.Authorization, user.createAuthenticationHeader())
@@ -35,7 +35,7 @@ suspend inline fun <reified T> HttpClient.getWithEssoTokenHeader(url: URL, user:
     require(user.auxiliaryEssoToken != null) {
         "Prøvde å sette esso-token som header, men fant det ikke for innlogget bruker."
     }
-    request {
+    request<T> {
         url(url)
         method = HttpMethod.Get
         header(HttpHeaders.Authorization, user.createAuthenticationHeader())
