@@ -6,8 +6,8 @@ import kotlinx.serialization.UseSerializers
 import no.nav.personbruker.dittnav.api.common.serializer.ZonedDateTimeSerializer
 
 @Serializable
-data class LegacySaker(
+data class LegacySakstemaerRespons(
         val antallSakstema: Int,
-        val sakstemaList: List<LegacySakstemaDTO>
+        val sakstemaList: List<LegacySakstema>
 )
 

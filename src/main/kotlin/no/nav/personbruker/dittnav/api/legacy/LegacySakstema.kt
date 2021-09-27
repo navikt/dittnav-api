@@ -2,7 +2,7 @@ package no.nav.personbruker.dittnav.api.legacy
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class LegacySakstemaDTO(
+data class LegacySakstema(
         val temanavn: String,
         val temakode: String,
         val antallStatusUnderBehandling: Int,

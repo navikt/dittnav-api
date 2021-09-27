@@ -37,7 +37,7 @@ class LegacyConsumer(private val httpClient: HttpClient, private val dittNAVLega
         return response
     }
 
-    suspend fun hentSiste(user: AuthenticatedUser): LegacySaker {
+    suspend fun hentSiste(user: AuthenticatedUser): LegacySakstemaerRespons {
         val operation = LegacyApiOperations.SAKSTEMA
         val endpoint = legacyApiEndpoints[operation]
             ?: throw IllegalStateException("Fant ikke komplett endepunkt for operasjonen $operation")
