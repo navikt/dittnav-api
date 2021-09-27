@@ -21,6 +21,7 @@ import no.nav.personbruker.dittnav.api.health.healthApi
 import no.nav.personbruker.dittnav.api.innboks.innboks
 import no.nav.personbruker.dittnav.api.legacy.legacyApi
 import no.nav.personbruker.dittnav.api.oppgave.oppgave
+import no.nav.personbruker.dittnav.api.saker.saker
 import no.nav.personbruker.dittnav.common.security.AuthenticatedUser
 import no.nav.personbruker.dittnav.common.security.AuthenticatedUserFactory
 import no.nav.security.token.support.ktor.tokenValidationSupport
@@ -71,6 +72,7 @@ fun Application.mainModule(appContext: ApplicationContext = ApplicationContext()
             beskjed(appContext.beskjedMergerService)
             innboks(appContext.innboksService)
             brukernotifikasjoner(appContext.brukernotifikasjonService)
+            saker(appContext.sakerService)
             if(appContext.environment.isRunningInDev) {
                 digiSos(appContext.digiSosService)
             }

@@ -16,6 +16,7 @@ data class Environment(
     val unleashApiUrl: String = getEnvVar("UNLEASH_API_URL"),
     val digiSosSoknadBaseURL: URL = getEnvVarAsURL("DIGISOS_API_URL", trimTrailingSlash = true),
     val digiSosInnsynBaseURL: URL = getEnvVarAsURL("DIGISOS_INNSYN_API_URL", trimTrailingSlash = true),
+    val sakerApiUrl: URL = getEnvVarAsURL("SAKER_API_URL", trimTrailingSlash = true),
     val isRunningInDev: Boolean = isRunningInDev()
 )
 
