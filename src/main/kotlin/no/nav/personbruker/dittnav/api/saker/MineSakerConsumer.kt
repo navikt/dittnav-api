@@ -6,14 +6,18 @@ import no.nav.personbruker.dittnav.common.security.AuthenticatedUser
 import java.net.URL
 
 class MineSakerConsumer(
-        private val client: HttpClient,
-        sakerApiURL: URL
+    private val client: HttpClient,
+    mineSakerApiURL: URL
 ) {
 
-    private val sisteEndredeSakerEndpoint = URL("$sakerApiURL/sakstemaer/sistendret")
+    private val sisteEndredeSakerEndpoint = URL("$mineSakerApiURL/sakstemaer/sistendret")
 
-    suspend fun getExternalSaker(user: AuthenticatedUser): List<Sakstema> {
-        return client.get(sisteEndredeSakerEndpoint, user)
+    suspend fun hentSistEndret(user: AuthenticatedUser): List<SakerDTO> {
+        val externals = client.get<List<Sakstema>>(sisteEndredeSakerEndpoint, user)
+        val internal = externals.map { external ->
+            external.toInternal()
+        }.toList()
+        return internal
     }
 
 }

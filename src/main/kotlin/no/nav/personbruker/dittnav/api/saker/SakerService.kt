@@ -11,23 +11,20 @@ class SakerService(
 ) {
 
     suspend fun getSaker(user: AuthenticatedUser): List<SakerDTO> {
-        if (unleashService.sakerEnabled(user)) {
-            val externalSaker = mineSakerConsumer.getExternalSaker(user)
-            return externalSaker.map { sak -> toSakerDTO(sak) }
-        }
+        return if (unleashService.mineSakerEnabled(user)) {
+            mineSakerConsumer.hentSistEndret(user)
 
-        val externalSaker = legacyConsumer.hentSiste(user)
-        return externalSaker.sakstemaList.map { sak -> toSakerDTOFromLegacy(sak) }
+        } else {
+            legacyConsumer.hentSiste(user)
+        }
     }
 
     suspend fun getMineSaker(user: AuthenticatedUser): List<SakerDTO> {
-        val externalSaker = mineSakerConsumer.getExternalSaker(user)
-        return externalSaker.map { sak -> toSakerDTO(sak) }
+        return mineSakerConsumer.hentSistEndret(user)
     }
 
     suspend fun getLegacySaker(user: AuthenticatedUser): List<SakerDTO> {
-        val externalSaker = legacyConsumer.hentSiste(user)
-        return externalSaker.sakstemaList.map { sak -> toSakerDTOFromLegacy(sak) }
+        return legacyConsumer.hentSiste(user)
     }
 
 }

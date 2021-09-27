@@ -24,7 +24,7 @@ class UnleashService(private val unleashClient: Unleash) {
         unleashClient.isEnabled(digiSosToggleName, createUnleashContext(user), false)
     }
 
-    suspend fun sakerEnabled(user: AuthenticatedUser): Boolean = withContext(Dispatchers.IO) {
+    suspend fun mineSakerEnabled(user: AuthenticatedUser): Boolean = withContext(Dispatchers.IO) {
         unleashClient.isEnabled(sakerToggleName, createUnleashContext(user), false)
     }
 
