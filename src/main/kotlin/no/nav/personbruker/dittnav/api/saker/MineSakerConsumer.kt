@@ -12,9 +12,8 @@ class MineSakerConsumer(
 
     private val sisteEndredeSakerEndpoint = URL("$sakerApiURL/sakstemaer/sistendret")
 
-    suspend fun getExternalSaker(user: AuthenticatedUser): List<Saker> {
+    suspend fun getExternalSaker(user: AuthenticatedUser): List<Sakstema> {
         return client.get(sisteEndredeSakerEndpoint, user)
     }
 
 }
-

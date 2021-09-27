@@ -3,7 +3,7 @@ package no.nav.personbruker.dittnav.api.saker
 import no.nav.personbruker.dittnav.api.legacy.LegacySakstema
 import java.net.URL
 
-fun toSakerDTO(inbound: Saker): SakerDTO =
+fun toSakerDTO(inbound: Sakstema): SakerDTO =
         inbound.let {
             SakerDTO(
                     navn = it.navn,
