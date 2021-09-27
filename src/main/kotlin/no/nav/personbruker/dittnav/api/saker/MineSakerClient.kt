@@ -6,7 +6,7 @@ import no.nav.personbruker.dittnav.api.saker.legacy.LegacySaker
 import no.nav.personbruker.dittnav.common.security.AuthenticatedUser
 import java.net.URL
 
-class SakerClient(
+class MineSakerClient(
         private val client: HttpClient,
         sakerApiURL: URL
 ) {
