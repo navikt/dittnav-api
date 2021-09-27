@@ -9,7 +9,7 @@ fun toSakerDTO(inbound: Sakstema): SakerDTO =
                     navn = it.navn,
                     kode = it.kode,
                     sistEndret = it.sistEndret,
-                    detaljvisningUrl = URL("https://dummy/mine-saker").toString()
+                    detaljvisningUrl = URL("https://dummy/mine-saker")
             )
         }
 
@@ -19,6 +19,6 @@ fun toSakerDTOFromLegacy(inbound: LegacySakstema): SakerDTO =
                     navn = it.temanavn,
                     kode = it.temakode,
                     sistEndret = it.sisteOppdatering,
-                    detaljvisningUrl = URL("https://dummy/legacy").toString()
+                    detaljvisningUrl = URL("https://dummy/legacy")
             )
         }
