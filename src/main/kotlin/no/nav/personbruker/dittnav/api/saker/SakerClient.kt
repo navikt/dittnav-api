@@ -8,7 +8,7 @@ import java.net.URL
 
 class SakerClient(
         private val client: HttpClient,
-        sakerApiURL: URL,
+        sakerApiURL: URL
 ) {
 
     private val sakerEndpoint = URL("$sakerApiURL/saker")

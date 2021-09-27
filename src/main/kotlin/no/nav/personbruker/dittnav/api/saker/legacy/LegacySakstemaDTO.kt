@@ -6,6 +6,6 @@ data class LegacySakstemaDTO(
         val temanavn: String,
         val temakode: String,
         val antallStatusUnderBehandling: Int,
-        val sisteOppdatering: String,
+        val sisteOppdatering: String
 )
 
