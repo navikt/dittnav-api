@@ -9,6 +9,7 @@ import no.finn.unleash.FakeUnleash
 import no.nav.personbruker.dittnav.api.common.AuthenticatedUserObjectMother
 import no.nav.personbruker.dittnav.api.legacy.LegacyConsumer
 import no.nav.personbruker.dittnav.api.unleash.UnleashService
+import org.amshove.kluent.`should contain`
 import org.amshove.kluent.shouldNotBeNull
 import org.junit.jupiter.api.Test
 
@@ -17,6 +18,7 @@ internal class SakerServiceTest {
     private val legacyConsumer = mockk<LegacyConsumer>(relaxed = true)
     private val mineSakerConsumer = mockk<MineSakerConsumer>(relaxed = true)
     private val dummyUser = AuthenticatedUserObjectMother.createAuthenticatedUser()
+    private val urlResolver = SakerInnsynUrlResolver(false)
 
     @Test
     fun `Skal hente sakstemer fra Saksoversikt hvis unleash-flagget ikke er satt`() {
@@ -24,7 +26,7 @@ internal class SakerServiceTest {
         val unleashService = UnleashService (unleashWithoutAnyFlags)
         coEvery { legacyConsumer.hentSiste(any()) } returns listOf(SakstemaDTOObjectMother.giveMeTemaDagpenger())
 
-        val service = SakerService(mineSakerConsumer, legacyConsumer, unleashService)
+        val service = SakerService(mineSakerConsumer, legacyConsumer, unleashService, urlResolver)
 
         val result = runBlocking {
             service.getSaker(dummyUser)
@@ -37,6 +39,7 @@ internal class SakerServiceTest {
         confirmVerified(mineSakerConsumer)
 
         result.shouldNotBeNull()
+        result.sakerURL.toString() `should contain` "saksoversikt"
     }
 
     @Test
@@ -47,7 +50,7 @@ internal class SakerServiceTest {
         val unleashService = UnleashService (unleashWithMineSaker)
         coEvery { mineSakerConsumer.hentSistEndret(any()) } returns listOf(SakstemaDTOObjectMother.giveMeTemaDagpenger())
 
-        val service = SakerService(mineSakerConsumer, legacyConsumer, unleashService)
+        val service = SakerService(mineSakerConsumer, legacyConsumer, unleashService, urlResolver)
 
         val result = runBlocking {
             service.getSaker(dummyUser)
@@ -60,6 +63,7 @@ internal class SakerServiceTest {
         confirmVerified(mineSakerConsumer)
 
         result.shouldNotBeNull()
+        result.sakerURL.toString() `should contain` "mine-saker"
     }
 
     @Test
@@ -68,7 +72,7 @@ internal class SakerServiceTest {
         val unleashService = UnleashService (unleashWithoutMineSaker)
         coEvery { legacyConsumer.hentSiste(any()) } returns listOf(SakstemaDTOObjectMother.giveMeTemaDagpenger())
 
-        val service = SakerService(mineSakerConsumer, legacyConsumer, unleashService)
+        val service = SakerService(mineSakerConsumer, legacyConsumer, unleashService, urlResolver)
 
         val result = runBlocking {
             service.getSaker(dummyUser)
@@ -81,6 +85,7 @@ internal class SakerServiceTest {
         confirmVerified(mineSakerConsumer)
 
         result.shouldNotBeNull()
+        result.sakerURL.toString() `should contain` "saksoversikt"
     }
 
 }

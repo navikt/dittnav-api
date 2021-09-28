@@ -16,14 +16,5 @@ data class Environment(
     val unleashApiUrl: String = getEnvVar("UNLEASH_API_URL"),
     val digiSosSoknadBaseURL: URL = getEnvVarAsURL("DIGISOS_API_URL", trimTrailingSlash = true),
     val digiSosInnsynBaseURL: URL = getEnvVarAsURL("DIGISOS_INNSYN_API_URL", trimTrailingSlash = true),
-    val sakerApiUrl: URL = getEnvVarAsURL("MINE_SAKER_API_URL", trimTrailingSlash = true),
-    val isRunningInDev: Boolean = isRunningInDev()
+    val sakerApiUrl: URL = getEnvVarAsURL("MINE_SAKER_API_URL", trimTrailingSlash = true)
 )
-
-private fun isRunningInDev(clusterName: String? = System.getenv("NAIS_CLUSTER_NAME")): Boolean {
-    var runningInDev = true
-    if (clusterName != null && clusterName == "prod-sbs") {
-        runningInDev = false
-    }
-    return runningInDev
-}

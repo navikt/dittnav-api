@@ -14,4 +14,13 @@ object SakstemaDTOObjectMother {
         )
     }
 
+    fun giveMeTemaBil(): SakstemaDTO {
+        return SakstemaDTO(
+            "Bil",
+            "BIL",
+            ZonedDateTime.now().minusDays(2),
+            URL("https://dummy/BIL")
+        )
+    }
+
 }

@@ -73,7 +73,7 @@ fun Application.mainModule(appContext: ApplicationContext = ApplicationContext()
             innboks(appContext.innboksService)
             brukernotifikasjoner(appContext.brukernotifikasjonService)
             saker(appContext.sakerService)
-            if(appContext.environment.isRunningInDev) {
+            if(NaisEnvironment.isRunningInDev()) {
                 digiSos(appContext.digiSosService)
             }
             authenticationCheck()

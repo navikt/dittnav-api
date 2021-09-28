@@ -23,6 +23,7 @@ import no.nav.personbruker.dittnav.api.oppgave.OppgaveConsumer
 import no.nav.personbruker.dittnav.api.oppgave.OppgaveMergerService
 import no.nav.personbruker.dittnav.api.oppgave.OppgaveService
 import no.nav.personbruker.dittnav.api.saker.MineSakerConsumer
+import no.nav.personbruker.dittnav.api.saker.SakerInnsynUrlResolver
 import no.nav.personbruker.dittnav.api.saker.SakerService
 import no.nav.personbruker.dittnav.api.unleash.ByEnvironmentStrategy
 import no.nav.personbruker.dittnav.api.unleash.UnleashService
@@ -58,7 +59,8 @@ class ApplicationContext {
     val innboksService = InnboksService(innboksConsumer, loginLevelService)
     val brukernotifikasjonService = BrukernotifikasjonService(brukernotifikasjonConsumer)
     val varselService = VarselService(varselConsumer)
-    val sakerService = SakerService(mineSakerConsumer, legacyConsumer, unleashService)
+    val sakerUrlResolver = SakerInnsynUrlResolver(NaisEnvironment.isRunningInProd())
+    val sakerService = SakerService(mineSakerConsumer, legacyConsumer, unleashService, sakerUrlResolver)
 
     val digiSosConsumer = DigiSosClient(httpClient, environment.digiSosSoknadBaseURL, environment.digiSosInnsynBaseURL)
     val digiSosService = DigiSosService(digiSosConsumer)
@@ -81,7 +83,7 @@ class ApplicationContext {
         val unleashUrl = environment.unleashApiUrl
 
         val appName = "dittnav-api"
-        val envContext = if (environment.isRunningInDev) "dev" else "prod"
+        val envContext = if (NaisEnvironment.isRunningInDev()) "dev" else "prod"
 
         val byEnvironment = ByEnvironmentStrategy(envContext)
 

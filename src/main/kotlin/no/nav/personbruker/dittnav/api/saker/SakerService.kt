@@ -7,15 +7,18 @@ import no.nav.personbruker.dittnav.common.security.AuthenticatedUser
 class SakerService(
     private val mineSakerConsumer: MineSakerConsumer,
     private val legacyConsumer: LegacyConsumer,
-    private val unleashService: UnleashService
+    private val unleashService: UnleashService,
+    private val urlResolver: SakerInnsynUrlResolver
 ) {
 
-    suspend fun getSaker(user: AuthenticatedUser): List<SakstemaDTO> {
+    suspend fun getSaker(user: AuthenticatedUser): SisteSakstemaDTO {
         return if (unleashService.mineSakerEnabled(user)) {
-            mineSakerConsumer.hentSistEndret(user)
+            val sakstemaer = mineSakerConsumer.hentSistEndret(user)
+            SisteSakstemaDTO(sakstemaer, urlResolver.getMineSakerUrl())
 
         } else {
-            legacyConsumer.hentSiste(user)
+            val sakstemaer = legacyConsumer.hentSiste(user)
+            SisteSakstemaDTO(sakstemaer, urlResolver.getSaksoversiktUrl())
         }
     }
 
