@@ -27,28 +27,4 @@ fun Route.saker(
         }
     }
 
-    get("/saker/mine") {
-        executeOnUnexpiredTokensOnly {
-            try {
-                val result = service.getMineSaker(authenticatedUser)
-                call.respond(HttpStatusCode.OK, result)
-
-            } catch (exception: Exception) {
-                respondWithError(call, log, exception)
-            }
-        }
-    }
-
-    get("/saker/legacy") {
-        executeOnUnexpiredTokensOnly {
-            try {
-                val result = service.getLegacySaker(authenticatedUser)
-                call.respond(HttpStatusCode.OK, result)
-
-            } catch (exception: Exception) {
-                respondWithError(call, log, exception)
-            }
-        }
-    }
-
 }

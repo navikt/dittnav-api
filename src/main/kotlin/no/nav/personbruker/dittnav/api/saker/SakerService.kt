@@ -22,12 +22,4 @@ class SakerService(
         }
     }
 
-    suspend fun getMineSaker(user: AuthenticatedUser): List<SakstemaDTO> {
-        return mineSakerConsumer.hentSistEndret(user)
-    }
-
-    suspend fun getLegacySaker(user: AuthenticatedUser): List<SakstemaDTO> {
-        return legacyConsumer.hentSiste(user)
-    }
-
 }
