@@ -107,6 +107,11 @@ class ApplicationContext {
             } else {
                 disable(UnleashService.digiSosToggleName)
             }
+            if (environment.fakeUnleashIncludeMineSaker) {
+                enable(UnleashService.sakerToggleName)
+            } else {
+                disable(UnleashService.sakerToggleName)
+            }
         }
     }
 

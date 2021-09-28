@@ -90,6 +90,7 @@ tasks {
         environment("DIGISOS_API_URL", "https://digisos/dummy/soknad")
         environment("DIGISOS_INNSYN_API_URL", "https://digisos/dummy/innsyn")
         environment("MINE_SAKER_API_URL", "http://localhost:8095/mine-saker-api")
+        environment("FAKE_UNLEASH_INCLUDE_MINE_SAKER", true)
 
         main = application.mainClass.get()
         classpath = sourceSets["main"].runtimeClasspath
