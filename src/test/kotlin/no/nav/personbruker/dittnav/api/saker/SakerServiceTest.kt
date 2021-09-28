@@ -24,15 +24,15 @@ internal class SakerServiceTest {
     fun `Skal hente sakstemer fra Saksoversikt hvis unleash-flagget ikke er satt`() {
         val unleashWithoutAnyFlags = FakeUnleash()
         val unleashService = UnleashService (unleashWithoutAnyFlags)
-        coEvery { legacyConsumer.hentSiste(any()) } returns listOf(SakstemaDTOObjectMother.giveMeTemaDagpenger())
+        coEvery { legacyConsumer.hentSisteEndret(any()) } returns listOf(SakstemaDTOObjectMother.giveMeTemaDagpenger())
 
         val service = SakerService(mineSakerConsumer, legacyConsumer, unleashService, urlResolver)
 
         val result = runBlocking {
-            service.getSaker(dummyUser)
+            service.hentSisteToEndredeSakstemaer(dummyUser)
         }
 
-        coVerify(exactly = 1) { legacyConsumer.hentSiste(any()) }
+        coVerify(exactly = 1) { legacyConsumer.hentSisteEndret(any()) }
         coVerify(exactly = 0) { mineSakerConsumer.hentSistEndret(any()) }
 
         confirmVerified(legacyConsumer)
@@ -53,10 +53,10 @@ internal class SakerServiceTest {
         val service = SakerService(mineSakerConsumer, legacyConsumer, unleashService, urlResolver)
 
         val result = runBlocking {
-            service.getSaker(dummyUser)
+            service.hentSisteToEndredeSakstemaer(dummyUser)
         }
 
-        coVerify(exactly = 0) { legacyConsumer.hentSiste(any()) }
+        coVerify(exactly = 0) { legacyConsumer.hentSisteEndret(any()) }
         coVerify(exactly = 1) { mineSakerConsumer.hentSistEndret(any()) }
 
         confirmVerified(legacyConsumer)
@@ -70,15 +70,15 @@ internal class SakerServiceTest {
     fun `Skal hente sakstemaer fra Saksoversikt hvis Mine Saker ikke er aktivert i Unleash`() {
         val unleashWithoutMineSaker = FakeUnleash()
         val unleashService = UnleashService (unleashWithoutMineSaker)
-        coEvery { legacyConsumer.hentSiste(any()) } returns listOf(SakstemaDTOObjectMother.giveMeTemaDagpenger())
+        coEvery { legacyConsumer.hentSisteEndret(any()) } returns listOf(SakstemaDTOObjectMother.giveMeTemaDagpenger())
 
         val service = SakerService(mineSakerConsumer, legacyConsumer, unleashService, urlResolver)
 
         val result = runBlocking {
-            service.getSaker(dummyUser)
+            service.hentSisteToEndredeSakstemaer(dummyUser)
         }
 
-        coVerify(exactly = 1) { legacyConsumer.hentSiste(any()) }
+        coVerify(exactly = 1) { legacyConsumer.hentSisteEndret(any()) }
         coVerify(exactly = 0) { mineSakerConsumer.hentSistEndret(any()) }
 
         confirmVerified(legacyConsumer)

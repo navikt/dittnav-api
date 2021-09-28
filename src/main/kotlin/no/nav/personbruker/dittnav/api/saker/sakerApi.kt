@@ -18,7 +18,7 @@ fun Route.saker(
     get("/saker") {
         executeOnUnexpiredTokensOnly {
             try {
-                val result = service.getSaker(authenticatedUser)
+                val result = service.hentSisteToEndredeSakstemaer(authenticatedUser)
                 call.respond(HttpStatusCode.OK, result)
 
             } catch (exception: Exception) {

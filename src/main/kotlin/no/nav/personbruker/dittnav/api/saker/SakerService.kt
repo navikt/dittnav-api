@@ -11,13 +11,13 @@ class SakerService(
     private val urlResolver: SakerInnsynUrlResolver
 ) {
 
-    suspend fun getSaker(user: AuthenticatedUser): SisteSakstemaDTO {
+    suspend fun hentSisteToEndredeSakstemaer(user: AuthenticatedUser): SisteSakstemaDTO {
         return if (unleashService.mineSakerEnabled(user)) {
             val sakstemaer = mineSakerConsumer.hentSistEndret(user)
             SisteSakstemaDTO(sakstemaer, urlResolver.getMineSakerUrl())
 
         } else {
-            val sakstemaer = legacyConsumer.hentSiste(user)
+            val sakstemaer = legacyConsumer.hentSisteEndret(user)
             SisteSakstemaDTO(sakstemaer, urlResolver.getSaksoversiktUrl())
         }
     }
