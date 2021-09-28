@@ -43,8 +43,12 @@ class LegacyConsumer(private val httpClient: HttpClient, private val dittNAVLega
         val endpoint = legacyApiEndpoints[operation]
             ?: throw IllegalStateException("Fant ikke komplett endepunkt for operasjonen $operation")
         val externals = httpClient.getExtendedTimeout<LegacySakstemaerRespons>(endpoint, user)
-        return externals.toInternal()
+        val internals = externals.toInternal()
+        return plukkUtDeToSomErSistEndretFraSortertListe(internals)
     }
+
+    private fun plukkUtDeToSomErSistEndretFraSortertListe(internals: List<SakstemaDTO>) =
+        internals.subList(0, 2)
 
     private fun logContextInCaseOfErrors(
         response: HttpResponse,
