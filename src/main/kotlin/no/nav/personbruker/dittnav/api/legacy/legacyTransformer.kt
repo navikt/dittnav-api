@@ -1,7 +1,6 @@
 package no.nav.personbruker.dittnav.api.legacy
 
 import no.nav.personbruker.dittnav.api.saker.SakstemaDTO
-import java.net.URL
 
 fun LegacySakstemaerRespons.toInternal() : List<SakstemaDTO> {
     return sakstemaList.map { external ->
@@ -14,6 +13,6 @@ fun LegacySakstema.toInternal(): SakstemaDTO {
         navn = temanavn,
         kode = temakode,
         sistEndret = sisteOppdatering,
-        detaljvisningUrl = URL("https://TODO")
+        detaljvisningUrl = innsynsUrlResolverSingleton.urlFor(temakode)
     )
 }
