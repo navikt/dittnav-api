@@ -7,14 +7,15 @@ import io.ktor.routing.*
 import no.nav.personbruker.dittnav.api.common.respondWithError
 import no.nav.personbruker.dittnav.api.config.authenticatedUser
 import no.nav.personbruker.dittnav.api.config.executeOnUnexpiredTokensOnly
+import no.nav.personbruker.dittnav.api.digisos.DigiSosService
 import org.slf4j.LoggerFactory
 
 fun Route.saker(
-        service: SakerService
+    service: SakerService
 ) {
     val log = LoggerFactory.getLogger(SakerService::class.java)
 
-    get("/sakstemaer/sistendret") {
+    get("/saker") {
         executeOnUnexpiredTokensOnly {
             try {
                 val result = service.hentSisteToEndredeSakstemaer(authenticatedUser)
