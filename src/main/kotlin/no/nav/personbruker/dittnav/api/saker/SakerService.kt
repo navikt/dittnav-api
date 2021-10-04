@@ -8,12 +8,14 @@ class SakerService(
     private val mineSakerConsumer: MineSakerConsumer,
     private val legacyConsumer: LegacyConsumer,
     private val unleashService: UnleashService,
-    private val urlResolver: SakerInnsynUrlResolver
+    private val urlResolver: SakerInnsynUrlResolver,
+    private val mineSakerTokendings: MineSakerTokendings
 ) {
 
     suspend fun hentSisteToEndredeSakstemaer(user: AuthenticatedUser): SisteSakstemaDTO {
         return if (unleashService.mineSakerEnabled(user)) {
-            val sakstemaer = mineSakerConsumer.hentSistEndret(user)
+            val exchangedToken = mineSakerTokendings.exchangeToken(user)
+            val sakstemaer = mineSakerConsumer.hentSistEndret(exchangedToken)
             SisteSakstemaDTO(sakstemaer, urlResolver.getMineSakerUrl())
 
         } else {

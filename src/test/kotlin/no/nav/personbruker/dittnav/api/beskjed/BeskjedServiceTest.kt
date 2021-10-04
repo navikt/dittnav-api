@@ -47,6 +47,7 @@ class BeskjedServiceTest {
         var beskjed = createBeskjed("1", ident, "1", true)
         beskjed = beskjed.copy(sikkerhetsnivaa = 4)
         user = AuthenticatedUserObjectMother.createAuthenticatedUser(ident, 3)
+        println("##### Token:\n${user.token}")
         coEvery { beskjedConsumer.getExternalActiveEvents(user) } returns listOf(beskjed)
         coEvery { loginLevelService.getOperatingLoginLevel(any(), any()) } returns user.loginLevel
         runBlocking {

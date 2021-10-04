@@ -23,12 +23,14 @@ import no.nav.personbruker.dittnav.api.oppgave.OppgaveConsumer
 import no.nav.personbruker.dittnav.api.oppgave.OppgaveMergerService
 import no.nav.personbruker.dittnav.api.oppgave.OppgaveService
 import no.nav.personbruker.dittnav.api.saker.MineSakerConsumer
+import no.nav.personbruker.dittnav.api.saker.MineSakerTokendings
 import no.nav.personbruker.dittnav.api.saker.SakerInnsynUrlResolver
 import no.nav.personbruker.dittnav.api.saker.SakerService
 import no.nav.personbruker.dittnav.api.unleash.ByEnvironmentStrategy
 import no.nav.personbruker.dittnav.api.unleash.UnleashService
 import no.nav.personbruker.dittnav.api.varsel.VarselConsumer
 import no.nav.personbruker.dittnav.api.varsel.VarselService
+import no.nav.tms.token.support.tokendings.exchange.TokendingsServiceBuilder
 
 class ApplicationContext {
 
@@ -38,6 +40,9 @@ class ApplicationContext {
     val httpClient = HttpClientBuilder.build(KotlinxSerializer(json()))
     val httpClientIgnoreUnknownKeys = HttpClientBuilder.build(KotlinxSerializer(json(ignoreUnknownKeys = true)))
     val dependencyPinger = DependencyPinger(environment, httpClient)
+
+    val tokendingsService = TokendingsServiceBuilder.buildTokendingsService()
+    val mineSakerTokendings = MineSakerTokendings(tokendingsService, environment.mineSakerApiClientId)
 
     val legacyConsumer = LegacyConsumer(httpClient, environment.legacyApiURL)
     val oppgaveConsumer = OppgaveConsumer(httpClient, environment.eventHandlerURL)
@@ -60,7 +65,7 @@ class ApplicationContext {
     val brukernotifikasjonService = BrukernotifikasjonService(brukernotifikasjonConsumer)
     val varselService = VarselService(varselConsumer)
     val sakerUrlResolver = SakerInnsynUrlResolver(NaisEnvironment.isRunningInProd())
-    val sakerService = SakerService(mineSakerConsumer, legacyConsumer, unleashService, sakerUrlResolver)
+    val sakerService = SakerService(mineSakerConsumer, legacyConsumer, unleashService, sakerUrlResolver, mineSakerTokendings)
 
     val digiSosConsumer = DigiSosClient(httpClient, environment.digiSosSoknadBaseURL, environment.digiSosInnsynBaseURL)
     val digiSosService = DigiSosService(digiSosConsumer)
