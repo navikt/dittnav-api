@@ -22,6 +22,17 @@ spec:
   replicas:
     min: 2
     max: 4
+  tokenx:
+    enabled: true
+  accessPolicy:
+    inbound:
+      rules:
+        - application: dittnav
+    outbound:
+      rules:
+        - application: "mine-saker-api"
+          namespace: "personbruker"
+          cluster: "dev-gcp"
   webproxy: true
   ingresses:
     - "https://www.dev.nav.no/person/dittnav-api"
