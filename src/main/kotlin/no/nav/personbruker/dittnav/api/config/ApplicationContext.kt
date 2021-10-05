@@ -113,9 +113,9 @@ class ApplicationContext {
                 disable(UnleashService.digiSosToggleName)
             }
             if (environment.fakeUnleashIncludeMineSaker) {
-                enable(UnleashService.sakerToggleName)
+                enable(UnleashService.brukMineSakerToggleName)
             } else {
-                disable(UnleashService.sakerToggleName)
+                disable(UnleashService.brukMineSakerToggleName)
             }
         }
     }

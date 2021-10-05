@@ -11,7 +11,7 @@ class UnleashService(private val unleashClient: Unleash) {
     companion object {
         const val digiSosToggleName: String = "digiSosEnabled"
         const val varselinnboksToggleName: String = "mergeBeskjedVarselEnabled"
-        const val sakerToggleName: String = "sakerEnabled"
+        const val brukMineSakerToggleName: String = "dittnav.brukMineSaker"
     }
 
     suspend fun mergeBeskjedVarselEnabled(user: AuthenticatedUser): Boolean {
@@ -25,7 +25,7 @@ class UnleashService(private val unleashClient: Unleash) {
     }
 
     suspend fun mineSakerEnabled(user: AuthenticatedUser): Boolean = withContext(Dispatchers.IO) {
-        unleashClient.isEnabled(sakerToggleName, createUnleashContext(user), false)
+        unleashClient.isEnabled(brukMineSakerToggleName, createUnleashContext(user), false)
     }
 
     private fun createUnleashContext(user: AuthenticatedUser): UnleashContext {

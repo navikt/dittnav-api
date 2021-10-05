@@ -54,7 +54,7 @@ internal class SakerServiceTest {
     @Test
     fun `Skal hente sakstemaer fra Mine Saker det er aktivert i Unleash`() {
         val unleashWithMineSaker = FakeUnleash().apply {
-            enable(UnleashService.sakerToggleName)
+            enable(UnleashService.brukMineSakerToggleName)
         }
         val unleashService = UnleashService(unleashWithMineSaker)
         coEvery { mineSakerConsumer.hentSistEndret(any()) } returns listOf(SakstemaDTOObjectMother.giveMeTemaDagpenger())
