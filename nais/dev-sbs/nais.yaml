@@ -29,6 +29,8 @@ spec:
       rules:
         - application: dittnav
     outbound:
+      external:
+        - host: person.dev.nav.no
       rules:
         - application: "mine-saker-api"
           namespace: "personbruker"
