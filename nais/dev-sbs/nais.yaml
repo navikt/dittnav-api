@@ -30,7 +30,7 @@ spec:
         - application: dittnav
     outbound:
       external:
-        - host: person.dev.nav.no
+        - host: person.dev.nav.no/mine-saker-api
       rules:
         - application: "mine-saker-api"
           namespace: "personbruker"
