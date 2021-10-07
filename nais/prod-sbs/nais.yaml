@@ -22,6 +22,19 @@ spec:
   replicas:
     min: 2
     max: 4
+  tokenx:
+    enabled: true
+  accessPolicy:
+    inbound:
+      rules:
+        - application: dittnav
+    outbound:
+      external:
+        - host: person.nav.no
+      rules:
+        - application: "mine-saker-api"
+          namespace: "personbruker"
+          cluster: "prod-gcp"
   webproxy: true
   ingresses:
     - "https://dittnav-api.nais.oera.no/person/dittnav-api"
