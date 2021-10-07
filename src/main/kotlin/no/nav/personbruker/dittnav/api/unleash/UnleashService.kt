@@ -4,12 +4,9 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import no.finn.unleash.Unleash
 import no.finn.unleash.UnleashContext
-import no.nav.personbruker.dittnav.api.config.NaisEnvironment
 import no.nav.personbruker.dittnav.common.security.AuthenticatedUser
 
 class UnleashService(private val unleashClient: Unleash) {
-
-    private val currentCluster: String? = NaisEnvironment.currentClusterName()
 
     companion object {
         const val digiSosToggleName: String = "digiSosEnabled"
@@ -34,7 +31,6 @@ class UnleashService(private val unleashClient: Unleash) {
     private fun createUnleashContext(user: AuthenticatedUser): UnleashContext {
         return UnleashContext.builder()
             .userId(user.ident)
-            .addProperty("cluster", currentCluster)
             .build()
     }
 
