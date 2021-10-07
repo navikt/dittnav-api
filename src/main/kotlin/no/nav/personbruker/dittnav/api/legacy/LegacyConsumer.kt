@@ -4,6 +4,8 @@ import io.ktor.client.*
 import io.ktor.client.statement.*
 import io.ktor.http.*
 import no.nav.personbruker.dittnav.api.config.getExtendedTimeout
+import no.nav.personbruker.dittnav.api.legacy.saksoversikt.LegacySakstemaerRespons
+import no.nav.personbruker.dittnav.api.legacy.saksoversikt.toInternal
 import no.nav.personbruker.dittnav.api.saker.SakstemaDTO
 import no.nav.personbruker.dittnav.common.security.AuthenticatedUser
 import org.slf4j.LoggerFactory

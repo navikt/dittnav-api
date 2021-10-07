@@ -1,22 +1,12 @@
-package no.nav.personbruker.dittnav.api.legacy
+package no.nav.personbruker.dittnav.api.legacy.saksoversikt
 
 import com.nimbusds.jose.JWSAlgorithm
 import com.nimbusds.jose.jwk.KeyUse
 import com.nimbusds.jose.jwk.gen.RSAKeyGenerator
-import io.jsonwebtoken.Jwts
-import io.jsonwebtoken.SignatureAlgorithm
-import io.jsonwebtoken.security.Keys
 import kotlinx.serialization.decodeFromString
-import no.nav.personbruker.dittnav.api.common.AuthenticatedUserObjectMother
 import no.nav.personbruker.dittnav.api.config.json
-import no.nav.personbruker.dittnav.common.security.AuthenticatedUser
-import no.nav.security.token.support.core.jwt.JwtToken
 import org.amshove.kluent.shouldNotBeNull
 import org.junit.jupiter.api.Test
-import java.security.Key
-import java.time.Instant
-import java.time.ZonedDateTime
-import java.util.*
 
 internal class LegacySakstemaerResponsTest {
 

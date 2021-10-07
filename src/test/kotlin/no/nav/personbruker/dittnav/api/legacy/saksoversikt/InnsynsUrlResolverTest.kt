@@ -1,4 +1,4 @@
-package no.nav.personbruker.dittnav.api.legacy
+package no.nav.personbruker.dittnav.api.legacy.saksoversikt
 
 import org.amshove.kluent.`should be equal to`
 import org.junit.jupiter.api.Test

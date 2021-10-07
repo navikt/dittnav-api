@@ -1,6 +1,7 @@
-package no.nav.personbruker.dittnav.api.legacy
+package no.nav.personbruker.dittnav.api.legacy.saksoversikt
 
 import no.nav.personbruker.dittnav.api.config.NaisEnvironment
+import no.nav.personbruker.dittnav.api.legacy.log
 import java.net.URL
 
 val innsynsUrlResolverSingleton = if (NaisEnvironment.isRunningInProd()) {

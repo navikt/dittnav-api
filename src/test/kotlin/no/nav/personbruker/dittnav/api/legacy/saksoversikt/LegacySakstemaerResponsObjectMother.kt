@@ -1,4 +1,4 @@
-package no.nav.personbruker.dittnav.api.legacy
+package no.nav.personbruker.dittnav.api.legacy.saksoversikt
 
 object LegacySakstemaerResponsObjectMother {
 
