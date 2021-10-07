@@ -1,6 +1,7 @@
 package no.nav.personbruker.dittnav.api.legacy
 
 import org.amshove.kluent.`should be equal to`
+import org.amshove.kluent.`should contain`
 import org.junit.jupiter.api.Test
 
 internal class LegacyTransformerTest {
@@ -23,7 +24,7 @@ internal class LegacyTransformerTest {
         internal.kode `should be equal to` external.temakode
         internal.navn `should be equal to` external.temanavn
         internal.sistEndret `should be equal to` external.sisteOppdatering
-        //internal.detaljvisningUrl `should be equal to` TODO
+        internal.detaljvisningUrl.toString() `should contain` "dagpenger"
     }
 
 }
