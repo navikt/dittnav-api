@@ -1,8 +1,5 @@
 package no.nav.personbruker.dittnav.api.legacy.saksoversikt
 
-import com.nimbusds.jose.JWSAlgorithm
-import com.nimbusds.jose.jwk.KeyUse
-import com.nimbusds.jose.jwk.gen.RSAKeyGenerator
 import kotlinx.serialization.decodeFromString
 import no.nav.personbruker.dittnav.api.config.json
 import org.amshove.kluent.shouldNotBeNull
@@ -24,33 +21,28 @@ internal class LegacySakstemaerResponsTest {
 }
     """.trimIndent()
 
+    private val objectMapper = json()
+
     @Test
     fun `Skal kunne deserialisere responsen fra legacy`() {
-        val objectMapper = json()
 
         val deserialized = objectMapper.decodeFromString<LegacySakstemaerRespons>(legacyActualResponse)
 
         deserialized.shouldNotBeNull()
     }
 
-    internal object JwkBuilder {
-        fun generateJwk(): String {
-            return RSAKeyGenerator(2048)
-                .keyUse(KeyUse.SIGNATURE)
-                .algorithm(JWSAlgorithm.RS256)
-                .keyID("KID")
-                .generate()
-                .toJSONString()
-        }
-    }
-
     @Test
-    fun lageJwt() {
+    fun `Skal takle en tom JSON`() {
+        val resp = """
+            {
+            "antallSakstema": 0,
+            "sakstemaList": []
+            }
+        """.trimIndent()
 
-        val token = JwkBuilder.generateJwk()
+        val deserialized = objectMapper.decodeFromString<LegacySakstemaerRespons>(resp)
 
-        println("### ${token}")
-
+        deserialized.shouldNotBeNull()
     }
 
 }
