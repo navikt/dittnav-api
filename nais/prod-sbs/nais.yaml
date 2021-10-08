@@ -25,9 +25,6 @@ spec:
   tokenx:
     enabled: true
   accessPolicy:
-    inbound:
-      rules:
-        - application: dittnav
     outbound:
       external:
         - host: person.nav.no
