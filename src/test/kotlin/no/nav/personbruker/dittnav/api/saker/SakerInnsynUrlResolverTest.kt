@@ -10,7 +10,7 @@ internal class SakerInnsynUrlResolverTest {
         val resolver = SakerInnsynUrlResolver(false)
 
         resolver.getMineSakerUrl().toString() `should be equal to` "https://person.dev.nav.no/mine-saker"
-        resolver.getSaksoversiktUrl().toString() `should be equal to` "https://tjenester-q1.nav.no/person/saksoversikt"
+        resolver.getSaksoversiktUrl().toString() `should be equal to` "https://tjenester-q1.nav.no/saksoversikt"
     }
 
     @Test
@@ -18,7 +18,7 @@ internal class SakerInnsynUrlResolverTest {
         val resolver = SakerInnsynUrlResolver(true)
 
         resolver.getMineSakerUrl().toString() `should be equal to` "https://person.nav.no/mine-saker"
-        resolver.getSaksoversiktUrl().toString() `should be equal to` "https://tjenester.nav.no/person/saksoversikt"
+        resolver.getSaksoversiktUrl().toString() `should be equal to` "https://tjenester.nav.no/saksoversikt"
     }
 
 }
