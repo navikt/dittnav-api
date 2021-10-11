@@ -49,8 +49,16 @@ class LegacyConsumer(private val httpClient: HttpClient, private val dittNAVLega
         return plukkUtDeToSomErSistEndretFraSortertListe(internals)
     }
 
-    private fun plukkUtDeToSomErSistEndretFraSortertListe(internals: List<SakstemaDTO>) =
-        internals.subList(0, 2)
+    private fun plukkUtDeToSomErSistEndretFraSortertListe(sakstemaer: List<SakstemaDTO>): List<SakstemaDTO> {
+        return if(moreThanTwoSakstemaer(sakstemaer)) {
+            sakstemaer.subList(0, 2)
+        } else {
+            sakstemaer
+        }
+    }
+
+    private fun moreThanTwoSakstemaer(internals: List<SakstemaDTO>) =
+        internals.size > 2
 
     private fun logContextInCaseOfErrors(
         response: HttpResponse,
