@@ -40,7 +40,7 @@ internal class NaisEnvironmentTest {
 
     @Test
     fun `Kjorende miljo skal identifiseres som dev hvis NAIS_CLUSTER_NAME har ugyldig verdi`() {
-        withEnvironment("NAIS_CLUSTER_NAME" to null) {
+        withEnvironment("NAIS_CLUSTER_NAME" to "ugyldig verdi") {
             NaisEnvironment.isRunningInProd() `should be equal to` false
             NaisEnvironment.isRunningInDev() `should be equal to` true
         }
