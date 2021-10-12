@@ -12,4 +12,13 @@ object SakstemaObjectMother {
         URL("https://dummy/DAG")
     )
 
+    fun giveMeSakstemaSosialhjelp() = Sakstema(
+        "Økonomisk sosialhjelp",
+        "KOM",
+        ZonedDateTime.now().minusDays(24),
+        URL("https://dummy/KOM")
+    )
+
+    fun giveMeListe() = listOf(giveMeSakstemaDagpenger(), giveMeSakstemaSosialhjelp())
+
 }
