@@ -57,7 +57,7 @@ internal class SakerServiceTest {
             enable(UnleashService.brukMineSakerToggleName)
         }
         val unleashService = UnleashService(unleashWithMineSaker)
-        coEvery { mineSakerConsumer.hentSistEndret(any()) } returns listOf(SakstemaDTOObjectMother.giveMeTemaDagpenger())
+        coEvery { mineSakerConsumer.hentSistEndret(any()) } returns SisteSakstemaerDtoObjectMother.giveMeTemaDagpenger()
 
         val service = SakerService(mineSakerConsumer, legacyConsumer, unleashService, urlResolver, tokendings)
 
