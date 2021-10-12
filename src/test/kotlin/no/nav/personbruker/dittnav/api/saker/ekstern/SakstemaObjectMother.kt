@@ -1,5 +1,6 @@
-package no.nav.personbruker.dittnav.api.saker
+package no.nav.personbruker.dittnav.api.saker.ekstern
 
+import no.nav.personbruker.dittnav.api.saker.Sakstema
 import java.net.URL
 import java.time.ZonedDateTime
 

@@ -1,6 +1,5 @@
-package no.nav.personbruker.dittnav.api.saker
+package no.nav.personbruker.dittnav.api.saker.ekstern
 
-import no.nav.personbruker.dittnav.api.saker.ekstern.SisteSakstemaer
 import java.time.ZonedDateTime
 
 object SisteSakstemaerObjectMother {

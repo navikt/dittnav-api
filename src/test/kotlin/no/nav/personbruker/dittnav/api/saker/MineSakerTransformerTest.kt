@@ -1,5 +1,7 @@
 package no.nav.personbruker.dittnav.api.saker
 
+import no.nav.personbruker.dittnav.api.saker.ekstern.SakstemaObjectMother
+import no.nav.personbruker.dittnav.api.saker.ekstern.SisteSakstemaerObjectMother
 import org.amshove.kluent.`should be equal to`
 import org.junit.jupiter.api.Test
 
