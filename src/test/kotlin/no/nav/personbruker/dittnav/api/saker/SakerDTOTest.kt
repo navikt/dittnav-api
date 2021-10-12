@@ -5,7 +5,7 @@ import no.nav.personbruker.dittnav.api.config.json
 import org.amshove.kluent.shouldNotBeNull
 import org.junit.jupiter.api.Test
 
-internal class SisteSakstemaDTOTest {
+internal class SakerDTOTest {
 
     private val objectMapper = json()
 

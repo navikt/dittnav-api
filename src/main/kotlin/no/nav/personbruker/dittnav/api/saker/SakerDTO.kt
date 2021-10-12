@@ -7,7 +7,7 @@ import no.nav.personbruker.dittnav.api.common.serializer.URLSerializer
 import java.net.URL
 
 @Serializable
-data class SisteSakstemaDTO(
+data class SakerDTO(
     val sakstemaer : List<SakstemaDTO>,
     val sakerURL : URL
 )

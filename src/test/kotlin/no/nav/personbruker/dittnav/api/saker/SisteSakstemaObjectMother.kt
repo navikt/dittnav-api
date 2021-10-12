@@ -4,7 +4,7 @@ import java.net.URL
 
 object SisteSakstemaObjectMother {
 
-    fun giveMeSisteSakstemaForDev() = SisteSakstemaDTO(
+    fun giveMeSisteSakstemaForDev() = SakerDTO(
         listOf(
             SakstemaDTOObjectMother.giveMeTemaDagpenger(),
             SakstemaDTOObjectMother.giveMeTemaBil()

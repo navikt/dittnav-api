@@ -12,15 +12,15 @@ class SakerService(
     private val mineSakerTokendings: MineSakerTokendings
 ) {
 
-    suspend fun hentSisteToEndredeSakstemaer(user: AuthenticatedUser): SisteSakstemaDTO {
+    suspend fun hentSisteToEndredeSakstemaer(user: AuthenticatedUser): SakerDTO {
         return if (unleashService.mineSakerEnabled(user)) {
             val exchangedToken = mineSakerTokendings.exchangeToken(user)
             val sakstemaer = mineSakerConsumer.hentSistEndret(exchangedToken)
-            SisteSakstemaDTO(sakstemaer, urlResolver.getMineSakerUrl())
+            SakerDTO(sakstemaer, urlResolver.getMineSakerUrl())
 
         } else {
             val sakstemaer = legacyConsumer.hentSisteEndret(user)
-            SisteSakstemaDTO(sakstemaer, urlResolver.getSaksoversiktUrl())
+            SakerDTO(sakstemaer, urlResolver.getSaksoversiktUrl())
         }
     }
 
