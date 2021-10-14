@@ -31,7 +31,7 @@ internal class SakerServiceTest {
     fun `Skal hente sakstemer fra Saksoversikt hvis unleash-flagget ikke er satt`() {
         val unleashWithoutAnyFlags = FakeUnleash()
         val unleashService = UnleashService(unleashWithoutAnyFlags)
-        coEvery { legacyConsumer.hentSisteEndret(any()) } returns listOf(SakstemaDTOObjectMother.giveMeTemaDagpenger())
+        coEvery { legacyConsumer.hentSisteEndret(any()) } returns SisteSakstemaerDtoObjectMother.giveMeTemaDagpenger()
 
         val service = SakerService(mineSakerConsumer, legacyConsumer, unleashService, urlResolver, tokendings)
 
@@ -78,10 +78,12 @@ internal class SakerServiceTest {
     }
 
     @Test
-    fun `Skal hente sakstemaer fra Saksoversikt hvis Mine Saker ikke er aktivert i Unleash`() {
-        val unleashWithoutMineSaker = FakeUnleash()
-        val unleashService = UnleashService(unleashWithoutMineSaker)
-        coEvery { legacyConsumer.hentSisteEndret(any()) } returns listOf(SakstemaDTOObjectMother.giveMeTemaDagpenger())
+    fun `Skal hente sakstemaer fra Saksoversikt hvis Mine Saker er deaktivert i Unleash`() {
+        val unleashWithMineSaker = FakeUnleash().apply {
+            disable(UnleashService.brukMineSakerToggleName)
+        }
+        val unleashService = UnleashService(unleashWithMineSaker)
+        coEvery { legacyConsumer.hentSisteEndret(any()) } returns SisteSakstemaerDtoObjectMother.giveMeTemaDagpenger()
 
         val service = SakerService(mineSakerConsumer, legacyConsumer, unleashService, urlResolver, tokendings)
 

@@ -16,11 +16,11 @@ class SakerService(
         return if (unleashService.mineSakerEnabled(user)) {
             val exchangedToken = mineSakerTokendings.exchangeToken(user)
             val sisteSakstemaer = mineSakerConsumer.hentSistEndret(exchangedToken)
-            SakerDTO(sisteSakstemaer.sakstemaer, urlResolver.getMineSakerUrl())
+            SakerDTO(sisteSakstemaer.sakstemaer, urlResolver.getMineSakerUrl(), sisteSakstemaer.dagpengerSistEndret)
 
         } else {
-            val sakstemaer = legacyConsumer.hentSisteEndret(user)
-            SakerDTO(sakstemaer, urlResolver.getSaksoversiktUrl())
+            val sisteSakstemaer = legacyConsumer.hentSisteEndret(user)
+            SakerDTO(sisteSakstemaer.sakstemaer, urlResolver.getSaksoversiktUrl(), sisteSakstemaer.dagpengerSistEndret)
         }
     }
 

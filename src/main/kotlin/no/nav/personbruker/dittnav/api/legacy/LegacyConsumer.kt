@@ -6,7 +6,7 @@ import io.ktor.http.*
 import no.nav.personbruker.dittnav.api.config.getExtendedTimeout
 import no.nav.personbruker.dittnav.api.legacy.saksoversikt.LegacySakstemaerRespons
 import no.nav.personbruker.dittnav.api.legacy.saksoversikt.toInternal
-import no.nav.personbruker.dittnav.api.saker.SakstemaDTO
+import no.nav.personbruker.dittnav.api.saker.SisteSakstemaerDTO
 import no.nav.personbruker.dittnav.common.security.AuthenticatedUser
 import org.slf4j.LoggerFactory
 import java.net.URL
@@ -40,25 +40,13 @@ class LegacyConsumer(private val httpClient: HttpClient, private val dittNAVLega
         return response
     }
 
-    suspend fun hentSisteEndret(user: AuthenticatedUser): List<SakstemaDTO> {
+    suspend fun hentSisteEndret(user: AuthenticatedUser): SisteSakstemaerDTO {
         val operation = LegacyApiOperations.SAKSTEMA
         val endpoint = legacyApiEndpoints[operation]
             ?: throw IllegalStateException("Fant ikke komplett endepunkt for operasjonen $operation")
         val externals = httpClient.getExtendedTimeout<LegacySakstemaerRespons>(endpoint, user)
-        val internals = externals.toInternal()
-        return plukkUtDeToSomErSistEndretFraSortertListe(internals)
+        return externals.toInternal()
     }
-
-    private fun plukkUtDeToSomErSistEndretFraSortertListe(sakstemaer: List<SakstemaDTO>): List<SakstemaDTO> {
-        return if(moreThanTwoSakstemaer(sakstemaer)) {
-            sakstemaer.subList(0, 2)
-        } else {
-            sakstemaer
-        }
-    }
-
-    private fun moreThanTwoSakstemaer(internals: List<SakstemaDTO>) =
-        internals.size > 2
 
     private fun logContextInCaseOfErrors(
         response: HttpResponse,

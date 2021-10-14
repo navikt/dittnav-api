@@ -14,8 +14,22 @@ object LegacySakstemaObjectMother {
     fun giveMeSakstemaOppfolging() = LegacySakstema(
         "Oppfølging",
         "OPP",
-        1,
+        2,
         ZonedDateTime.now().minusDays(4)
+    )
+
+    fun giveMeSakstemaBil() = LegacySakstema(
+        "Bil",
+        "BIL",
+        3,
+        ZonedDateTime.now().minusMinutes(40)
+    )
+
+    fun giveMeSakstemaSosialhjelp() = LegacySakstema(
+        "Økonomisk sosialhjelp",
+        "KOM",
+        4,
+        ZonedDateTime.now().minusMonths(5)
     )
 
 }

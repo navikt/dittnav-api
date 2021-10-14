@@ -2,17 +2,19 @@ package no.nav.personbruker.dittnav.api.legacy.saksoversikt
 
 import org.amshove.kluent.`should be equal to`
 import org.amshove.kluent.`should contain`
+import org.amshove.kluent.shouldNotBeNull
 import org.junit.jupiter.api.Test
 
 internal class LegacyTransformerTest {
 
     @Test
     fun `Skal kunne transformere fra LegacySakstemaerRespons til intern modell`() {
-        val externals = LegacySakstemaerResponsObjectMother.giveMeLegacyResponse()
+        val externals = LegacySakstemaerResponsObjectMother.giveMeLegacyResponseWithDagpenger()
 
-        val internals = externals.toInternal()
+        val internal = externals.toInternal()
 
-        internals.size `should be equal to` externals.sakstemaList.size
+        internal.sakstemaer.size `should be equal to` 2
+        internal.dagpengerSistEndret.shouldNotBeNull()
     }
 
     @Test
