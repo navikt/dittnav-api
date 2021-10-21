@@ -12,5 +12,5 @@ import java.time.ZonedDateTime
 @Serializable
 data class SisteSakstemaer(
     val sistEndrede: List<Sakstema>,
-    val dagpengerSistEndret: ZonedDateTime
+    val dagpengerSistEndret: ZonedDateTime?
 )
