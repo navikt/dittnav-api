@@ -40,4 +40,14 @@ object LegacySakstemaerResponsObjectMother {
         )
     }
 
+    fun giveMeLegacyResponseWithJustOneSakstema(): LegacySakstemaerRespons {
+        val sakstemaer = listOf(
+            LegacySakstemaObjectMother.giveMeSakstemaOppfolging()
+        )
+        return LegacySakstemaerRespons(
+            sakstemaer.size,
+            sakstemaer
+        )
+    }
+
 }
