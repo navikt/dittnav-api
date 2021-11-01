@@ -9,6 +9,16 @@ import org.junit.jupiter.api.Test
 internal class LegacyTransformerTest {
 
     @Test
+    fun `Skal stotte at bruker ikke har et eneste sakstema`() {
+        val externals = LegacySakstemaerResponsObjectMother.giveMeLegacyResponseWithoutSakstemaer()
+
+        val internal = externals.toInternal()
+
+        internal.sakstemaer.size `should be equal to` 0
+        internal.dagpengerSistEndret.shouldBeNull()
+    }
+
+    @Test
     fun `Skal stotte at bruker kun har et sakstema`() {
         val externals = LegacySakstemaerResponsObjectMother.giveMeLegacyResponseWithJustOneSakstema()
 

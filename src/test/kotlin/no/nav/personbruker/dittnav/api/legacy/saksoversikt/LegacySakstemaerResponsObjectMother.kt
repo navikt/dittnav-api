@@ -50,4 +50,11 @@ object LegacySakstemaerResponsObjectMother {
         )
     }
 
+    fun giveMeLegacyResponseWithoutSakstemaer(): LegacySakstemaerRespons {
+        return LegacySakstemaerRespons(
+            0,
+            emptyList()
+        )
+    }
+
 }
