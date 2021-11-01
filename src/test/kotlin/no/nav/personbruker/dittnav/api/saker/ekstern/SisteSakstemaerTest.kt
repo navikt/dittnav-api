@@ -7,6 +7,8 @@ import org.junit.jupiter.api.Test
 
 internal class SisteSakstemaerTest {
 
+    private val objectMapper = json()
+
     val mineSakerRespons = """
         {
           "sistEndrede" : [ {
@@ -43,18 +45,14 @@ internal class SisteSakstemaerTest {
 
     @Test
     fun `Skal kunne deserialisere ekstern respons`() {
-        val om = json()
-
-        val deserialized = om.decodeFromString<SisteSakstemaer>(mineSakerRespons)
+        val deserialized = objectMapper.decodeFromString<SisteSakstemaer>(mineSakerRespons)
 
         deserialized.shouldNotBeNull()
     }
 
     @Test
     fun `Skal kunne deserialisere ekstern respons med nullable zoneddatetime`() {
-        val om = json()
-
-        val deserialized = om.decodeFromString<SisteSakstemaer>(mineSakerResponsUtenDagpengerSistEndret)
+        val deserialized = objectMapper.decodeFromString<SisteSakstemaer>(mineSakerResponsUtenDagpengerSistEndret)
 
         deserialized.shouldNotBeNull()
     }
