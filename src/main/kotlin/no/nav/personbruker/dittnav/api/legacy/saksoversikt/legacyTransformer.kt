@@ -1,9 +1,11 @@
 package no.nav.personbruker.dittnav.api.legacy.saksoversikt
 
 import no.nav.personbruker.dittnav.api.saker.SakstemaDTO
+import no.nav.personbruker.dittnav.api.saker.SisteSakstemaerDTO
+import java.time.ZonedDateTime
 
-fun LegacySakstemaerRespons.toInternal() : List<SakstemaDTO> {
-    return sakstemaList.map { external ->
+fun List<LegacySakstema>.toInternal(): List<SakstemaDTO> {
+    return filterNotNull(). map { external ->
         external.toInternal()
     }.toList()
 }
@@ -15,4 +17,27 @@ fun LegacySakstema.toInternal(): SakstemaDTO {
         sistEndret = sisteOppdatering,
         detaljvisningUrl = innsynsUrlResolverSingleton.urlFor(temakode)
     )
+}
+
+fun LegacySakstemaerRespons.toInternal(): SisteSakstemaerDTO {
+    val sakstemaer = sakstemaList.toInternal()
+    return SisteSakstemaerDTO(
+        sakstemaer.plukkUtDeToSomErSistEndretFraSortertListe(),
+        sakstemaer.plukkUtSistEndretForDagpenger()
+    )
+}
+
+fun List<SakstemaDTO>.plukkUtDeToSomErSistEndretFraSortertListe(): List<SakstemaDTO> {
+    return if (moreThanTwoSakstemaer()) {
+        subList(0, 2)
+    } else {
+        this
+    }
+}
+
+private fun List<SakstemaDTO>.moreThanTwoSakstemaer() =
+    size > 2
+
+private fun List<SakstemaDTO>.plukkUtSistEndretForDagpenger(): ZonedDateTime? {
+    return filterNotNull().find { s -> s.kode == "DAG" }?.sistEndret
 }

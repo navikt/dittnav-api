@@ -23,4 +23,8 @@ object SakstemaDTOObjectMother {
         )
     }
 
+    fun giveMeList(): List<SakstemaDTO> {
+        return listOf(giveMeTemaDagpenger(), giveMeTemaBil())
+    }
+
 }
