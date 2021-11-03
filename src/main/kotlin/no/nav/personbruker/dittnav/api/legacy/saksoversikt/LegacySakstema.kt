@@ -10,5 +10,5 @@ data class LegacySakstema(
         val temanavn: String,
         val temakode: String,
         val antallStatusUnderBehandling: Int,
-        val sisteOppdatering: ZonedDateTime
+        val sisteOppdatering: ZonedDateTime?
 )
