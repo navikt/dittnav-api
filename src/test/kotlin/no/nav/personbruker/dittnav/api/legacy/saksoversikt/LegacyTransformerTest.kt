@@ -1,9 +1,6 @@
 package no.nav.personbruker.dittnav.api.legacy.saksoversikt
 
-import org.amshove.kluent.`should be equal to`
-import org.amshove.kluent.`should contain`
-import org.amshove.kluent.shouldBeNull
-import org.amshove.kluent.shouldNotBeNull
+import org.amshove.kluent.*
 import org.junit.jupiter.api.Test
 
 internal class LegacyTransformerTest {
@@ -71,6 +68,33 @@ internal class LegacyTransformerTest {
         internal.navn `should be equal to` external.temanavn
         internal.sistEndret `should be equal to` external.sisteOppdatering
         internal.detaljvisningUrl.toString() `should contain` "dagpenger"
+    }
+
+    @Test
+    fun `Skal kaste en feil hvis et enklet sakstema mangler datoen for siste oppdatering`() {
+        val external = LegacySakstemaObjectMother.giveMeSakstemaUtenSisteEndret()
+
+        val result = runCatching {
+            external.toInternal()
+        }
+
+        result.shouldNotBeNull()
+        result.isFailure `should be equal to` true
+        val exception = result.exceptionOrNull()
+        exception `should be instance of` IllegalArgumentException::class
+    }
+
+    @Test
+    fun `Sakstemaer som mangler datoen for siste oppdatering skal filtereres og ikke tas med videre`() {
+        val externals = listOf(
+            LegacySakstemaObjectMother.giveMeSakstemaDagpenger(),
+            LegacySakstemaObjectMother.giveMeSakstemaUtenSisteEndret()
+        )
+
+        val internals = externals.toInternal()
+
+        internals.shouldNotBeNull()
+        internals.size `should be equal to` 1
     }
 
 }

@@ -32,4 +32,11 @@ object LegacySakstemaObjectMother {
         ZonedDateTime.now().minusMonths(5)
     )
 
+    fun giveMeSakstemaUtenSisteEndret() = LegacySakstema(
+        "Økonomisk sosialhjelp",
+        "KOM",
+        5,
+        null
+    )
+
 }
