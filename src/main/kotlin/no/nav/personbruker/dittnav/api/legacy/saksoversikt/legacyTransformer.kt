@@ -15,7 +15,7 @@ fun List<LegacySakstema>.toInternal(): List<SakstemaDTO> {
             internals.add(internal)
 
         } catch (e : Exception) {
-            log.warn("Klarte ikke å transforemere sakstemaet med index $index: $external.")
+            log.info("Klarte ikke å transforemere sakstemaet med index $index: $external.")
         }
     }
     return internals
