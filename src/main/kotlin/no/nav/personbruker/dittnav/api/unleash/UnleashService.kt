@@ -12,6 +12,7 @@ class UnleashService(private val unleashClient: Unleash) {
         const val digiSosToggleName: String = "digiSosEnabled"
         const val varselinnboksToggleName: String = "mergeBeskjedVarselEnabled"
         const val brukMineSakerToggleName: String = "dittnav.brukMineSaker"
+        const val innboksToggleName: String = "dittnav.innboks"
     }
 
     suspend fun mergeBeskjedVarselEnabled(user: AuthenticatedUser): Boolean {
@@ -26,6 +27,10 @@ class UnleashService(private val unleashClient: Unleash) {
 
     suspend fun mineSakerEnabled(user: AuthenticatedUser): Boolean = withContext(Dispatchers.IO) {
         unleashClient.isEnabled(brukMineSakerToggleName, createUnleashContext(user), false)
+    }
+
+    suspend fun innboksEnabled(user: AuthenticatedUser): Boolean = withContext(Dispatchers.IO) {
+        unleashClient.isEnabled(innboksToggleName, createUnleashContext(user), false)
     }
 
     private fun createUnleashContext(user: AuthenticatedUser): UnleashContext {
