@@ -71,20 +71,6 @@ internal class LegacyTransformerTest {
     }
 
     @Test
-    fun `Skal kaste en feil hvis et enklet sakstema mangler datoen for siste oppdatering`() {
-        val external = LegacySakstemaObjectMother.giveMeSakstemaUtenSisteEndret()
-
-        val result = runCatching {
-            external.toInternal()
-        }
-
-        result.shouldNotBeNull()
-        result.isFailure `should be equal to` true
-        val exception = result.exceptionOrNull()
-        exception `should be instance of` IllegalArgumentException::class
-    }
-
-    @Test
     fun `Sakstemaer som mangler datoen for siste oppdatering skal filtereres og ikke tas med videre`() {
         val externals = listOf(
             LegacySakstemaObjectMother.giveMeSakstemaDagpenger(),
