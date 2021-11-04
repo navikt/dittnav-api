@@ -8,24 +8,17 @@ import java.time.ZonedDateTime
 private val log = LoggerFactory.getLogger("LegacyTransformerKt")
 
 fun List<LegacySakstema>.toInternal(): List<SakstemaDTO> {
-    val internals = mutableListOf<SakstemaDTO>()
-    filterNotNull().forEachIndexed { index, external ->
-        try {
-            val internal = external.toInternal()
-            internals.add(internal)
-
-        } catch (e : Exception) {
-            log.info("Klarte ikke å transforemere sakstemaet med index $index: $external.")
-        }
-    }
-    return internals
+    return filterNotNull()
+        .filter { externalSakstema -> externalSakstema.sisteOppdatering != null }
+        .map { externalSakstema -> externalSakstema.toInternal() }
+        .toList()
 }
 
 fun LegacySakstema.toInternal(): SakstemaDTO {
     return SakstemaDTO(
         navn = temanavn,
         kode = temakode,
-        sistEndret = sisteOppdatering ?: throw IllegalArgumentException("Dato for siste oppdatering mangler"),
+        sistEndret = sisteOppdatering!!,
         detaljvisningUrl = innsynsUrlResolverSingleton.urlFor(temakode)
     )
 }
