@@ -26,4 +26,16 @@ fun Route.unleash(
         }
     }
 
+    get("/unleash/situasjon") {
+        executeOnUnexpiredTokensOnly {
+            try {
+                val result = unleashService.situasjonEnabled(authenticatedUser)
+                call.respond(HttpStatusCode.OK, result)
+
+            } catch (exception: Exception) {
+                respondWithError(call, log, exception)
+            }
+        }
+    }
+
 }
