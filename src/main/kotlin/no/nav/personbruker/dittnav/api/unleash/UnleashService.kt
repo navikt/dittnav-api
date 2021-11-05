@@ -13,6 +13,7 @@ class UnleashService(private val unleashClient: Unleash) {
         const val varselinnboksToggleName: String = "mergeBeskjedVarselEnabled"
         const val brukMineSakerToggleName: String = "dittnav.brukMineSaker"
         const val innboksToggleName: String = "dittnav.innboks"
+        const val situasjonToggleName: String = "veientilarbeid.kanViseUtfraSituasjon"
     }
 
     suspend fun mergeBeskjedVarselEnabled(user: AuthenticatedUser): Boolean {
@@ -31,6 +32,10 @@ class UnleashService(private val unleashClient: Unleash) {
 
     suspend fun innboksEnabled(user: AuthenticatedUser): Boolean = withContext(Dispatchers.IO) {
         unleashClient.isEnabled(innboksToggleName, createUnleashContext(user), false)
+    }
+
+    suspend fun situasjonEnabled(user: AuthenticatedUser): Boolean = withContext(Dispatchers.IO) {
+        unleashClient.isEnabled(situasjonToggleName, createUnleashContext(user), false)
     }
 
     private fun createUnleashContext(user: AuthenticatedUser): UnleashContext {
