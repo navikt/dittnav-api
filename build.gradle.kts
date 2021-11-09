@@ -20,6 +20,7 @@ repositories {
     // Use jcenter for resolving your dependencies.
     // You can declare any Maven/Ivy/file repository here.
     jcenter()
+    mavenCentral()
     maven("https://packages.confluent.io/maven")
     maven("https://jitpack.io")
     mavenLocal()
@@ -43,7 +44,7 @@ dependencies {
     implementation(Micrometer.registryPrometheus)
     implementation(Ktor.serialization)
     implementation(Ktor.serverNetty)
-    implementation(Logback.classic)
+    implementation("ch.qos.logback:logback-classic:1.3.0-alpha10")
     implementation(Logstash.logbackEncoder)
     implementation(NAV.tokenValidatorKtor)
     implementation(Prometheus.common)
