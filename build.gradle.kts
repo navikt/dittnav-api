@@ -44,7 +44,7 @@ dependencies {
     implementation(Micrometer.registryPrometheus)
     implementation(Ktor.serialization)
     implementation(Ktor.serverNetty)
-    implementation("ch.qos.logback:logback-classic:1.3.0-alpha10")
+    implementation(Logback.classic)
     implementation(Logstash.logbackEncoder)
     implementation(NAV.tokenValidatorKtor)
     implementation(Prometheus.common)

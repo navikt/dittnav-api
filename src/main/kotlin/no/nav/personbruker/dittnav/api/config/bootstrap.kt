@@ -31,7 +31,6 @@ import java.time.Instant
 
 val log = LoggerFactory.getLogger(ApplicationContext::class.java)
 
-@KtorExperimentalAPI
 fun Application.mainModule(appContext: ApplicationContext = ApplicationContext()) {
 
     DefaultExports.initialize()
