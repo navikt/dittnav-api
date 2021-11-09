@@ -7,7 +7,7 @@ repositories {
     maven("https://jitpack.io")
 }
 
-val dittNavDependenciesVersion = "upgradeToKtor165-SNAPSHOT"
+val dittNavDependenciesVersion = "upgradeToKtor163-SNAPSHOT"
 
 dependencies {
     implementation("com.github.navikt:dittnav-dependencies:$dittNavDependenciesVersion")
