@@ -7,9 +7,12 @@ import io.mockk.mockk
 import kotlinx.coroutines.runBlocking
 import no.finn.unleash.FakeUnleash
 import no.nav.personbruker.dittnav.api.common.AuthenticatedUserObjectMother
+import no.nav.personbruker.dittnav.api.common.ConsumeSakerException
 import no.nav.personbruker.dittnav.api.legacy.LegacyConsumer
 import no.nav.personbruker.dittnav.api.tokenx.AccessToken
 import no.nav.personbruker.dittnav.api.unleash.UnleashService
+import org.amshove.kluent.`should be equal to`
+import org.amshove.kluent.`should be instance of`
 import org.amshove.kluent.`should contain`
 import org.amshove.kluent.shouldNotBeNull
 import org.junit.jupiter.api.Test
@@ -101,6 +104,29 @@ internal class SakerServiceTest {
 
         result.shouldNotBeNull()
         result.sakerURL.toString() `should contain` "saksoversikt"
+    }
+
+    @Test
+    fun `Skal fange og kaste feil videre hvis noe feiler`() {
+        val unleashWithMineSaker = FakeUnleash().apply {
+            enable(UnleashService.brukMineSakerToggleName)
+        }
+        val unleashService = UnleashService(unleashWithMineSaker)
+        coEvery { mineSakerConsumer.hentSistEndret(any()) } throws IllegalArgumentException("Simulert feil i en test")
+
+        val service = SakerService(mineSakerConsumer, legacyConsumer, unleashService, urlResolver, tokendings)
+
+        val result = runCatching {
+            runBlocking {
+                service.hentSisteToEndredeSakstemaer(dummyUser)
+            }
+
+        }
+
+        result.isFailure `should be equal to` true
+        val exception = result.exceptionOrNull()
+        exception `should be instance of` ConsumeSakerException::class
+        exception?.cause `should be instance of` IllegalArgumentException::class
     }
 
 }
