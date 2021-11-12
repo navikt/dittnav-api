@@ -41,7 +41,7 @@ class ApplicationContext {
     val httpClientIgnoreUnknownKeys = HttpClientBuilder.build(KotlinxSerializer(json(ignoreUnknownKeys = true)))
     val dependencyPinger = DependencyPinger(environment, httpClient)
 
-    val tokendingsService = TokendingsServiceBuilder.buildTokendingsService()
+    val tokendingsService = TokendingsServiceBuilder.buildTokendingsService(maxCachedEntries = 5000)
     val mineSakerTokendings = MineSakerTokendings(tokendingsService, environment.mineSakerApiClientId)
 
     val legacyConsumer = LegacyConsumer(httpClient, environment.legacyApiURL)
