@@ -16,7 +16,6 @@ internal class PersonaliaNavnDTOTest {
     @Test
     fun `Skal kunne deserialisere responsen fra mine saker`() {
         val objectMapper = json()
-
         val deserialized = objectMapper.decodeFromString<PersonaliaNavnDTO>(response)
 
         deserialized.shouldNotBeNull()

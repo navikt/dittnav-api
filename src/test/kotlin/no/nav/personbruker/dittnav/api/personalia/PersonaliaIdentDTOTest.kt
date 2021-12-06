@@ -16,7 +16,6 @@ internal class PersonaliaIdentDTOTest {
     @Test
     fun `Skal kunne deserialisere responsen fra mine saker`() {
         val objectMapper = json()
-
         val deserialized = objectMapper.decodeFromString<PersonaliaIdentDTO>(response)
 
         deserialized.shouldNotBeNull()
