@@ -12,7 +12,6 @@ internal class SakerDTOTest {
     @Test
     fun `Skal kunne serialiseres til JSON`() {
         val dto = SakerDtoObjectMother.giveMeSisteSakstemaForDev()
-
         val json = objectMapper.encodeToString(dto)
 
         json.shouldNotBeNull()
