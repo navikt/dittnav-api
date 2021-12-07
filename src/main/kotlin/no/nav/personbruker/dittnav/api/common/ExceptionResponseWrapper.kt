@@ -17,6 +17,11 @@ suspend fun respondWithError(call: ApplicationCall, log: Logger, exception: Exce
             call.respond(feilkode)
             log.warn("Klarte ikke å hente saker. Returnerer feilkoden '$feilkode' til frontend. $exception", exception)
         }
+        is ConsumePersonaliaException -> {
+            val feilkode = HttpStatusCode.ServiceUnavailable
+            call.respond(feilkode)
+            log.warn("Klarte ikke å hente personalia. Returnerer feilkoden '$feilkode' til frontend. $exception", exception)
+        }
         is ProduceEventException -> {
             val feilkode = HttpStatusCode.ServiceUnavailable
             call.respond(feilkode)

@@ -22,6 +22,9 @@ import no.nav.personbruker.dittnav.api.loginstatus.LoginLevelService
 import no.nav.personbruker.dittnav.api.oppgave.OppgaveConsumer
 import no.nav.personbruker.dittnav.api.oppgave.OppgaveMergerService
 import no.nav.personbruker.dittnav.api.oppgave.OppgaveService
+import no.nav.personbruker.dittnav.api.personalia.PersonaliaConsumer
+import no.nav.personbruker.dittnav.api.personalia.PersonaliaService
+import no.nav.personbruker.dittnav.api.personalia.PersonaliaTokendings
 import no.nav.personbruker.dittnav.api.saker.MineSakerConsumer
 import no.nav.personbruker.dittnav.api.saker.MineSakerTokendings
 import no.nav.personbruker.dittnav.api.saker.SakerInnsynUrlResolver
@@ -31,6 +34,7 @@ import no.nav.personbruker.dittnav.api.unleash.UnleashService
 import no.nav.personbruker.dittnav.api.varsel.VarselConsumer
 import no.nav.personbruker.dittnav.api.varsel.VarselService
 import no.nav.tms.token.support.tokendings.exchange.TokendingsServiceBuilder
+import java.net.URL
 
 class ApplicationContext {
 
@@ -43,6 +47,7 @@ class ApplicationContext {
 
     val tokendingsService = TokendingsServiceBuilder.buildTokendingsService(maxCachedEntries = 5000)
     val mineSakerTokendings = MineSakerTokendings(tokendingsService, environment.mineSakerApiClientId)
+    val personaliaTokendings = PersonaliaTokendings(tokendingsService, environment.personaliaApiClientId)
 
     val legacyConsumer = LegacyConsumer(httpClient, environment.legacyApiURL)
     val oppgaveConsumer = OppgaveConsumer(httpClient, environment.eventHandlerURL)
@@ -72,6 +77,9 @@ class ApplicationContext {
 
     val beskjedMergerService = BeskjedMergerService(beskjedService, varselService, digiSosService, unleashService)
     val oppgaveMergerService = OppgaveMergerService(oppgaveService, digiSosService, unleashService)
+
+    val personaliaConsumer = PersonaliaConsumer(httpClient, environment.personaliaApiUrl)
+    val personaliaService = PersonaliaService(personaliaConsumer, personaliaTokendings)
 
     private fun createUnleashService(environment: Environment): UnleashService {
 
