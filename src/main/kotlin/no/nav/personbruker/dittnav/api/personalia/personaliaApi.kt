@@ -16,7 +16,7 @@ fun Route.personalia(
 ) {
     val log = LoggerFactory.getLogger(PersonaliaService::class.java)
 
-    get("/personalia/navn") {
+    get("/navn") {
         executeOnUnexpiredTokensOnly {
             try {
                 val result = service.hentNavn(authenticatedUser)
@@ -28,7 +28,7 @@ fun Route.personalia(
         }
     }
 
-    get("/personalia/ident") {
+    get("/ident") {
         executeOnUnexpiredTokensOnly {
             try {
                 val result = service.hentIdent(authenticatedUser)
