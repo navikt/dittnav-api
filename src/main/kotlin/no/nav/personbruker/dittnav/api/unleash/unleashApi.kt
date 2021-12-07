@@ -14,18 +14,6 @@ fun Route.unleash(
 ) {
     val log = LoggerFactory.getLogger(unleashService::class.java)
 
-    get("/unleash/innboks") {
-        executeOnUnexpiredTokensOnly {
-            try {
-                val result = unleashService.innboksEnabled(authenticatedUser)
-                call.respond(HttpStatusCode.OK, result)
-
-            } catch (exception: Exception) {
-                respondWithError(call, log, exception)
-            }
-        }
-    }
-
     get("/unleash/situasjon") {
         executeOnUnexpiredTokensOnly {
             try {
