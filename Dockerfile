@@ -3,7 +3,8 @@ ENV APPD_ENABLED=true
 COPY build/libs/api-all.jar /app/app.jar
 ENV JAVA_OPTS="-XX:MaxRAMPercentage=75 \
                -XX:+HeapDumpOnOutOfMemoryError \
-               -XX:HeapDumpPath=/oom-dump.hprof"
+               -XX:HeapDumpPath=/oom-dump.hprof \
+               -Dlog4j2.formatMsgNoLookups=true"
 ENV PORT=8080
 ENV APPDYNAMICS_AGENT_BASE_DIR=/tmp/appdynamics
 EXPOSE $PORT
