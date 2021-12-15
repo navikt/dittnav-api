@@ -34,7 +34,6 @@ import no.nav.personbruker.dittnav.api.unleash.UnleashService
 import no.nav.personbruker.dittnav.api.varsel.VarselConsumer
 import no.nav.personbruker.dittnav.api.varsel.VarselService
 import no.nav.tms.token.support.tokendings.exchange.TokendingsServiceBuilder
-import java.net.URL
 
 class ApplicationContext {
 
@@ -116,9 +115,9 @@ class ApplicationContext {
                 disable(UnleashService.varselinnboksToggleName)
             }
             if (environment.fakeUnleashIncludeDigiSos) {
-                enable(UnleashService.digiSosToggleName)
+                enable(UnleashService.digiSosOppgaveToggleName)
             } else {
-                disable(UnleashService.digiSosToggleName)
+                disable(UnleashService.digiSosOppgaveToggleName)
             }
             if (environment.fakeUnleashIncludeMineSaker) {
                 enable(UnleashService.brukMineSakerToggleName)
