@@ -17,7 +17,7 @@ internal class BeskjedDtoTransformerTest {
         internal.grupperingsId `should be equal to` external.grupperingsId
         internal.tekst `should be equal to` external.tekst
         internal.link `should be equal to` external.link
-        internal.aktiv `should be equal to` external.aktiv
+        internal.aktiv `should be equal to` external.isAktiv
         internal.sistOppdatert `should be equal to` external.sistOppdatert.toZonedDateTime()
         internal.produsent `should be equal to` "digiSos"
         internal.uid `should be equal to` external.eventId

@@ -102,9 +102,9 @@ internal class BeskjedMergerServiceTest {
     }
 
     @Test
-    fun `Hent aktive fra DigiSos hvis aktivert`() {
+    fun `Hent påbegynte søknader fra DigiSos hvis aktivert`() {
         val fakeUnleash = FakeUnleash().apply {
-            enable(UnleashService.digiSosToggleName)
+            enable(UnleashService.digisosPaabegynteToggleName)
         }
         val unleashService = UnleashService(fakeUnleash)
 
@@ -130,7 +130,7 @@ internal class BeskjedMergerServiceTest {
     fun `Hent aktive fra alle kilder hvis aktivert`() {
         val fakeUnleash = FakeUnleash().apply {
             enable(UnleashService.varselinnboksToggleName)
-            enable(UnleashService.digiSosToggleName)
+            enable(UnleashService.digisosPaabegynteToggleName)
         }
         val unleashService = UnleashService(fakeUnleash)
 
@@ -203,7 +203,7 @@ internal class BeskjedMergerServiceTest {
     @Test
     fun `Hent inaktive fra DigiSos hvis aktivert`() {
         val fakeUnleash = FakeUnleash().apply {
-            enable(UnleashService.digiSosToggleName)
+            enable(UnleashService.digisosPaabegynteToggleName)
         }
         val unleashService = UnleashService(fakeUnleash)
 
@@ -229,7 +229,7 @@ internal class BeskjedMergerServiceTest {
     fun `Hent inaktive fra alle kilder hvis aktivert`() {
         val fakeUnleash = FakeUnleash().apply {
             enable(UnleashService.varselinnboksToggleName)
-            enable(UnleashService.digiSosToggleName)
+            enable(UnleashService.digisosPaabegynteToggleName)
         }
         val unleashService = UnleashService(fakeUnleash)
         val beskjedMerger = BeskjedMergerService(beskjedService, varselService, digiSosService, unleashService)

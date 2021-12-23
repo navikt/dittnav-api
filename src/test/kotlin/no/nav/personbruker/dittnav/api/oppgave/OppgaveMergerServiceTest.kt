@@ -65,9 +65,9 @@ internal class OppgaveMergerServiceTest {
     }
 
     @Test
-    fun `Hent aktive fra DigiSos hvis aktivert`() {
+    fun `Hent ettersendelser fra DigiSos hvis aktivert`() {
         val fakeUnleash = FakeUnleash().apply {
-            enable(UnleashService.digiSosToggleName)
+            enable(UnleashService.digiSosOppgaveToggleName)
         }
         val unleashService = UnleashService(fakeUnleash)
 
@@ -91,7 +91,7 @@ internal class OppgaveMergerServiceTest {
     fun `Hent aktive fra alle kilder hvis aktivert`() {
         val fakeUnleash = FakeUnleash().apply {
             enable(UnleashService.varselinnboksToggleName)
-            enable(UnleashService.digiSosToggleName)
+            enable(UnleashService.digiSosOppgaveToggleName)
         }
         val unleashService = UnleashService(fakeUnleash)
 
@@ -135,7 +135,7 @@ internal class OppgaveMergerServiceTest {
     @Test
     fun `Hent inaktive fra DigiSos hvis aktivert`() {
         val fakeUnleash = FakeUnleash().apply {
-            enable(UnleashService.digiSosToggleName)
+            enable(UnleashService.digiSosOppgaveToggleName)
         }
         val unleashService = UnleashService(fakeUnleash)
 
@@ -159,7 +159,7 @@ internal class OppgaveMergerServiceTest {
     fun `Hent inaktive fra alle kilder hvis aktivert`() {
         val fakeUnleash = FakeUnleash().apply {
             enable(UnleashService.varselinnboksToggleName)
-            enable(UnleashService.digiSosToggleName)
+            enable(UnleashService.digiSosOppgaveToggleName)
         }
         val unleashService = UnleashService(fakeUnleash)
         val oppgaveMerger = OppgaveMergerService(oppgaveService, digiSosService, unleashService)

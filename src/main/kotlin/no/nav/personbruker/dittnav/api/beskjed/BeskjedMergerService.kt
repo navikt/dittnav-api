@@ -33,7 +33,7 @@ class BeskjedMergerService(
     }
 
     private suspend fun fetchActiveFromDigiSosIfEnabled(user: AuthenticatedUser) =
-        if (unleashService.digiSosEnabled(user)) {
+        if (unleashService.digiSosPaabegynteEnabled(user)) {
             digiSosService.getPaabegynteActive(user)
         } else {
             MultiSourceResult.createEmptyResult()
@@ -64,7 +64,7 @@ class BeskjedMergerService(
     }
 
     private suspend fun fetchInactiveFromDigiSosIfEnabled(user: AuthenticatedUser) =
-        if (unleashService.digiSosEnabled(user)) {
+        if (unleashService.digiSosPaabegynteEnabled(user)) {
             digiSosService.getPaabegynteInactive(user)
         } else {
             MultiSourceResult.createEmptyResult()

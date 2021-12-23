@@ -15,5 +15,5 @@ data class Paabegynte(
     val link: String,
     val sikkerhetsnivaa: Int,
     val sistOppdatert: LocalDateTime,
-    val aktiv : Boolean
+    val isAktiv : Boolean
 )
