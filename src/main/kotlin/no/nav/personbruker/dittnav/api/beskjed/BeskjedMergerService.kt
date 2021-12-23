@@ -8,6 +8,7 @@ import no.nav.personbruker.dittnav.api.digisos.DigiSosService
 import no.nav.personbruker.dittnav.api.unleash.UnleashService
 import no.nav.personbruker.dittnav.api.varsel.VarselService
 import no.nav.personbruker.dittnav.common.security.AuthenticatedUser
+import org.slf4j.LoggerFactory
 
 class BeskjedMergerService(
     private val beskjedService: BeskjedService,
@@ -15,6 +16,8 @@ class BeskjedMergerService(
     private val digiSosService: DigiSosService,
     private val unleashService: UnleashService
 ) {
+
+    private val log = LoggerFactory.getLogger(BeskjedMergerService::class.java)
 
     suspend fun getActiveEvents(user: AuthenticatedUser): MultiSourceResult<BeskjedDTO, KildeType> = withContext(Dispatchers.IO) {
         val beskjeder = async {
@@ -34,6 +37,7 @@ class BeskjedMergerService(
 
     private suspend fun fetchActiveFromDigiSosIfEnabled(user: AuthenticatedUser) =
         if (unleashService.digiSosPaabegynteEnabled(user)) {
+            log.info("Henter aktive påbegynte fra Digisos")
             digiSosService.getPaabegynteActive(user)
         } else {
             MultiSourceResult.createEmptyResult()
@@ -72,6 +76,7 @@ class BeskjedMergerService(
 
     private suspend fun fetchInactiveFromVarselinnboksIfEnabled(user: AuthenticatedUser) =
         if (unleashService.mergeBeskjedVarselEnabled(user)) {
+            log.info("Henter inaktive påbegynte for Digisos")
             varselService.getInactiveVarselEvents(user)
         } else {
             MultiSourceResult.createEmptyResult()
