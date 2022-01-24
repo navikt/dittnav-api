@@ -34,10 +34,6 @@ class MaskedThrowableProxy private constructor(private val throwableProxy: IThro
         return maskedSuppressed
     }
 
-    override fun isCyclic(): Boolean {
-        return throwableProxy.isCyclic
-    }
-
     companion object {
         @JvmStatic
         fun mask(throwableProxy: IThrowableProxy?): IThrowableProxy? {
