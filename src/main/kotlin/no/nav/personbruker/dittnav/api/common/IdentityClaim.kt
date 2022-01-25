@@ -1,5 +1,7 @@
 package no.nav.personbruker.dittnav.api.common
 
+import java.util.*
+
 enum class IdentityClaim(val claimName: String) {
 
     SUBJECT("sub"),
@@ -8,7 +10,7 @@ enum class IdentityClaim(val claimName: String) {
     companion object {
         fun fromClaimName(claimName: String): IdentityClaim {
             values().forEach { currentClaim ->
-                if (currentClaim.claimName == claimName.toLowerCase()) {
+                if (currentClaim.claimName == claimName.lowercase(Locale.getDefault())) {
                     return currentClaim
                 }
             }
