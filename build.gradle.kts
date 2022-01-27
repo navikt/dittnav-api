@@ -50,7 +50,7 @@ dependencies {
     implementation(Prometheus.common)
     implementation(Prometheus.hotspot)
     implementation(Prometheus.logback)
-    implementation("com.github.navikt.tms-ktor-token-support:token-support-tokendings-exchange:2022.01.27-fix-header-2")
+    implementation("com.github.navikt.tms-ktor-token-support:token-support-tokendings-exchange:2022.01.27-13.11-a6b55dd90347")
     implementation(Unleash.clientJava)
 
     testImplementation(Junit.api)
