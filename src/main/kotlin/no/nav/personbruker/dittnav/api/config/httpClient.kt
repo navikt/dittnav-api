@@ -9,6 +9,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import no.nav.personbruker.dittnav.api.tokenx.AccessToken
 import no.nav.personbruker.dittnav.common.security.AuthenticatedUser
+import no.nav.tms.token.support.tokendings.exchange.TokenXHeader
 import java.net.URL
 
 suspend inline fun <reified T> HttpClient.get(url: URL, user: AuthenticatedUser): T = withContext(Dispatchers.IO) {
@@ -32,6 +33,19 @@ suspend inline fun <reified T> HttpClient.getExtendedTimeout(url: URL, accessTok
         url(url)
         method = HttpMethod.Get
         header(HttpHeaders.Authorization, "Bearer ${accessToken.value}")
+        timeout {
+            socketTimeoutMillis = 30000
+            connectTimeoutMillis = 10000
+            requestTimeoutMillis = 40000
+        }
+    }
+}
+
+suspend inline fun <reified T> HttpClient.getWithTokenx(url: URL, accessToken: AccessToken): T = withContext(Dispatchers.IO) {
+    request<T> {
+        url(url)
+        method = HttpMethod.Get
+        header(TokenXHeader.Authorization, "Bearer ${accessToken.value}")
         timeout {
             socketTimeoutMillis = 30000
             connectTimeoutMillis = 10000
