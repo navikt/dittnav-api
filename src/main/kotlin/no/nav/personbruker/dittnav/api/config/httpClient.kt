@@ -3,10 +3,10 @@ package no.nav.personbruker.dittnav.api.config
 import io.ktor.client.HttpClient
 import io.ktor.client.features.timeout
 import io.ktor.client.request.*
-import io.ktor.http.HttpHeaders
-import io.ktor.http.HttpMethod
+import io.ktor.http.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import no.nav.personbruker.dittnav.api.done.DoneDTO
 import no.nav.personbruker.dittnav.api.tokenx.AccessToken
 import no.nav.personbruker.dittnav.common.security.AuthenticatedUser
 import no.nav.tms.token.support.tokendings.exchange.TokenXHeader
@@ -25,19 +25,6 @@ suspend inline fun <reified T> HttpClient.get(url: URL, accessToken: AccessToken
         url(url)
         method = HttpMethod.Get
         header(HttpHeaders.Authorization, "Bearer ${accessToken.value}")
-    }
-}
-
-suspend inline fun <reified T> HttpClient.getExtendedTimeout(url: URL, accessToken: AccessToken): T = withContext(Dispatchers.IO) {
-    request {
-        url(url)
-        method = HttpMethod.Get
-        header(HttpHeaders.Authorization, user.createAuthenticationHeader()))
-        timeout {
-            socketTimeoutMillis = 30000
-            connectTimeoutMillis = 10000
-            requestTimeoutMillis = 40000
-        }
     }
 }
 
