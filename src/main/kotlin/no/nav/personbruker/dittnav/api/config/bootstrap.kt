@@ -9,7 +9,6 @@ import io.ktor.metrics.micrometer.*
 import io.ktor.response.*
 import io.ktor.routing.*
 import io.ktor.serialization.*
-import io.ktor.util.*
 import io.ktor.util.pipeline.*
 import io.prometheus.client.hotspot.DefaultExports
 import no.nav.personbruker.dittnav.api.beskjed.beskjed
@@ -71,7 +70,6 @@ fun Application.mainModule(appContext: ApplicationContext = ApplicationContext()
             oppgave(appContext.oppgaveMergerService)
             beskjed(appContext.beskjedMergerService)
             innboks(appContext.innboksService)
-            brukernotifikasjoner(appContext.brukernotifikasjonService)
             saker(appContext.sakerService)
             personalia(appContext.personaliaService)
             unleash(appContext.unleashService)
