@@ -16,7 +16,7 @@ internal class PaabegynteTest {
         "link": "https://dummy/enId",
         "sikkerhetsnivaa": 3,
         "sistOppdatert": "2021-07-01T09:32:35.416856",
-        "aktiv": false
+        "isAktiv": false
     }""".trimIndent()
 
     @Test

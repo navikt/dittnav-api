@@ -1,24 +1,36 @@
 package no.nav.personbruker.dittnav.api.common
 
-import io.ktor.application.ApplicationCall
-import io.ktor.http.HttpStatusCode
-import io.ktor.response.respond
+import io.ktor.application.*
+import io.ktor.http.*
+import io.ktor.response.*
 import org.slf4j.Logger
-import java.lang.Exception
 
 suspend fun respondWithError(call: ApplicationCall, log: Logger, exception: Exception) {
     when(exception) {
         is ConsumeEventException -> {
-            call.respond(HttpStatusCode.ServiceUnavailable)
-            log.warn("Klarte ikke hente eventer. Returnerer feilkode til frontend. $exception", exception)
+            val feilkode = HttpStatusCode.ServiceUnavailable
+            call.respond(feilkode)
+            log.warn("Klarte ikke å hente eventer. Returnerer feilkoden '$feilkode' til frontend. $exception", exception)
+        }
+        is ConsumeSakerException -> {
+            val feilkode = HttpStatusCode.ServiceUnavailable
+            call.respond(feilkode)
+            log.warn("Klarte ikke å hente saker. Returnerer feilkoden '$feilkode' til frontend. $exception", exception)
+        }
+        is ConsumePersonaliaException -> {
+            val feilkode = HttpStatusCode.ServiceUnavailable
+            call.respond(feilkode)
+            log.warn("Klarte ikke å hente personalia. Returnerer feilkoden '$feilkode' til frontend. $exception", exception)
         }
         is ProduceEventException -> {
-            call.respond(HttpStatusCode.ServiceUnavailable)
-            log.warn("Klarte ikke å produsere done-event. Returnerer feilkode til frontend. $exception", exception)
+            val feilkode = HttpStatusCode.ServiceUnavailable
+            call.respond(feilkode)
+            log.warn("Klarte ikke å produsere done-event. Returnerer feilkoden '$feilkode' til frontend. $exception", exception)
         }
         else -> {
-            call.respond(HttpStatusCode.InternalServerError)
-            log.error("Ukjent feil oppstod ved henting av eventer. Returnerer feilkode til frontend", exception)
+            val feilkode = HttpStatusCode.InternalServerError
+            call.respond(feilkode)
+            log.error("Ukjent feil oppstod. Returnerer feilkoden '$feilkode' til frontend", exception)
         }
     }
 }

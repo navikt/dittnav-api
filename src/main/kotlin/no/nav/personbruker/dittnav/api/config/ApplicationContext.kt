@@ -23,6 +23,13 @@ import no.nav.personbruker.dittnav.api.oppgave.OppgaveConsumer
 import no.nav.personbruker.dittnav.api.oppgave.OppgaveMergerService
 import no.nav.personbruker.dittnav.api.oppgave.OppgaveService
 import no.nav.personbruker.dittnav.api.tokenx.EventhandlerTokendings
+import no.nav.personbruker.dittnav.api.personalia.PersonaliaConsumer
+import no.nav.personbruker.dittnav.api.personalia.PersonaliaService
+import no.nav.personbruker.dittnav.api.personalia.PersonaliaTokendings
+import no.nav.personbruker.dittnav.api.saker.MineSakerConsumer
+import no.nav.personbruker.dittnav.api.saker.MineSakerTokendings
+import no.nav.personbruker.dittnav.api.saker.SakerInnsynUrlResolver
+import no.nav.personbruker.dittnav.api.saker.SakerService
 import no.nav.personbruker.dittnav.api.unleash.ByEnvironmentStrategy
 import no.nav.personbruker.dittnav.api.unleash.UnleashService
 import no.nav.personbruker.dittnav.api.varsel.VarselConsumer
@@ -40,12 +47,15 @@ class ApplicationContext {
 
     val tokendingsService = TokendingsServiceBuilder.buildTokendingsService()
     val eventhandlerTokendings = EventhandlerTokendings(tokendingsService, environment.eventhandlerClientId)
+    val mineSakerTokendings = MineSakerTokendings(tokendingsService, environment.mineSakerApiClientId)
+    val personaliaTokendings = PersonaliaTokendings(tokendingsService, environment.personaliaApiClientId)
 
     val legacyConsumer = LegacyConsumer(httpClient, environment.legacyApiURL)
     val oppgaveConsumer = OppgaveConsumer(httpClient, environment.eventHandlerURL)
     val beskjedConsumer = BeskjedConsumer(httpClient, environment.eventHandlerURL)
     val innboksConsumer = InnboksConsumer(httpClient, environment.eventHandlerURL)
     val varselConsumer = VarselConsumer(httpClient, environment.legacyApiURL)
+    val mineSakerConsumer = MineSakerConsumer(httpClient, environment.sakerApiUrl)
 
     val doneProducer = DoneProducer(httpClient, eventhandlerTokendings, environment.eventHandlerURL)
 
@@ -58,12 +68,17 @@ class ApplicationContext {
     val beskjedService = BeskjedService(beskjedConsumer, eventhandlerTokendings, loginLevelService)
     val innboksService = InnboksService(innboksConsumer, eventhandlerTokendings, loginLevelService)
     val varselService = VarselService(varselConsumer)
+    val sakerUrlResolver = SakerInnsynUrlResolver(NaisEnvironment.isRunningInProd())
+    val sakerService = SakerService(mineSakerConsumer, legacyConsumer, unleashService, sakerUrlResolver, mineSakerTokendings)
 
     val digiSosConsumer = DigiSosClient(httpClient, environment.digiSosSoknadBaseURL, environment.digiSosInnsynBaseURL)
     val digiSosService = DigiSosService(digiSosConsumer)
 
     val beskjedMergerService = BeskjedMergerService(beskjedService, varselService, digiSosService, unleashService)
     val oppgaveMergerService = OppgaveMergerService(oppgaveService, digiSosService, unleashService)
+
+    val personaliaConsumer = PersonaliaConsumer(httpClient, environment.personaliaApiUrl)
+    val personaliaService = PersonaliaService(personaliaConsumer, personaliaTokendings)
 
     private fun createUnleashService(environment: Environment): UnleashService {
 
@@ -80,7 +95,7 @@ class ApplicationContext {
         val unleashUrl = environment.unleashApiUrl
 
         val appName = "dittnav-api"
-        val envContext = if (environment.isRunningInDev) "dev" else "prod"
+        val envContext = if (NaisEnvironment.isRunningInDev()) "dev" else "prod"
 
         val byEnvironment = ByEnvironmentStrategy(envContext)
 
@@ -100,9 +115,14 @@ class ApplicationContext {
                 disable(UnleashService.varselinnboksToggleName)
             }
             if (environment.fakeUnleashIncludeDigiSos) {
-                enable(UnleashService.digiSosToggleName)
+                enable(UnleashService.digiSosOppgaveToggleName)
             } else {
-                disable(UnleashService.digiSosToggleName)
+                disable(UnleashService.digiSosOppgaveToggleName)
+            }
+            if (environment.fakeUnleashIncludeMineSaker) {
+                enable(UnleashService.brukMineSakerToggleName)
+            } else {
+                disable(UnleashService.brukMineSakerToggleName)
             }
         }
     }

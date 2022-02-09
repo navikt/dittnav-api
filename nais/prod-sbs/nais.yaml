@@ -7,7 +7,6 @@ metadata:
     team: personbruker
 spec:
   envFrom:
-    - secret: dittnav-api-secrets
     - configmap: loginservice-idporten
   image: {{version}}
   port: 8080
@@ -23,12 +22,26 @@ spec:
   replicas:
     min: 2
     max: 4
+  tokenx:
+    enabled: true
+  accessPolicy:
+    outbound:
+      external:
+        - host: person.nav.no
+      rules:
+        - application: "mine-saker-api"
+          namespace: "personbruker"
+          cluster: "prod-gcp"
+  webproxy: true
   ingresses:
-    - "https://dittnav-api-gcp.nais.oera.no/person/dittnav-api"
+    - "https://dittnav-api.nais.oera.no/person/dittnav-api"
+    - "https://www.nav.no/person/dittnav-api"
+  vault:
+    enabled: true
   resources:
     limits:
       cpu: "3"
       memory: 768Mi
     requests:
-      cpu: "500m"
+      cpu: "100m"
       memory: 580Mi

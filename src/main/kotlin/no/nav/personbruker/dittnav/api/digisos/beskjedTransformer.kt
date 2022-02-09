@@ -20,7 +20,7 @@ fun Paabegynte.toInternal() = BeskjedDTO(
     produsent = "digiSos",
     sistOppdatert = sistOppdatert.toZonedDateTime(),
     sikkerhetsnivaa = 3,
-    aktiv = aktiv,
+    aktiv = isAktiv,
     grupperingsId = grupperingsId
 )
 

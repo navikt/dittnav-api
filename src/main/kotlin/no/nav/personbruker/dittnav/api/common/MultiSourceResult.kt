@@ -20,7 +20,7 @@ import no.nav.personbruker.dittnav.api.beskjed.KildeType
 data class MultiSourceResult<R, S>(
     private val results: List<R>,
     private val successFullSources: List<S>,
-    private val failedSources: List<S> = emptyList(),
+    private val failedSources: List<S> = emptyList()
 ) {
 
     companion object {

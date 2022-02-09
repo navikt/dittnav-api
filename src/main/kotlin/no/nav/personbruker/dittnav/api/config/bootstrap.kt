@@ -20,6 +20,9 @@ import no.nav.personbruker.dittnav.api.health.healthApi
 import no.nav.personbruker.dittnav.api.innboks.innboks
 import no.nav.personbruker.dittnav.api.legacy.legacyApi
 import no.nav.personbruker.dittnav.api.oppgave.oppgave
+import no.nav.personbruker.dittnav.api.personalia.personalia
+import no.nav.personbruker.dittnav.api.saker.saker
+import no.nav.personbruker.dittnav.api.unleash.unleash
 import no.nav.personbruker.dittnav.common.security.AuthenticatedUser
 import no.nav.personbruker.dittnav.common.security.AuthenticatedUserFactory
 import no.nav.security.token.support.ktor.tokenValidationSupport
@@ -28,7 +31,6 @@ import java.time.Instant
 
 val log = LoggerFactory.getLogger(ApplicationContext::class.java)
 
-@KtorExperimentalAPI
 fun Application.mainModule(appContext: ApplicationContext = ApplicationContext()) {
 
     DefaultExports.initialize()
@@ -69,6 +71,10 @@ fun Application.mainModule(appContext: ApplicationContext = ApplicationContext()
             oppgave(appContext.oppgaveMergerService)
             beskjed(appContext.beskjedMergerService)
             innboks(appContext.innboksService)
+            brukernotifikasjoner(appContext.brukernotifikasjonService)
+            saker(appContext.sakerService)
+            personalia(appContext.personaliaService)
+            unleash(appContext.unleashService)
             if(appContext.environment.isRunningInDev) {
                 digiSos(appContext.digiSosService)
             }

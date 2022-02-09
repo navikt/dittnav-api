@@ -28,7 +28,7 @@ class OppgaveMergerService(
     }
 
     private suspend fun fetchActiveFromDigiSosIfEnabled(user: AuthenticatedUser) =
-        if (unleashService.digiSosEnabled(user)) {
+        if (unleashService.digiSosOppgaveEnabled(user)) {
             digiSosService.getEttersendelseActive(user)
         } else {
             MultiSourceResult.createEmptyResult()
@@ -47,7 +47,7 @@ class OppgaveMergerService(
     }
 
     private suspend fun fetchInactiveFromDigiSosIfEnabled(user: AuthenticatedUser) : MultiSourceResult<OppgaveDTO, KildeType> {
-        return if (unleashService.digiSosEnabled(user)) {
+        return if (unleashService.digiSosOppgaveEnabled(user)) {
             digiSosService.getEttersendelseInactive(user)
         } else {
             MultiSourceResult.createEmptyResult()

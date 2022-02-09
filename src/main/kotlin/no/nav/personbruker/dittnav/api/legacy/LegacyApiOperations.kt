@@ -7,8 +7,6 @@ enum class LegacyApiOperations(
     UBEHANDLEDE_MELDINGER( "/meldinger/ubehandlede"),
     PAABEGYNTESAKER( "/saker/paabegynte"),
     SAKSTEMA( "/saker/sakstema"),
-    NAVN( "/personalia/navn"),
-    IDENT( "/personalia/ident"),
     MELDEKORT( "/meldekortinfo"),
     OPPFOLGING( "/oppfolging");
 
