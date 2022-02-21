@@ -1,7 +1,7 @@
 package no.nav.personbruker.dittnav.api.oppgave
 
 import io.ktor.client.HttpClient
-import no.nav.personbruker.dittnav.api.config.get
+import no.nav.personbruker.dittnav.api.config.getWithTokenx
 import no.nav.personbruker.dittnav.api.tokenx.AccessToken
 import java.net.URL
 
@@ -22,6 +22,6 @@ class OppgaveConsumer(
     }
 
     private suspend fun getExternalEvents(accessToken: AccessToken, comletePathToEndpoint: URL): List<Oppgave> {
-        return client.get(comletePathToEndpoint, accessToken)
+        return client.getWithTokenx(comletePathToEndpoint, accessToken)
     }
 }

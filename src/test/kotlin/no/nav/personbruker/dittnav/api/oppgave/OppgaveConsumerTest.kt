@@ -2,6 +2,7 @@ package no.nav.personbruker.dittnav.api.oppgave
 
 import io.ktor.client.*
 import io.ktor.client.engine.mock.*
+import io.ktor.client.features.*
 import io.ktor.client.features.json.*
 import io.ktor.http.*
 import kotlinx.coroutines.runBlocking
@@ -23,6 +24,10 @@ internal class OppgaveConsumerTest {
     fun `should call oppgave endpoint on event handler`() {
 
         val client = HttpClient(MockEngine) {
+            install(HttpTimeout) {
+                requestTimeoutMillis = 500
+            }
+
             engine {
                 addHandler { request ->
                     if (request.url.encodedPath.contains("/fetch/oppgave") && request.url.host.contains("event-handler")) {
