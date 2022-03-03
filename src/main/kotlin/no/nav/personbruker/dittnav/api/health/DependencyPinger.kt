@@ -12,19 +12,13 @@ class DependencyPinger(
 ) {
 
     private val legacyApiPingableURL = URL("${environment.legacyApiURL}/internal/isAlive")
-    private val eventHandlerPingableURL = URL("${environment.eventHandlerURL}/internal/isAlive")
 
     suspend fun pingAll() = coroutineScope {
         val legacySelftestStatus = async {
             getStatus(legacyApiPingableURL, client)
         }
 
-        val eventHandlerSelftestStatus = async {
-            getStatus(eventHandlerPingableURL, client)
-        }
-
         val services = mutableMapOf("DITTNAV_LEGACY_API:" to legacySelftestStatus.await())
-        services.put("DITTNAV_EVENT_HANDLER:", eventHandlerSelftestStatus.await())
         return@coroutineScope services
     }
 
