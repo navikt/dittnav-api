@@ -32,6 +32,9 @@ spec:
         - application: "mine-saker-api"
           namespace: "personbruker"
           cluster: "dev-gcp"
+        - application: "dittnav-event-handler"
+          namespace: "min-side"
+          cluster: "dev-gcp"
   webproxy: true
   ingresses:
     - "https://www.dev.nav.no/person/dittnav-api"
