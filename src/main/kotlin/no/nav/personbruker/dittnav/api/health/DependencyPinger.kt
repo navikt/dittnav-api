@@ -21,5 +21,4 @@ class DependencyPinger(
         val services = mutableMapOf("DITTNAV_LEGACY_API:" to legacySelftestStatus.await())
         return@coroutineScope services
     }
-
 }
