@@ -1,6 +1,7 @@
 package no.nav.personbruker.dittnav.api.beskjed
 
 import io.ktor.client.*
+import no.nav.personbruker.dittnav.api.common.retryOnConnectionClosed
 import no.nav.personbruker.dittnav.api.config.get
 import no.nav.personbruker.dittnav.api.tokenx.AccessToken
 import java.net.URL
@@ -22,6 +23,8 @@ class BeskjedConsumer(
     }
 
     private suspend fun getExternalEvents(accessToken: AccessToken, completePathToEndpoint: URL): List<Beskjed> {
-        return client.get(completePathToEndpoint, accessToken)
+        return retryOnConnectionClosed {
+            client.get(completePathToEndpoint, accessToken)
+        }
     }
 }

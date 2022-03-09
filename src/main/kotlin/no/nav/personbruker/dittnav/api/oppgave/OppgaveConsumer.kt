@@ -1,7 +1,8 @@
 package no.nav.personbruker.dittnav.api.oppgave
 
 import io.ktor.client.HttpClient
-import no.nav.personbruker.dittnav.api.config.getWithTokenx
+import no.nav.personbruker.dittnav.api.common.retryOnConnectionClosed
+import no.nav.personbruker.dittnav.api.config.get
 import no.nav.personbruker.dittnav.api.tokenx.AccessToken
 import java.net.URL
 
@@ -21,7 +22,9 @@ class OppgaveConsumer(
         return getExternalEvents(accessToken, inactiveEventsEndpoint)
     }
 
-    private suspend fun getExternalEvents(accessToken: AccessToken, comletePathToEndpoint: URL): List<Oppgave> {
-        return client.getWithTokenx(comletePathToEndpoint, accessToken)
+    private suspend fun getExternalEvents(accessToken: AccessToken, completePathToEndpoint: URL): List<Oppgave> {
+        return retryOnConnectionClosed {
+            client.get(completePathToEndpoint, accessToken)
+        }
     }
 }
