@@ -1,7 +1,9 @@
 package no.nav.personbruker.dittnav.api.innboks
 
 import io.ktor.client.*
+import no.nav.personbruker.dittnav.api.common.retryOnConnectionClosed
 import no.nav.personbruker.dittnav.api.config.get
+import no.nav.personbruker.dittnav.api.config.getWithTokenx
 import no.nav.personbruker.dittnav.api.tokenx.AccessToken
 import java.net.URL
 
@@ -22,6 +24,8 @@ class InnboksConsumer(
     }
 
     private suspend fun getExternalEvents(accessToken: AccessToken, completePathToEndpoint: URL): List<Innboks> {
-        return client.get(completePathToEndpoint, accessToken)
+        return retryOnConnectionClosed {
+            client.get(completePathToEndpoint, accessToken)
+        }
     }
 }
