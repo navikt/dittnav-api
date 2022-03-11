@@ -19,6 +19,8 @@ import no.nav.personbruker.dittnav.api.innboks.InnboksService
 import no.nav.personbruker.dittnav.api.legacy.LegacyConsumer
 import no.nav.personbruker.dittnav.api.loginstatus.InnloggingsstatusConsumer
 import no.nav.personbruker.dittnav.api.loginstatus.LoginLevelService
+import no.nav.personbruker.dittnav.api.meldekort.MeldekortConsumer
+import no.nav.personbruker.dittnav.api.meldekort.MeldekortService
 import no.nav.personbruker.dittnav.api.oppgave.OppgaveConsumer
 import no.nav.personbruker.dittnav.api.oppgave.OppgaveMergerService
 import no.nav.personbruker.dittnav.api.oppgave.OppgaveService
@@ -79,6 +81,9 @@ class ApplicationContext {
 
     val personaliaConsumer = PersonaliaConsumer(httpClient, environment.personaliaApiUrl)
     val personaliaService = PersonaliaService(personaliaConsumer, personaliaTokendings)
+
+    val meldekortConsumer = MeldekortConsumer(httpClient, environment.meldekortUrl)
+    val meldekortService = MeldekortService(meldekortConsumer)
 
     private fun createUnleashService(environment: Environment): UnleashService {
 

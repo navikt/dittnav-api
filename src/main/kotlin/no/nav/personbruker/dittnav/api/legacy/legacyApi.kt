@@ -27,10 +27,6 @@ fun Route.legacyApi(legacyConsumer: LegacyConsumer) {
         hentRaattFraLegacyApiOgReturnerResponsen(legacyConsumer, LegacyApiOperations.SAKSTEMA)
     }
 
-    get(LegacyApiOperations.MELDEKORT.path) {
-        hentRaattFraLegacyApiOgReturnerResponsen(legacyConsumer, LegacyApiOperations.MELDEKORT)
-    }
-
     get(LegacyApiOperations.OPPFOLGING.path) {
         hentRaattFraLegacyApiOgReturnerResponsen(legacyConsumer, LegacyApiOperations.OPPFOLGING)
     }
