@@ -24,7 +24,7 @@ object MeldekortTransformer {
         )
     }
 
-    private fun toInternal(meldekortExternal: MeldekortExternal): Meldekort {
+    fun toInternal(meldekortExternal: MeldekortExternal): Meldekort {
 
         val (sisteDatoForTrekk, risikerTrekk) = calculateSisteDatoForTrekk(meldekortExternal.til)
 
