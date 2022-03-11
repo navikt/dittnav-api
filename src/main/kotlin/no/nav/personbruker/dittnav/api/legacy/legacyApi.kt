@@ -27,10 +27,6 @@ fun Route.legacyApi(legacyConsumer: LegacyConsumer) {
         hentRaattFraLegacyApiOgReturnerResponsen(legacyConsumer, LegacyApiOperations.SAKSTEMA)
     }
 
-    get(LegacyApiOperations.OPPFOLGING.path) {
-        hentRaattFraLegacyApiOgReturnerResponsen(legacyConsumer, LegacyApiOperations.OPPFOLGING)
-    }
-
 }
 
 private suspend fun PipelineContext<Unit, ApplicationCall>.hentRaattFraLegacyApiOgReturnerResponsen(consumer: LegacyConsumer, operation: LegacyApiOperations) {

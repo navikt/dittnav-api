@@ -21,6 +21,8 @@ import no.nav.personbruker.dittnav.api.loginstatus.InnloggingsstatusConsumer
 import no.nav.personbruker.dittnav.api.loginstatus.LoginLevelService
 import no.nav.personbruker.dittnav.api.meldekort.MeldekortConsumer
 import no.nav.personbruker.dittnav.api.meldekort.MeldekortService
+import no.nav.personbruker.dittnav.api.oppfolging.OppfolgingConsumer
+import no.nav.personbruker.dittnav.api.oppfolging.OppfolgingService
 import no.nav.personbruker.dittnav.api.oppgave.OppgaveConsumer
 import no.nav.personbruker.dittnav.api.oppgave.OppgaveMergerService
 import no.nav.personbruker.dittnav.api.oppgave.OppgaveService
@@ -82,8 +84,11 @@ class ApplicationContext {
     val personaliaConsumer = PersonaliaConsumer(httpClient, environment.personaliaApiUrl)
     val personaliaService = PersonaliaService(personaliaConsumer, personaliaTokendings)
 
-    val meldekortConsumer = MeldekortConsumer(httpClient, environment.meldekortUrl)
+    val meldekortConsumer = MeldekortConsumer(httpClient, environment.meldekortApiUrl)
     val meldekortService = MeldekortService(meldekortConsumer)
+
+    val oppfolgingConsumer = OppfolgingConsumer(httpClientIgnoreUnknownKeys, environment.oppfolgingApiUrl)
+    val oppfolgingService = OppfolgingService(oppfolgingConsumer)
 
     private fun createUnleashService(environment: Environment): UnleashService {
 
