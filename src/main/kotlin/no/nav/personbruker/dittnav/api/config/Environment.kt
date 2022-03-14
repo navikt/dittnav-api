@@ -24,6 +24,8 @@ data class Environment(
     val eventhandlerClientId: String = getEnvVar("EVENTHANDLER_CLIENT_ID"),
     val meldekortApiUrl: URL = getEnvVarAsURL("MELDEKORT_API_URL"),
     val oppfolgingApiUrl: URL = getEnvVarAsURL("OPPFOLGING_API_URL"),
+    val mininnboksApiUrl: URL = getEnvVarAsURL("MININNBOKS_API_URL"),
+    val innloggingsinfoUrl: URL = getEnvVarAsURL("INNLOGGINGSINFO_URL"),
     val isRunningInDev: Boolean = isRunningInDev()
 )
 

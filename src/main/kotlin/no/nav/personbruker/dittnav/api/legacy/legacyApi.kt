@@ -15,10 +15,6 @@ val log = LoggerFactory.getLogger(LegacyConsumer::class.java)
 
 fun Route.legacyApi(legacyConsumer: LegacyConsumer) {
 
-    get(LegacyApiOperations.UBEHANDLEDE_MELDINGER.path) {
-        hentRaattFraLegacyApiOgReturnerResponsen(legacyConsumer, LegacyApiOperations.UBEHANDLEDE_MELDINGER)
-    }
-
     get(LegacyApiOperations.PAABEGYNTESAKER.path) {
         hentRaattFraLegacyApiOgReturnerResponsen(legacyConsumer, LegacyApiOperations.PAABEGYNTESAKER)
     }
