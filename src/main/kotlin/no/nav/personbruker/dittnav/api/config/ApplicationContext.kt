@@ -94,7 +94,7 @@ class ApplicationContext {
     val oppfolgingService = OppfolgingService(oppfolgingConsumer)
 
     val mininnboksConsumer = MininnboksConsumer(httpClient, environment.mininnboksApiUrl)
-    val ubehandledeMeldingerTransformer = UbehandledeMeldingerTransformer(environment.mininnboksApiUrl, environment.innloggingsinfoUrl)
+    val ubehandledeMeldingerTransformer = UbehandledeMeldingerTransformer(environment.mininnboksApiUrl.toString(), environment.innloggingsinfoUrl.toString())
     val ubehandledeMeldingerService = UbehandledeMeldingerService(mininnboksConsumer, ubehandledeMeldingerTransformer)
 
     private fun createUnleashService(environment: Environment): UnleashService {

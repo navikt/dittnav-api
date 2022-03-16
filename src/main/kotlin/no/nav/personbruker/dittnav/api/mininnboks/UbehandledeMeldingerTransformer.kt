@@ -2,12 +2,8 @@ package no.nav.personbruker.dittnav.api.mininnboks
 
 import no.nav.personbruker.dittnav.api.mininnboks.UbehandledeMeldingerType.*
 import no.nav.personbruker.dittnav.api.mininnboks.external.UbehandletMeldingExternal
-import java.net.URL
 
-class UbehandledeMeldingerTransformer(mininnboksURL: URL, innloggingsinfoURL: URL) {
-
-    private val mininnboksUrl = mininnboksURL.toString()
-    private val innloggingsinfoUrl = innloggingsinfoURL.toString()
+class UbehandledeMeldingerTransformer(private val mininnboksUrl: String, private val innloggingsinfoUrl: String) {
 
     fun toInternal(meldinger: List<UbehandletMeldingExternal>): List<UbehandledeMeldinger> {
 
