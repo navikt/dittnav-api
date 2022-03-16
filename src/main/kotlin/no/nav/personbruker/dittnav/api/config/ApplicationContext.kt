@@ -93,7 +93,7 @@ class ApplicationContext {
     val oppfolgingConsumer = OppfolgingConsumer(httpClientIgnoreUnknownKeys, environment.oppfolgingApiUrl)
     val oppfolgingService = OppfolgingService(oppfolgingConsumer)
 
-    val mininnboksConsumer = MininnboksConsumer(httpClient, environment.mininnboksApiUrl)
+    val mininnboksConsumer = MininnboksConsumer(httpClientIgnoreUnknownKeys, environment.mininnboksApiUrl)
     val ubehandledeMeldingerTransformer = UbehandledeMeldingerTransformer(environment.mininnboksApiUrl.toString(), environment.innloggingsinfoUrl.toString())
     val ubehandledeMeldingerService = UbehandledeMeldingerService(mininnboksConsumer, ubehandledeMeldingerTransformer)
 
