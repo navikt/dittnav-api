@@ -2,23 +2,24 @@ apiVersion: "nais.io/v1alpha1"
 kind: "Application"
 metadata:
   name: dittnav-api
-  namespace: personbruker
+  namespace: min-side
   labels:
-    team: personbruker
+    team: min-side
 spec:
   envFrom:
+    - secret: dittnav-api-secrets
     - configmap: loginservice-idporten
   image: {{version}}
   port: 8080
   liveness:
-    path: /person/dittnav-api/internal/isAlive
+    path: /dittnav-api/internal/isAlive
     initialDelay: 10
   readiness:
-    path: /person/dittnav-api/internal/isReady
+    path: /dittnav-api/internal/isReady
     initialDelay: 10
   prometheus:
     enabled: true
-    path: /person/dittnav-api/metrics
+    path: /dittnav-api/metrics
   replicas:
     min: 2
     max: 4
@@ -31,13 +32,10 @@ spec:
       rules:
         - application: "mine-saker-api"
           namespace: "personbruker"
-          cluster: "prod-gcp"
+        - application: "mine-saker-api"
   webproxy: true
   ingresses:
-    - "https://dittnav-api.nais.oera.no/person/dittnav-api"
-    - "https://www.nav.no/person/dittnav-api"
-  vault:
-    enabled: true
+    - "https://person.nav.no/dittnav-api"
   resources:
     limits:
       cpu: "3"
