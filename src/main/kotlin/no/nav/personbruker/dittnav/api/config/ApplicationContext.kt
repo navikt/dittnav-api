@@ -37,6 +37,9 @@ import no.nav.personbruker.dittnav.api.saker.MineSakerConsumer
 import no.nav.personbruker.dittnav.api.saker.MineSakerTokendings
 import no.nav.personbruker.dittnav.api.saker.SakerInnsynUrlResolver
 import no.nav.personbruker.dittnav.api.saker.SakerService
+import no.nav.personbruker.dittnav.api.saksoversikt.PaabegynteSoknaderTransformer
+import no.nav.personbruker.dittnav.api.saksoversikt.SaksoversiktConsumer
+import no.nav.personbruker.dittnav.api.saksoversikt.SaksoversiktService
 import no.nav.personbruker.dittnav.api.unleash.ByEnvironmentStrategy
 import no.nav.personbruker.dittnav.api.unleash.UnleashService
 import no.nav.personbruker.dittnav.api.varsel.VarselConsumer
@@ -57,7 +60,6 @@ class ApplicationContext {
     val mineSakerTokendings = MineSakerTokendings(tokendingsService, environment.mineSakerApiClientId)
     val personaliaTokendings = PersonaliaTokendings(tokendingsService, environment.personaliaApiClientId)
 
-    val legacyConsumer = LegacyConsumer(httpClient, environment.legacyApiURL)
     val oppgaveConsumer = OppgaveConsumer(httpClient, environment.eventHandlerURL)
     val beskjedConsumer = BeskjedConsumer(httpClient, environment.eventHandlerURL)
     val innboksConsumer = InnboksConsumer(httpClient, environment.eventHandlerURL)
@@ -76,7 +78,7 @@ class ApplicationContext {
     val innboksService = InnboksService(innboksConsumer, eventhandlerTokendings, loginLevelService)
     val varselService = VarselService(varselConsumer)
     val sakerUrlResolver = SakerInnsynUrlResolver(NaisEnvironment.isRunningInProd())
-    val sakerService = SakerService(mineSakerConsumer, legacyConsumer, unleashService, sakerUrlResolver, mineSakerTokendings)
+    val sakerService = SakerService(mineSakerConsumer, sakerUrlResolver, mineSakerTokendings)
 
     val digiSosConsumer = DigiSosClient(httpClient, environment.digiSosSoknadBaseURL, environment.digiSosInnsynBaseURL)
     val digiSosService = DigiSosService(digiSosConsumer)
@@ -96,6 +98,11 @@ class ApplicationContext {
     val mininnboksConsumer = MininnboksConsumer(httpClientIgnoreUnknownKeys, environment.mininnboksApiUrl)
     val ubehandledeMeldingerTransformer = UbehandledeMeldingerTransformer(environment.mininnboksApiUrl.toString(), environment.innloggingsinfoUrl.toString())
     val ubehandledeMeldingerService = UbehandledeMeldingerService(mininnboksConsumer, ubehandledeMeldingerTransformer)
+
+    val saksoversiktConsumer = SaksoversiktConsumer(httpClient, environment.saksoversiktApiUrl)
+    val paabegynteSoknaderTransformer = PaabegynteSoknaderTransformer(environment.saksoversiktUrl.toString())
+    val saksoversiktService = SaksoversiktService(saksoversiktConsumer, paabegynteSoknaderTransformer)
+
 
     private fun createUnleashService(environment: Environment): UnleashService {
 

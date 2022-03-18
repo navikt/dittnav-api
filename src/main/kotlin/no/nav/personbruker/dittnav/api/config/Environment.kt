@@ -26,6 +26,8 @@ data class Environment(
     val oppfolgingApiUrl: URL = getEnvVarAsURL("OPPFOLGING_API_URL"),
     val mininnboksApiUrl: URL = getEnvVarAsURL("MININNBOKS_API_URL"),
     val innloggingsinfoUrl: URL = getEnvVarAsURL("INNLOGGINGSINFO_URL"),
+    val saksoversiktUrl: URL = getEnvVarAsURL("SAKSOVERSIKT_URL"),
+    val saksoversiktApiUrl: URL = getEnvVarAsURL("SAKSOVERSIKT_API_URL"),
     val isRunningInDev: Boolean = isRunningInDev()
 )
 
