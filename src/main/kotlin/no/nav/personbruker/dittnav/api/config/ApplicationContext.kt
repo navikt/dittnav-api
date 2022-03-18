@@ -42,8 +42,6 @@ import no.nav.personbruker.dittnav.api.saksoversikt.SaksoversiktConsumer
 import no.nav.personbruker.dittnav.api.saksoversikt.SaksoversiktService
 import no.nav.personbruker.dittnav.api.unleash.ByEnvironmentStrategy
 import no.nav.personbruker.dittnav.api.unleash.UnleashService
-import no.nav.personbruker.dittnav.api.varsel.VarselConsumer
-import no.nav.personbruker.dittnav.api.varsel.VarselService
 import no.nav.tms.token.support.tokendings.exchange.TokendingsServiceBuilder
 
 class ApplicationContext {
@@ -63,7 +61,6 @@ class ApplicationContext {
     val oppgaveConsumer = OppgaveConsumer(httpClient, environment.eventHandlerURL)
     val beskjedConsumer = BeskjedConsumer(httpClient, environment.eventHandlerURL)
     val innboksConsumer = InnboksConsumer(httpClient, environment.eventHandlerURL)
-    val varselConsumer = VarselConsumer(httpClient, environment.legacyApiURL)
     val mineSakerConsumer = MineSakerConsumer(httpClient, environment.sakerApiUrl)
 
     val doneProducer = DoneProducer(httpClient, eventhandlerTokendings, environment.eventHandlerURL)
@@ -76,14 +73,13 @@ class ApplicationContext {
     val oppgaveService = OppgaveService(oppgaveConsumer, eventhandlerTokendings, loginLevelService)
     val beskjedService = BeskjedService(beskjedConsumer, eventhandlerTokendings, loginLevelService)
     val innboksService = InnboksService(innboksConsumer, eventhandlerTokendings, loginLevelService)
-    val varselService = VarselService(varselConsumer)
     val sakerUrlResolver = SakerInnsynUrlResolver(NaisEnvironment.isRunningInProd())
     val sakerService = SakerService(mineSakerConsumer, sakerUrlResolver, mineSakerTokendings)
 
     val digiSosConsumer = DigiSosClient(httpClient, environment.digiSosSoknadBaseURL, environment.digiSosInnsynBaseURL)
     val digiSosService = DigiSosService(digiSosConsumer)
 
-    val beskjedMergerService = BeskjedMergerService(beskjedService, varselService, digiSosService, unleashService)
+    val beskjedMergerService = BeskjedMergerService(beskjedService, digiSosService, unleashService)
     val oppgaveMergerService = OppgaveMergerService(oppgaveService, digiSosService, unleashService)
 
     val personaliaConsumer = PersonaliaConsumer(httpClient, environment.personaliaApiUrl)

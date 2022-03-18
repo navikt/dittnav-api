@@ -12,7 +12,7 @@ internal class MultiSourceResultTest {
     @Test
     fun `Skal summere to vellykkede resultater til et nytt resultatobjekt`() {
         val expectedSource1 = KildeType.EVENTHANDLER
-        val expectedSource2 = KildeType.VARSELINNBOKS
+        val expectedSource2 = KildeType.DIGISOS
 
         val source1 = MultiSourceResultObjectMother.giveMeNumberOfSuccessfulBeskjedEventsForSource(1, expectedSource1, baseEventId = "beskjed")
         val source2 = MultiSourceResultObjectMother.giveMeNumberOfSuccessfulBeskjedEventsForSource(2, expectedSource2, baseEventId = "varsel")
@@ -36,7 +36,7 @@ internal class MultiSourceResultTest {
     @Test
     fun `Skal summere et vellykket og et feilende resultat til et nytt resultatobjekt`() {
         val expectedSource1 = KildeType.EVENTHANDLER
-        val expectedSource2 = KildeType.VARSELINNBOKS
+        val expectedSource2 = KildeType.DIGISOS
 
         val source1 = MultiSourceResultObjectMother.giveMeNumberOfSuccessfulBeskjedEventsForSource(1, expectedSource1)
         val source2 = MultiSourceResult.createErrorResult<BeskjedDTO, KildeType>(expectedSource2)
@@ -60,7 +60,7 @@ internal class MultiSourceResultTest {
     @Test
     fun `Skal summere to feilede resultater til et nytt resultatobjekt`() {
         val expectedSource1 = KildeType.EVENTHANDLER
-        val expectedSource2 = KildeType.VARSELINNBOKS
+        val expectedSource2 = KildeType.DIGISOS
 
         val source1 = MultiSourceResult.createErrorResult<BeskjedDTO, KildeType>(expectedSource1)
         val source2 = MultiSourceResult.createErrorResult<BeskjedDTO, KildeType>(expectedSource2)

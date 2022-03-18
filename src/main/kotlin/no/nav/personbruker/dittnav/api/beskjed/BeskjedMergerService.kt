@@ -6,12 +6,10 @@ import kotlinx.coroutines.withContext
 import no.nav.personbruker.dittnav.api.common.MultiSourceResult
 import no.nav.personbruker.dittnav.api.digisos.DigiSosService
 import no.nav.personbruker.dittnav.api.unleash.UnleashService
-import no.nav.personbruker.dittnav.api.varsel.VarselService
 import no.nav.personbruker.dittnav.common.security.AuthenticatedUser
 
 class BeskjedMergerService(
     private val beskjedService: BeskjedService,
-    private val varselService: VarselService,
     private val digiSosService: DigiSosService,
     private val unleashService: UnleashService
 ) {
@@ -25,24 +23,12 @@ class BeskjedMergerService(
             fetchActiveFromDigiSosIfEnabled(user)
         }
 
-        val varslerSomBeskjed = async {
-            fetchActiveFromVarselinnboksIfEnabled(user)
-        }
-
-        beskjeder.await() + paabegynte.await() + varslerSomBeskjed.await()
+        beskjeder.await() + paabegynte.await()
     }
 
     private suspend fun fetchActiveFromDigiSosIfEnabled(user: AuthenticatedUser) =
         if (unleashService.digiSosPaabegynteEnabled(user)) {
             digiSosService.getPaabegynteActive(user)
-        } else {
-            MultiSourceResult.createEmptyResult()
-        }
-
-    private suspend fun fetchActiveFromVarselinnboksIfEnabled(user: AuthenticatedUser) =
-        if (unleashService.mergeBeskjedVarselEnabled(user)) {
-            varselService.getActiveVarselEvents(user)
-
         } else {
             MultiSourceResult.createEmptyResult()
         }
@@ -56,23 +42,12 @@ class BeskjedMergerService(
             fetchInactiveFromDigiSosIfEnabled(user)
         }
 
-        val varslerSomBeskjed = async {
-            fetchInactiveFromVarselinnboksIfEnabled(user)
-        }
-
-        beskjeder.await() + paabegynte.await() + varslerSomBeskjed.await()
+        beskjeder.await() + paabegynte.await()
     }
 
     private suspend fun fetchInactiveFromDigiSosIfEnabled(user: AuthenticatedUser) =
         if (unleashService.digiSosPaabegynteEnabled(user)) {
             digiSosService.getPaabegynteInactive(user)
-        } else {
-            MultiSourceResult.createEmptyResult()
-        }
-
-    private suspend fun fetchInactiveFromVarselinnboksIfEnabled(user: AuthenticatedUser) =
-        if (unleashService.mergeBeskjedVarselEnabled(user)) {
-            varselService.getInactiveVarselEvents(user)
         } else {
             MultiSourceResult.createEmptyResult()
         }
