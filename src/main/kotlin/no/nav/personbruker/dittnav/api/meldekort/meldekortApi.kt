@@ -5,12 +5,13 @@ import io.ktor.http.*
 import io.ktor.response.*
 import io.ktor.routing.*
 import no.nav.personbruker.dittnav.api.config.authenticatedUser
-import no.nav.personbruker.dittnav.api.legacy.LegacyApiOperations
-import no.nav.personbruker.dittnav.api.legacy.log
+import org.slf4j.LoggerFactory
 
 fun Route.meldekortApi(meldekortService: MeldekortService) {
 
-    get(LegacyApiOperations.MELDEKORT.path) {
+    val log = LoggerFactory.getLogger("meldekortApi")
+
+    get("/meldekortinfo") {
         try {
             val meldekortInfo = meldekortService.getMeldekortInfo(authenticatedUser)
 

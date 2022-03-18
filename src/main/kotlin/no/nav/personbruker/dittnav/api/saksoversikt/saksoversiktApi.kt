@@ -5,12 +5,13 @@ import io.ktor.http.*
 import io.ktor.response.*
 import io.ktor.routing.*
 import no.nav.personbruker.dittnav.api.config.authenticatedUser
-import no.nav.personbruker.dittnav.api.legacy.LegacyApiOperations
-import no.nav.personbruker.dittnav.api.legacy.log
+import org.slf4j.LoggerFactory
 
 fun Route.saksoversiktApi(saksoversiktService: SaksoversiktService) {
 
-    get(LegacyApiOperations.SAKSTEMA.path) {
+    val log = LoggerFactory.getLogger("saksoversiktApi")
+
+    get("/saker/sakstema") {
         try {
             val sakstema = saksoversiktService.getSakstema(authenticatedUser)
 
@@ -21,7 +22,7 @@ fun Route.saksoversiktApi(saksoversiktService: SaksoversiktService) {
         }
     }
 
-    get(LegacyApiOperations.PAABEGYNTESAKER.path) {
+    get("/saker/paabegynte") {
         try {
             val oppfolging = saksoversiktService.getPaabegynte(authenticatedUser)
 

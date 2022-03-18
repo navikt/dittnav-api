@@ -16,7 +16,6 @@ import no.nav.personbruker.dittnav.api.done.DoneProducer
 import no.nav.personbruker.dittnav.api.health.DependencyPinger
 import no.nav.personbruker.dittnav.api.innboks.InnboksConsumer
 import no.nav.personbruker.dittnav.api.innboks.InnboksService
-import no.nav.personbruker.dittnav.api.legacy.LegacyConsumer
 import no.nav.personbruker.dittnav.api.loginstatus.InnloggingsstatusConsumer
 import no.nav.personbruker.dittnav.api.loginstatus.LoginLevelService
 import no.nav.personbruker.dittnav.api.meldekort.MeldekortConsumer

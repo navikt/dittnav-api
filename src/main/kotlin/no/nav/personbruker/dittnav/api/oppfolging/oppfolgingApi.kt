@@ -5,12 +5,13 @@ import io.ktor.http.*
 import io.ktor.response.*
 import io.ktor.routing.*
 import no.nav.personbruker.dittnav.api.config.authenticatedUser
-import no.nav.personbruker.dittnav.api.legacy.LegacyApiOperations
-import no.nav.personbruker.dittnav.api.legacy.log
+import org.slf4j.LoggerFactory
 
 fun Route.oppfolgingApi(oppfolgingService: OppfolgingService) {
 
-    get(LegacyApiOperations.OPPFOLGING.path) {
+    val log = LoggerFactory.getLogger("oppfolgingApi")
+
+    get("/oppfolging") {
         try {
             val oppfolgingInfo = oppfolgingService.getOppfolging(authenticatedUser)
 
