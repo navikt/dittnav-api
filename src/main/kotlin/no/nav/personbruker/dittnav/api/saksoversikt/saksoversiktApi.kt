@@ -21,9 +21,9 @@ fun Route.saksoversiktApi(saksoversiktService: SaksoversiktService) {
         }
     }
 
-    get(LegacyApiOperations.OPPFOLGING.path) {
+    get(LegacyApiOperations.PAABEGYNTESAKER.path) {
         try {
-            val oppfolging = saksoversiktService.getSakstema(authenticatedUser)
+            val oppfolging = saksoversiktService.getPaabegynte(authenticatedUser)
 
             call.respond(oppfolging)
         } catch (e: Exception) {
