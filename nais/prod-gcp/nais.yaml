@@ -34,6 +34,7 @@ spec:
           namespace: "personbruker"
         - application: "mine-saker-api"
         - application: dittnav-event-handler
+        - application: tms-personalia-api
   ingresses:
     - "https://person.nav.no/dittnav-api"
   resources:
