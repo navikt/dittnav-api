@@ -13,7 +13,6 @@ import no.nav.personbruker.dittnav.api.beskjed.BeskjedService
 import no.nav.personbruker.dittnav.api.digisos.DigiSosClient
 import no.nav.personbruker.dittnav.api.digisos.DigiSosService
 import no.nav.personbruker.dittnav.api.done.DoneProducer
-import no.nav.personbruker.dittnav.api.health.DependencyPinger
 import no.nav.personbruker.dittnav.api.innboks.InnboksConsumer
 import no.nav.personbruker.dittnav.api.innboks.InnboksService
 import no.nav.personbruker.dittnav.api.loginstatus.InnloggingsstatusConsumer
@@ -50,7 +49,6 @@ class ApplicationContext {
 
     val httpClient = HttpClientBuilder.build(KotlinxSerializer(json()))
     val httpClientIgnoreUnknownKeys = HttpClientBuilder.build(KotlinxSerializer(json(ignoreUnknownKeys = true)))
-    val dependencyPinger = DependencyPinger(environment, httpClient)
 
     val tokendingsService = TokendingsServiceBuilder.buildTokendingsService()
     val eventhandlerTokendings = EventhandlerTokendings(tokendingsService, environment.eventhandlerClientId)
@@ -137,11 +135,6 @@ class ApplicationContext {
                 enable(UnleashService.digiSosOppgaveToggleName)
             } else {
                 disable(UnleashService.digiSosOppgaveToggleName)
-            }
-            if (environment.fakeUnleashIncludeMineSaker) {
-                enable(UnleashService.brukMineSakerToggleName)
-            } else {
-                disable(UnleashService.brukMineSakerToggleName)
             }
         }
     }
