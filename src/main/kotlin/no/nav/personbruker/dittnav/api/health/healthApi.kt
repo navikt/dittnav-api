@@ -7,7 +7,7 @@ import io.ktor.routing.Routing
 import io.ktor.routing.get
 import io.micrometer.prometheus.PrometheusMeterRegistry
 
-fun Routing.healthApi(dependencyPinger: DependencyPinger, collectorRegistry: PrometheusMeterRegistry) {
+fun Routing.healthApi(collectorRegistry: PrometheusMeterRegistry) {
 
     val pingJsonResponse = """{"ping": "pong"}"""
 
@@ -24,7 +24,7 @@ fun Routing.healthApi(dependencyPinger: DependencyPinger, collectorRegistry: Pro
     }
 
     get("/internal/selftest") {
-        call.pingDependencies(dependencyPinger)
+        call.respond(HttpStatusCode.OK)
     }
 
     get("/metrics") {

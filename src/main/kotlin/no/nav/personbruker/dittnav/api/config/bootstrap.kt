@@ -60,7 +60,7 @@ fun Application.mainModule(appContext: ApplicationContext = ApplicationContext()
     }
 
     routing {
-        healthApi(appContext.dependencyPinger, appContext.appMicrometerRegistry)
+        healthApi(appContext.appMicrometerRegistry)
         authenticate {
             intercept(ApplicationCallPipeline.Call) {
                 if (authenticatedUser.isTokenExpired()) {
