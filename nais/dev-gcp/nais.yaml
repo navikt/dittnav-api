@@ -29,6 +29,7 @@ spec:
     outbound:
       external:
         - host: person.nav.no
+        - host: dittnav-event-handler
       rules:
         - application: "mine-saker-api"
           namespace: "personbruker"
