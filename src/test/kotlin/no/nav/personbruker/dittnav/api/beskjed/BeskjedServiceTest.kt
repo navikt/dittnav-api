@@ -4,7 +4,6 @@ import io.mockk.coEvery
 import io.mockk.mockk
 import kotlinx.coroutines.runBlocking
 import no.nav.personbruker.dittnav.api.common.AuthenticatedUserObjectMother
-import no.nav.personbruker.dittnav.api.loginstatus.LoginLevelService
 import no.nav.personbruker.dittnav.api.tokenx.AccessToken
 import no.nav.personbruker.dittnav.api.tokenx.EventhandlerTokendings
 import org.amshove.kluent.`should be equal to`
@@ -18,9 +17,8 @@ internal class BeskjedServiceTest {
     private val dummyToken = AccessToken("<access_token>")
 
     private val beskjedConsumer = mockk<BeskjedConsumer>()
-    private val loginLevelService = mockk<LoginLevelService>()
     private val eventhandlerTokendings = mockk<EventhandlerTokendings>()
-    private val beskjedService = BeskjedService(beskjedConsumer, eventhandlerTokendings, loginLevelService)
+    private val beskjedService = BeskjedService(beskjedConsumer, eventhandlerTokendings)
 
     @BeforeEach
     fun setup() {
@@ -32,7 +30,6 @@ internal class BeskjedServiceTest {
         val beskjed1 = createBeskjed("1", "1", "1", true)
         val beskjed2 = createBeskjed("2", "2", "2", true)
         coEvery { beskjedConsumer.getExternalActiveEvents(dummyToken) } returns listOf(beskjed1, beskjed2)
-        coEvery { loginLevelService.getOperatingLoginLevel(any(), any()) } returns user.loginLevel
         runBlocking {
             val beskjedResult = beskjedService.getActiveBeskjedEvents(user)
             beskjedResult.results().size `should be equal to` 2
@@ -44,7 +41,6 @@ internal class BeskjedServiceTest {
         val beskjed1 = createBeskjed("1", "1", "1", false)
         val beskjed2 = createBeskjed("2", "2", "2", false)
         coEvery { beskjedConsumer.getExternalInactiveEvents(dummyToken) } returns listOf(beskjed1, beskjed2)
-        coEvery { loginLevelService.getOperatingLoginLevel(any(), any()) } returns user.loginLevel
         runBlocking {
             val beskjedResult = beskjedService.getInactiveBeskjedEvents(user)
             beskjedResult.results().size `should be equal to` 2
@@ -59,7 +55,6 @@ internal class BeskjedServiceTest {
         user = AuthenticatedUserObjectMother.createAuthenticatedUser(ident, 3)
         coEvery { eventhandlerTokendings.exchangeToken(user) } returns dummyToken
         coEvery { beskjedConsumer.getExternalActiveEvents(dummyToken) } returns listOf(beskjed)
-        coEvery { loginLevelService.getOperatingLoginLevel(any(), any()) } returns user.loginLevel
         runBlocking {
             val beskjedResult = beskjedService.getActiveBeskjedEvents(user)
             val beskjedDTO = beskjedResult.results().first()
@@ -74,7 +69,6 @@ internal class BeskjedServiceTest {
         var beskjed = createBeskjed("1", "1", "1", true)
         beskjed = beskjed.copy(sikkerhetsnivaa = 3)
         coEvery { beskjedConsumer.getExternalActiveEvents(dummyToken) } returns listOf(beskjed)
-        coEvery { loginLevelService.getOperatingLoginLevel(any(), any()) } returns user.loginLevel
         runBlocking {
             val beskjedResult = beskjedService.getActiveBeskjedEvents(user)
             val beskjedDTO = beskjedResult.results().first()
@@ -88,7 +82,6 @@ internal class BeskjedServiceTest {
     fun `should not mask events with security level equal than current user`() {
         val beskjed = createBeskjed("1", "1", "1", true)
         coEvery { beskjedConsumer.getExternalActiveEvents(dummyToken) } returns listOf(beskjed)
-        coEvery { loginLevelService.getOperatingLoginLevel(any(), any()) } returns user.loginLevel
         runBlocking {
             val beskjedResult = beskjedService.getActiveBeskjedEvents(user)
             val beskjedDTO = beskjedResult.results().first()
@@ -101,7 +94,6 @@ internal class BeskjedServiceTest {
     @Test
     fun `should throw exception if fetching active events fails`() {
         coEvery { beskjedConsumer.getExternalActiveEvents(dummyToken) } throws Exception("error")
-        coEvery { loginLevelService.getOperatingLoginLevel(any(), any()) } returns user.loginLevel
         runBlocking {
             val beskjedResult = beskjedService.getActiveBeskjedEvents(user)
             beskjedResult.hasErrors() `should be equal to` true
@@ -112,7 +104,6 @@ internal class BeskjedServiceTest {
     @Test
     fun `should throw exception if fetching inactive events fails`() {
         coEvery { beskjedConsumer.getExternalInactiveEvents(dummyToken) } throws Exception("error")
-        coEvery { loginLevelService.getOperatingLoginLevel(any(), any()) } returns user.loginLevel
         runBlocking {
             val beskjedResult = beskjedService.getInactiveBeskjedEvents(user)
             beskjedResult.hasErrors() `should be equal to` true

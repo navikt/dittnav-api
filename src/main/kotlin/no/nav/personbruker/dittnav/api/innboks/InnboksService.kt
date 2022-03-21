@@ -1,15 +1,14 @@
 package no.nav.personbruker.dittnav.api.innboks
 
 import no.nav.personbruker.dittnav.api.common.ConsumeEventException
-import no.nav.personbruker.dittnav.api.loginstatus.LoginLevelService
 import no.nav.personbruker.dittnav.api.tokenx.AccessToken
 import no.nav.personbruker.dittnav.api.tokenx.EventhandlerTokendings
 import no.nav.personbruker.dittnav.common.security.AuthenticatedUser
 
 class InnboksService (
     private val innboksConsumer: InnboksConsumer,
-    private val eventhandlerTokenDings: EventhandlerTokendings,
-    private val loginLevelService: LoginLevelService) {
+    private val eventhandlerTokenDings: EventhandlerTokendings
+) {
 
     suspend fun getActiveInnboksEvents(user: AuthenticatedUser): List<InnboksDTO> {
         val exchangedToken = eventhandlerTokenDings.exchangeToken(user)
@@ -32,9 +31,7 @@ class InnboksService (
     ): List<InnboksDTO> {
         return try {
             val externalEvents = getEvents(exchangedToken)
-            val highestRequiredLoginLevel = getHighestRequiredLoginLevel(externalEvents)
-            val operatingLoginLevel = loginLevelService.getOperatingLoginLevel(user, highestRequiredLoginLevel)
-            externalEvents.map { innboks -> transformToDTO(innboks, operatingLoginLevel) }
+            externalEvents.map { innboks -> transformToDTO(innboks, user.loginLevel) }
         } catch (exception: Exception) {
             throw ConsumeEventException("Klarte ikke hente eventer av type Innboks", exception)
         }
@@ -50,13 +47,5 @@ class InnboksService (
 
     private fun userIsAllowedToViewAllDataInEvent(innboks: Innboks, operatingLoginLevel: Int): Boolean {
         return operatingLoginLevel >= innboks.sikkerhetsnivaa
-    }
-
-    private fun getHighestRequiredLoginLevel(innboksList: List<Innboks>): Int {
-        return if (innboksList.isEmpty()) {
-            0
-        } else {
-            innboksList.maxOf { it.sikkerhetsnivaa }
-        }
     }
 }

@@ -5,7 +5,6 @@ import io.mockk.mockk
 import kotlinx.coroutines.runBlocking
 import no.nav.personbruker.dittnav.api.beskjed.KildeType
 import no.nav.personbruker.dittnav.api.common.AuthenticatedUserObjectMother
-import no.nav.personbruker.dittnav.api.loginstatus.LoginLevelService
 import no.nav.personbruker.dittnav.api.tokenx.AccessToken
 import no.nav.personbruker.dittnav.api.tokenx.EventhandlerTokendings
 import org.amshove.kluent.`should be equal to`
@@ -18,9 +17,8 @@ internal class OppgaveServiceTest {
     private val dummyToken = AccessToken("<access_token>")
 
     private val oppgaveConsumer = mockk<OppgaveConsumer>()
-    private val loginLevelService = mockk<LoginLevelService>()
     private val eventhandlerTokendings = mockk<EventhandlerTokendings>()
-    private val oppgaveService = OppgaveService(oppgaveConsumer, eventhandlerTokendings, loginLevelService)
+    private val oppgaveService = OppgaveService(oppgaveConsumer, eventhandlerTokendings)
 
     @BeforeEach
     fun setup() {
@@ -32,7 +30,6 @@ internal class OppgaveServiceTest {
         val oppgave1 = createOppgave("1", "1", true)
         val oppgave2 = createOppgave("2", "2", true)
         coEvery { oppgaveConsumer.getExternalActiveEvents(dummyToken) } returns listOf(oppgave1, oppgave2)
-        coEvery { loginLevelService.getOperatingLoginLevel(any(), any()) } returns user.loginLevel
         runBlocking {
             val oppgaveList = oppgaveService.getActiveOppgaveEvents(user)
             oppgaveList.results().size `should be equal to` 2
@@ -44,7 +41,6 @@ internal class OppgaveServiceTest {
         val oppgave1 = createOppgave("1", "1", false)
         val oppgave2 = createOppgave("2", "2", false)
         coEvery { oppgaveConsumer.getExternalInactiveEvents(dummyToken) } returns listOf(oppgave1, oppgave2)
-        coEvery { loginLevelService.getOperatingLoginLevel(any(), any()) } returns user.loginLevel
         runBlocking {
             val oppgaveList = oppgaveService.getInactiveOppgaveEvents(user)
             oppgaveList.results().size `should be equal to` 2
@@ -59,7 +55,6 @@ internal class OppgaveServiceTest {
         user = AuthenticatedUserObjectMother.createAuthenticatedUser(ident, 3)
         coEvery { eventhandlerTokendings.exchangeToken(user) } returns dummyToken
         coEvery { oppgaveConsumer.getExternalActiveEvents(dummyToken) } returns listOf(oppgave)
-        coEvery { loginLevelService.getOperatingLoginLevel(any(), any()) } returns user.loginLevel
         runBlocking {
             val oppgaveList = oppgaveService.getActiveOppgaveEvents(user)
             val oppgaveDTO = oppgaveList.results().first()
@@ -74,7 +69,6 @@ internal class OppgaveServiceTest {
         var oppgave = createOppgave("1", "1", true)
         oppgave = oppgave.copy(sikkerhetsnivaa = 3)
         coEvery { oppgaveConsumer.getExternalActiveEvents(dummyToken) } returns listOf(oppgave)
-        coEvery { loginLevelService.getOperatingLoginLevel(any(), any()) } returns user.loginLevel
         runBlocking {
             val oppgaveList = oppgaveService.getActiveOppgaveEvents(user)
             val oppgaveDTO = oppgaveList.results().first()
@@ -88,7 +82,6 @@ internal class OppgaveServiceTest {
     fun `should not mask events with security level equal than current user`() {
         val oppgave = createOppgave("1", "1", true)
         coEvery { oppgaveConsumer.getExternalActiveEvents(dummyToken) } returns listOf(oppgave)
-        coEvery { loginLevelService.getOperatingLoginLevel(any(), any()) } returns user.loginLevel
         runBlocking {
             val oppgaveList = oppgaveService.getActiveOppgaveEvents(user)
             val oppgaveDTO = oppgaveList.results().first()
@@ -101,7 +94,6 @@ internal class OppgaveServiceTest {
     @Test
     fun `should return error-result if fetching active events fails`() {
         coEvery { oppgaveConsumer.getExternalActiveEvents(dummyToken) } throws Exception("error")
-        coEvery { loginLevelService.getOperatingLoginLevel(any(), any()) } returns user.loginLevel
 
         val result = runBlocking {
             oppgaveService.getActiveOppgaveEvents(user)
@@ -114,7 +106,6 @@ internal class OppgaveServiceTest {
     @Test
     fun `should return error-result if fetching inactive events fails`() {
         coEvery { oppgaveConsumer.getExternalInactiveEvents(dummyToken) } throws Exception("error")
-        coEvery { loginLevelService.getOperatingLoginLevel(any(), any()) } returns user.loginLevel
 
         val result = runBlocking {
             oppgaveService.getInactiveOppgaveEvents(user)

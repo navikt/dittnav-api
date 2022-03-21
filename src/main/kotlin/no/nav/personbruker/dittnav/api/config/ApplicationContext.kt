@@ -15,8 +15,6 @@ import no.nav.personbruker.dittnav.api.digisos.DigiSosService
 import no.nav.personbruker.dittnav.api.done.DoneProducer
 import no.nav.personbruker.dittnav.api.innboks.InnboksConsumer
 import no.nav.personbruker.dittnav.api.innboks.InnboksService
-import no.nav.personbruker.dittnav.api.loginstatus.InnloggingsstatusConsumer
-import no.nav.personbruker.dittnav.api.loginstatus.LoginLevelService
 import no.nav.personbruker.dittnav.api.meldekort.MeldekortConsumer
 import no.nav.personbruker.dittnav.api.meldekort.MeldekortService
 import no.nav.personbruker.dittnav.api.mininnboks.MininnboksConsumer
@@ -62,14 +60,11 @@ class ApplicationContext {
 
     val doneProducer = DoneProducer(httpClient, eventhandlerTokendings, environment.eventHandlerURL)
 
-    val innloggingsstatusConsumer = InnloggingsstatusConsumer(httpClientIgnoreUnknownKeys, environment.innloggingsstatusUrl)
-    val loginLevelService = LoginLevelService(innloggingsstatusConsumer)
-
     val unleashService = createUnleashService(environment)
 
-    val oppgaveService = OppgaveService(oppgaveConsumer, eventhandlerTokendings, loginLevelService)
-    val beskjedService = BeskjedService(beskjedConsumer, eventhandlerTokendings, loginLevelService)
-    val innboksService = InnboksService(innboksConsumer, eventhandlerTokendings, loginLevelService)
+    val oppgaveService = OppgaveService(oppgaveConsumer, eventhandlerTokendings)
+    val beskjedService = BeskjedService(beskjedConsumer, eventhandlerTokendings)
+    val innboksService = InnboksService(innboksConsumer, eventhandlerTokendings)
     val sakerUrlResolver = SakerInnsynUrlResolver(NaisEnvironment.isRunningInProd())
     val sakerService = SakerService(mineSakerConsumer, sakerUrlResolver, mineSakerTokendings)
 
