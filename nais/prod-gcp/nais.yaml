@@ -33,7 +33,6 @@ spec:
         - application: "mine-saker-api"
           namespace: "personbruker"
         - application: "mine-saker-api"
-  webproxy: true
   ingresses:
     - "https://person.nav.no/dittnav-api"
   resources:
