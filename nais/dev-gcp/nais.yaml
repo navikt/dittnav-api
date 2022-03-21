@@ -28,7 +28,8 @@ spec:
   accessPolicy:
     outbound:
       external:
-        - host: person.nav.no
+        - host: person.dev.nav.no
+        - host: www.dev.nav.no
       rules:
         - application: "mine-saker-api"
           namespace: "personbruker"
