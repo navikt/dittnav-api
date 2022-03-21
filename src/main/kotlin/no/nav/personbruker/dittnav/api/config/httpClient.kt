@@ -12,6 +12,9 @@ import no.nav.personbruker.dittnav.common.security.AuthenticatedUser
 import no.nav.tms.token.support.tokendings.exchange.TokenXHeader
 import java.net.URL
 
+const val consumerIdHeaderName = "Nav-Consumer-Id"
+const val consumerIdHeaderValue = "min-side:dittnav-api"
+
 suspend inline fun <reified T> HttpClient.get(url: URL, user: AuthenticatedUser): T = withContext(Dispatchers.IO) {
     request {
         url(url)
@@ -25,6 +28,15 @@ suspend inline fun <reified T> HttpClient.get(url: URL, accessToken: AccessToken
         url(url)
         method = HttpMethod.Get
         header(HttpHeaders.Authorization, "Bearer ${accessToken.value}")
+    }
+}
+
+suspend inline fun <reified T> HttpClient.getWithConsumerId(url: URL, accessToken: AccessToken): T = withContext(Dispatchers.IO) {
+    request {
+        url(url)
+        method = HttpMethod.Get
+        header(HttpHeaders.Authorization, "Bearer ${accessToken.value}")
+        header(consumerIdHeaderName, consumerIdHeaderValue)
     }
 }
 
