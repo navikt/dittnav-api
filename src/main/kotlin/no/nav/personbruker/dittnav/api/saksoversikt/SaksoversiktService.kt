@@ -8,14 +8,6 @@ class SaksoversiktService(
     private val paabegynteSoknaderTransformer: PaabegynteSoknaderTransformer
 ) {
 
-    suspend fun getSakstema(user: AuthenticatedUser): SakstemaWrapper {
-        val token = AccessToken(user.token)
-
-        val sakstema = saksoversiktConsumer.getSakstema(token)
-
-        return SakstemaTransformer.toInternal(sakstema)
-    }
-
     suspend fun getPaabegynte(user: AuthenticatedUser): PaabegynteSoknader {
         val token = AccessToken(user.token)
 

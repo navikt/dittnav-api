@@ -12,14 +12,7 @@ fun Route.saksoversiktApi(saksoversiktService: SaksoversiktService) {
     val log = LoggerFactory.getLogger("saksoversiktApi")
 
     get("/saker/sakstema") {
-        try {
-            val sakstema = saksoversiktService.getSakstema(authenticatedUser)
-
-            call.respond(sakstema)
-        } catch (e: Exception) {
-            log.warn("Det skjedde en feil mot saksoverikt. Feilmelding: [${e.message}]. $authenticatedUser", e)
-            call.respond(HttpStatusCode.InternalServerError)
-        }
+        call.respond(SakstemaWrapper.empty())
     }
 
     get("/saker/paabegynte") {

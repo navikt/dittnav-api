@@ -25,22 +25,6 @@ internal class SaksoversiktServiceTest {
     }
 
     @Test
-    fun `should fetch and transform sakstema`() {
-        val sakstema = SakstemaExternalObjectMother.createSakstema()
-
-        coEvery {
-            consumer.getSakstema(token)
-        } returns listOf(sakstema)
-
-        val result = runBlocking {
-            saksoversiktService.getSakstema(user)
-        }
-
-        coVerify(exactly = 1) { consumer.getSakstema(token) }
-        result.antallSakstema `should be equal to` 1
-    }
-
-    @Test
     fun `should fetch and transform paabegynte`() {
         val paabegynteSoknader: PaabegynteSoknaderExternal = mockk()
 
