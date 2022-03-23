@@ -12,7 +12,7 @@ class MeldekortLocalDateSerializer: KSerializer<LocalDate> {
     private val dateFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd")
 
     override fun deserialize(decoder: Decoder): LocalDate {
-        return LocalDate.parse(decoder.decodeString())
+        return LocalDate.parse(decoder.decodeString(), DateTimeFormatter.ISO_DATE_TIME)
     }
 
     override val descriptor = PrimitiveSerialDescriptor(
