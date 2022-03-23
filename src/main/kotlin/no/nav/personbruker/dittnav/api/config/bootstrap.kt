@@ -43,6 +43,7 @@ fun Application.mainModule(appContext: ApplicationContext = ApplicationContext()
         host(appContext.environment.corsAllowedOrigins, schemes = listOf(appContext.environment.corsAllowedSchemes))
         allowCredentials = true
         header(HttpHeaders.ContentType)
+        method(HttpMethod.Options)
     }
 
     val config = this.environment.config
