@@ -2,7 +2,6 @@ package no.nav.personbruker.dittnav.api.oppgave
 
 import no.nav.personbruker.dittnav.api.beskjed.KildeType
 import no.nav.personbruker.dittnav.api.common.MultiSourceResult
-import no.nav.personbruker.dittnav.api.loginstatus.LoginLevelService
 import no.nav.personbruker.dittnav.api.tokenx.AccessToken
 import no.nav.personbruker.dittnav.api.tokenx.EventhandlerTokendings
 import no.nav.personbruker.dittnav.common.security.AuthenticatedUser
@@ -10,8 +9,8 @@ import org.slf4j.LoggerFactory
 
 class OppgaveService(
     private val oppgaveConsumer: OppgaveConsumer,
-    private val eventhandlerTokendings: EventhandlerTokendings,
-    private val loginLevelService: LoginLevelService) {
+    private val eventhandlerTokendings: EventhandlerTokendings
+) {
 
     private val log = LoggerFactory.getLogger(OppgaveService::class.java)
 
@@ -38,9 +37,7 @@ class OppgaveService(
     ): MultiSourceResult<OppgaveDTO, KildeType> {
         return try {
             val externalEvents = getEvents(exchangedToken)
-            val highestRequiredLoginLevel = getHighestRequiredLoginLevel(externalEvents)
-            val operatingLoginLevel = loginLevelService.getOperatingLoginLevel(user, highestRequiredLoginLevel)
-            val oppgaver = externalEvents.map { oppgave -> transformToDTO(oppgave, operatingLoginLevel) }
+            val oppgaver = externalEvents.map { oppgave -> transformToDTO(oppgave, user.loginLevel) }
             MultiSourceResult.createSuccessfulResult(oppgaver, kilde)
 
         } catch (e: Exception) {
@@ -59,13 +56,5 @@ class OppgaveService(
 
     private fun userIsAllowedToViewAllDataInEvent(beskjed: Oppgave, operatingLoginLevel: Int): Boolean {
         return operatingLoginLevel >= beskjed.sikkerhetsnivaa
-    }
-
-    private fun getHighestRequiredLoginLevel(oppgaveList: List<Oppgave>): Int {
-        return if (oppgaveList.isEmpty()) {
-            0
-        } else {
-            oppgaveList.maxOf { it.sikkerhetsnivaa }
-        }
     }
 }

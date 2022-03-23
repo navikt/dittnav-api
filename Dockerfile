@@ -1,4 +1,4 @@
-FROM navikt/java:13-appdynamics
+FROM navikt/java:13
 ENV APPD_ENABLED=true
 COPY build/libs/api-all.jar /app/app.jar
 ENV JAVA_OPTS="-XX:MaxRAMPercentage=75 \

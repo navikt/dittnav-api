@@ -12,7 +12,6 @@ class UnleashService(private val unleashClient: Unleash) {
         const val digiSosOppgaveToggleName: String = "digiSosEnabled"
         const val digisosPaabegynteToggleName: String = "digisosPaabegynteEnabled"
         const val varselinnboksToggleName: String = "mergeBeskjedVarselEnabled"
-        const val brukMineSakerToggleName: String = "dittnav.brukMineSaker"
         const val situasjonToggleName: String = "veientilarbeid.kanViseUtfraSituasjon"
     }
 
@@ -28,10 +27,6 @@ class UnleashService(private val unleashClient: Unleash) {
 
     suspend fun digiSosPaabegynteEnabled(user: AuthenticatedUser): Boolean = withContext(Dispatchers.IO) {
         unleashClient.isEnabled(digisosPaabegynteToggleName, createUnleashContext(user), false)
-    }
-
-    suspend fun mineSakerEnabled(user: AuthenticatedUser): Boolean = withContext(Dispatchers.IO) {
-        unleashClient.isEnabled(brukMineSakerToggleName, createUnleashContext(user), false)
     }
 
     suspend fun situasjonEnabled(user: AuthenticatedUser): Boolean = withContext(Dispatchers.IO) {

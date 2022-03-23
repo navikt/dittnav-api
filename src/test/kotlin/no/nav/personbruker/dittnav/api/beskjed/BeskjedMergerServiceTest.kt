@@ -7,7 +7,6 @@ import no.nav.personbruker.dittnav.api.common.AuthenticatedUserObjectMother
 import no.nav.personbruker.dittnav.api.common.MultiSourceResultObjectMother
 import no.nav.personbruker.dittnav.api.digisos.DigiSosService
 import no.nav.personbruker.dittnav.api.unleash.UnleashService
-import no.nav.personbruker.dittnav.api.varsel.VarselService
 import org.amshove.kluent.`should be equal to`
 import org.amshove.kluent.`should contain all`
 import org.junit.jupiter.api.BeforeEach
@@ -16,7 +15,6 @@ import org.junit.jupiter.api.Test
 internal class BeskjedMergerServiceTest {
 
     private val beskjedService = mockk<BeskjedService>(relaxed = true)
-    private val varselService = mockk<VarselService>(relaxed = true)
     private val digiSosService = mockk<DigiSosService>(relaxed = true)
 
     private val innloggetBruker = AuthenticatedUserObjectMother.createAuthenticatedUser()
@@ -27,12 +25,6 @@ internal class BeskjedMergerServiceTest {
         "handler"
     )
 
-    private val varslerDefaultResult = MultiSourceResultObjectMother.giveMeNumberOfSuccessfulBeskjedEventsForSource(
-        2,
-        KildeType.VARSELINNBOKS,
-        "varsel"
-    )
-
     private val digiSosDefaultResult = MultiSourceResultObjectMother.giveMeNumberOfSuccessfulBeskjedEventsForSource(
         3,
         KildeType.DIGISOS,
@@ -41,13 +33,10 @@ internal class BeskjedMergerServiceTest {
 
     @BeforeEach
     fun setup() {
-        clearMocks(beskjedService, varselService, digiSosService)
+        clearMocks(beskjedService, digiSosService)
 
         coEvery { beskjedService.getActiveBeskjedEvents(any()) } returns eventHandlerDefaultResult
         coEvery { beskjedService.getInactiveBeskjedEvents(any()) } returns eventHandlerDefaultResult
-
-        coEvery { varselService.getActiveVarselEvents(any()) } returns varslerDefaultResult
-        coEvery { varselService.getInactiveVarselEvents(any()) } returns varslerDefaultResult
 
         coEvery { digiSosService.getPaabegynteActive(any()) } returns digiSosDefaultResult
         coEvery { digiSosService.getPaabegynteInactive(any()) } returns digiSosDefaultResult
@@ -58,18 +47,16 @@ internal class BeskjedMergerServiceTest {
         val fakeUnleash = FakeUnleash()
         val unleashService = UnleashService(fakeUnleash)
 
-        val beskjedMerger = BeskjedMergerService(beskjedService, varselService, digiSosService, unleashService)
+        val beskjedMerger = BeskjedMergerService(beskjedService, digiSosService, unleashService)
 
         val result = runBlocking {
             beskjedMerger.getActiveEvents(innloggetBruker)
         }
 
         coVerify(exactly = 1) { beskjedService.getActiveBeskjedEvents(any()) }
-        coVerify(exactly = 0) { varselService.getActiveVarselEvents(any()) }
         coVerify(exactly = 0) { digiSosService.getPaabegynteActive(any()) }
 
         confirmVerified(beskjedService)
-        confirmVerified(varselService)
         confirmVerified(digiSosService)
 
         result.successFullSources().size `should be equal to` 1
@@ -83,22 +70,20 @@ internal class BeskjedMergerServiceTest {
         }
         val unleashService = UnleashService(fakeUnleash)
 
-        val beskjedMerger = BeskjedMergerService(beskjedService, varselService, digiSosService, unleashService)
+        val beskjedMerger = BeskjedMergerService(beskjedService, digiSosService, unleashService)
 
         val result = runBlocking {
             beskjedMerger.getActiveEvents(innloggetBruker)
         }
 
         coVerify(exactly = 1) { beskjedService.getActiveBeskjedEvents(any()) }
-        coVerify(exactly = 1) { varselService.getActiveVarselEvents(any()) }
         coVerify(exactly = 0) { digiSosService.getPaabegynteActive(any()) }
 
         confirmVerified(beskjedService)
-        confirmVerified(varselService)
         confirmVerified(digiSosService)
 
-        result.successFullSources().size `should be equal to` 2
-        result.successFullSources() `should contain all` listOf(KildeType.EVENTHANDLER, KildeType.VARSELINNBOKS)
+        result.successFullSources().size `should be equal to` 1
+        result.successFullSources() `should contain all` listOf(KildeType.EVENTHANDLER)
     }
 
     @Test
@@ -108,18 +93,16 @@ internal class BeskjedMergerServiceTest {
         }
         val unleashService = UnleashService(fakeUnleash)
 
-        val beskjedMerger = BeskjedMergerService(beskjedService, varselService, digiSosService, unleashService)
+        val beskjedMerger = BeskjedMergerService(beskjedService, digiSosService, unleashService)
 
         val result = runBlocking {
             beskjedMerger.getActiveEvents(innloggetBruker)
         }
 
         coVerify(exactly = 1) { beskjedService.getActiveBeskjedEvents(any()) }
-        coVerify(exactly = 0) { varselService.getActiveVarselEvents(any()) }
         coVerify(exactly = 1) { digiSosService.getPaabegynteActive(any()) }
 
         confirmVerified(beskjedService)
-        confirmVerified(varselService)
         confirmVerified(digiSosService)
 
         result.successFullSources().size `should be equal to` 2
@@ -134,22 +117,20 @@ internal class BeskjedMergerServiceTest {
         }
         val unleashService = UnleashService(fakeUnleash)
 
-        val beskjedMerger = BeskjedMergerService(beskjedService, varselService, digiSosService, unleashService)
+        val beskjedMerger = BeskjedMergerService(beskjedService, digiSosService, unleashService)
 
         val result = runBlocking {
             beskjedMerger.getActiveEvents(innloggetBruker)
         }
 
         coVerify(exactly = 1) { beskjedService.getActiveBeskjedEvents(any()) }
-        coVerify(exactly = 1) { varselService.getActiveVarselEvents(any()) }
         coVerify(exactly = 1) { digiSosService.getPaabegynteActive(any()) }
 
         confirmVerified(beskjedService)
-        confirmVerified(varselService)
         confirmVerified(digiSosService)
 
-        result.successFullSources().size `should be equal to` 3
-        result.successFullSources() `should contain all` listOf(KildeType.EVENTHANDLER, KildeType.VARSELINNBOKS, KildeType.DIGISOS)
+        result.successFullSources().size `should be equal to` 2
+        result.successFullSources() `should contain all` listOf(KildeType.EVENTHANDLER, KildeType.DIGISOS)
     }
 
     @Test
@@ -157,18 +138,16 @@ internal class BeskjedMergerServiceTest {
         val fakeUnleash = FakeUnleash()
         val unleashService = UnleashService(fakeUnleash)
 
-        val beskjedMerger = BeskjedMergerService(beskjedService, varselService, digiSosService, unleashService)
+        val beskjedMerger = BeskjedMergerService(beskjedService, digiSosService, unleashService)
 
         val result = runBlocking {
             beskjedMerger.getInactiveEvents(innloggetBruker)
         }
 
         coVerify(exactly = 1) { beskjedService.getInactiveBeskjedEvents(any()) }
-        coVerify(exactly = 0) { varselService.getInactiveVarselEvents(any()) }
         coVerify(exactly = 0) { digiSosService.getPaabegynteInactive(any()) }
 
         confirmVerified(beskjedService)
-        confirmVerified(varselService)
         confirmVerified(digiSosService)
 
         result.successFullSources().size `should be equal to` 1
@@ -182,22 +161,20 @@ internal class BeskjedMergerServiceTest {
         }
         val unleashService = UnleashService(fakeUnleash)
 
-        val beskjedMerger = BeskjedMergerService(beskjedService, varselService, digiSosService, unleashService)
+        val beskjedMerger = BeskjedMergerService(beskjedService, digiSosService, unleashService)
 
         val result = runBlocking {
             beskjedMerger.getInactiveEvents(innloggetBruker)
         }
 
         coVerify(exactly = 1) { beskjedService.getInactiveBeskjedEvents(any()) }
-        coVerify(exactly = 1) { varselService.getInactiveVarselEvents(any()) }
         coVerify(exactly = 0) { digiSosService.getPaabegynteInactive(any()) }
 
         confirmVerified(beskjedService)
-        confirmVerified(varselService)
         confirmVerified(digiSosService)
 
-        result.successFullSources().size `should be equal to` 2
-        result.successFullSources() `should contain all` listOf(KildeType.EVENTHANDLER, KildeType.VARSELINNBOKS)
+        result.successFullSources().size `should be equal to` 1
+        result.successFullSources() `should contain all` listOf(KildeType.EVENTHANDLER)
     }
 
     @Test
@@ -207,18 +184,16 @@ internal class BeskjedMergerServiceTest {
         }
         val unleashService = UnleashService(fakeUnleash)
 
-        val beskjedMerger = BeskjedMergerService(beskjedService, varselService, digiSosService, unleashService)
+        val beskjedMerger = BeskjedMergerService(beskjedService, digiSosService, unleashService)
 
         val result = runBlocking {
             beskjedMerger.getInactiveEvents(innloggetBruker)
         }
 
         coVerify(exactly = 1) { beskjedService.getInactiveBeskjedEvents(any()) }
-        coVerify(exactly = 0) { varselService.getInactiveVarselEvents(any()) }
         coVerify(exactly = 1) { digiSosService.getPaabegynteInactive(any()) }
 
         confirmVerified(beskjedService)
-        confirmVerified(varselService)
         confirmVerified(digiSosService)
 
         result.successFullSources().size `should be equal to` 2
@@ -232,22 +207,20 @@ internal class BeskjedMergerServiceTest {
             enable(UnleashService.digisosPaabegynteToggleName)
         }
         val unleashService = UnleashService(fakeUnleash)
-        val beskjedMerger = BeskjedMergerService(beskjedService, varselService, digiSosService, unleashService)
+        val beskjedMerger = BeskjedMergerService(beskjedService, digiSosService, unleashService)
 
         val result = runBlocking {
             beskjedMerger.getInactiveEvents(innloggetBruker)
         }
 
         coVerify(exactly = 1) { beskjedService.getInactiveBeskjedEvents(any()) }
-        coVerify(exactly = 1) { varselService.getInactiveVarselEvents(any()) }
         coVerify(exactly = 1) { digiSosService.getPaabegynteInactive(any()) }
 
         confirmVerified(beskjedService)
-        confirmVerified(varselService)
         confirmVerified(digiSosService)
 
-        result.successFullSources().size `should be equal to` 3
-        result.successFullSources() `should contain all` listOf(KildeType.EVENTHANDLER, KildeType.VARSELINNBOKS, KildeType.DIGISOS)
+        result.successFullSources().size `should be equal to` 2
+        result.successFullSources() `should contain all` listOf(KildeType.EVENTHANDLER, KildeType.DIGISOS)
     }
 
 }

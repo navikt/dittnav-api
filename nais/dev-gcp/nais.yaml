@@ -1,0 +1,50 @@
+apiVersion: "nais.io/v1alpha1"
+kind: "Application"
+metadata:
+  name: dittnav-api
+  namespace: min-side
+  labels:
+    team: min-side
+spec:
+  envFrom:
+    - secret: dittnav-api-secrets
+    - configmap: loginservice-idporten
+  image: {{version}}
+  port: 8080
+  liveness:
+    path: /dittnav-api/internal/isAlive
+    initialDelay: 10
+  readiness:
+    path: /dittnav-api/internal/isReady
+    initialDelay: 10
+  prometheus:
+    enabled: true
+    path: /dittnav-api/metrics
+  replicas:
+    min: 2
+    max: 4
+  tokenx:
+    enabled: true
+  accessPolicy:
+    outbound:
+      external:
+        - host: person.dev.nav.no
+        - host: www.dev.nav.no
+      rules:
+        - application: "mine-saker-api"
+          namespace: "personbruker"
+        - application: "mine-saker-api"
+        - application: dittnav-event-handler
+        - application: tms-personalia-api
+        - application: saksoversikt-api
+        - application: pto-proxy
+          namespace: pto
+  ingresses:
+    - "https://person.dev.nav.no/dittnav-api"
+  resources:
+    limits:
+      cpu: "3"
+      memory: 1536Mi
+    requests:
+      cpu: "100m"
+      memory: 580Mi

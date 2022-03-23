@@ -2,15 +2,14 @@ package no.nav.personbruker.dittnav.api.beskjed
 
 import no.nav.personbruker.dittnav.api.tokenx.EventhandlerTokendings
 import no.nav.personbruker.dittnav.api.common.MultiSourceResult
-import no.nav.personbruker.dittnav.api.loginstatus.LoginLevelService
 import no.nav.personbruker.dittnav.api.tokenx.AccessToken
 import no.nav.personbruker.dittnav.common.security.AuthenticatedUser
 import org.slf4j.LoggerFactory
 
 class BeskjedService(
     private val beskjedConsumer: BeskjedConsumer,
-    private val eventhandlerTokendings: EventhandlerTokendings,
-    private val loginLevelService: LoginLevelService) {
+    private val eventhandlerTokendings: EventhandlerTokendings
+) {
 
     private val log = LoggerFactory.getLogger(BeskjedService::class.java)
 
@@ -37,9 +36,7 @@ class BeskjedService(
     ): MultiSourceResult<BeskjedDTO, KildeType> {
         return try {
             val externalEvents = getEvents(exchangedToken)
-            val highestRequiredLoginLevel = getHighestRequiredLoginLevel(externalEvents)
-            val operatingLoginLevel = loginLevelService.getOperatingLoginLevel(user, highestRequiredLoginLevel)
-            val results = externalEvents.map { beskjed -> transformToDTO(beskjed, operatingLoginLevel) }
+            val results = externalEvents.map { beskjed -> transformToDTO(beskjed, user.loginLevel) }
             MultiSourceResult.createSuccessfulResult(results, kilde)
 
         } catch (e: Exception) {
