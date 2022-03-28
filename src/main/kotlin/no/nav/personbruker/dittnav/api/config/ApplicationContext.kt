@@ -17,6 +17,7 @@ import no.nav.personbruker.dittnav.api.innboks.InnboksConsumer
 import no.nav.personbruker.dittnav.api.innboks.InnboksService
 import no.nav.personbruker.dittnav.api.meldekort.MeldekortConsumer
 import no.nav.personbruker.dittnav.api.meldekort.MeldekortService
+import no.nav.personbruker.dittnav.api.meldekort.MeldekortTokendings
 import no.nav.personbruker.dittnav.api.oppfolging.OppfolgingConsumer
 import no.nav.personbruker.dittnav.api.oppfolging.OppfolgingService
 import no.nav.personbruker.dittnav.api.oppgave.OppgaveConsumer
@@ -68,7 +69,8 @@ class ApplicationContext {
     val personaliaService = PersonaliaService(personaliaConsumer, personaliaTokendings)
 
     val meldekortConsumer = MeldekortConsumer(httpClient, environment.meldekortApiUrl)
-    val meldekortService = MeldekortService(meldekortConsumer)
+    val meldekortTokendings = MeldekortTokendings(tokendingsService, environment.meldekortClientId)
+    val meldekortService = MeldekortService(meldekortConsumer, meldekortTokendings)
 
     val oppfolgingConsumer = OppfolgingConsumer(httpClientIgnoreUnknownKeys, environment.oppfolgingApiUrl)
     val oppfolgingService = OppfolgingService(oppfolgingConsumer)
