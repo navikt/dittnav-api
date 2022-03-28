@@ -57,7 +57,7 @@ suspend inline fun <reified T> HttpClient.getWithMeldekortTokenx(url: URL, acces
     request {
         url(url)
         method = HttpMethod.Get
-        header("TokeXAuthorization", "Bearer ${accessToken.value}")
+        header("TokenXAuthorization", "Bearer ${accessToken.value}")
         timeout {
             socketTimeoutMillis = 30000
             connectTimeoutMillis = 10000
