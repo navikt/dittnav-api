@@ -35,7 +35,6 @@ spec:
         - application: "mine-saker-api"
         - application: dittnav-event-handler
         - application: tms-personalia-api
-        - application: saksoversikt-api
         - application: pto-proxy
           namespace: pto
   ingresses:
