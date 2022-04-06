@@ -12,7 +12,6 @@ fun List<Paabegynte>.toInternals(): List<BeskjedDTO> {
 }
 
 fun Paabegynte.toInternal() = BeskjedDTO(
-    uid = eventId,
     eventTidspunkt = eventTidspunkt.toZonedDateTime(),
     eventId = eventId,
     tekst = cropTextIfOverMaxLengthOfBeskjed(tekst),

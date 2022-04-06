@@ -8,12 +8,11 @@ class BeskjedTransformerTest {
 
     @Test
     fun `should transform from Beskjed to BeskjedDTO`() {
-        val beskjed1 = createBeskjed("1", "1", "uid1", true)
-        val beskjed2 = createBeskjed("2", "2", "uid2", true)
+        val beskjed1 = createBeskjed(eventId = "1", fodselsnummer = "1",  aktiv = true)
+        val beskjed2 = createBeskjed(eventId = "2", fodselsnummer = "2", aktiv = true)
         val beskjedDTOList = listOf(beskjed1, beskjed2).map { toBeskjedDTO(it) }
         val beskjedDTO = beskjedDTOList.first()
 
-        beskjedDTO.uid `should be` beskjed1.uid
         beskjedDTO.eventTidspunkt `should be` beskjed1.eventTidspunkt
         beskjedDTO.eventId `should be equal to` beskjed1.eventId
         beskjedDTO.tekst `should be equal to` beskjed1.tekst
@@ -26,7 +25,7 @@ class BeskjedTransformerTest {
 
     @Test
     fun `should mask tekst, link and produsent`() {
-        val beskjed = createBeskjed("1", "1", "1", true)
+        val beskjed = createBeskjed(eventId = "1", fodselsnummer = "1", aktiv = true)
         val beskjedDTO = toMaskedBeskjedDTO(beskjed)
         beskjedDTO.eventTidspunkt `should be` beskjed.eventTidspunkt
         beskjedDTO.eventId `should be equal to` beskjed.eventId

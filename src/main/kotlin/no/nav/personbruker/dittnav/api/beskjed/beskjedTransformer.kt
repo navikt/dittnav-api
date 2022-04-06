@@ -3,7 +3,6 @@ package no.nav.personbruker.dittnav.api.beskjed
 fun toBeskjedDTO(beskjed: Beskjed): BeskjedDTO =
         beskjed.let {
             BeskjedDTO(
-                    uid = it.uid,
                     eventTidspunkt = it.eventTidspunkt,
                     eventId = it.eventId,
                     tekst = it.tekst,

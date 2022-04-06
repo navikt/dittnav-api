@@ -4,6 +4,5 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class DoneDTO(
-        val uid: String,
         val eventId: String
 )

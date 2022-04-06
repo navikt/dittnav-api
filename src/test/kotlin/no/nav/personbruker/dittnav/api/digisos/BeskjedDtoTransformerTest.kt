@@ -20,7 +20,6 @@ internal class BeskjedDtoTransformerTest {
         internal.aktiv `should be equal to` external.isAktiv
         internal.sistOppdatert `should be equal to` external.sistOppdatert.toZonedDateTime()
         internal.produsent `should be equal to` "digiSos"
-        internal.uid `should be equal to` external.eventId
     }
 
     @Test
