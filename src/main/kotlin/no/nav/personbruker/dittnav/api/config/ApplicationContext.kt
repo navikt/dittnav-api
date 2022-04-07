@@ -31,11 +31,7 @@ import no.nav.personbruker.dittnav.api.personalia.PersonaliaService
 import no.nav.personbruker.dittnav.api.personalia.PersonaliaTokendings
 import no.nav.personbruker.dittnav.api.saker.MineSakerConsumer
 import no.nav.personbruker.dittnav.api.saker.MineSakerTokendings
-import no.nav.personbruker.dittnav.api.saker.SakerInnsynUrlResolver
 import no.nav.personbruker.dittnav.api.saker.SakerService
-import no.nav.personbruker.dittnav.api.saksoversikt.PaabegynteSoknaderTransformer
-import no.nav.personbruker.dittnav.api.saksoversikt.SaksoversiktConsumer
-import no.nav.personbruker.dittnav.api.saksoversikt.SaksoversiktService
 import no.nav.personbruker.dittnav.api.unleash.ByEnvironmentStrategy
 import no.nav.personbruker.dittnav.api.unleash.UnleashService
 import no.nav.tms.token.support.tokendings.exchange.TokendingsServiceBuilder
@@ -65,8 +61,7 @@ class ApplicationContext {
     val oppgaveService = OppgaveService(oppgaveConsumer, eventhandlerTokendings)
     val beskjedService = BeskjedService(beskjedConsumer, eventhandlerTokendings)
     val innboksService = InnboksService(innboksConsumer, eventhandlerTokendings)
-    val sakerUrlResolver = SakerInnsynUrlResolver(NaisEnvironment.isRunningInProd())
-    val sakerService = SakerService(mineSakerConsumer, sakerUrlResolver, mineSakerTokendings)
+    val sakerService = SakerService(mineSakerConsumer, environment.mineSakerURL, mineSakerTokendings)
 
     val digiSosConsumer = DigiSosClient(httpClient, environment.digiSosSoknadBaseURL, environment.digiSosInnsynBaseURL)
     val digiSosService = DigiSosService(digiSosConsumer)
@@ -86,11 +81,6 @@ class ApplicationContext {
     val mininnboksConsumer = MininnboksConsumer(httpClientIgnoreUnknownKeys, environment.mininnboksApiUrl)
     val ubehandledeMeldingerTransformer = UbehandledeMeldingerTransformer(environment.mininnboksApiUrl.toString(), environment.innloggingsinfoUrl.toString())
     val ubehandledeMeldingerService = UbehandledeMeldingerService(mininnboksConsumer, ubehandledeMeldingerTransformer)
-
-    val saksoversiktConsumer = SaksoversiktConsumer(httpClient, environment.saksoversiktApiUrl)
-    val paabegynteSoknaderTransformer = PaabegynteSoknaderTransformer(environment.saksoversiktUrl.toString())
-    val saksoversiktService = SaksoversiktService(saksoversiktConsumer, paabegynteSoknaderTransformer)
-
 
     private fun createUnleashService(environment: Environment): UnleashService {
 

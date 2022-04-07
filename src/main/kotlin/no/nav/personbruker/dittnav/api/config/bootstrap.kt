@@ -23,7 +23,6 @@ import no.nav.personbruker.dittnav.api.oppfolging.oppfolgingApi
 import no.nav.personbruker.dittnav.api.oppgave.oppgave
 import no.nav.personbruker.dittnav.api.personalia.personalia
 import no.nav.personbruker.dittnav.api.saker.saker
-import no.nav.personbruker.dittnav.api.saksoversikt.saksoversiktApi
 import no.nav.personbruker.dittnav.api.unleash.unleash
 import no.nav.personbruker.dittnav.common.security.AuthenticatedUser
 import no.nav.personbruker.dittnav.common.security.AuthenticatedUserFactory
@@ -75,7 +74,6 @@ fun Application.mainModule(appContext: ApplicationContext = ApplicationContext()
             meldekortApi(appContext.meldekortService)
             oppfolgingApi(appContext.oppfolgingService)
             ubehandledeMeldingerApi(appContext.ubehandledeMeldingerService)
-            saksoversiktApi(appContext.saksoversiktService)
 
             oppgave(appContext.oppgaveMergerService)
             beskjed(appContext.beskjedMergerService)
