@@ -27,8 +27,8 @@ internal class BeskjedServiceTest {
 
     @Test
     fun `should return list of BeskjedDTO when active Events are received`() {
-        val beskjed1 = createBeskjed("1", "1", "1", true)
-        val beskjed2 = createBeskjed("2", "2", "2", true)
+        val beskjed1 = createBeskjed(eventId = "1", fodselsnummer = "1", aktiv = true)
+        val beskjed2 = createBeskjed(eventId = "2", fodselsnummer = "2", aktiv = true)
         coEvery { beskjedConsumer.getExternalActiveEvents(dummyToken) } returns listOf(beskjed1, beskjed2)
         runBlocking {
             val beskjedResult = beskjedService.getActiveBeskjedEvents(user)
@@ -38,8 +38,8 @@ internal class BeskjedServiceTest {
 
     @Test
     fun `should return list of BeskjedDTO when inactive Events are received`() {
-        val beskjed1 = createBeskjed("1", "1", "1", false)
-        val beskjed2 = createBeskjed("2", "2", "2", false)
+        val beskjed1 = createBeskjed(eventId = "1", fodselsnummer = "1", aktiv = false)
+        val beskjed2 = createBeskjed(eventId = "2", fodselsnummer = "2", aktiv = false)
         coEvery { beskjedConsumer.getExternalInactiveEvents(dummyToken) } returns listOf(beskjed1, beskjed2)
         runBlocking {
             val beskjedResult = beskjedService.getInactiveBeskjedEvents(user)
@@ -50,7 +50,7 @@ internal class BeskjedServiceTest {
     @Test
     fun `should mask events with security level higher than current user`() {
         val ident = "1"
-        var beskjed = createBeskjed("1", ident, "1", true)
+        var beskjed = createBeskjed(eventId = "1", fodselsnummer = ident, aktiv = true)
         beskjed = beskjed.copy(sikkerhetsnivaa = 4)
         user = AuthenticatedUserObjectMother.createAuthenticatedUser(ident, 3)
         coEvery { eventhandlerTokendings.exchangeToken(user) } returns dummyToken
@@ -66,7 +66,7 @@ internal class BeskjedServiceTest {
 
     @Test
     fun `should not mask events with security level lower than current user`() {
-        var beskjed = createBeskjed("1", "1", "1", true)
+        var beskjed = createBeskjed(eventId = "1", fodselsnummer = "1", aktiv = true)
         beskjed = beskjed.copy(sikkerhetsnivaa = 3)
         coEvery { beskjedConsumer.getExternalActiveEvents(dummyToken) } returns listOf(beskjed)
         runBlocking {
@@ -80,7 +80,7 @@ internal class BeskjedServiceTest {
 
     @Test
     fun `should not mask events with security level equal than current user`() {
-        val beskjed = createBeskjed("1", "1", "1", true)
+        val beskjed = createBeskjed(eventId = "1", fodselsnummer = "1", aktiv = true)
         coEvery { beskjedConsumer.getExternalActiveEvents(dummyToken) } returns listOf(beskjed)
         runBlocking {
             val beskjedResult = beskjedService.getActiveBeskjedEvents(user)

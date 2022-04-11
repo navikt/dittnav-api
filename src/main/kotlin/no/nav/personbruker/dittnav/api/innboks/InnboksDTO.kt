@@ -8,7 +8,6 @@ import java.time.ZonedDateTime
 
 @Serializable
 data class InnboksDTO(
-        val uid: String?,
         val eventTidspunkt: ZonedDateTime,
         val eventId: String,
         val tekst: String,
@@ -16,23 +15,4 @@ data class InnboksDTO(
         val produsent: String?,
         val sistOppdatert: ZonedDateTime,
         val sikkerhetsnivaa: Int
-) {
-    constructor(
-            eventTidspunkt: ZonedDateTime,
-            eventId: String,
-            tekst: String,
-            link: String,
-            produsent: String?,
-            sistOppdatert: ZonedDateTime,
-            sikkerhetsnivaa: Int
-    ) : this(
-            null,
-            eventTidspunkt,
-            eventId,
-            tekst,
-            link,
-            produsent,
-            sistOppdatert,
-            sikkerhetsnivaa
-    )
-}
+)

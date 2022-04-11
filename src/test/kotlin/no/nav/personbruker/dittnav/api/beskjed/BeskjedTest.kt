@@ -7,7 +7,7 @@ class BeskjedTest {
 
     @Test
     fun `skal returnere maskerte data fra toString-metoden`() {
-        val beskjed = createBeskjed("1", "1", "1", true)
+        val beskjed = createBeskjed(eventId = "1", fodselsnummer = "1", aktiv = true)
         val beskjedAsString = beskjed.toString()
         beskjedAsString `should contain` "fodselsnummer=***"
         beskjedAsString `should contain` "tekst=***"

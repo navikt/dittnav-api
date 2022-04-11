@@ -30,7 +30,7 @@ internal class DoneProducerTest {
 
     @Test
     fun `should call post endpoint on event handler`() {
-        val done = DoneObjectMother.createDone("dummyUid", "dummyEventId")
+        val done = DoneDtoObjectMother.createDoneDto(eventId = "dummyEventId")
 
         val client = HttpClient(MockEngine) {
             engine {

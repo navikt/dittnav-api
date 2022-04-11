@@ -9,7 +9,6 @@ fun List<Ettersendelse>.toInternals(): List<OppgaveDTO> {
 }
 
 fun Ettersendelse.toInternal() = OppgaveDTO(
-    uid = eventId,
     eventTidspunkt = eventTidspunkt.toZonedDateTime(),
     eventId = eventId,
     tekst = cropTextIfOverMaxLengthOfOppgave(tekst),

@@ -1,10 +1,9 @@
 package no.nav.personbruker.dittnav.api.done
 
-object DoneObjectMother {
+object DoneDtoObjectMother {
 
-    fun createDone(uid: String, eventId: String): DoneDTO {
+    fun createDoneDto(eventId: String): DoneDTO {
         return DoneDTO(
-                uid = uid,
                 eventId = eventId)
     }
 

@@ -8,7 +8,6 @@ import java.time.ZonedDateTime
 
 @Serializable
 data class Beskjed(
-        val uid: String,
         val eventTidspunkt: ZonedDateTime,
         val fodselsnummer: String,
         val eventId: String,
@@ -22,7 +21,6 @@ data class Beskjed(
 ) {
     override fun toString(): String {
         return "Beskjed(" +
-                "uid=$uid, " +
                 "eventTidspunkt=$eventTidspunkt, " +
                 "fodselsnummer=***, " +
                 "eventId=$eventId, " +

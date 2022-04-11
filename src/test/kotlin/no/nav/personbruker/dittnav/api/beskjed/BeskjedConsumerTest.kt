@@ -42,7 +42,7 @@ internal class BeskjedConsumerTest {
 
     @Test
     fun `Skal motta en liste over aktive Beskjeder`() {
-        val beskjedObject = createBeskjed("1", "1", "1", true)
+        val beskjedObject = createBeskjed(eventId = "1", fodselsnummer = "1", aktiv = true)
         val client = createBasicMockedHttpClient {
             respond(
                     json().encodeToString(listOf(beskjedObject)),
@@ -64,7 +64,7 @@ internal class BeskjedConsumerTest {
 
     @Test
     fun `Skal motta en liste over inaktive Beskjeder`() {
-        val beskjedObject = createBeskjed("1", "1", "1", false)
+        val beskjedObject = createBeskjed(eventId = "1", fodselsnummer = "1", aktiv = false)
 
         val client = createBasicMockedHttpClient {
             respond(
