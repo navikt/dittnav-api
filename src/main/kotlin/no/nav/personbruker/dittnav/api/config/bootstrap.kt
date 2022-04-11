@@ -54,7 +54,7 @@ fun Application.mainModule(appContext: ApplicationContext = ApplicationContext()
     }
 
     install(ContentNegotiation) {
-        json(no.nav.personbruker.dittnav.api.config.json())
+        json(json(true))
     }
 
     install(MicrometerMetrics) {
