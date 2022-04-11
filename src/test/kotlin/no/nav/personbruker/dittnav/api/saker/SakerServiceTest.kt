@@ -13,13 +13,14 @@ import org.amshove.kluent.`should be instance of`
 import org.amshove.kluent.`should contain`
 import org.amshove.kluent.shouldNotBeNull
 import org.junit.jupiter.api.Test
+import java.net.URL
 
 internal class SakerServiceTest {
 
     private val mineSakerConsumer = mockk<MineSakerConsumer>(relaxed = true)
+    private val mineSakerURL = URL("http://mine-saker")
     private val tokendings = mockk<MineSakerTokendings>()
     private val dummyUser = AuthenticatedUserObjectMother.createAuthenticatedUser()
-    private val urlResolver = SakerInnsynUrlResolver(false)
     private val dummyAccessToken = AccessToken("123")
 
     init {
@@ -31,7 +32,7 @@ internal class SakerServiceTest {
 
         coEvery { mineSakerConsumer.hentSistEndret(any()) } returns SisteSakstemaerDtoObjectMother.giveMeTemaDagpenger()
 
-        val service = SakerService(mineSakerConsumer, urlResolver, tokendings)
+        val service = SakerService(mineSakerConsumer, mineSakerURL, tokendings)
 
         val result = runBlocking {
             service.hentSisteToEndredeSakstemaer(dummyUser)
@@ -52,7 +53,7 @@ internal class SakerServiceTest {
 
         coEvery { mineSakerConsumer.hentSistEndret(any()) } throws IllegalArgumentException("Simulert feil i en test")
 
-        val service = SakerService(mineSakerConsumer, urlResolver, tokendings)
+        val service = SakerService(mineSakerConsumer, mineSakerURL, tokendings)
 
         val result = runCatching {
             runBlocking {

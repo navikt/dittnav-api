@@ -16,6 +16,7 @@ data class Environment(
     val unleashApiUrl: String = getEnvVar("UNLEASH_API_URL"),
     val digiSosSoknadBaseURL: URL = getEnvVarAsURL("DIGISOS_API_URL", trimTrailingSlash = true),
     val digiSosInnsynBaseURL: URL = getEnvVarAsURL("DIGISOS_INNSYN_API_URL", trimTrailingSlash = true),
+    val mineSakerURL: URL = getEnvVarAsURL("MINE_SAKER_URL", trimTrailingSlash = true),
     val sakerApiUrl: URL = getEnvVarAsURL("MINE_SAKER_API_URL", trimTrailingSlash = true),
     val mineSakerApiClientId: String = getEnvVar("MINE_SAKER_API_CLIENT_ID"),
     val personaliaApiUrl: URL = getEnvVarAsURL("PERSONALIA_API_URL"),
@@ -25,8 +26,6 @@ data class Environment(
     val oppfolgingApiUrl: URL = getEnvVarAsURL("OPPFOLGING_API_URL"),
     val mininnboksApiUrl: URL = getEnvVarAsURL("MININNBOKS_API_URL"),
     val innloggingsinfoUrl: URL = getEnvVarAsURL("INNLOGGINGSINFO_URL"),
-    val saksoversiktUrl: URL = getEnvVarAsURL("SAKSOVERSIKT_URL"),
-    val saksoversiktApiUrl: URL = getEnvVarAsURL("SAKSOVERSIKT_API_URL"),
     val isRunningInDev: Boolean = isRunningInDev()
 )
 
