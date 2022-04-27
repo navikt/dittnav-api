@@ -17,9 +17,6 @@ import no.nav.personbruker.dittnav.api.innboks.InnboksConsumer
 import no.nav.personbruker.dittnav.api.innboks.InnboksService
 import no.nav.personbruker.dittnav.api.meldekort.MeldekortConsumer
 import no.nav.personbruker.dittnav.api.meldekort.MeldekortService
-import no.nav.personbruker.dittnav.api.mininnboks.MininnboksConsumer
-import no.nav.personbruker.dittnav.api.mininnboks.UbehandledeMeldingerService
-import no.nav.personbruker.dittnav.api.mininnboks.UbehandledeMeldingerTransformer
 import no.nav.personbruker.dittnav.api.oppfolging.OppfolgingConsumer
 import no.nav.personbruker.dittnav.api.oppfolging.OppfolgingService
 import no.nav.personbruker.dittnav.api.oppgave.OppgaveConsumer
@@ -77,10 +74,6 @@ class ApplicationContext {
 
     val oppfolgingConsumer = OppfolgingConsumer(httpClientIgnoreUnknownKeys, environment.oppfolgingApiUrl)
     val oppfolgingService = OppfolgingService(oppfolgingConsumer)
-
-    val mininnboksConsumer = MininnboksConsumer(httpClientIgnoreUnknownKeys, environment.mininnboksApiUrl)
-    val ubehandledeMeldingerTransformer = UbehandledeMeldingerTransformer(environment.mininnboksApiUrl.toString(), environment.innloggingsinfoUrl.toString())
-    val ubehandledeMeldingerService = UbehandledeMeldingerService(mininnboksConsumer, ubehandledeMeldingerTransformer)
 
     private fun createUnleashService(environment: Environment): UnleashService {
 
