@@ -47,7 +47,7 @@ class ApplicationContext {
     val personaliaTokendings = PersonaliaTokendings(tokendingsService, environment.personaliaApiClientId)
 
     val oppgaveConsumer = OppgaveConsumer(httpClient, environment.eventHandlerURL)
-    val beskjedConsumer = BeskjedConsumer(httpClientIgnoreUnknownKeys, environment.eventHandlerURL)
+    val beskjedConsumer = BeskjedConsumer(httpClient, environment.eventHandlerURL)
     val innboksConsumer = InnboksConsumer(httpClient, environment.eventHandlerURL)
     val mineSakerConsumer = MineSakerConsumer(httpClient, environment.sakerApiUrl)
 
