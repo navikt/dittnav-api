@@ -1,5 +1,6 @@
 package no.nav.personbruker.dittnav.api.meldekort
 
+import no.nav.personbruker.dittnav.api.meldekort.external.MeldekortstatusExternal
 import no.nav.personbruker.dittnav.common.security.AuthenticatedUser
 
 class MeldekortService(
@@ -13,5 +14,11 @@ class MeldekortService(
         val meldekortStatus = meldekortConsumer.getMeldekortStatus(token)
 
         return MeldekortTransformer.toInternal(meldekortStatus)
+    }
+
+    suspend fun getMeldekortStatus(user: AuthenticatedUser): MeldekortstatusExternal {
+        val token = meldekortTokendings.exchangeToken(user)
+
+        return meldekortConsumer.getMeldekortStatus(token)
     }
 }
