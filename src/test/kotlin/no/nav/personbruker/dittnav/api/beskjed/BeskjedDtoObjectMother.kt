@@ -6,29 +6,31 @@ object BeskjedDtoObjectMother {
 
     fun createActiveBeskjed(eventId: String): BeskjedDTO {
         return BeskjedDTO(
-            ZonedDateTime.now().minusDays(3),
-            eventId,
-            "Dummytekst",
-            "https://dummy.url",
-            "dummy-produsent",
-            ZonedDateTime.now().minusDays(3),
-            3,
-            true,
-            "321"
+            eventTidspunkt = ZonedDateTime.now().minusDays(3),
+            forstBehandlet = ZonedDateTime.now(),
+            eventId = eventId,
+            tekst = "Dummytekst",
+            link = "https://dummy.url",
+            produsent = "dummy-produsent",
+            sistOppdatert = ZonedDateTime.now().minusDays(3),
+            sikkerhetsnivaa = 3,
+            aktiv = true,
+            grupperingsId = "321"
         )
     }
 
     fun createInactiveBeskjed(eventId: String): BeskjedDTO {
         return BeskjedDTO(
-            ZonedDateTime.now().minusDays(3),
-            eventId,
-            "Dummytekst",
-            "https://dummy.url",
-            "dummy-produsent",
-            ZonedDateTime.now().minusDays(1),
-            3,
-            false,
-            "654"
+            eventTidspunkt = ZonedDateTime.now().minusDays(3),
+            forstBehandlet = ZonedDateTime.now(),
+            eventId = eventId,
+            tekst = "Dummytekst",
+            link = "https://dummy.url",
+            produsent = "dummy-produsent",
+            sistOppdatert = ZonedDateTime.now().minusDays(1),
+            sikkerhetsnivaa = 3,
+            aktiv = false,
+            grupperingsId = "654"
         )
     }
 

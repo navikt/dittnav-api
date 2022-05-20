@@ -4,14 +4,15 @@ fun toOppgaveDTO(inbound: Oppgave): OppgaveDTO =
     inbound.let {
         OppgaveDTO(
             eventTidspunkt = it.eventTidspunkt,
+            forstBehandlet = it.forstBehandlet,
             eventId = it.eventId,
             tekst = it.tekst,
             link = it.link,
             produsent = it.produsent,
             sistOppdatert = it.sistOppdatert,
             sikkerhetsnivaa = it.sikkerhetsnivaa,
-            it.aktiv,
-            it.grupperingsId
+            aktiv = it.aktiv,
+            grupperingsId = it.grupperingsId
         )
     }
 

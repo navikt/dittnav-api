@@ -9,6 +9,7 @@ import java.time.ZonedDateTime
 @Serializable
 data class Innboks(
         val eventTidspunkt: ZonedDateTime,
+        val forstBehandlet: ZonedDateTime,
         val fodselsnummer: String,
         val eventId: String,
         val grupperingsId: String,
@@ -22,6 +23,7 @@ data class Innboks(
     override fun toString(): String {
         return "Innboks(" +
                 "eventTidspunkt=$eventTidspunkt, " +
+                "forstBehandlet=$forstBehandlet, " +
                 "fodselsnummer=***, " +
                 "eventId=$eventId, " +
                 "grupperingsId=$grupperingsId, " +

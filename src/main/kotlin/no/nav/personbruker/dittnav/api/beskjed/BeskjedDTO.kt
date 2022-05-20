@@ -9,6 +9,7 @@ import java.time.ZonedDateTime
 @Serializable
 data class BeskjedDTO(
         val eventTidspunkt: ZonedDateTime,
+        val forstBehandlet: ZonedDateTime,
         val eventId: String,
         val tekst: String,
         val link: String,

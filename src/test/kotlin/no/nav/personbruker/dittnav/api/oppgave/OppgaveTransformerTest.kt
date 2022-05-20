@@ -14,6 +14,7 @@ class OppgaveTransformerTest {
         val oppgaveDTO = oppgaveDTOList.first()
 
         oppgaveDTO.eventTidspunkt `should be` oppgave1.eventTidspunkt
+        oppgaveDTO.forstBehandlet `should be` oppgave1.forstBehandlet
         oppgaveDTO.eventId `should be equal to` oppgave1.eventId
         oppgaveDTO.tekst `should be equal to` oppgave1.tekst
         oppgaveDTO.link `should be equal to` oppgave1.link
@@ -29,6 +30,7 @@ class OppgaveTransformerTest {
         val oppgave = createOppgave("1", "1", true)
         val oppgaveDTO = toMaskedOppgaveDTO(oppgave)
         oppgaveDTO.eventTidspunkt `should be` oppgave.eventTidspunkt
+        oppgaveDTO.forstBehandlet `should be` oppgave.forstBehandlet
         oppgaveDTO.eventId `should be equal to` oppgave.eventId
         oppgaveDTO.tekst `should be equal to` "***"
         oppgaveDTO.link `should be equal to` "***"
