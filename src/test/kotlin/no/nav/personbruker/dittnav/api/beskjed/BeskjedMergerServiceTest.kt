@@ -1,14 +1,17 @@
 package no.nav.personbruker.dittnav.api.beskjed
 
-import io.mockk.*
+import io.kotest.matchers.shouldBe
+import io.mockk.clearMocks
+import io.mockk.coEvery
+import io.mockk.coVerify
+import io.mockk.confirmVerified
+import io.mockk.mockk
 import kotlinx.coroutines.runBlocking
 import no.finn.unleash.FakeUnleash
 import no.nav.personbruker.dittnav.api.common.AuthenticatedUserObjectMother
 import no.nav.personbruker.dittnav.api.common.MultiSourceResultObjectMother
 import no.nav.personbruker.dittnav.api.digisos.DigiSosService
 import no.nav.personbruker.dittnav.api.unleash.UnleashService
-import org.amshove.kluent.`should be equal to`
-import org.amshove.kluent.`should contain all`
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 
@@ -59,8 +62,8 @@ internal class BeskjedMergerServiceTest {
         confirmVerified(beskjedService)
         confirmVerified(digiSosService)
 
-        result.successFullSources().size `should be equal to` 1
-        result.successFullSources() `should contain all` listOf(KildeType.EVENTHANDLER)
+        result.successFullSources().size shouldBe 1
+        result.successFullSources() shouldBe listOf(KildeType.EVENTHANDLER)
     }
 
     @Test
@@ -82,8 +85,8 @@ internal class BeskjedMergerServiceTest {
         confirmVerified(beskjedService)
         confirmVerified(digiSosService)
 
-        result.successFullSources().size `should be equal to` 1
-        result.successFullSources() `should contain all` listOf(KildeType.EVENTHANDLER)
+        result.successFullSources().size shouldBe 1
+        result.successFullSources() shouldBe listOf(KildeType.EVENTHANDLER)
     }
 
     @Test
@@ -105,8 +108,8 @@ internal class BeskjedMergerServiceTest {
         confirmVerified(beskjedService)
         confirmVerified(digiSosService)
 
-        result.successFullSources().size `should be equal to` 2
-        result.successFullSources() `should contain all` listOf(KildeType.EVENTHANDLER, KildeType.DIGISOS)
+        result.successFullSources().size shouldBe 2
+        result.successFullSources() shouldBe listOf(KildeType.EVENTHANDLER, KildeType.DIGISOS)
     }
 
     @Test
@@ -129,8 +132,8 @@ internal class BeskjedMergerServiceTest {
         confirmVerified(beskjedService)
         confirmVerified(digiSosService)
 
-        result.successFullSources().size `should be equal to` 2
-        result.successFullSources() `should contain all` listOf(KildeType.EVENTHANDLER, KildeType.DIGISOS)
+        result.successFullSources().size shouldBe 2
+        result.successFullSources() shouldBe listOf(KildeType.EVENTHANDLER, KildeType.DIGISOS)
     }
 
     @Test
@@ -150,8 +153,8 @@ internal class BeskjedMergerServiceTest {
         confirmVerified(beskjedService)
         confirmVerified(digiSosService)
 
-        result.successFullSources().size `should be equal to` 1
-        result.successFullSources() `should contain all` listOf(KildeType.EVENTHANDLER)
+        result.successFullSources().size shouldBe 1
+        result.successFullSources() shouldBe listOf(KildeType.EVENTHANDLER)
     }
 
     @Test
@@ -173,8 +176,8 @@ internal class BeskjedMergerServiceTest {
         confirmVerified(beskjedService)
         confirmVerified(digiSosService)
 
-        result.successFullSources().size `should be equal to` 1
-        result.successFullSources() `should contain all` listOf(KildeType.EVENTHANDLER)
+        result.successFullSources().size shouldBe 1
+        result.successFullSources() shouldBe listOf(KildeType.EVENTHANDLER)
     }
 
     @Test
@@ -196,8 +199,8 @@ internal class BeskjedMergerServiceTest {
         confirmVerified(beskjedService)
         confirmVerified(digiSosService)
 
-        result.successFullSources().size `should be equal to` 2
-        result.successFullSources() `should contain all` listOf(KildeType.EVENTHANDLER, KildeType.DIGISOS)
+        result.successFullSources().size shouldBe 2
+        result.successFullSources() shouldBe listOf(KildeType.EVENTHANDLER, KildeType.DIGISOS)
     }
 
     @Test
@@ -219,8 +222,8 @@ internal class BeskjedMergerServiceTest {
         confirmVerified(beskjedService)
         confirmVerified(digiSosService)
 
-        result.successFullSources().size `should be equal to` 2
-        result.successFullSources() `should contain all` listOf(KildeType.EVENTHANDLER, KildeType.DIGISOS)
+        result.successFullSources().size shouldBe 2
+        result.successFullSources() shouldBe listOf(KildeType.EVENTHANDLER, KildeType.DIGISOS)
     }
 
 }

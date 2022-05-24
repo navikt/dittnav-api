@@ -1,6 +1,6 @@
 package no.nav.personbruker.dittnav.api.meldekort
 
-import org.amshove.kluent.`should be equal to`
+import io.kotest.matchers.shouldBe
 import org.junit.jupiter.api.Test
 import java.time.LocalDate
 
@@ -12,10 +12,10 @@ internal class MeldekortTransformerTest {
 
         val result = MeldekortTransformer.toInternal(meldekortstatus)
 
-        result.nyeMeldekort.nesteMeldekort `should be equal to` null
-        result.etterregistrerteMeldekort `should be equal to` 0
-        result.resterendeFeriedager `should be equal to` 0
-        result.meldekortbruker `should be equal to` false
+        result.nyeMeldekort.nesteMeldekort shouldBe null
+        result.etterregistrerteMeldekort shouldBe 0
+        result.resterendeFeriedager shouldBe 0
+        result.meldekortbruker shouldBe false
     }
 
     @Test
@@ -26,23 +26,23 @@ internal class MeldekortTransformerTest {
 
         val result = MeldekortTransformer.toInternal(meldekortstatusExternal)
 
-        result.meldekortbruker `should be equal to` true
-        result.etterregistrerteMeldekort `should be equal to` meldekortstatusExternal.etterregistrerteMeldekort
-        result.resterendeFeriedager `should be equal to` meldekortstatusExternal.antallGjenstaaendeFeriedager
+        result.meldekortbruker shouldBe true
+        result.etterregistrerteMeldekort shouldBe meldekortstatusExternal.etterregistrerteMeldekort
+        result.resterendeFeriedager shouldBe meldekortstatusExternal.antallGjenstaaendeFeriedager
 
         val resultNyeMeldekort = result.nyeMeldekort
 
-        resultNyeMeldekort.nesteInnsendingAvMeldekort `should be equal to` meldekortstatusExternal.nesteInnsendingAvMeldekort
-        resultNyeMeldekort.antallNyeMeldekort `should be equal to` meldekortstatusExternal.meldekort
+        resultNyeMeldekort.nesteInnsendingAvMeldekort shouldBe meldekortstatusExternal.nesteInnsendingAvMeldekort
+        resultNyeMeldekort.antallNyeMeldekort shouldBe meldekortstatusExternal.meldekort
 
         val resultNesteMeldekort = resultNyeMeldekort.nesteMeldekort
 
-        resultNesteMeldekort?.til `should be equal to` meldekortExternal?.til
-        resultNesteMeldekort?.fra `should be equal to` meldekortExternal?.fra
-        resultNesteMeldekort?.uke `should be equal to` meldekortExternal?.uke
-        resultNesteMeldekort?.kanSendesFra `should be equal to` meldekortExternal?.kanSendesFra
-        resultNesteMeldekort?.risikerTrekk `should be equal to` false
-        resultNesteMeldekort?.sisteDatoForTrekk `should be equal to` meldekortExternal?.til?.plusDays(8)
+        resultNesteMeldekort?.til shouldBe meldekortExternal?.til
+        resultNesteMeldekort?.fra shouldBe meldekortExternal?.fra
+        resultNesteMeldekort?.uke shouldBe meldekortExternal?.uke
+        resultNesteMeldekort?.kanSendesFra shouldBe meldekortExternal?.kanSendesFra
+        resultNesteMeldekort?.risikerTrekk shouldBe false
+        resultNesteMeldekort?.sisteDatoForTrekk shouldBe meldekortExternal?.til?.plusDays(8)
     }
 
     @Test
@@ -53,7 +53,7 @@ internal class MeldekortTransformerTest {
         val normalResult = MeldekortTransformer.toInternal(normalMeldekort)
         val atRiskResult = MeldekortTransformer.toInternal(meldekortAtRisk)
 
-        normalResult.risikerTrekk `should be equal to` false
-        atRiskResult.risikerTrekk `should be equal to` true
+        normalResult.risikerTrekk shouldBe false
+        atRiskResult.risikerTrekk shouldBe true
     }
 }

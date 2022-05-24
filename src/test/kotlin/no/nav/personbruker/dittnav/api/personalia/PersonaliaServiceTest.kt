@@ -1,5 +1,8 @@
 package no.nav.personbruker.dittnav.api.personalia
 
+import io.kotest.matchers.nulls.shouldNotBeNull
+import io.kotest.matchers.shouldBe
+import io.kotest.matchers.types.shouldBeSameInstanceAs
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.confirmVerified
@@ -8,7 +11,6 @@ import kotlinx.coroutines.runBlocking
 import no.nav.personbruker.dittnav.api.common.AuthenticatedUserObjectMother
 import no.nav.personbruker.dittnav.api.common.ConsumePersonaliaException
 import no.nav.personbruker.dittnav.api.tokenx.AccessToken
-import org.amshove.kluent.*
 import org.junit.jupiter.api.Test
 
 internal class PersonaliaServiceTest {
@@ -38,7 +40,7 @@ internal class PersonaliaServiceTest {
         confirmVerified(personaliaConsumer)
 
         result.shouldNotBeNull()
-        result.navn `should be` "TestName"
+        result.navn shouldBe "TestName"
     }
 
     @Test
@@ -54,10 +56,10 @@ internal class PersonaliaServiceTest {
 
         }
 
-        result.isFailure `should be equal to` true
+        result.isFailure shouldBe true
         val exception = result.exceptionOrNull()
-        exception `should be instance of` ConsumePersonaliaException::class
-        exception?.cause `should be instance of` IllegalArgumentException::class
+        exception!!::class shouldBe ConsumePersonaliaException::class
+        exception.cause!!::class shouldBe IllegalArgumentException::class
     }
 
     @Test
@@ -77,7 +79,7 @@ internal class PersonaliaServiceTest {
         confirmVerified(personaliaConsumer)
 
         result.shouldNotBeNull()
-        result.ident `should be` "1234"
+        result.ident shouldBe "1234"
     }
 
     @Test
@@ -93,10 +95,10 @@ internal class PersonaliaServiceTest {
 
         }
 
-        result.isFailure `should be equal to` true
+        result.isFailure shouldBe true
         val exception = result.exceptionOrNull()
-        exception `should be instance of` ConsumePersonaliaException::class
-        exception?.cause `should be instance of` IllegalArgumentException::class
+        exception!!::class shouldBe ConsumePersonaliaException::class
+        exception.cause!!::class shouldBeSameInstanceAs IllegalArgumentException::class
     }
 
 }

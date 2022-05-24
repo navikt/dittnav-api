@@ -1,11 +1,10 @@
 package no.nav.personbruker.dittnav.api.common.serializer
 
+import io.kotest.matchers.shouldBe
 import kotlinx.serialization.Serializable
-
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.encodeToString
 import no.nav.personbruker.dittnav.api.config.json
-import org.amshove.kluent.`should be equal to`
 import org.junit.jupiter.api.Test
 import java.time.LocalDateTime
 
@@ -19,7 +18,7 @@ internal class LocalDateTimeSerializerTest {
 
         val deserialized = json().decodeFromString<SerializableClassWithLDT>(serialized)
 
-        deserialized `should be equal to` original
+        deserialized shouldBe original
     }
 
 }

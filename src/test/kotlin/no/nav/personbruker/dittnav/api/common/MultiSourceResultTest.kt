@@ -1,10 +1,14 @@
 package no.nav.personbruker.dittnav.api.common
 
-import io.ktor.http.*
+import io.kotest.matchers.collections.shouldBeEmpty
+import io.kotest.matchers.collections.shouldContain
+import io.kotest.matchers.collections.shouldContainAll
+import io.kotest.matchers.nulls.shouldNotBeNull
+import io.kotest.matchers.shouldBe
+import io.ktor.http.HttpStatusCode
 import no.nav.personbruker.dittnav.api.beskjed.BeskjedDTO
 import no.nav.personbruker.dittnav.api.beskjed.KildeType
 import no.nav.personbruker.dittnav.api.oppgave.OppgaveDTO
-import org.amshove.kluent.*
 import org.junit.jupiter.api.Test
 
 internal class MultiSourceResultTest {
@@ -20,17 +24,17 @@ internal class MultiSourceResultTest {
         val sum = source1 + source2
 
         sum.shouldNotBeNull()
-        sum.results().size `should be equal to` (source1.results().size + source2.results().size)
-        sum.results() `should contain all` source1.results()
-        sum.results() `should contain all` source2.results()
+        sum.results().size shouldBe (source1.results().size + source2.results().size)
+        sum.results() shouldContainAll source1.results()
+        sum.results() shouldContainAll source2.results()
 
-        sum.failedSources().size `should be equal to` (source1.failedSources().size + source2.failedSources().size)
+        sum.failedSources().size shouldBe (source1.failedSources().size + source2.failedSources().size)
 
-        sum.successFullSources().size `should be equal to` 2
-        sum.successFullSources() `should contain all` listOf(expectedSource1, expectedSource2)
+        sum.successFullSources().size shouldBe 2
+        sum.successFullSources() shouldBe listOf(expectedSource1, expectedSource2)
 
-        sum.hasErrors() `should be equal to` false
-        sum.determineHttpCode() `should be equal to` HttpStatusCode.OK
+        sum.hasErrors() shouldBe false
+        sum.determineHttpCode() shouldBe HttpStatusCode.OK
     }
 
     @Test
@@ -44,17 +48,17 @@ internal class MultiSourceResultTest {
         val sum = source1 + source2
 
         sum.shouldNotBeNull()
-        sum.results().size `should be equal to` (source1.results().size + source2.results().size)
-        sum.results() `should contain all` source1.results()
-        sum.results() `should contain all` source2.results()
+        sum.results().size shouldBe (source1.results().size + source2.results().size)
+        sum.results() shouldContainAll  source1.results()
+        sum.results() shouldContainAll source2.results()
 
-        sum.failedSources().size `should be equal to` (source1.failedSources().size + source2.failedSources().size)
+        sum.failedSources().size shouldBe (source1.failedSources().size + source2.failedSources().size)
 
-        sum.successFullSources().size `should be equal to` 1
-        sum.successFullSources() `should contain` expectedSource1
+        sum.successFullSources().size shouldBe 1
+        sum.successFullSources() shouldContain expectedSource1
 
-        sum.hasErrors() `should be equal to` true
-        sum.determineHttpCode() `should be equal to` HttpStatusCode.PartialContent
+        sum.hasErrors() shouldBe true
+        sum.determineHttpCode() shouldBe HttpStatusCode.PartialContent
     }
 
     @Test
@@ -68,16 +72,16 @@ internal class MultiSourceResultTest {
         val tilsammen = source1 + source2
 
         tilsammen.shouldNotBeNull()
-        tilsammen.results().size `should be equal to` (source1.results().size + source2.results().size)
-        tilsammen.results().`should be empty`()
+        tilsammen.results().size shouldBe (source1.results().size + source2.results().size)
+        tilsammen.results().shouldBeEmpty()
 
-        tilsammen.failedSources().size `should be equal to` (source1.failedSources().size + source2.failedSources().size)
+        tilsammen.failedSources().size shouldBe (source1.failedSources().size + source2.failedSources().size)
 
-        tilsammen.successFullSources().size `should be equal to` 0
+        tilsammen.successFullSources().size shouldBe 0
 
-        tilsammen.hasErrors() `should be equal to` true
-        tilsammen.failedSources() `should contain all` listOf(expectedSource1, expectedSource2)
-        tilsammen.determineHttpCode() `should be equal to` HttpStatusCode.ServiceUnavailable
+        tilsammen.hasErrors() shouldBe true
+        tilsammen.failedSources() shouldBe listOf(expectedSource1, expectedSource2)
+        tilsammen.determineHttpCode() shouldBe HttpStatusCode.ServiceUnavailable
     }
 
     @Test
@@ -90,16 +94,16 @@ internal class MultiSourceResultTest {
         val sum = validResult + emptyBeskjedResult
 
         sum.shouldNotBeNull()
-        sum.results().size `should be equal to` validResult.results().size
-        sum.results() `should contain all` validResult.results()
+        sum.results().size shouldBe validResult.results().size
+        sum.results() shouldBe validResult.results()
 
-        sum.failedSources().size `should be equal to` validResult.failedSources().size
+        sum.failedSources().size shouldBe validResult.failedSources().size
 
-        sum.successFullSources().size `should be equal to` validResult.successFullSources().size
-        sum.successFullSources() `should contain` expectedSource1
+        sum.successFullSources().size shouldBe validResult.successFullSources().size
+        sum.successFullSources() shouldContain expectedSource1
 
-        sum.hasErrors() `should be equal to` false
-        sum.determineHttpCode() `should be equal to` HttpStatusCode.OK
+        sum.hasErrors() shouldBe false
+        sum.determineHttpCode() shouldBe HttpStatusCode.OK
     }
 
     @Test
@@ -112,16 +116,16 @@ internal class MultiSourceResultTest {
         val sum = validResult + emptyBeskjedResult
 
         sum.shouldNotBeNull()
-        sum.results().size `should be equal to` validResult.results().size
-        sum.results() `should contain all` validResult.results()
+        sum.results().size shouldBe validResult.results().size
+        sum.results() shouldBe validResult.results()
 
-        sum.failedSources().size `should be equal to` validResult.failedSources().size
+        sum.failedSources().size shouldBe validResult.failedSources().size
 
-        sum.successFullSources().size `should be equal to` validResult.successFullSources().size
-        sum.successFullSources() `should contain` expectedSource1
+        sum.successFullSources().size shouldBe validResult.successFullSources().size
+        sum.successFullSources() shouldContain expectedSource1
 
-        sum.hasErrors() `should be equal to` false
-        sum.determineHttpCode() `should be equal to` HttpStatusCode.OK
+        sum.hasErrors() shouldBe false
+        sum.determineHttpCode() shouldBe HttpStatusCode.OK
     }
 
 }

@@ -1,18 +1,21 @@
 package no.nav.personbruker.dittnav.api.oppgave
 
-import io.ktor.client.*
-import io.ktor.client.engine.mock.*
-import io.ktor.client.features.*
-import io.ktor.client.features.json.*
-import io.ktor.http.*
+import io.kotest.matchers.shouldBe
+import io.ktor.client.HttpClient
+import io.ktor.client.engine.mock.MockEngine
+import io.ktor.client.engine.mock.respond
+import io.ktor.client.engine.mock.respondError
+import io.ktor.client.features.HttpTimeout
+import io.ktor.client.features.json.JsonFeature
+import io.ktor.http.ContentType
+import io.ktor.http.HttpHeaders
+import io.ktor.http.HttpStatusCode
+import io.ktor.http.headersOf
 import kotlinx.coroutines.runBlocking
 import kotlinx.serialization.encodeToString
 import no.nav.personbruker.dittnav.api.config.json
 import no.nav.personbruker.dittnav.api.tokenx.AccessToken
 import no.nav.personbruker.dittnav.api.util.createBasicMockedHttpClient
-import org.amshove.kluent.`should be equal to`
-import org.amshove.kluent.`should be false`
-import org.amshove.kluent.`should be true`
 import org.junit.jupiter.api.Test
 import java.net.URL
 
@@ -43,7 +46,7 @@ internal class OppgaveConsumerTest {
         val oppgaveConsumer = OppgaveConsumer(client, URL("http://event-handler"))
 
         runBlocking {
-            oppgaveConsumer.getExternalActiveEvents(dummyToken) `should be equal to` emptyList()
+            oppgaveConsumer.getExternalActiveEvents(dummyToken) shouldBe emptyList()
         }
     }
 
@@ -64,10 +67,10 @@ internal class OppgaveConsumerTest {
         runBlocking {
             val externalActiveEvents = oppgaveConsumer.getExternalActiveEvents(dummyToken)
             val event = externalActiveEvents.first()
-            externalActiveEvents.size `should be equal to` 2
-            event.tekst `should be equal to` oppgaveObject1.tekst
-            event.fodselsnummer `should be equal to` oppgaveObject1.fodselsnummer
-            event.aktiv.`should be true`()
+            externalActiveEvents.size shouldBe 2
+            event.tekst shouldBe oppgaveObject1.tekst
+            event.fodselsnummer shouldBe oppgaveObject1.fodselsnummer
+            event.aktiv shouldBe true
         }
     }
 
@@ -87,10 +90,10 @@ internal class OppgaveConsumerTest {
         runBlocking {
             val externalInactiveEvents = oppgaveConsumer.getExternalInactiveEvents(dummyToken)
             val event = externalInactiveEvents.first()
-            externalInactiveEvents.size `should be equal to` 1
-            event.tekst `should be equal to` oppgaveObject.tekst
-            event.fodselsnummer `should be equal to` oppgaveObject.fodselsnummer
-            event.aktiv.`should be false`()
+            externalInactiveEvents.size shouldBe 1
+            event.tekst shouldBe oppgaveObject.tekst
+            event.fodselsnummer shouldBe oppgaveObject.fodselsnummer
+            event.aktiv shouldBe false
         }
     }
 }

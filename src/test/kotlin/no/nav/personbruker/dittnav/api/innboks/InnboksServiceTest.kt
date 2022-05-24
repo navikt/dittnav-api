@@ -1,15 +1,14 @@
 package no.nav.personbruker.dittnav.api.innboks
 
+import io.kotest.assertions.throwables.shouldThrow
+import io.kotest.matchers.shouldBe
 import io.mockk.coEvery
 import io.mockk.mockk
 import kotlinx.coroutines.runBlocking
-import no.nav.personbruker.dittnav.api.common.ConsumeEventException
 import no.nav.personbruker.dittnav.api.common.AuthenticatedUserObjectMother
+import no.nav.personbruker.dittnav.api.common.ConsumeEventException
 import no.nav.personbruker.dittnav.api.tokenx.AccessToken
 import no.nav.personbruker.dittnav.api.tokenx.EventhandlerTokendings
-import org.amshove.kluent.`should be equal to`
-import org.amshove.kluent.`should throw`
-import org.amshove.kluent.invoking
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 
@@ -34,7 +33,7 @@ internal class InnboksServiceTest {
         coEvery { innboksConsumer.getExternalActiveEvents(dummyToken) } returns listOf(innboks1, innboks2)
         runBlocking {
             val innboksList = innboksService.getActiveInnboksEvents(user)
-            innboksList.size `should be equal to` 2
+            innboksList.size shouldBe 2
         }
     }
 
@@ -45,7 +44,7 @@ internal class InnboksServiceTest {
         coEvery { innboksConsumer.getExternalInactiveEvents(dummyToken) } returns listOf(innboks1, innboks2)
         runBlocking {
             val innboksList = innboksService.getInactiveInnboksEvents(user)
-            innboksList.size `should be equal to` 2
+            innboksList.size shouldBe 2
         }
     }
 
@@ -60,9 +59,9 @@ internal class InnboksServiceTest {
         runBlocking {
             val innboksList = innboksService.getActiveInnboksEvents(user)
             val innboksDTO = innboksList.first()
-            innboksDTO.tekst `should be equal to` "***"
-            innboksDTO.link `should be equal to` "***"
-            innboksDTO.sikkerhetsnivaa `should be equal to` 4
+            innboksDTO.tekst shouldBe "***"
+            innboksDTO.link shouldBe "***"
+            innboksDTO.sikkerhetsnivaa shouldBe 4
         }
     }
 
@@ -74,9 +73,9 @@ internal class InnboksServiceTest {
         runBlocking {
             val innboksList = innboksService.getActiveInnboksEvents(user)
             val innboksDTO = innboksList.first()
-            innboksDTO.tekst `should be equal to` innboks.tekst
-            innboksDTO.link `should be equal to` innboks.link
-            innboksDTO.sikkerhetsnivaa `should be equal to` 3
+            innboksDTO.tekst shouldBe innboks.tekst
+            innboksDTO.link shouldBe innboks.link
+            innboksDTO.sikkerhetsnivaa shouldBe 3
         }
     }
 
@@ -87,21 +86,21 @@ internal class InnboksServiceTest {
         runBlocking {
             val innboksList = innboksService.getActiveInnboksEvents(user)
             val innboksDTO = innboksList.first()
-            innboksDTO.tekst `should be equal to` innboks.tekst
-            innboksDTO.link `should be equal to` innboks.link
-            innboksDTO.sikkerhetsnivaa `should be equal to` 4
+            innboksDTO.tekst shouldBe innboks.tekst
+            innboksDTO.link shouldBe innboks.link
+            innboksDTO.sikkerhetsnivaa shouldBe 4
         }
     }
 
     @Test
     fun `should throw exception if fetching active events fails`() {
         coEvery { innboksConsumer.getExternalActiveEvents(dummyToken) } throws Exception("error")
-        invoking { runBlocking { innboksService.getActiveInnboksEvents(user) } } `should throw` ConsumeEventException::class
+        shouldThrow<ConsumeEventException> { runBlocking { innboksService.getActiveInnboksEvents(user) } }
     }
 
     @Test
     fun `should throw exception if fetching inactive events fails`() {
         coEvery { innboksConsumer.getExternalInactiveEvents(dummyToken) } throws Exception("error")
-        invoking { runBlocking { innboksService.getInactiveInnboksEvents(user) } } `should throw` ConsumeEventException::class
+        shouldThrow<ConsumeEventException> { runBlocking { innboksService.getInactiveInnboksEvents(user) } }
     }
 }
