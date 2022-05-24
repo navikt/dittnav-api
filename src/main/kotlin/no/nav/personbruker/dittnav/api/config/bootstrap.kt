@@ -73,7 +73,7 @@ fun Application.mainModule(appContext: ApplicationContext = ApplicationContext()
             meldekortApi(appContext.meldekortService)
             oppfolgingApi(appContext.oppfolgingService)
 
-            oppgave(appContext.oppgaveMergerService)
+            oppgave(appContext.oppgaveService)
             beskjed(appContext.beskjedMergerService)
             innboks(appContext.innboksService)
             saker(appContext.sakerService)

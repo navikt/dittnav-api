@@ -5,7 +5,6 @@ import no.nav.personbruker.dittnav.api.beskjed.BeskjedDTO
 import no.nav.personbruker.dittnav.api.beskjed.KildeType
 import no.nav.personbruker.dittnav.api.common.MultiSourceResult
 import no.nav.personbruker.dittnav.api.common.ProduceEventException
-import no.nav.personbruker.dittnav.api.oppgave.OppgaveDTO
 import no.nav.personbruker.dittnav.common.security.AuthenticatedUser
 import org.slf4j.LoggerFactory
 
@@ -22,18 +21,6 @@ class DigiSosService(private val digiSosClient: DigiSosClient) {
     suspend fun getPaabegynteInactive(user: AuthenticatedUser): MultiSourceResult<BeskjedDTO, KildeType> {
         return wrapAsMultiSourceResult(user) {
             digiSosClient.getPaabegynteInactive(user)
-        }
-    }
-
-    suspend fun getEttersendelseActive(user: AuthenticatedUser): MultiSourceResult<OppgaveDTO, KildeType> {
-        return wrapAsMultiSourceResult(user) {
-            digiSosClient.getEttersendelserActive(user)
-        }
-    }
-
-    suspend fun getEttersendelseInactive(user: AuthenticatedUser): MultiSourceResult<OppgaveDTO, KildeType> {
-        return wrapAsMultiSourceResult(user) {
-            digiSosClient.getEttersendelserInactive(user)
         }
     }
 

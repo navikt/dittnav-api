@@ -3,11 +3,13 @@ package no.nav.personbruker.dittnav.api.oppgave
 import io.mockk.coEvery
 import io.mockk.mockk
 import kotlinx.coroutines.runBlocking
-import no.nav.personbruker.dittnav.api.beskjed.KildeType
 import no.nav.personbruker.dittnav.api.common.AuthenticatedUserObjectMother
+import no.nav.personbruker.dittnav.api.common.ConsumeEventException
 import no.nav.personbruker.dittnav.api.tokenx.AccessToken
 import no.nav.personbruker.dittnav.api.tokenx.EventhandlerTokendings
 import org.amshove.kluent.`should be equal to`
+import org.amshove.kluent.`should throw`
+import org.amshove.kluent.invoking
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 
@@ -31,8 +33,8 @@ internal class OppgaveServiceTest {
         val oppgave2 = createOppgave("2", "2", true)
         coEvery { oppgaveConsumer.getExternalActiveEvents(dummyToken) } returns listOf(oppgave1, oppgave2)
         runBlocking {
-            val oppgaveList = oppgaveService.getActiveOppgaveEvents(user)
-            oppgaveList.results().size `should be equal to` 2
+            val oppgaveList = oppgaveService.getActiveOppgaver(user)
+            oppgaveList.size `should be equal to` 2
         }
     }
 
@@ -42,8 +44,8 @@ internal class OppgaveServiceTest {
         val oppgave2 = createOppgave("2", "2", false)
         coEvery { oppgaveConsumer.getExternalInactiveEvents(dummyToken) } returns listOf(oppgave1, oppgave2)
         runBlocking {
-            val oppgaveList = oppgaveService.getInactiveOppgaveEvents(user)
-            oppgaveList.results().size `should be equal to` 2
+            val oppgaveList = oppgaveService.getInactiveOppgaver(user)
+            oppgaveList.size `should be equal to` 2
         }
     }
 
@@ -56,8 +58,8 @@ internal class OppgaveServiceTest {
         coEvery { eventhandlerTokendings.exchangeToken(user) } returns dummyToken
         coEvery { oppgaveConsumer.getExternalActiveEvents(dummyToken) } returns listOf(oppgave)
         runBlocking {
-            val oppgaveList = oppgaveService.getActiveOppgaveEvents(user)
-            val oppgaveDTO = oppgaveList.results().first()
+            val oppgaveList = oppgaveService.getActiveOppgaver(user)
+            val oppgaveDTO = oppgaveList.first()
             oppgaveDTO.tekst `should be equal to` "***"
             oppgaveDTO.link `should be equal to` "***"
             oppgaveDTO.sikkerhetsnivaa `should be equal to` 4
@@ -70,8 +72,8 @@ internal class OppgaveServiceTest {
         oppgave = oppgave.copy(sikkerhetsnivaa = 3)
         coEvery { oppgaveConsumer.getExternalActiveEvents(dummyToken) } returns listOf(oppgave)
         runBlocking {
-            val oppgaveList = oppgaveService.getActiveOppgaveEvents(user)
-            val oppgaveDTO = oppgaveList.results().first()
+            val oppgaveList = oppgaveService.getActiveOppgaver(user)
+            val oppgaveDTO = oppgaveList.first()
             oppgaveDTO.tekst `should be equal to` oppgave.tekst
             oppgaveDTO.link `should be equal to` oppgave.link
             oppgaveDTO.sikkerhetsnivaa `should be equal to` 3
@@ -83,8 +85,8 @@ internal class OppgaveServiceTest {
         val oppgave = createOppgave("1", "1", true)
         coEvery { oppgaveConsumer.getExternalActiveEvents(dummyToken) } returns listOf(oppgave)
         runBlocking {
-            val oppgaveList = oppgaveService.getActiveOppgaveEvents(user)
-            val oppgaveDTO = oppgaveList.results().first()
+            val oppgaveList = oppgaveService.getActiveOppgaver(user)
+            val oppgaveDTO = oppgaveList.first()
             oppgaveDTO.tekst `should be equal to` oppgave.tekst
             oppgaveDTO.link `should be equal to` oppgave.link
             oppgaveDTO.sikkerhetsnivaa `should be equal to` 4
@@ -92,27 +94,15 @@ internal class OppgaveServiceTest {
     }
 
     @Test
-    fun `should return error-result if fetching active events fails`() {
+    fun `should throw exception if fetching active events fails`() {
         coEvery { oppgaveConsumer.getExternalActiveEvents(dummyToken) } throws Exception("error")
-
-        val result = runBlocking {
-            oppgaveService.getActiveOppgaveEvents(user)
-        }
-
-        result.hasErrors() `should be equal to` true
-        result.failedSources()[0] `should be equal to` KildeType.EVENTHANDLER
+        invoking { runBlocking { oppgaveService.getActiveOppgaver(user) } } `should throw` ConsumeEventException::class
     }
 
     @Test
-    fun `should return error-result if fetching inactive events fails`() {
+    fun `should throw exception if fetching inactive events fails`() {
         coEvery { oppgaveConsumer.getExternalInactiveEvents(dummyToken) } throws Exception("error")
-
-        val result = runBlocking {
-            oppgaveService.getInactiveOppgaveEvents(user)
-        }
-
-        result.hasErrors() `should be equal to` true
-        result.failedSources()[0] `should be equal to` KildeType.EVENTHANDLER
+        invoking { runBlocking { oppgaveService.getInactiveOppgaver(user) } } `should throw` ConsumeEventException::class
     }
 
 }

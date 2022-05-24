@@ -20,7 +20,6 @@ import no.nav.personbruker.dittnav.api.meldekort.MeldekortService
 import no.nav.personbruker.dittnav.api.oppfolging.OppfolgingConsumer
 import no.nav.personbruker.dittnav.api.oppfolging.OppfolgingService
 import no.nav.personbruker.dittnav.api.oppgave.OppgaveConsumer
-import no.nav.personbruker.dittnav.api.oppgave.OppgaveMergerService
 import no.nav.personbruker.dittnav.api.oppgave.OppgaveService
 import no.nav.personbruker.dittnav.api.tokenx.EventhandlerTokendings
 import no.nav.personbruker.dittnav.api.personalia.PersonaliaConsumer
@@ -60,11 +59,10 @@ class ApplicationContext {
     val innboksService = InnboksService(innboksConsumer, eventhandlerTokendings)
     val sakerService = SakerService(mineSakerConsumer, environment.mineSakerURL, mineSakerTokendings)
 
-    val digiSosConsumer = DigiSosClient(httpClient, environment.digiSosSoknadBaseURL, environment.digiSosInnsynBaseURL)
+    val digiSosConsumer = DigiSosClient(httpClient, environment.digiSosSoknadBaseURL)
     val digiSosService = DigiSosService(digiSosConsumer)
 
     val beskjedMergerService = BeskjedMergerService(beskjedService, digiSosService, unleashService)
-    val oppgaveMergerService = OppgaveMergerService(oppgaveService, digiSosService, unleashService)
 
     val personaliaConsumer = PersonaliaConsumer(httpClient, environment.personaliaApiUrl)
     val personaliaService = PersonaliaService(personaliaConsumer, personaliaTokendings)
