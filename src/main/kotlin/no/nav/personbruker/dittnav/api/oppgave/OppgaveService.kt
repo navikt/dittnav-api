@@ -1,29 +1,22 @@
 package no.nav.personbruker.dittnav.api.oppgave
 
-import no.nav.personbruker.dittnav.api.beskjed.KildeType
-import no.nav.personbruker.dittnav.api.common.MultiSourceResult
+import no.nav.personbruker.dittnav.api.common.ConsumeEventException
 import no.nav.personbruker.dittnav.api.tokenx.AccessToken
 import no.nav.personbruker.dittnav.api.tokenx.EventhandlerTokendings
 import no.nav.personbruker.dittnav.common.security.AuthenticatedUser
-import org.slf4j.LoggerFactory
 
 class OppgaveService(
     private val oppgaveConsumer: OppgaveConsumer,
     private val eventhandlerTokendings: EventhandlerTokendings
 ) {
-
-    private val log = LoggerFactory.getLogger(OppgaveService::class.java)
-
-    private val kilde = KildeType.EVENTHANDLER
-
-    suspend fun getActiveOppgaveEvents(user: AuthenticatedUser): MultiSourceResult<OppgaveDTO, KildeType> {
+    suspend fun getActiveOppgaver(user: AuthenticatedUser): List<OppgaveDTO> {
         val exchangedToken = eventhandlerTokendings.exchangeToken(user)
         return getOppgaveEvents(user, exchangedToken) {
             oppgaveConsumer.getExternalActiveEvents(it)
         }
     }
 
-    suspend fun getInactiveOppgaveEvents(user: AuthenticatedUser): MultiSourceResult<OppgaveDTO, KildeType> {
+    suspend fun getInactiveOppgaver(user: AuthenticatedUser): List<OppgaveDTO> {
         val exchangedToken = eventhandlerTokendings.exchangeToken(user)
         return getOppgaveEvents(user, exchangedToken) {
             oppgaveConsumer.getExternalInactiveEvents(it)
@@ -33,16 +26,13 @@ class OppgaveService(
     private suspend fun getOppgaveEvents(
         user: AuthenticatedUser,
         exchangedToken: AccessToken,
-        getEvents: suspend (AccessToken) -> List<Oppgave>
-    ): MultiSourceResult<OppgaveDTO, KildeType> {
+        oppgaveFetcher: suspend (AccessToken) -> List<Oppgave>
+    ): List<OppgaveDTO> {
         return try {
-            val externalEvents = getEvents(exchangedToken)
-            val oppgaver = externalEvents.map { oppgave -> transformToDTO(oppgave, user.loginLevel) }
-            MultiSourceResult.createSuccessfulResult(oppgaver, kilde)
-
+            oppgaveFetcher(exchangedToken)
+                .map { oppgave -> transformToDTO(oppgave, user.loginLevel) }
         } catch (e: Exception) {
-            log.warn("Klarte ikke å hente data fra $kilde: $e", e)
-            MultiSourceResult.createErrorResult(kilde)
+            throw ConsumeEventException("Klarte ikke hente oppgaver", e)
         }
     }
 
