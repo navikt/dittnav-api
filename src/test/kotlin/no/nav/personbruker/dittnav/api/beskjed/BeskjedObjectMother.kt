@@ -6,6 +6,7 @@ import java.time.ZonedDateTime
 fun createBeskjed(eventId: String, fodselsnummer: String, aktiv: Boolean): Beskjed {
     return Beskjed(
             eventTidspunkt = ZonedDateTime.now(ZoneId.of("Europe/Oslo")),
+            forstBehandlet = ZonedDateTime.now(ZoneId.of("Europe/Oslo")),
             fodselsnummer = fodselsnummer,
             eventId = eventId,
             grupperingsId = "Dok123",

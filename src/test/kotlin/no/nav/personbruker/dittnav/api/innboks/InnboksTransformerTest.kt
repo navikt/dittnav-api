@@ -14,6 +14,7 @@ class InnboksTransformerTest {
         val innboksDTO = innboksDTOList.first()
 
         innboksDTO.eventTidspunkt `should be` innboks1.eventTidspunkt
+        innboksDTO.forstBehandlet `should be` innboks1.forstBehandlet
         innboksDTO.eventId `should be equal to` innboks1.eventId
         innboksDTO.tekst `should be equal to` innboks1.tekst
         innboksDTO.link `should be equal to` innboks1.link
@@ -27,6 +28,7 @@ class InnboksTransformerTest {
         val innboks = createInnboks("1", "1", true)
         val innboksDTO = toMaskedInnboksDTO(innboks)
         innboksDTO.eventTidspunkt `should be` innboks.eventTidspunkt
+        innboksDTO.forstBehandlet `should be` innboks.forstBehandlet
         innboksDTO.eventId `should be equal to` innboks.eventId
         innboksDTO.tekst `should be equal to` "***"
         innboksDTO.link `should be equal to` "***"

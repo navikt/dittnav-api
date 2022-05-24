@@ -14,6 +14,7 @@ class BeskjedTransformerTest {
         val beskjedDTO = beskjedDTOList.first()
 
         beskjedDTO.eventTidspunkt `should be` beskjed1.eventTidspunkt
+        beskjedDTO.forstBehandlet `should be` beskjed1.forstBehandlet
         beskjedDTO.eventId `should be equal to` beskjed1.eventId
         beskjedDTO.tekst `should be equal to` beskjed1.tekst
         beskjedDTO.link `should be equal to` beskjed1.link
@@ -28,6 +29,7 @@ class BeskjedTransformerTest {
         val beskjed = createBeskjed(eventId = "1", fodselsnummer = "1", aktiv = true)
         val beskjedDTO = toMaskedBeskjedDTO(beskjed)
         beskjedDTO.eventTidspunkt `should be` beskjed.eventTidspunkt
+        beskjedDTO.forstBehandlet `should be` beskjed.forstBehandlet
         beskjedDTO.eventId `should be equal to` beskjed.eventId
         beskjedDTO.tekst `should be equal to` "***"
         beskjedDTO.link `should be equal to` "***"

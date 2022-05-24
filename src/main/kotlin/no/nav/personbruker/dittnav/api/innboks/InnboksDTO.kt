@@ -9,6 +9,7 @@ import java.time.ZonedDateTime
 @Serializable
 data class InnboksDTO(
         val eventTidspunkt: ZonedDateTime,
+        val forstBehandlet: ZonedDateTime,
         val eventId: String,
         val tekst: String,
         val link: String,

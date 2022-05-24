@@ -4,6 +4,7 @@ fun toBeskjedDTO(beskjed: Beskjed): BeskjedDTO =
         beskjed.let {
             BeskjedDTO(
                     eventTidspunkt = it.eventTidspunkt,
+                    forstBehandlet = it.forstBehandlet,
                     eventId = it.eventId,
                     tekst = it.tekst,
                     link = it.link,

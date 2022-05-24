@@ -13,6 +13,7 @@ fun List<Paabegynte>.toInternals(): List<BeskjedDTO> {
 
 fun Paabegynte.toInternal() = BeskjedDTO(
     eventTidspunkt = eventTidspunkt.toZonedDateTime(),
+    forstBehandlet = eventTidspunkt.toZonedDateTime(),
     eventId = eventId,
     tekst = cropTextIfOverMaxLengthOfBeskjed(tekst),
     link = link,

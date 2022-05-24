@@ -4,6 +4,7 @@ fun toInnboksDTO(innboks: Innboks): InnboksDTO =
         innboks.let {
             InnboksDTO(
                     eventTidspunkt = it.eventTidspunkt,
+                    forstBehandlet = it.forstBehandlet,
                     eventId = it.eventId,
                     tekst = it.tekst,
                     link = it.link,
