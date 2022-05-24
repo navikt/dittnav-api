@@ -1,11 +1,10 @@
 package no.nav.personbruker.dittnav.api.common
 
+import io.kotest.assertions.throwables.shouldThrow
+import io.kotest.matchers.shouldBe
 import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.runBlocking
-import org.amshove.kluent.`should be equal to`
-import org.amshove.kluent.coInvoking
-import org.amshove.kluent.shouldThrow
 import org.apache.http.ConnectionClosedException
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestInstance
@@ -27,7 +26,7 @@ internal class RetryOnConnectionLostKtTest {
             retryOnConnectionClosed(retries = 2,outgoingCall = resourceCall)
         }
 
-        result `should be equal to` resourceValue
+        result shouldBe resourceValue
     }
 
     @Test
@@ -41,9 +40,9 @@ internal class RetryOnConnectionLostKtTest {
         } throws ConnectionClosedException("") andThenThrows ConnectionClosedException("") andThen resourceValue
 
         runBlocking {
-            coInvoking {
+            shouldThrow<ConnectionFailedException> {
                 retryOnConnectionClosed(retries = 2,outgoingCall = resourceCall)
-            } shouldThrow ConnectionFailedException::class
+            }
         }
     }
 }

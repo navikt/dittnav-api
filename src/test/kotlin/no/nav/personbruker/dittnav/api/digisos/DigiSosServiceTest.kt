@@ -1,5 +1,6 @@
 package no.nav.personbruker.dittnav.api.digisos
 
+import io.kotest.matchers.collections.shouldContain
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.confirmVerified
@@ -8,7 +9,6 @@ import kotlinx.coroutines.runBlocking
 import no.nav.personbruker.dittnav.api.beskjed.BeskjedDtoObjectMother
 import no.nav.personbruker.dittnav.api.beskjed.KildeType
 import no.nav.personbruker.dittnav.api.common.AuthenticatedUserObjectMother
-import org.amshove.kluent.`should contain`
 import org.junit.jupiter.api.Test
 
 internal class DigiSosServiceTest {
@@ -29,7 +29,7 @@ internal class DigiSosServiceTest {
 
         confirmVerified(digiSosConsumer)
 
-        result.successFullSources() `should contain` KildeType.DIGISOS
+        result.successFullSources() shouldContain KildeType.DIGISOS
     }
 
     @Test
@@ -44,7 +44,7 @@ internal class DigiSosServiceTest {
 
         confirmVerified(digiSosConsumer)
 
-        result.successFullSources() `should contain` KildeType.DIGISOS
+        result.successFullSources() shouldContain KildeType.DIGISOS
     }
 
     @Test
@@ -55,7 +55,7 @@ internal class DigiSosServiceTest {
             digiSosService.getPaabegynteActive(innloggetBruker)
         }
 
-        result.failedSources() `should contain` KildeType.DIGISOS
+        result.failedSources() shouldContain KildeType.DIGISOS
     }
 
 }

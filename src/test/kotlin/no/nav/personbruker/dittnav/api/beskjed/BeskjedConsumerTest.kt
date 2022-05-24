@@ -1,17 +1,20 @@
 package no.nav.personbruker.dittnav.api.beskjed
 
-import io.ktor.client.*
-import io.ktor.client.engine.mock.*
-import io.ktor.client.features.json.*
-import io.ktor.http.*
+import io.kotest.matchers.shouldBe
+import io.ktor.client.HttpClient
+import io.ktor.client.engine.mock.MockEngine
+import io.ktor.client.engine.mock.respond
+import io.ktor.client.engine.mock.respondError
+import io.ktor.client.features.json.JsonFeature
+import io.ktor.http.ContentType
+import io.ktor.http.HttpHeaders
+import io.ktor.http.HttpStatusCode
+import io.ktor.http.headersOf
 import kotlinx.coroutines.runBlocking
 import kotlinx.serialization.encodeToString
 import no.nav.personbruker.dittnav.api.config.json
 import no.nav.personbruker.dittnav.api.tokenx.AccessToken
 import no.nav.personbruker.dittnav.api.util.createBasicMockedHttpClient
-import org.amshove.kluent.`should be equal to`
-import org.amshove.kluent.`should be false`
-import org.amshove.kluent.`should be true`
 import org.junit.jupiter.api.Test
 import java.net.URL
 
@@ -36,7 +39,7 @@ internal class BeskjedConsumerTest {
         val beskjedConsumer = BeskjedConsumer(client, URL("http://event-handler"))
 
         runBlocking {
-            beskjedConsumer.getExternalActiveEvents(dummyToken) `should be equal to` emptyList()
+            beskjedConsumer.getExternalActiveEvents(dummyToken) shouldBe emptyList()
         }
     }
 
@@ -55,10 +58,10 @@ internal class BeskjedConsumerTest {
         runBlocking {
             val externalActiveEvents = beskjedConsumer.getExternalActiveEvents(dummyToken)
             val event = externalActiveEvents.first()
-            externalActiveEvents.size `should be equal to` 1
-            event.tekst `should be equal to` beskjedObject.tekst
-            event.fodselsnummer `should be equal to` beskjedObject.fodselsnummer
-            event.aktiv.`should be true`()
+            externalActiveEvents.size shouldBe 1
+            event.tekst shouldBe beskjedObject.tekst
+            event.fodselsnummer shouldBe beskjedObject.fodselsnummer
+            event.aktiv shouldBe true
         }
     }
 
@@ -78,10 +81,10 @@ internal class BeskjedConsumerTest {
         runBlocking {
             val externalInactiveEvents = beskjedConsumer.getExternalInactiveEvents(dummyToken)
             val event = externalInactiveEvents.first()
-            externalInactiveEvents.size `should be equal to` 1
-            event.tekst `should be equal to` beskjedObject.tekst
-            event.fodselsnummer `should be equal to` beskjedObject.fodselsnummer
-            event.aktiv.`should be false`()
+            externalInactiveEvents.size shouldBe 1
+            event.tekst shouldBe beskjedObject.tekst
+            event.fodselsnummer shouldBe beskjedObject.fodselsnummer
+            event.aktiv shouldBe false
         }
     }
 

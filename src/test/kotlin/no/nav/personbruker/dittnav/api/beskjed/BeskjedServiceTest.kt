@@ -1,13 +1,13 @@
 package no.nav.personbruker.dittnav.api.beskjed
 
+import io.kotest.matchers.collections.shouldContain
+import io.kotest.matchers.shouldBe
 import io.mockk.coEvery
 import io.mockk.mockk
 import kotlinx.coroutines.runBlocking
 import no.nav.personbruker.dittnav.api.common.AuthenticatedUserObjectMother
 import no.nav.personbruker.dittnav.api.tokenx.AccessToken
 import no.nav.personbruker.dittnav.api.tokenx.EventhandlerTokendings
-import org.amshove.kluent.`should be equal to`
-import org.amshove.kluent.`should contain`
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 
@@ -32,7 +32,7 @@ internal class BeskjedServiceTest {
         coEvery { beskjedConsumer.getExternalActiveEvents(dummyToken) } returns listOf(beskjed1, beskjed2)
         runBlocking {
             val beskjedResult = beskjedService.getActiveBeskjedEvents(user)
-            beskjedResult.results().size `should be equal to` 2
+            beskjedResult.results().size shouldBe 2
         }
     }
 
@@ -43,7 +43,7 @@ internal class BeskjedServiceTest {
         coEvery { beskjedConsumer.getExternalInactiveEvents(dummyToken) } returns listOf(beskjed1, beskjed2)
         runBlocking {
             val beskjedResult = beskjedService.getInactiveBeskjedEvents(user)
-            beskjedResult.results().size `should be equal to` 2
+            beskjedResult.results().size shouldBe 2
         }
     }
 
@@ -58,9 +58,9 @@ internal class BeskjedServiceTest {
         runBlocking {
             val beskjedResult = beskjedService.getActiveBeskjedEvents(user)
             val beskjedDTO = beskjedResult.results().first()
-            beskjedDTO.tekst `should be equal to` "***"
-            beskjedDTO.link `should be equal to` "***"
-            beskjedDTO.sikkerhetsnivaa `should be equal to` 4
+            beskjedDTO.tekst shouldBe "***"
+            beskjedDTO.link shouldBe "***"
+            beskjedDTO.sikkerhetsnivaa shouldBe 4
         }
     }
 
@@ -72,9 +72,9 @@ internal class BeskjedServiceTest {
         runBlocking {
             val beskjedResult = beskjedService.getActiveBeskjedEvents(user)
             val beskjedDTO = beskjedResult.results().first()
-            beskjedDTO.tekst `should be equal to` beskjed.tekst
-            beskjedDTO.link `should be equal to` beskjed.link
-            beskjedDTO.sikkerhetsnivaa `should be equal to` 3
+            beskjedDTO.tekst shouldBe beskjed.tekst
+            beskjedDTO.link shouldBe beskjed.link
+            beskjedDTO.sikkerhetsnivaa shouldBe 3
         }
     }
 
@@ -85,9 +85,9 @@ internal class BeskjedServiceTest {
         runBlocking {
             val beskjedResult = beskjedService.getActiveBeskjedEvents(user)
             val beskjedDTO = beskjedResult.results().first()
-            beskjedDTO.tekst `should be equal to` beskjed.tekst
-            beskjedDTO.link `should be equal to` beskjed.link
-            beskjedDTO.sikkerhetsnivaa `should be equal to` 4
+            beskjedDTO.tekst shouldBe beskjed.tekst
+            beskjedDTO.link shouldBe beskjed.link
+            beskjedDTO.sikkerhetsnivaa shouldBe 4
         }
     }
 
@@ -96,8 +96,8 @@ internal class BeskjedServiceTest {
         coEvery { beskjedConsumer.getExternalActiveEvents(dummyToken) } throws Exception("error")
         runBlocking {
             val beskjedResult = beskjedService.getActiveBeskjedEvents(user)
-            beskjedResult.hasErrors() `should be equal to` true
-            beskjedResult.failedSources() `should contain` KildeType.EVENTHANDLER
+            beskjedResult.hasErrors() shouldBe true
+            beskjedResult.failedSources() shouldContain KildeType.EVENTHANDLER
         }
     }
 
@@ -106,8 +106,8 @@ internal class BeskjedServiceTest {
         coEvery { beskjedConsumer.getExternalInactiveEvents(dummyToken) } throws Exception("error")
         runBlocking {
             val beskjedResult = beskjedService.getInactiveBeskjedEvents(user)
-            beskjedResult.hasErrors() `should be equal to` true
-            beskjedResult.failedSources() `should contain` KildeType.EVENTHANDLER
+            beskjedResult.hasErrors() shouldBe true
+            beskjedResult.failedSources() shouldContain KildeType.EVENTHANDLER
         }
     }
 }

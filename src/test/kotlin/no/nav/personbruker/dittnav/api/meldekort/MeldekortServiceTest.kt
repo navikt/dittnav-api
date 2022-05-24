@@ -1,13 +1,13 @@
 package no.nav.personbruker.dittnav.api.meldekort
 
+import io.kotest.matchers.nulls.shouldNotBeNull
+import io.kotest.matchers.shouldBe
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk
 import kotlinx.coroutines.runBlocking
 import no.nav.personbruker.dittnav.api.common.AuthenticatedUserObjectMother
 import no.nav.personbruker.dittnav.api.tokenx.AccessToken
-import org.amshove.kluent.`should be equal to`
-import org.amshove.kluent.`should not be equal to`
 import org.junit.jupiter.api.Test
 
 internal class MeldekortServiceTest {
@@ -29,8 +29,8 @@ internal class MeldekortServiceTest {
             meldekortService.getMeldekortInfo(user)
         }
 
-        result.meldekortbruker `should be equal to` true
-        result.nyeMeldekort.nesteMeldekort `should not be equal to` null
+        result.meldekortbruker shouldBe true
+        result.nyeMeldekort.nesteMeldekort.shouldNotBeNull()
 
         coVerify(exactly = 1) { consumer.getMeldekortStatus(AccessToken(user.token)) }
     }

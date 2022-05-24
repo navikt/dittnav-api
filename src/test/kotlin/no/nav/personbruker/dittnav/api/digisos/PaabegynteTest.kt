@@ -1,8 +1,8 @@
 package no.nav.personbruker.dittnav.api.digisos
 
+import io.kotest.matchers.nulls.shouldNotBeNull
 import kotlinx.serialization.decodeFromString
 import no.nav.personbruker.dittnav.api.config.json
-import org.amshove.kluent.shouldNotBeNull
 import org.junit.jupiter.api.Test
 
 internal class PaabegynteTest {

@@ -2,9 +2,9 @@ package no.nav.personbruker.dittnav.api.logging
 
 import ch.qos.logback.classic.spi.ThrowableProxy
 import ch.qos.logback.classic.spi.ThrowableProxyUtil
+import io.kotest.matchers.string.shouldContain
+import io.kotest.matchers.string.shouldNotContain
 import no.nav.personbruker.dittnav.api.logging.MaskedThrowableProxy.Companion.mask
-import org.amshove.kluent.`should contain`
-import org.amshove.kluent.`should not contain`
 import org.junit.jupiter.api.Test
 import java.io.IOException
 
@@ -28,8 +28,8 @@ class MaskedThrowableProxyTest {
         val sensitiveThrowableProxy = ThrowableProxy(sensitiveException)
         val maskedThrowableProxy = mask(sensitiveThrowableProxy)
 
-        ThrowableProxyUtil.asString(sensitiveThrowableProxy) `should contain` FNR
-        ThrowableProxyUtil.asString(maskedThrowableProxy) `should not contain` FNR
+        ThrowableProxyUtil.asString(sensitiveThrowableProxy) shouldContain FNR
+        ThrowableProxyUtil.asString(maskedThrowableProxy) shouldNotContain FNR
     }
 
     companion object {

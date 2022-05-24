@@ -1,17 +1,21 @@
 package no.nav.personbruker.dittnav.api.digisos
 
-import io.ktor.client.*
-import io.ktor.client.engine.mock.*
-import io.ktor.client.features.json.*
-import io.ktor.http.*
+import io.kotest.matchers.nulls.shouldNotBeNull
+import io.kotest.matchers.shouldBe
+import io.ktor.client.HttpClient
+import io.ktor.client.engine.mock.MockEngine
+import io.ktor.client.engine.mock.respond
+import io.ktor.client.engine.mock.respondError
+import io.ktor.client.features.json.JsonFeature
+import io.ktor.http.ContentType
+import io.ktor.http.HttpHeaders
+import io.ktor.http.HttpStatusCode
+import io.ktor.http.headersOf
 import kotlinx.coroutines.runBlocking
 import kotlinx.serialization.encodeToString
 import no.nav.personbruker.dittnav.api.beskjed.BeskjedDTO
 import no.nav.personbruker.dittnav.api.common.AuthenticatedUserObjectMother
 import no.nav.personbruker.dittnav.api.config.json
-import org.amshove.kluent.`should be equal to`
-import org.amshove.kluent.`should be instance of`
-import org.amshove.kluent.`should not be null`
 import org.junit.jupiter.api.Test
 import java.net.URL
 
@@ -31,9 +35,9 @@ internal class DigiSosClientTest {
             digiSosClient.getPaabegynteActive(dummyUser)
         }
 
-        result.`should not be null`()
-        result[0] `should be instance of` BeskjedDTO::class
-        result[0].aktiv `should be equal to` expectedStatus
+        result.shouldNotBeNull()
+        result[0]::class shouldBe BeskjedDTO::class
+        result[0].aktiv shouldBe expectedStatus
     }
 
     @Test
@@ -46,9 +50,9 @@ internal class DigiSosClientTest {
             digiSosClient.getPaabegynteInactive(dummyUser)
         }
 
-        result.`should not be null`()
-        result[0] `should be instance of` BeskjedDTO::class
-        result[0].aktiv `should be equal to` expectedStatus
+        result.shouldNotBeNull()
+        result[0]::class shouldBe BeskjedDTO::class
+        result[0].aktiv shouldBe expectedStatus
     }
 
     private fun createDigiSosClientWithMockedResponses(activeEvents: Boolean): HttpClient {

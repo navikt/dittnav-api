@@ -1,7 +1,6 @@
 package no.nav.personbruker.dittnav.api.oppgave
 
-import org.amshove.kluent.`should be equal to`
-import org.amshove.kluent.`should be`
+import io.kotest.matchers.shouldBe
 import org.junit.jupiter.api.Test
 
 class OppgaveTransformerTest {
@@ -13,29 +12,29 @@ class OppgaveTransformerTest {
         val oppgaveDTOList = listOf(oppgave1, oppgave2).map { toOppgaveDTO(it) }
         val oppgaveDTO = oppgaveDTOList.first()
 
-        oppgaveDTO.eventTidspunkt `should be` oppgave1.eventTidspunkt
-        oppgaveDTO.forstBehandlet `should be` oppgave1.forstBehandlet
-        oppgaveDTO.eventId `should be equal to` oppgave1.eventId
-        oppgaveDTO.tekst `should be equal to` oppgave1.tekst
-        oppgaveDTO.link `should be equal to` oppgave1.link
-        oppgaveDTO.produsent!! `should be equal to` oppgave1.produsent!!
-        oppgaveDTO.sistOppdatert `should be` oppgave1.sistOppdatert
-        oppgaveDTO.sikkerhetsnivaa `should be` oppgave1.sikkerhetsnivaa
-        oppgaveDTO.aktiv `should be` oppgave1.aktiv
-        oppgaveDTO.grupperingsId `should be` oppgave1.grupperingsId
+        oppgaveDTO.eventTidspunkt shouldBe oppgave1.eventTidspunkt
+        oppgaveDTO.forstBehandlet shouldBe oppgave1.forstBehandlet
+        oppgaveDTO.eventId shouldBe oppgave1.eventId
+        oppgaveDTO.tekst shouldBe oppgave1.tekst
+        oppgaveDTO.link shouldBe oppgave1.link
+        oppgaveDTO.produsent!! shouldBe oppgave1.produsent!!
+        oppgaveDTO.sistOppdatert shouldBe oppgave1.sistOppdatert
+        oppgaveDTO.sikkerhetsnivaa shouldBe oppgave1.sikkerhetsnivaa
+        oppgaveDTO.aktiv shouldBe oppgave1.aktiv
+        oppgaveDTO.grupperingsId shouldBe oppgave1.grupperingsId
     }
 
     @Test
     fun `should mask tekst, link and produsent`() {
         val oppgave = createOppgave("1", "1", true)
         val oppgaveDTO = toMaskedOppgaveDTO(oppgave)
-        oppgaveDTO.eventTidspunkt `should be` oppgave.eventTidspunkt
-        oppgaveDTO.forstBehandlet `should be` oppgave.forstBehandlet
-        oppgaveDTO.eventId `should be equal to` oppgave.eventId
-        oppgaveDTO.tekst `should be equal to` "***"
-        oppgaveDTO.link `should be equal to` "***"
-        oppgaveDTO.produsent!! `should be equal to` "***"
-        oppgaveDTO.sistOppdatert `should be` oppgave.sistOppdatert
-        oppgaveDTO.sikkerhetsnivaa `should be` oppgave.sikkerhetsnivaa
+        oppgaveDTO.eventTidspunkt shouldBe oppgave.eventTidspunkt
+        oppgaveDTO.forstBehandlet shouldBe oppgave.forstBehandlet
+        oppgaveDTO.eventId shouldBe oppgave.eventId
+        oppgaveDTO.tekst shouldBe "***"
+        oppgaveDTO.link shouldBe "***"
+        oppgaveDTO.produsent!! shouldBe "***"
+        oppgaveDTO.sistOppdatert shouldBe oppgave.sistOppdatert
+        oppgaveDTO.sikkerhetsnivaa shouldBe oppgave.sikkerhetsnivaa
     }
 }

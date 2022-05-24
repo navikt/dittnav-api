@@ -1,7 +1,6 @@
 package no.nav.personbruker.dittnav.api.innboks
 
-import org.amshove.kluent.`should be equal to`
-import org.amshove.kluent.`should be`
+import io.kotest.matchers.shouldBe
 import org.junit.jupiter.api.Test
 
 class InnboksTransformerTest {
@@ -13,27 +12,27 @@ class InnboksTransformerTest {
         val innboksDTOList = listOf(innboks1, innboks2).map { toInnboksDTO(it) }
         val innboksDTO = innboksDTOList.first()
 
-        innboksDTO.eventTidspunkt `should be` innboks1.eventTidspunkt
-        innboksDTO.forstBehandlet `should be` innboks1.forstBehandlet
-        innboksDTO.eventId `should be equal to` innboks1.eventId
-        innboksDTO.tekst `should be equal to` innboks1.tekst
-        innboksDTO.link `should be equal to` innboks1.link
-        innboksDTO.produsent!! `should be equal to` innboks1.produsent!!
-        innboksDTO.sistOppdatert `should be` innboks1.sistOppdatert
-        innboksDTO.sikkerhetsnivaa `should be` innboks1.sikkerhetsnivaa
+        innboksDTO.eventTidspunkt shouldBe innboks1.eventTidspunkt
+        innboksDTO.forstBehandlet shouldBe innboks1.forstBehandlet
+        innboksDTO.eventId shouldBe innboks1.eventId
+        innboksDTO.tekst shouldBe innboks1.tekst
+        innboksDTO.link shouldBe innboks1.link
+        innboksDTO.produsent!! shouldBe innboks1.produsent!!
+        innboksDTO.sistOppdatert shouldBe innboks1.sistOppdatert
+        innboksDTO.sikkerhetsnivaa shouldBe innboks1.sikkerhetsnivaa
     }
 
     @Test
     fun `should mask tekst, link and produsent`() {
         val innboks = createInnboks("1", "1", true)
         val innboksDTO = toMaskedInnboksDTO(innboks)
-        innboksDTO.eventTidspunkt `should be` innboks.eventTidspunkt
-        innboksDTO.forstBehandlet `should be` innboks.forstBehandlet
-        innboksDTO.eventId `should be equal to` innboks.eventId
-        innboksDTO.tekst `should be equal to` "***"
-        innboksDTO.link `should be equal to` "***"
-        innboksDTO.produsent!! `should be equal to` "***"
-        innboksDTO.sistOppdatert `should be` innboks.sistOppdatert
-        innboksDTO.sikkerhetsnivaa `should be` innboks.sikkerhetsnivaa
+        innboksDTO.eventTidspunkt shouldBe innboks.eventTidspunkt
+        innboksDTO.forstBehandlet shouldBe innboks.forstBehandlet
+        innboksDTO.eventId shouldBe innboks.eventId
+        innboksDTO.tekst shouldBe "***"
+        innboksDTO.link shouldBe "***"
+        innboksDTO.produsent!! shouldBe "***"
+        innboksDTO.sistOppdatert shouldBe innboks.sistOppdatert
+        innboksDTO.sikkerhetsnivaa shouldBe innboks.sikkerhetsnivaa
     }
 }

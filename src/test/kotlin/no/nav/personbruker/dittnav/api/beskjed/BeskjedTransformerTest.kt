@@ -1,7 +1,6 @@
 package no.nav.personbruker.dittnav.api.beskjed
 
-import org.amshove.kluent.`should be equal to`
-import org.amshove.kluent.`should be`
+import io.kotest.matchers.shouldBe
 import org.junit.jupiter.api.Test
 
 class BeskjedTransformerTest {
@@ -13,29 +12,29 @@ class BeskjedTransformerTest {
         val beskjedDTOList = listOf(beskjed1, beskjed2).map { toBeskjedDTO(it) }
         val beskjedDTO = beskjedDTOList.first()
 
-        beskjedDTO.eventTidspunkt `should be` beskjed1.eventTidspunkt
-        beskjedDTO.forstBehandlet `should be` beskjed1.forstBehandlet
-        beskjedDTO.eventId `should be equal to` beskjed1.eventId
-        beskjedDTO.tekst `should be equal to` beskjed1.tekst
-        beskjedDTO.link `should be equal to` beskjed1.link
-        beskjedDTO.produsent!! `should be equal to` beskjed1.produsent!!
-        beskjedDTO.sistOppdatert `should be` beskjed1.sistOppdatert
-        beskjedDTO.sikkerhetsnivaa `should be` beskjed1.sikkerhetsnivaa
-        beskjedDTO.grupperingsId `should be` beskjed1.grupperingsId
+        beskjedDTO.eventTidspunkt shouldBe beskjed1.eventTidspunkt
+        beskjedDTO.forstBehandlet shouldBe beskjed1.forstBehandlet
+        beskjedDTO.eventId shouldBe beskjed1.eventId
+        beskjedDTO.tekst shouldBe beskjed1.tekst
+        beskjedDTO.link shouldBe beskjed1.link
+        beskjedDTO.produsent!! shouldBe beskjed1.produsent!!
+        beskjedDTO.sistOppdatert shouldBe beskjed1.sistOppdatert
+        beskjedDTO.sikkerhetsnivaa shouldBe beskjed1.sikkerhetsnivaa
+        beskjedDTO.grupperingsId shouldBe beskjed1.grupperingsId
     }
 
     @Test
     fun `should mask tekst, link and produsent`() {
         val beskjed = createBeskjed(eventId = "1", fodselsnummer = "1", aktiv = true)
         val beskjedDTO = toMaskedBeskjedDTO(beskjed)
-        beskjedDTO.eventTidspunkt `should be` beskjed.eventTidspunkt
-        beskjedDTO.forstBehandlet `should be` beskjed.forstBehandlet
-        beskjedDTO.eventId `should be equal to` beskjed.eventId
-        beskjedDTO.tekst `should be equal to` "***"
-        beskjedDTO.link `should be equal to` "***"
-        beskjedDTO.produsent!! `should be equal to` "***"
-        beskjedDTO.sistOppdatert `should be` beskjed.sistOppdatert
-        beskjedDTO.sikkerhetsnivaa `should be` beskjed.sikkerhetsnivaa
-        beskjedDTO.grupperingsId `should be` beskjed.grupperingsId
+        beskjedDTO.eventTidspunkt shouldBe beskjed.eventTidspunkt
+        beskjedDTO.forstBehandlet shouldBe beskjed.forstBehandlet
+        beskjedDTO.eventId shouldBe beskjed.eventId
+        beskjedDTO.tekst shouldBe "***"
+        beskjedDTO.link shouldBe "***"
+        beskjedDTO.produsent!! shouldBe "***"
+        beskjedDTO.sistOppdatert shouldBe beskjed.sistOppdatert
+        beskjedDTO.sikkerhetsnivaa shouldBe beskjed.sikkerhetsnivaa
+        beskjedDTO.grupperingsId shouldBe beskjed.grupperingsId
     }
 }

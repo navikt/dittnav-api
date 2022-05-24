@@ -1,17 +1,23 @@
 package no.nav.personbruker.dittnav.api.done
 
-import io.ktor.client.*
-import io.ktor.client.engine.mock.*
-import io.ktor.client.features.json.*
-import io.ktor.client.statement.*
-import io.ktor.http.*
+import io.kotest.matchers.shouldBe
+import io.ktor.client.HttpClient
+import io.ktor.client.engine.mock.MockEngine
+import io.ktor.client.engine.mock.respond
+import io.ktor.client.engine.mock.respondError
+import io.ktor.client.features.json.JsonFeature
+import io.ktor.client.statement.request
+import io.ktor.http.ContentType
+import io.ktor.http.HttpHeaders
+import io.ktor.http.HttpMethod
+import io.ktor.http.HttpStatusCode
+import io.ktor.http.headersOf
 import io.mockk.coEvery
 import io.mockk.mockk
 import kotlinx.coroutines.runBlocking
 import no.nav.personbruker.dittnav.api.common.AuthenticatedUserObjectMother
 import no.nav.personbruker.dittnav.api.tokenx.AccessToken
 import no.nav.personbruker.dittnav.api.tokenx.EventhandlerTokendings
-import org.amshove.kluent.`should be equal to`
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import java.net.URL
@@ -46,8 +52,8 @@ internal class DoneProducerTest {
         }
         val doneProducer = DoneProducer(client, eventhandlerTokendings, URL("http://event-handler"))
         runBlocking {
-            doneProducer.postDoneEvents(done, user).status `should be equal to` HttpStatusCode.OK
-            doneProducer.postDoneEvents(done, user).request.method `should be equal to` HttpMethod.Post
+            doneProducer.postDoneEvents(done, user).status shouldBe HttpStatusCode.OK
+            doneProducer.postDoneEvents(done, user).request.method shouldBe HttpMethod.Post
         }
     }
 }

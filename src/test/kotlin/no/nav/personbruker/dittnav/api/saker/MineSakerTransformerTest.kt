@@ -1,8 +1,8 @@
 package no.nav.personbruker.dittnav.api.saker
 
+import io.kotest.matchers.shouldBe
 import no.nav.personbruker.dittnav.api.saker.ekstern.SakstemaObjectMother
 import no.nav.personbruker.dittnav.api.saker.ekstern.SisteSakstemaerObjectMother
-import org.amshove.kluent.`should be equal to`
 import org.junit.jupiter.api.Test
 
 internal class MineSakerTransformerTest {
@@ -13,10 +13,10 @@ internal class MineSakerTransformerTest {
 
         val internal = external.toInternal()
 
-        internal.kode `should be equal to` external.kode
-        internal.navn `should be equal to` external.navn
-        internal.sistEndret `should be equal to` external.sistEndret
-        internal.detaljvisningUrl `should be equal to` external.detaljvisningUrl
+        internal.kode shouldBe external.kode
+        internal.navn shouldBe external.navn
+        internal.sistEndret shouldBe external.sistEndret
+        internal.detaljvisningUrl shouldBe external.detaljvisningUrl
     }
 
     @Test
@@ -25,8 +25,8 @@ internal class MineSakerTransformerTest {
 
         val internal = external.toInternal()
 
-        internal.sakstemaer.size `should be equal to` external.sistEndrede.size
-        internal.dagpengerSistEndret `should be equal to` external.dagpengerSistEndret
+        internal.sakstemaer.size shouldBe external.sistEndrede.size
+        internal.dagpengerSistEndret shouldBe external.dagpengerSistEndret
     }
 
 }
