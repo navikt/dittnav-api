@@ -21,4 +21,15 @@ fun Route.meldekortApi(meldekortService: MeldekortService) {
             call.respond(HttpStatusCode.InternalServerError)
         }
     }
+
+    get("/meldekortstatus") {
+        try {
+            val meldekortStatus = meldekortService.getMeldekortStatus(authenticatedUser)
+
+            call.respond(meldekortStatus)
+        } catch (e: Exception) {
+            log.warn("Det skjedde en feil mot meldekort. Feilmelding: [${e.message}]. $authenticatedUser", e)
+            call.respond(HttpStatusCode.InternalServerError)
+        }
+    }
 }

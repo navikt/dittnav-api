@@ -13,16 +13,22 @@ import org.junit.jupiter.api.Test
 internal class MeldekortServiceTest {
 
     private val consumer: MeldekortConsumer = mockk()
-    private val meldekortService = MeldekortService(consumer)
+    private val tokendings: MeldekortTokendings = mockk()
+    private val meldekortService = MeldekortService(consumer, tokendings)
 
     private val user = AuthenticatedUserObjectMother.createAuthenticatedUser("123")
+    private val token = AccessToken(user.token)
 
     @Test
     fun `should fetch and transform external meldekortstatus`() {
         val externalMeldekortStatus = MeldekortExternalObjectMother.createMeldekortStatus()
 
         coEvery {
-            consumer.getMeldekortStatus(AccessToken(user.token))
+            tokendings.exchangeToken(user)
+        } returns token
+
+        coEvery {
+            consumer.getMeldekortStatus(token)
         } returns externalMeldekortStatus
 
         val result = runBlocking {
