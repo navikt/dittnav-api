@@ -22,6 +22,7 @@ data class Environment(
     val personaliaApiClientId: String = getEnvVar("PERSONALIA_API_CLIENT_ID"),
     val eventhandlerClientId: String = getEnvVar("EVENTHANDLER_CLIENT_ID"),
     val meldekortApiUrl: URL = getEnvVarAsURL("MELDEKORT_API_URL"),
+    val meldekortClientId: String = getEnvVar("MELDEKORT_CLIENT_ID"),
     val oppfolgingApiUrl: URL = getEnvVarAsURL("OPPFOLGING_API_URL"),
     val innloggingsinfoUrl: URL = getEnvVarAsURL("INNLOGGINGSINFO_URL"),
     val isRunningInDev: Boolean = isRunningInDev()
