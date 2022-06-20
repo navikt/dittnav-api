@@ -8,7 +8,6 @@ import java.time.ZonedDateTime
 
 @Serializable
 data class Oppgave(
-        val eventTidspunkt: ZonedDateTime,
         val forstBehandlet: ZonedDateTime,
         val fodselsnummer: String,
         val eventId: String,
@@ -22,7 +21,6 @@ data class Oppgave(
 ) {
     override fun toString(): String {
         return "Oppgave(" +
-                "eventTidspunkt=$eventTidspunkt, " +
                 "forstBehandlet=$forstBehandlet, " +
                 "fodselsnummer=***, " +
                 "eventId=$eventId, " +

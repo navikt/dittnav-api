@@ -13,7 +13,7 @@ internal class BeskjedDtoTransformerTest {
         val internal = external.toInternal()
 
         internal.eventId shouldBe external.eventId
-        internal.eventTidspunkt shouldBe external.eventTidspunkt.toZonedDateTime()
+        internal.forstBehandlet shouldBe external.eventTidspunkt.toZonedDateTime()
         internal.grupperingsId shouldBe external.grupperingsId
         internal.tekst shouldBe external.tekst
         internal.link shouldBe external.link

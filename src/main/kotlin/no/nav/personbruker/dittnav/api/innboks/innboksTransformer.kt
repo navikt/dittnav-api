@@ -3,7 +3,6 @@ package no.nav.personbruker.dittnav.api.innboks
 fun toInnboksDTO(innboks: Innboks): InnboksDTO =
         innboks.let {
             InnboksDTO(
-                    eventTidspunkt = it.eventTidspunkt,
                     forstBehandlet = it.forstBehandlet,
                     eventId = it.eventId,
                     tekst = it.tekst,

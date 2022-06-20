@@ -12,7 +12,6 @@ class InnboksTransformerTest {
         val innboksDTOList = listOf(innboks1, innboks2).map { toInnboksDTO(it) }
         val innboksDTO = innboksDTOList.first()
 
-        innboksDTO.eventTidspunkt shouldBe innboks1.eventTidspunkt
         innboksDTO.forstBehandlet shouldBe innboks1.forstBehandlet
         innboksDTO.eventId shouldBe innboks1.eventId
         innboksDTO.tekst shouldBe innboks1.tekst
@@ -26,7 +25,6 @@ class InnboksTransformerTest {
     fun `should mask tekst, link and produsent`() {
         val innboks = createInnboks("1", "1", true)
         val innboksDTO = toMaskedInnboksDTO(innboks)
-        innboksDTO.eventTidspunkt shouldBe innboks.eventTidspunkt
         innboksDTO.forstBehandlet shouldBe innboks.forstBehandlet
         innboksDTO.eventId shouldBe innboks.eventId
         innboksDTO.tekst shouldBe "***"

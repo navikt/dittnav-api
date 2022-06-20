@@ -6,7 +6,6 @@ object BeskjedDtoObjectMother {
 
     fun createActiveBeskjed(eventId: String): BeskjedDTO {
         return BeskjedDTO(
-            eventTidspunkt = ZonedDateTime.now().minusDays(3),
             forstBehandlet = ZonedDateTime.now(),
             eventId = eventId,
             tekst = "Dummytekst",
@@ -21,7 +20,6 @@ object BeskjedDtoObjectMother {
 
     fun createInactiveBeskjed(eventId: String): BeskjedDTO {
         return BeskjedDTO(
-            eventTidspunkt = ZonedDateTime.now().minusDays(3),
             forstBehandlet = ZonedDateTime.now(),
             eventId = eventId,
             tekst = "Dummytekst",
