@@ -12,7 +12,6 @@ class BeskjedTransformerTest {
         val beskjedDTOList = listOf(beskjed1, beskjed2).map { toBeskjedDTO(it) }
         val beskjedDTO = beskjedDTOList.first()
 
-        beskjedDTO.eventTidspunkt shouldBe beskjed1.eventTidspunkt
         beskjedDTO.forstBehandlet shouldBe beskjed1.forstBehandlet
         beskjedDTO.eventId shouldBe beskjed1.eventId
         beskjedDTO.tekst shouldBe beskjed1.tekst
@@ -27,7 +26,6 @@ class BeskjedTransformerTest {
     fun `should mask tekst, link and produsent`() {
         val beskjed = createBeskjed(eventId = "1", fodselsnummer = "1", aktiv = true)
         val beskjedDTO = toMaskedBeskjedDTO(beskjed)
-        beskjedDTO.eventTidspunkt shouldBe beskjed.eventTidspunkt
         beskjedDTO.forstBehandlet shouldBe beskjed.forstBehandlet
         beskjedDTO.eventId shouldBe beskjed.eventId
         beskjedDTO.tekst shouldBe "***"

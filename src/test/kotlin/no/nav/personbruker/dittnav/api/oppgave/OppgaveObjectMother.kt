@@ -5,7 +5,6 @@ import java.time.ZoneId
 
 fun createOppgave(eventId: String, fodselsnummer: String, aktiv: Boolean): Oppgave {
     return Oppgave(
-            eventTidspunkt = ZonedDateTime.now(ZoneId.of("Europe/Oslo")),
             forstBehandlet = ZonedDateTime.now(ZoneId.of("Europe/Oslo")),
             fodselsnummer = fodselsnummer,
             eventId = eventId,

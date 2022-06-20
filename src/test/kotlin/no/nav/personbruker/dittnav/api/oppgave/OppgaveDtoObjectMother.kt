@@ -6,7 +6,6 @@ object OppgaveDtoObjectMother {
 
     fun createActiveOppgave(eventId: String): OppgaveDTO {
         return OppgaveDTO(
-            eventTidspunkt = ZonedDateTime.now().minusDays(3),
             forstBehandlet = ZonedDateTime.now(),
             eventId = eventId,
             tekst = "Dummytekst",
@@ -21,7 +20,6 @@ object OppgaveDtoObjectMother {
 
     fun createInactiveOppgave(eventId: String): OppgaveDTO {
         return OppgaveDTO(
-            eventTidspunkt = ZonedDateTime.now().minusDays(3),
             forstBehandlet = ZonedDateTime.now(),
             eventId = eventId,
             tekst = "Dummytekst",
