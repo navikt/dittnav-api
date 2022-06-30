@@ -23,7 +23,6 @@ data class Environment(
     val meldekortApiUrl: URL = getEnvVarAsURL("MELDEKORT_API_URL"),
     val meldekortClientId: String = getEnvVar("MELDEKORT_CLIENT_ID"),
     val oppfolgingApiUrl: URL = getEnvVarAsURL("OPPFOLGING_API_URL"),
-    val innloggingsinfoUrl: URL = getEnvVarAsURL("INNLOGGINGSINFO_URL"),
     val isRunningInDev: Boolean = isRunningInDev()
 )
 
