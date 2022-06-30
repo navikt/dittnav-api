@@ -19,7 +19,7 @@ internal class MultiSourceResultTest {
         val expectedSource2 = KildeType.DIGISOS
 
         val source1 = MultiSourceResultObjectMother.giveMeNumberOfSuccessfulBeskjedEventsForSource(1, expectedSource1, baseEventId = "beskjed")
-        val source2 = MultiSourceResultObjectMother.giveMeNumberOfSuccessfulBeskjedEventsForSource(2, expectedSource2, baseEventId = "varsel")
+        val source2 = MultiSourceResultObjectMother.giveMeNumberOfSuccessfulBeskjedEventsForSource(2, expectedSource2, baseEventId = "digisos")
 
         val sum = source1 + source2
 

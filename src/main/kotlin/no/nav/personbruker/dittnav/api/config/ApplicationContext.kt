@@ -104,15 +104,10 @@ class ApplicationContext {
 
     private fun createFakeUnleashClient(environment: Environment): Unleash {
         return FakeUnleash().apply {
-            if (environment.fakeUnleashIncludeVarsel) {
-                enable(UnleashService.varselinnboksToggleName)
-            } else {
-                disable(UnleashService.varselinnboksToggleName)
-            }
             if (environment.fakeUnleashIncludeDigiSos) {
-                enable(UnleashService.digiSosOppgaveToggleName)
+                enable(UnleashService.digisosPaabegynteToggleName)
             } else {
-                disable(UnleashService.digiSosOppgaveToggleName)
+                disable(UnleashService.digisosPaabegynteToggleName)
             }
         }
     }
