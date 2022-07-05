@@ -25,4 +25,16 @@ fun Route.unleash(
             }
         }
     }
+
+    get("/unleash/minside") {
+        executeOnUnexpiredTokensOnly {
+            try {
+                val result = unleashService.minSideEnabled(authenticatedUser)
+                call.respond(HttpStatusCode.OK, result)
+
+            } catch (exception: Exception) {
+                respondWithError(call, log, exception)
+            }
+        }
+    }
 }

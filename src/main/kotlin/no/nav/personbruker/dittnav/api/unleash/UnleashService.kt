@@ -13,6 +13,7 @@ class UnleashService(private val unleashClient: Unleash) {
         const val digisosPaabegynteToggleName: String = "digisosPaabegynteEnabled"
         const val varselinnboksToggleName: String = "mergeBeskjedVarselEnabled"
         const val situasjonToggleName: String = "veientilarbeid.kanViseUtfraSituasjon"
+        const val minSideToggleName: String = "minSideEnabled"
     }
 
     suspend fun mergeBeskjedVarselEnabled(user: AuthenticatedUser): Boolean {
@@ -31,6 +32,10 @@ class UnleashService(private val unleashClient: Unleash) {
 
     suspend fun situasjonEnabled(user: AuthenticatedUser): Boolean = withContext(Dispatchers.IO) {
         unleashClient.isEnabled(situasjonToggleName, createUnleashContext(user), false)
+    }
+
+    suspend fun minSideEnabled(user: AuthenticatedUser): Boolean = withContext(Dispatchers.IO) {
+        unleashClient.isEnabled(minSideToggleName, createUnleashContext(user), false)
     }
 
     private fun createUnleashContext(user: AuthenticatedUser): UnleashContext {
