@@ -20,6 +20,8 @@ class BeskjedTransformerTest {
         beskjedDTO.sistOppdatert shouldBe beskjed1.sistOppdatert
         beskjedDTO.sikkerhetsnivaa shouldBe beskjed1.sikkerhetsnivaa
         beskjedDTO.grupperingsId shouldBe beskjed1.grupperingsId
+        beskjedDTO.eksternVarslingSendt shouldBe beskjed1.eksternVarslingSendt
+        beskjedDTO.eksternVarslingKanaler shouldBe beskjed1.eksternVarslingKanaler
     }
 
     @Test
@@ -34,5 +36,7 @@ class BeskjedTransformerTest {
         beskjedDTO.sistOppdatert shouldBe beskjed.sistOppdatert
         beskjedDTO.sikkerhetsnivaa shouldBe beskjed.sikkerhetsnivaa
         beskjedDTO.grupperingsId shouldBe beskjed.grupperingsId
+        beskjedDTO.eksternVarslingSendt shouldBe beskjed.eksternVarslingSendt
+        beskjedDTO.eksternVarslingKanaler shouldBe beskjed.eksternVarslingKanaler
     }
 }

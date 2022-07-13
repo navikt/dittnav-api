@@ -17,7 +17,9 @@ data class Oppgave(
         val produsent: String?,
         val sikkerhetsnivaa: Int,
         val sistOppdatert: ZonedDateTime,
-        val aktiv: Boolean
+        val aktiv: Boolean,
+        val eksternVarslingSendt: Boolean,
+        val eksternVarslingKanaler: List<String>
 ) {
     override fun toString(): String {
         return "Oppgave(" +
@@ -30,6 +32,8 @@ data class Oppgave(
                 "produsent=$produsent, " +
                 "sikkerhetsnivaa=$sikkerhetsnivaa, " +
                 "sistOppdatert=$sistOppdatert, " +
-                "aktiv=$aktiv"
+                "aktiv=$aktiv, " +
+                "eksternVarslingSendt=$eksternVarslingSendt, " +
+                "eksternVarslingKanaler=$eksternVarslingKanaler"
     }
 }

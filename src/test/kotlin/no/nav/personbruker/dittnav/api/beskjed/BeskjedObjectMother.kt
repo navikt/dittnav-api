@@ -14,6 +14,8 @@ fun createBeskjed(eventId: String, fodselsnummer: String, aktiv: Boolean): Beskj
             produsent = "dittnav",
             sikkerhetsnivaa = 4,
             sistOppdatert = ZonedDateTime.now(ZoneId.of("Europe/Oslo")),
-            aktiv = aktiv
+            aktiv = aktiv,
+            eksternVarslingSendt = true,
+            eksternVarslingKanaler = listOf("SMS", "EPOST")
     )
 }

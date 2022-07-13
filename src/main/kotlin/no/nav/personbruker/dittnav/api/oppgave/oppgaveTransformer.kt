@@ -11,7 +11,9 @@ fun toOppgaveDTO(inbound: Oppgave): OppgaveDTO =
             sistOppdatert = it.sistOppdatert,
             sikkerhetsnivaa = it.sikkerhetsnivaa,
             aktiv = it.aktiv,
-            grupperingsId = it.grupperingsId
+            grupperingsId = it.grupperingsId,
+            eksternVarslingSendt = it.eksternVarslingSendt,
+            eksternVarslingKanaler = it.eksternVarslingKanaler
         )
     }
 

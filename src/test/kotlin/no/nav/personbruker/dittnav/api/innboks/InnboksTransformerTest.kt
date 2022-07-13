@@ -19,6 +19,8 @@ class InnboksTransformerTest {
         innboksDTO.produsent!! shouldBe innboks1.produsent!!
         innboksDTO.sistOppdatert shouldBe innboks1.sistOppdatert
         innboksDTO.sikkerhetsnivaa shouldBe innboks1.sikkerhetsnivaa
+        innboksDTO.eksternVarslingSendt shouldBe innboks1.eksternVarslingSendt
+        innboksDTO.eksternVarslingKanaler shouldBe innboks1.eksternVarslingKanaler
     }
 
     @Test
@@ -32,5 +34,7 @@ class InnboksTransformerTest {
         innboksDTO.produsent!! shouldBe "***"
         innboksDTO.sistOppdatert shouldBe innboks.sistOppdatert
         innboksDTO.sikkerhetsnivaa shouldBe innboks.sikkerhetsnivaa
+        innboksDTO.eksternVarslingSendt shouldBe innboks.eksternVarslingSendt
+        innboksDTO.eksternVarslingKanaler shouldBe innboks.eksternVarslingKanaler
     }
 }
