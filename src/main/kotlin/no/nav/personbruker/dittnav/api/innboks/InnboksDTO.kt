@@ -14,5 +14,7 @@ data class InnboksDTO(
         val link: String,
         val produsent: String?,
         val sistOppdatert: ZonedDateTime,
-        val sikkerhetsnivaa: Int
+        val sikkerhetsnivaa: Int,
+        val eksternVarslingSendt: Boolean,
+        val eksternVarslingKanaler: List<String>
 )

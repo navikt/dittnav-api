@@ -20,7 +20,9 @@ fun Paabegynte.toInternal() = BeskjedDTO(
     sistOppdatert = sistOppdatert.toZonedDateTime(),
     sikkerhetsnivaa = 3,
     aktiv = isAktiv,
-    grupperingsId = grupperingsId
+    grupperingsId = grupperingsId,
+    eksternVarslingSendt = false,
+    eksternVarslingKanaler = emptyList()
 )
 
 const val maxBeskjedTextLength = 150

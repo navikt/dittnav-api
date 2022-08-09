@@ -16,5 +16,7 @@ data class BeskjedDTO(
         val sistOppdatert: ZonedDateTime,
         val sikkerhetsnivaa: Int,
         val aktiv: Boolean,
-        val grupperingsId : String
+        val grupperingsId : String,
+        val eksternVarslingSendt: Boolean,
+        val eksternVarslingKanaler: List<String>
 )

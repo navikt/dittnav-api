@@ -17,7 +17,9 @@ data class Innboks(
         val produsent: String?,
         val sikkerhetsnivaa: Int,
         val sistOppdatert: ZonedDateTime,
-        val aktiv: Boolean
+        val aktiv: Boolean,
+        val eksternVarslingSendt: Boolean,
+        val eksternVarslingKanaler: List<String>
 ) {
     override fun toString(): String {
         return "Innboks(" +
@@ -30,6 +32,8 @@ data class Innboks(
                 "produsent=$produsent, " +
                 "sikkerhetsnivaa=$sikkerhetsnivaa, " +
                 "sistOppdatert=$sistOppdatert, " +
-                "aktiv=$aktiv"
+                "aktiv=$aktiv, " +
+                "eksternVarslingSendt=$eksternVarslingSendt, " +
+                "eksternVarslingKanaler=$eksternVarslingKanaler"
     }
 }
