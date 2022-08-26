@@ -41,6 +41,7 @@ spec:
           namespace: meldekort
   ingresses:
     - "https://person.nav.no/dittnav-api"
+    - "https://www.nav.no/dittnav-api"
   resources:
     limits:
       cpu: "3"
