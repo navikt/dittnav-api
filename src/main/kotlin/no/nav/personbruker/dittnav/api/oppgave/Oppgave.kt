@@ -14,7 +14,7 @@ data class Oppgave(
         val grupperingsId: String,
         val tekst: String,
         val link: String,
-        val produsent: String?,
+        val produsent: String,
         val sikkerhetsnivaa: Int,
         val sistOppdatert: ZonedDateTime,
         val aktiv: Boolean,

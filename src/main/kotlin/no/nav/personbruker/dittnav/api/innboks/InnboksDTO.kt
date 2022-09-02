@@ -12,7 +12,7 @@ data class InnboksDTO(
         val eventId: String,
         val tekst: String,
         val link: String,
-        val produsent: String?,
+        val produsent: String,
         val sistOppdatert: ZonedDateTime,
         val sikkerhetsnivaa: Int,
         val eksternVarslingSendt: Boolean,
