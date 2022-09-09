@@ -13,8 +13,10 @@ class MeldekortLocalDateSerializer: KSerializer<LocalDate> {
     private val serializedDateFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd")
 
     override fun deserialize(decoder: Decoder): LocalDate {
-        val timeString = decoder.decodeString()
+        return deserializeString(decoder.decodeString())
+    }
 
+    fun deserializeString(timeString: String): LocalDate {
         return parseDateTimeFormat(timeString)
             ?: parseDateFormat(timeString)
             ?: throw RuntimeException("Forsøkte å parse dato på uventet format: $timeString")
