@@ -55,6 +55,7 @@ dependencies {
     testImplementation(Junit.api)
     testImplementation(Ktor.clientMock)
     testImplementation(Ktor.clientMockJvm)
+    testImplementation(Ktor.serverTestHost)
     testImplementation(Kotest.runnerJunit5)
     testImplementation(Kotest.assertionsCore)
     testImplementation(Kotest.extensions)
@@ -68,7 +69,7 @@ dependencies {
 }
 
 application {
-    mainClass.set("io.ktor.server.netty.EngineMain")
+    mainClass.set("no.nav.personbruker.dittnav.api.ApplicationKt")
 }
 
 tasks {

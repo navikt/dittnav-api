@@ -23,13 +23,6 @@ data class Environment(
     val meldekortApiUrl: URL = getEnvVarAsURL("MELDEKORT_API_URL"),
     val meldekortClientId: String = getEnvVar("MELDEKORT_CLIENT_ID"),
     val oppfolgingApiUrl: URL = getEnvVarAsURL("OPPFOLGING_API_URL"),
-    val isRunningInDev: Boolean = isRunningInDev()
 )
 
-private fun isRunningInDev(clusterName: String? = System.getenv("NAIS_CLUSTER_NAME")): Boolean {
-    var runningInDev = true
-    if (clusterName != null && clusterName == "prod-sbs") {
-        runningInDev = false
-    }
-    return runningInDev
-}
+
