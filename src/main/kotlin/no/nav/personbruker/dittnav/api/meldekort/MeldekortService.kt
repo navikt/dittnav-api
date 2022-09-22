@@ -1,7 +1,8 @@
 package no.nav.personbruker.dittnav.api.meldekort
 
+import no.nav.personbruker.dittnav.api.authentication.AuthenticatedUser
 import no.nav.personbruker.dittnav.api.meldekort.external.MeldekortstatusExternal
-import no.nav.personbruker.dittnav.common.security.AuthenticatedUser
+
 
 class MeldekortService(
     private val meldekortConsumer: MeldekortConsumer,

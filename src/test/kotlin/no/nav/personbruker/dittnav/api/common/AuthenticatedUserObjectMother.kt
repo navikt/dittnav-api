@@ -3,7 +3,7 @@ package no.nav.personbruker.dittnav.api.common
 import io.jsonwebtoken.Jwts
 import io.jsonwebtoken.SignatureAlgorithm
 import io.jsonwebtoken.security.Keys
-import no.nav.personbruker.dittnav.common.security.AuthenticatedUser
+import no.nav.personbruker.dittnav.api.authentication.AuthenticatedUser
 import no.nav.security.token.support.core.jwt.JwtToken
 import java.security.Key
 import java.time.ZoneId

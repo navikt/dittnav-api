@@ -1,7 +1,7 @@
 package no.nav.personbruker.dittnav.api.meldekort
 
+import no.nav.personbruker.dittnav.api.authentication.AuthenticatedUser
 import no.nav.personbruker.dittnav.api.tokenx.AccessToken
-import no.nav.personbruker.dittnav.common.security.AuthenticatedUser
 import no.nav.tms.token.support.tokendings.exchange.TokendingsService
 
 class MeldekortTokendings(

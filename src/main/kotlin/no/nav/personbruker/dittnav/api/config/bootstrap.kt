@@ -12,6 +12,8 @@ import io.ktor.serialization.*
 import io.ktor.util.pipeline.*
 import io.micrometer.prometheus.PrometheusMeterRegistry
 import io.prometheus.client.hotspot.DefaultExports
+import no.nav.personbruker.dittnav.api.authentication.AuthenticatedUser
+import no.nav.personbruker.dittnav.api.authentication.AuthenticatedUserFactory
 import no.nav.personbruker.dittnav.api.beskjed.BeskjedMergerService
 import no.nav.personbruker.dittnav.api.beskjed.beskjed
 import no.nav.personbruker.dittnav.api.digisos.DigiSosService
@@ -34,8 +36,6 @@ import no.nav.personbruker.dittnav.api.saker.SakerService
 import no.nav.personbruker.dittnav.api.saker.saker
 import no.nav.personbruker.dittnav.api.unleash.UnleashService
 import no.nav.personbruker.dittnav.api.unleash.unleash
-import no.nav.personbruker.dittnav.common.security.AuthenticatedUser
-import no.nav.personbruker.dittnav.common.security.AuthenticatedUserFactory
 import no.nav.security.token.support.ktor.tokenValidationSupport
 import org.slf4j.LoggerFactory
 import java.time.Instant

@@ -1,9 +1,9 @@
 package no.nav.personbruker.dittnav.api.beskjed
 
+import no.nav.personbruker.dittnav.api.authentication.AuthenticatedUser
 import no.nav.personbruker.dittnav.api.tokenx.EventhandlerTokendings
 import no.nav.personbruker.dittnav.api.common.MultiSourceResult
 import no.nav.personbruker.dittnav.api.tokenx.AccessToken
-import no.nav.personbruker.dittnav.common.security.AuthenticatedUser
 import org.slf4j.LoggerFactory
 
 class BeskjedService(

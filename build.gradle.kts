@@ -17,8 +17,6 @@ tasks.withType<KotlinCompile> {
 }
 
 repositories {
-    // Use jcenter for resolving your dependencies.
-    // You can declare any Maven/Ivy/file repository here.
     mavenCentral()
     maven("https://packages.confluent.io/maven")
     maven("https://jitpack.io")
@@ -27,7 +25,6 @@ repositories {
 
 dependencies {
     implementation(DittNAV.Common.logging)
-    implementation(DittNAV.Common.securityAuthenticatedUser)
     implementation(DittNAV.Common.utils)
     implementation(Kotlinx.coroutines)
     implementation(Kotlinx.htmlJvm)

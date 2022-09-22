@@ -4,7 +4,8 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import no.finn.unleash.Unleash
 import no.finn.unleash.UnleashContext
-import no.nav.personbruker.dittnav.common.security.AuthenticatedUser
+import no.nav.personbruker.dittnav.api.authentication.AuthenticatedUser
+
 
 class UnleashService(private val unleashClient: Unleash) {
 

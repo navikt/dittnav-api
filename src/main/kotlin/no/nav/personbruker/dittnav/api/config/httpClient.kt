@@ -6,9 +6,9 @@ import io.ktor.client.request.*
 import io.ktor.http.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import no.nav.personbruker.dittnav.api.authentication.AuthenticatedUser
 import no.nav.personbruker.dittnav.api.done.DoneDTO
 import no.nav.personbruker.dittnav.api.tokenx.AccessToken
-import no.nav.personbruker.dittnav.common.security.AuthenticatedUser
 import no.nav.tms.token.support.tokendings.exchange.TokenXHeader
 import java.net.URL
 
