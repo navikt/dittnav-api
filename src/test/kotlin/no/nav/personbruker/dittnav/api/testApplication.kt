@@ -33,7 +33,6 @@ private fun Application.mockApi(
     corsAllowedOrigins: String = "",
     corsAllowedSchemes: String = "",
     corsAllowedHeaders: List<String> = emptyList(),
-    appMicrometerRegistry: PrometheusMeterRegistry = mockk(relaxed = true),
     meldekortService: MeldekortService = mockk(relaxed = true),
     oppfolgingService: OppfolgingService = mockk(relaxed = true),
     oppgaveService: OppgaveService = mockk(relaxed = true),
@@ -45,13 +44,17 @@ private fun Application.mockApi(
     digiSosService: DigiSosService = mockk(relaxed = true),
     doneProducer: DoneProducer = mockk(relaxed = true),
     httpClient: HttpClient = mockk(relaxed = true),
-    httpClientIgnoreUnknownKeys: HttpClient = mockk(relaxed = true)
+    httpClientIgnoreUnknownKeys: HttpClient = mockk(relaxed = true),
+    loginserviceAudience: String = "dittnav-api",
+    loginIssuer: String? = null
+
 ) {
+    val mockJwt = JwtStub(issuer = loginIssuer ?: "testapp")
+
     api(
         corsAllowedOrigins = corsAllowedOrigins,
         corsAllowedSchemes = corsAllowedSchemes,
         corsAllowedHeaders = corsAllowedHeaders,
-        appMicrometerRegistry = appMicrometerRegistry,
         meldekortService = meldekortService,
         oppfolgingService = oppfolgingService,
         oppgaveService = oppgaveService,
@@ -63,6 +66,9 @@ private fun Application.mockApi(
         digiSosService = digiSosService,
         doneProducer = doneProducer,
         httpClient = httpClient,
-        httpClientIgnoreUnknownKeys = httpClientIgnoreUnknownKeys
+        httpClientIgnoreUnknownKeys = httpClientIgnoreUnknownKeys,
+        jwtAudience = loginserviceAudience,
+        jwkProvider = mockJwt.stubbedJwkProvider(),
+        jwtIssuer = loginserviceAudience,
     )
 }

@@ -1,15 +1,20 @@
 package no.nav.personbruker.dittnav.api.config
 
+import com.auth0.jwk.JwkProvider
 import io.ktor.application.*
 import io.ktor.auth.*
+import io.ktor.auth.jwt.JWTPrincipal
+import io.ktor.auth.jwt.jwt
 import io.ktor.client.*
 import io.ktor.features.*
 import io.ktor.http.*
+import io.ktor.http.auth.HttpAuthHeader
 import io.ktor.metrics.micrometer.*
 import io.ktor.response.*
 import io.ktor.routing.*
 import io.ktor.serialization.*
 import io.ktor.util.pipeline.*
+import io.micrometer.prometheus.PrometheusConfig
 import io.micrometer.prometheus.PrometheusMeterRegistry
 import io.prometheus.client.hotspot.DefaultExports
 import no.nav.personbruker.dittnav.api.authentication.AuthenticatedUser
@@ -36,7 +41,6 @@ import no.nav.personbruker.dittnav.api.saker.SakerService
 import no.nav.personbruker.dittnav.api.saker.saker
 import no.nav.personbruker.dittnav.api.unleash.UnleashService
 import no.nav.personbruker.dittnav.api.unleash.unleash
-import no.nav.security.token.support.ktor.tokenValidationSupport
 import org.slf4j.LoggerFactory
 import java.time.Instant
 
@@ -45,7 +49,6 @@ fun Application.api(
     corsAllowedOrigins: String,
     corsAllowedSchemes: String,
     corsAllowedHeaders: List<String>,
-    appMicrometerRegistry: PrometheusMeterRegistry,
     meldekortService: MeldekortService,
     oppfolgingService: OppfolgingService,
     oppgaveService: OppgaveService,
@@ -57,12 +60,23 @@ fun Application.api(
     digiSosService: DigiSosService,
     doneProducer: DoneProducer,
     httpClient: HttpClient,
-    httpClientIgnoreUnknownKeys: HttpClient
+    httpClientIgnoreUnknownKeys: HttpClient,
+    jwtAudience: String,
+    jwkProvider: JwkProvider,
+    jwtIssuer: String
 ) {
 
     DefaultExports.initialize()
+    val collectorRegistry = PrometheusMeterRegistry(PrometheusConfig.DEFAULT)
 
     install(DefaultHeaders)
+
+    install(StatusPages){
+        exception<CookieNotSetException>{
+            log.info("401: fant ikke selvbetjening-idtoken")
+            call.respond(HttpStatusCode.Unauthorized)
+        }
+    }
 
     install(CORS) {
         host(corsAllowedOrigins, schemes = listOf(corsAllowedSchemes))
@@ -73,10 +87,26 @@ fun Application.api(
         }
     }
 
-    val config = this.environment.config
+
 
     install(Authentication) {
-        tokenValidationSupport(config = config)
+        jwt {
+            verifier(jwkProvider, jwtIssuer){
+                withAudience(jwtAudience)
+            }
+            authHeader {
+                val cookie = it.request.cookies["selvbetjening-idtoken"] ?: throw CookieNotSetException()
+                HttpAuthHeader.Single("Bearer", cookie)
+            }
+
+            validate { credentials ->
+                requireNotNull(credentials.payload.claims["pid"]) {
+                    "Token må inneholde fødselsnummer for personen i pid claim"
+                }
+                JWTPrincipal(credentials.payload)
+            }
+        }
+
     }
 
     install(ContentNegotiation) {
@@ -84,11 +114,11 @@ fun Application.api(
     }
 
     install(MicrometerMetrics) {
-        registry = appMicrometerRegistry
+        registry = collectorRegistry
     }
 
     routing {
-        healthApi(appMicrometerRegistry)
+        healthApi(collectorRegistry)
         authenticate {
             intercept(ApplicationCallPipeline.Call) {
                 if (authenticatedUser.isTokenExpired()) {
@@ -116,6 +146,8 @@ fun Application.api(
         configureShutdownHook(listOf(httpClient, httpClientIgnoreUnknownKeys))
     }
 }
+
+class CookieNotSetException : Throwable() {}
 
 private fun Application.configureShutdownHook(httpClients: List<HttpClient>) {
     environment.monitor.subscribe(ApplicationStopping) {

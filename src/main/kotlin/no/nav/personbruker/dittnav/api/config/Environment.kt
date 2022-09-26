@@ -1,10 +1,15 @@
 package no.nav.personbruker.dittnav.api.config
 
+import com.auth0.jwk.JwkProviderBuilder
+import io.ktor.client.HttpClient
+import io.ktor.client.request.get
+import kotlinx.coroutines.runBlocking
 import no.nav.personbruker.dittnav.common.util.config.BooleanEnvVar.getEnvVarAsBoolean
 import no.nav.personbruker.dittnav.common.util.config.StringEnvVar.getEnvVar
 import no.nav.personbruker.dittnav.common.util.config.StringEnvVar.getEnvVarAsList
 import no.nav.personbruker.dittnav.common.util.config.UrlEnvVar.getEnvVarAsURL
 import java.net.URL
+import java.util.concurrent.TimeUnit
 
 data class Environment(
     val eventHandlerURL: URL = getEnvVarAsURL("EVENT_HANDLER_URL", trimTrailingSlash = true),
@@ -23,6 +28,18 @@ data class Environment(
     val meldekortApiUrl: URL = getEnvVarAsURL("MELDEKORT_API_URL"),
     val meldekortClientId: String = getEnvVar("MELDEKORT_CLIENT_ID"),
     val oppfolgingApiUrl: URL = getEnvVarAsURL("OPPFOLGING_API_URL"),
+    val loginservicDiscoveryUrl: String = getEnvVar("LOGINSERVICE_IDPORTEN_DISCOVERY_URL"),
+    val loginserviceIdportenAudience: String = getEnvVar("LOGINSERVICE_IDPORTEN_AUDIENCE")
+
 )
 
+data class LoginserviceMetadata(val jwks_uri: String, val issuer: String) {
 
+    companion object {
+        fun get(httpClient: HttpClient, discoveryUrl: String) = runBlocking {
+            httpClient.get<LoginserviceMetadata>(discoveryUrl)
+        }
+
+    }
+
+}
