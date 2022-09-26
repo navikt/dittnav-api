@@ -19,6 +19,7 @@ import io.micrometer.prometheus.PrometheusMeterRegistry
 import io.prometheus.client.hotspot.DefaultExports
 import no.nav.personbruker.dittnav.api.authentication.AuthenticatedUser
 import no.nav.personbruker.dittnav.api.authentication.AuthenticatedUserFactory
+import no.nav.personbruker.dittnav.api.authentication.PrincipalWithTokenString
 import no.nav.personbruker.dittnav.api.beskjed.BeskjedMergerService
 import no.nav.personbruker.dittnav.api.beskjed.beskjed
 import no.nav.personbruker.dittnav.api.digisos.DigiSosService
@@ -94,6 +95,7 @@ fun Application.api(
             verifier(jwkProvider, jwtIssuer){
                 withAudience(jwtAudience)
             }
+
             authHeader {
                 val cookie = it.request.cookies["selvbetjening-idtoken"] ?: throw CookieNotSetException()
                 HttpAuthHeader.Single("Bearer", cookie)
@@ -103,10 +105,9 @@ fun Application.api(
                 requireNotNull(credentials.payload.claims["pid"]) {
                     "Token må inneholde fødselsnummer for personen i pid claim"
                 }
-                JWTPrincipal(credentials.payload)
+                PrincipalWithTokenString(accessToken = request.cookies["selvbetjening-idtoken"]?:throw CookieNotSetException(), payload = credentials.payload)
             }
         }
-
     }
 
     install(ContentNegotiation) {
@@ -120,16 +121,9 @@ fun Application.api(
     routing {
         healthApi(collectorRegistry)
         authenticate {
-            intercept(ApplicationCallPipeline.Call) {
-                if (authenticatedUser.isTokenExpired()) {
-                    val delta = authenticatedUser.tokenExpirationTime.epochSecond - Instant.now().epochSecond
-                    log.info("Mottok kall fra en bruker med et utløpt token. Delta: $delta sekunder, $authenticatedUser")
-                }
-            }
 
             meldekortApi(meldekortService)
             oppfolgingApi(oppfolgingService)
-
             oppgave(oppgaveService)
             beskjed(beskjedMergerService)
             innboks(innboksService)
@@ -164,16 +158,3 @@ private fun isRunningInDev(clusterName: String? = System.getenv("NAIS_CLUSTER_NA
 }
 val PipelineContext<Unit, ApplicationCall>.authenticatedUser: AuthenticatedUser
     get() = AuthenticatedUserFactory.createNewAuthenticatedUser(call)
-
-suspend fun PipelineContext<Unit, ApplicationCall>.executeOnUnexpiredTokensOnly(block: suspend () -> Unit) {
-    if (authenticatedUser.isTokenExpired()) {
-        val delta = authenticatedUser.tokenExpirationTime.epochSecond - Instant.now().epochSecond
-        val msg = "Mottok kall fra en bruker med et utløpt token, avviser request-en med en 401-respons. " +
-                "Tid siden tokenet løp ut: $delta sekunder, $authenticatedUser"
-        log.info(msg)
-        call.respond(HttpStatusCode.Unauthorized)
-
-    } else {
-        block.invoke()
-    }
-}

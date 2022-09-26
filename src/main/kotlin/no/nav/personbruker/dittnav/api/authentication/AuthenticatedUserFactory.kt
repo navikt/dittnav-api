@@ -1,6 +1,8 @@
 package no.nav.personbruker.dittnav.api.authentication
 
+import com.auth0.jwt.interfaces.Payload
 import io.ktor.application.ApplicationCall
+import io.ktor.auth.Principal
 import io.ktor.auth.principal
 import no.nav.security.token.support.core.jwt.JwtToken
 import no.nav.security.token.support.ktor.TokenValidationContextPrincipal
@@ -19,26 +21,18 @@ object AuthenticatedUserFactory {
         val identityClaimFromEnvVariable = System.getenv(oidcIdentityClaimName) ?: defaultClaim.claimName
         IDENT_CLAIM = IdentityClaim.fromClaimName(identityClaimFromEnvVariable)
     }
+    fun createNewAuthenticatedUser(principal: PrincipalWithTokenString, essoToken: String? = null): AuthenticatedUser {
+        val token = principal.accessToken
 
-    fun createNewAuthenticatedUser(principal: TokenValidationContextPrincipal, essoToken: String? = null): AuthenticatedUser {
-        val token = principal.context.firstValidToken?.get()
-            ?: throw Exception("Det ble ikke funnet noe token. Dette skal ikke kunne skje.")
-
-        val ident: String = token.jwtTokenClaims.getStringClaim(IDENT_CLAIM.claimName)
+        val ident: String = principal.payload.getClaim("pid").asString()//jwtTokenClaims.getStringClaim(IDENT_CLAIM.claimName)
         val loginLevel =
-            extractLoginLevel(
-                token
-            )
-        val expirationTime =
-            getTokenExpirationLocalDateTime(
-                token
-            )
+            extractLoginLevel( principal.payload)
 
-        return AuthenticatedUser(ident, loginLevel, token.tokenAsString, expirationTime, essoToken)
+        return AuthenticatedUser(ident, loginLevel, principal.accessToken)
     }
 
     fun createNewAuthenticatedUser(call: ApplicationCall): AuthenticatedUser {
-        val principal = call.principal<TokenValidationContextPrincipal>()
+        val principal = call.principal<PrincipalWithTokenString>()
             ?: throw Exception("Principal har ikke blitt satt for authentication context.")
 
         val essoToken = getEssoTokenIfPresent(call)
@@ -46,9 +40,9 @@ object AuthenticatedUserFactory {
         return createNewAuthenticatedUser(principal, essoToken)
     }
 
-    private fun extractLoginLevel(token: JwtToken): Int {
+    private fun extractLoginLevel(payload: Payload): Int {
 
-        return when (token.jwtTokenClaims.getStringClaim("acr")) {
+        return when (payload.getClaim("acr").asString()) {
             "Level3" -> 3
             "Level4" -> 4
             else -> throw Exception("Innloggingsnivå ble ikke funnet. Dette skal ikke kunne skje.")
@@ -67,3 +61,4 @@ object AuthenticatedUserFactory {
     }
 
 }
+data class  PrincipalWithTokenString(val accessToken:String, val payload:Payload): Principal

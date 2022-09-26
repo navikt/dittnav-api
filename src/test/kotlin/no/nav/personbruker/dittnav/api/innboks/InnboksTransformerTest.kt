@@ -16,7 +16,7 @@ class InnboksTransformerTest {
         innboksDTO.eventId shouldBe innboks1.eventId
         innboksDTO.tekst shouldBe innboks1.tekst
         innboksDTO.link shouldBe innboks1.link
-        innboksDTO.produsent!! shouldBe innboks1.produsent!!
+        innboksDTO.produsent shouldBe innboks1.produsent
         innboksDTO.sistOppdatert shouldBe innboks1.sistOppdatert
         innboksDTO.sikkerhetsnivaa shouldBe innboks1.sikkerhetsnivaa
         innboksDTO.eksternVarslingSendt shouldBe innboks1.eksternVarslingSendt
@@ -31,7 +31,7 @@ class InnboksTransformerTest {
         innboksDTO.eventId shouldBe innboks.eventId
         innboksDTO.tekst shouldBe "***"
         innboksDTO.link shouldBe "***"
-        innboksDTO.produsent!! shouldBe "***"
+        innboksDTO.produsent shouldBe "***"
         innboksDTO.sistOppdatert shouldBe innboks.sistOppdatert
         innboksDTO.sikkerhetsnivaa shouldBe innboks.sikkerhetsnivaa
         innboksDTO.eksternVarslingSendt shouldBe innboks.eksternVarslingSendt

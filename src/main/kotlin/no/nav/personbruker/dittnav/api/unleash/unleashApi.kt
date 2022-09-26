@@ -6,35 +6,30 @@ import io.ktor.response.*
 import io.ktor.routing.*
 import no.nav.personbruker.dittnav.api.common.respondWithError
 import no.nav.personbruker.dittnav.api.config.authenticatedUser
-import no.nav.personbruker.dittnav.api.config.executeOnUnexpiredTokensOnly
 import org.slf4j.LoggerFactory
 
 fun Route.unleash(
-        unleashService: UnleashService
+    unleashService: UnleashService
 ) {
     val log = LoggerFactory.getLogger(unleashService::class.java)
 
     get("/unleash/situasjon") {
-        executeOnUnexpiredTokensOnly {
-            try {
-                val result = unleashService.situasjonEnabled(authenticatedUser)
-                call.respond(HttpStatusCode.OK, result)
+        try {
+            val result = unleashService.situasjonEnabled(authenticatedUser)
+            call.respond(HttpStatusCode.OK, result)
 
-            } catch (exception: Exception) {
-                respondWithError(call, log, exception)
-            }
+        } catch (exception: Exception) {
+            respondWithError(call, log, exception)
         }
     }
 
     get("/unleash/minside") {
-        executeOnUnexpiredTokensOnly {
-            try {
-                val result = unleashService.minSideEnabled(authenticatedUser)
-                call.respond(HttpStatusCode.OK, result)
+        try {
+            val result = unleashService.minSideEnabled(authenticatedUser)
+            call.respond(HttpStatusCode.OK, result)
 
-            } catch (exception: Exception) {
-                respondWithError(call, log, exception)
-            }
+        } catch (exception: Exception) {
+            respondWithError(call, log, exception)
         }
     }
 }

@@ -1,9 +1,13 @@
 package no.nav.personbruker.dittnav.api
 
+import io.kotest.matchers.shouldBe
 import io.ktor.application.Application
 import io.ktor.client.HttpClient
+import io.ktor.http.HttpHeaders
+import io.ktor.http.HttpMethod
+import io.ktor.http.HttpStatusCode
+import io.ktor.server.testing.handleRequest
 import io.ktor.server.testing.withTestApplication
-import io.micrometer.prometheus.PrometheusMeterRegistry
 import io.mockk.mockk
 import no.nav.personbruker.dittnav.api.beskjed.BeskjedMergerService
 import no.nav.personbruker.dittnav.api.config.api
@@ -18,20 +22,58 @@ import no.nav.personbruker.dittnav.api.saker.SakerService
 import no.nav.personbruker.dittnav.api.unleash.UnleashService
 import org.junit.jupiter.api.Test
 
+private const val testIssuer = "test-issuer"
+private val jwtStub = JwtStub(testIssuer)
+private val stubToken = jwtStub.createTokenFor("subject", "audience")
 class TestApplication {
+    private val authCheckEndpoint = "/authPing"
+
     @Test
-    fun `ny startmekanisme-test`() {
+    fun `200 for autorisert request`(){
+        withTestApplication({
+            mockApi()
+        }) {
+            handleRequest(HttpMethod.Get, authCheckEndpoint){
+                addHeader(HttpHeaders.Cookie, "selvbetjening-idtoken=$stubToken")
+            }.apply{
+                response.status() shouldBe HttpStatusCode.OK
+            }
+
+        }
+    }
+
+    @Test
+    fun `401 if authcoockie is missing`() {
         withTestApplication({
             mockApi()
         }) {
 
+            handleRequest(HttpMethod.Get, authCheckEndpoint).apply{
+                response.status() shouldBe HttpStatusCode.Unauthorized
+            }
+
         }
     }
+
+    @Test
+    fun `401 if token has expired`(){
+        withTestApplication({
+            mockApi()
+        }) {
+            handleRequest(HttpMethod.Get, authCheckEndpoint){
+            }.apply{
+                response.status() shouldBe HttpStatusCode.Unauthorized
+            }
+        }
+    }
+
 }
 
+
+
 private fun Application.mockApi(
-    corsAllowedOrigins: String = "",
-    corsAllowedSchemes: String = "",
+    corsAllowedOrigins: String = "*.nav.no",
+    corsAllowedSchemes: String = "https",
     corsAllowedHeaders: List<String> = emptyList(),
     meldekortService: MeldekortService = mockk(relaxed = true),
     oppfolgingService: OppfolgingService = mockk(relaxed = true),
@@ -45,12 +87,8 @@ private fun Application.mockApi(
     doneProducer: DoneProducer = mockk(relaxed = true),
     httpClient: HttpClient = mockk(relaxed = true),
     httpClientIgnoreUnknownKeys: HttpClient = mockk(relaxed = true),
-    loginserviceAudience: String = "dittnav-api",
-    loginIssuer: String? = null
 
 ) {
-    val mockJwt = JwtStub(issuer = loginIssuer ?: "testapp")
-
     api(
         corsAllowedOrigins = corsAllowedOrigins,
         corsAllowedSchemes = corsAllowedSchemes,
@@ -67,8 +105,9 @@ private fun Application.mockApi(
         doneProducer = doneProducer,
         httpClient = httpClient,
         httpClientIgnoreUnknownKeys = httpClientIgnoreUnknownKeys,
-        jwtAudience = loginserviceAudience,
-        jwkProvider = mockJwt.stubbedJwkProvider(),
-        jwtIssuer = loginserviceAudience,
+        jwtAudience = "audience",
+        jwkProvider = jwtStub.stubbedJwkProvider(),
+        jwtIssuer = testIssuer
+
     )
 }

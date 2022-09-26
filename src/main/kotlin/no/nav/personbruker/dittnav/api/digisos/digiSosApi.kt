@@ -7,7 +7,6 @@ import io.ktor.response.*
 import io.ktor.routing.*
 import no.nav.personbruker.dittnav.api.common.respondWithError
 import no.nav.personbruker.dittnav.api.config.authenticatedUser
-import no.nav.personbruker.dittnav.api.config.executeOnUnexpiredTokensOnly
 import org.slf4j.LoggerFactory
 
 fun Route.digiSos(
@@ -17,7 +16,6 @@ fun Route.digiSos(
     val log = LoggerFactory.getLogger(DigiSosService::class.java)
 
     post("/digisos/paabegynte/done") {
-        executeOnUnexpiredTokensOnly {
             try {
                 val doneDto = call.receive<DoneDTO>()
                 service.markEventAsDone(authenticatedUser, doneDto)
@@ -26,6 +24,5 @@ fun Route.digiSos(
             } catch (exception: Exception) {
                 respondWithError(call, log, exception)
             }
-        }
     }
 }
