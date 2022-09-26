@@ -16,7 +16,7 @@ class BeskjedTransformerTest {
         beskjedDTO.eventId shouldBe beskjed1.eventId
         beskjedDTO.tekst shouldBe beskjed1.tekst
         beskjedDTO.link shouldBe beskjed1.link
-        beskjedDTO.produsent!! shouldBe beskjed1.produsent!!
+        beskjedDTO.produsent shouldBe beskjed1.produsent
         beskjedDTO.sistOppdatert shouldBe beskjed1.sistOppdatert
         beskjedDTO.sikkerhetsnivaa shouldBe beskjed1.sikkerhetsnivaa
         beskjedDTO.grupperingsId shouldBe beskjed1.grupperingsId
@@ -32,7 +32,7 @@ class BeskjedTransformerTest {
         beskjedDTO.eventId shouldBe beskjed.eventId
         beskjedDTO.tekst shouldBe "***"
         beskjedDTO.link shouldBe "***"
-        beskjedDTO.produsent!! shouldBe "***"
+        beskjedDTO.produsent shouldBe "***"
         beskjedDTO.sistOppdatert shouldBe beskjed.sistOppdatert
         beskjedDTO.sikkerhetsnivaa shouldBe beskjed.sikkerhetsnivaa
         beskjedDTO.grupperingsId shouldBe beskjed.grupperingsId

@@ -21,7 +21,7 @@ internal class MeldekortServiceTest {
 
     @Test
     fun `should fetch and transform external meldekortstatus`() {
-        val externalMeldekortStatus = MeldekortExternalObjectMother.createMeldekortStatus()
+        val externalMeldekortStatus = createMeldekortStatus()
 
         coEvery {
             tokendings.exchangeToken(user)

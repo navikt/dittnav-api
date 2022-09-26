@@ -3,12 +3,13 @@ package no.nav.personbruker.dittnav.api.digisos
 import io.kotest.matchers.nulls.shouldNotBeNull
 import io.kotest.matchers.shouldBe
 import org.junit.jupiter.api.Test
+import java.time.LocalDateTime
 
 internal class BeskjedDtoTransformerTest {
 
     @Test
     fun `Skal kunne konvertere til intern modell`() {
-        val external = PaabegynteObjectMother.giveMeOne()
+        val external = påbegyntSøknad()
 
         val internal = external.toInternal()
 
@@ -25,8 +26,8 @@ internal class BeskjedDtoTransformerTest {
     @Test
     fun `Skal konvertere flere eksterne til interne samtidig`() {
         val externals = listOf(
-            PaabegynteObjectMother.giveMeOne(true),
-            PaabegynteObjectMother.giveMeOne(false)
+            påbegyntSøknad(true),
+            påbegyntSøknad(false)
         )
 
         val internals = externals.toInternals()
@@ -39,7 +40,7 @@ internal class BeskjedDtoTransformerTest {
 
     @Test
     fun `Skal kappe tekster som er for lange`() {
-        val eventMedForLangTekst = PaabegynteObjectMother.giveMeOne().copy(
+        val eventMedForLangTekst = påbegyntSøknad().copy(
             tekst = "A".repeat(maxBeskjedTextLength + 1)
         )
 
@@ -50,3 +51,14 @@ internal class BeskjedDtoTransformerTest {
     }
 
 }
+
+private fun påbegyntSøknad(active: Boolean = false) = Paabegynte(
+    LocalDateTime.now(),
+    "123",
+    "987",
+    "Dette er en dummytekst",
+    "https://nav.no/lenke",
+    4,
+    LocalDateTime.now(),
+    active
+)

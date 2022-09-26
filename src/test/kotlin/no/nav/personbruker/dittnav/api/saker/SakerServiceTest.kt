@@ -13,6 +13,7 @@ import no.nav.personbruker.dittnav.api.common.ConsumeSakerException
 import no.nav.personbruker.dittnav.api.tokenx.AccessToken
 import org.junit.jupiter.api.Test
 import java.net.URL
+import java.time.ZonedDateTime
 
 internal class SakerServiceTest {
 
@@ -29,7 +30,11 @@ internal class SakerServiceTest {
     @Test
     fun `Skal hente sakstemaer fra Mine Saker`() {
 
-        coEvery { mineSakerConsumer.hentSistEndret(any()) } returns SisteSakstemaerDtoObjectMother.giveMeTemaDagpenger()
+        coEvery { mineSakerConsumer.hentSistEndret(any()) } returns SisteSakstemaerDTO(
+            listOf(SakstemaTestData.temaDagpenger(), SakstemaTestData.temaBil()),
+            ZonedDateTime.now()
+        )
+
 
         val service = SakerService(mineSakerConsumer, mineSakerURL, tokendings)
 

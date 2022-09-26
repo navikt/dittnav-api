@@ -25,7 +25,7 @@ internal class PersonaliaServiceTest {
 
     @Test
     fun `Skal hente navn fra personalia api`() {
-        coEvery { personaliaConsumer.hentNavn(any()) } returns PersonaliaObjectMother.giveMeNavn()
+        coEvery { personaliaConsumer.hentNavn(any()) } returns PersonaliaNavnDTO("TestName")
 
         val service = PersonaliaService(personaliaConsumer, tokendings)
 
@@ -64,7 +64,7 @@ internal class PersonaliaServiceTest {
 
     @Test
     fun `Skal hente ident fra personalia api`() {
-        coEvery { personaliaConsumer.hentIdent(any()) } returns PersonaliaObjectMother.giveMeIdent()
+        coEvery { personaliaConsumer.hentIdent(any()) } returns PersonaliaIdentDTO("1234")
 
         val service = PersonaliaService(personaliaConsumer, tokendings)
 
