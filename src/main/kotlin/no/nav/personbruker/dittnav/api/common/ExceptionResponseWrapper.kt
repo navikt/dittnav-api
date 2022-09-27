@@ -3,9 +3,9 @@ package no.nav.personbruker.dittnav.api.common
 import io.ktor.application.*
 import io.ktor.http.*
 import io.ktor.response.*
-import org.slf4j.Logger
+import mu.KLogger
 
-suspend fun respondWithError(call: ApplicationCall, log: Logger, exception: Exception) {
+suspend fun respondWithError(call: ApplicationCall, log: KLogger, exception: Exception) {
     when(exception) {
         is ConsumeEventException -> {
             val feilkode = HttpStatusCode.ServiceUnavailable

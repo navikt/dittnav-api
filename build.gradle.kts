@@ -24,7 +24,6 @@ repositories {
 }
 
 dependencies {
-    implementation(DittNAV.Common.logging)
     implementation(DittNAV.Common.utils)
     implementation(Kotlinx.coroutines)
     implementation(Kotlinx.htmlJvm)
@@ -32,23 +31,16 @@ dependencies {
     implementation(Ktor.authJwt)
     implementation(Ktor.clientApache)
     implementation(Ktor.clientJson)
-    implementation(Ktor.clientLogging)
-    implementation(Ktor.clientLoggingJvm)
     implementation(Ktor.clientSerializationJvm)
     implementation(Ktor.htmlBuilder)
     implementation(Ktor.metricsMicrometer)
     implementation(Micrometer.registryPrometheus)
     implementation(Ktor.serialization)
     implementation(Ktor.serverNetty)
-    implementation(Logback.classic)
-    implementation(Logstash.logbackEncoder)
     implementation(NAV.tokenValidatorKtor)
-    implementation(Prometheus.common)
-    implementation(Prometheus.hotspot)
-    implementation(Prometheus.logback)
     implementation("com.github.navikt.tms-ktor-token-support:token-support-tokendings-exchange:2022.01.27-13.11-a6b55dd90347")
-    implementation("org.apache.logging.log4j:log4j-core:2.19.0")
     implementation(Unleash.clientJava)
+    implementation("io.github.microutils:kotlin-logging-jvm:3.0.0")
 
     testImplementation(Junit.api)
     testImplementation(Ktor.clientMock)

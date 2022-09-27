@@ -4,14 +4,14 @@ import io.ktor.application.*
 import io.ktor.http.*
 import io.ktor.response.*
 import io.ktor.routing.*
+import mu.KotlinLogging
 import no.nav.personbruker.dittnav.api.common.respondWithError
 import no.nav.personbruker.dittnav.api.config.authenticatedUser
-import org.slf4j.LoggerFactory
 
 fun Route.saker(
     service: SakerService
 ) {
-    val log = LoggerFactory.getLogger(SakerService::class.java)
+    val log = KotlinLogging.logger {  }
 
     get("/saker") {
             try {

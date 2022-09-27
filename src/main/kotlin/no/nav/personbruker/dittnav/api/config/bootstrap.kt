@@ -3,7 +3,6 @@ package no.nav.personbruker.dittnav.api.config
 import com.auth0.jwk.JwkProvider
 import io.ktor.application.*
 import io.ktor.auth.*
-import io.ktor.auth.jwt.JWTPrincipal
 import io.ktor.auth.jwt.jwt
 import io.ktor.client.*
 import io.ktor.features.*
@@ -16,7 +15,7 @@ import io.ktor.serialization.*
 import io.ktor.util.pipeline.*
 import io.micrometer.prometheus.PrometheusConfig
 import io.micrometer.prometheus.PrometheusMeterRegistry
-import io.prometheus.client.hotspot.DefaultExports
+import mu.KotlinLogging
 import no.nav.personbruker.dittnav.api.authentication.AuthenticatedUser
 import no.nav.personbruker.dittnav.api.authentication.AuthenticatedUserFactory
 import no.nav.personbruker.dittnav.api.authentication.PrincipalWithTokenString
@@ -42,10 +41,9 @@ import no.nav.personbruker.dittnav.api.saker.SakerService
 import no.nav.personbruker.dittnav.api.saker.saker
 import no.nav.personbruker.dittnav.api.unleash.UnleashService
 import no.nav.personbruker.dittnav.api.unleash.unleash
-import org.slf4j.LoggerFactory
-import java.time.Instant
 
-val log = LoggerFactory.getLogger(ApplicationContext::class.java)
+
+val log = KotlinLogging.logger { }
 fun Application.api(
     corsAllowedOrigins: String,
     corsAllowedSchemes: String,
@@ -60,20 +58,18 @@ fun Application.api(
     unleashService: UnleashService,
     digiSosService: DigiSosService,
     doneProducer: DoneProducer,
-    httpClient: HttpClient,
     httpClientIgnoreUnknownKeys: HttpClient,
     jwtAudience: String,
     jwkProvider: JwkProvider,
     jwtIssuer: String
 ) {
 
-    DefaultExports.initialize()
     val collectorRegistry = PrometheusMeterRegistry(PrometheusConfig.DEFAULT)
 
     install(DefaultHeaders)
 
-    install(StatusPages){
-        exception<CookieNotSetException>{
+    install(StatusPages) {
+        exception<CookieNotSetException> {
             log.info("401: fant ikke selvbetjening-idtoken")
             call.respond(HttpStatusCode.Unauthorized)
         }
@@ -88,11 +84,9 @@ fun Application.api(
         }
     }
 
-
-
     install(Authentication) {
         jwt {
-            verifier(jwkProvider, jwtIssuer){
+            verifier(jwkProvider, jwtIssuer) {
                 withAudience(jwtAudience)
             }
 
@@ -105,7 +99,10 @@ fun Application.api(
                 requireNotNull(credentials.payload.claims["pid"]) {
                     "Token må inneholde fødselsnummer for personen i pid claim"
                 }
-                PrincipalWithTokenString(accessToken = request.cookies["selvbetjening-idtoken"]?:throw CookieNotSetException(), payload = credentials.payload)
+                PrincipalWithTokenString(
+                    accessToken = request.cookies["selvbetjening-idtoken"] ?: throw CookieNotSetException(),
+                    payload = credentials.payload
+                )
             }
         }
     }
@@ -137,15 +134,15 @@ fun Application.api(
             doneApi(doneProducer)
         }
 
-        configureShutdownHook(listOf(httpClient, httpClientIgnoreUnknownKeys))
+        configureShutdownHook(httpClientIgnoreUnknownKeys)
     }
 }
 
 class CookieNotSetException : Throwable() {}
 
-private fun Application.configureShutdownHook(httpClients: List<HttpClient>) {
+private fun Application.configureShutdownHook(httpClient: HttpClient) {
     environment.monitor.subscribe(ApplicationStopping) {
-        httpClients.forEach { httpClient -> httpClient.close() }
+        httpClient.close()
     }
 }
 
@@ -156,5 +153,6 @@ private fun isRunningInDev(clusterName: String? = System.getenv("NAIS_CLUSTER_NA
     }
     return runningInDev
 }
+
 val PipelineContext<Unit, ApplicationCall>.authenticatedUser: AuthenticatedUser
     get() = AuthenticatedUserFactory.createNewAuthenticatedUser(call)
