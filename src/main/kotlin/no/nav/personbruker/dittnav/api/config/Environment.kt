@@ -4,6 +4,7 @@ import com.auth0.jwk.JwkProviderBuilder
 import io.ktor.client.HttpClient
 import io.ktor.client.request.get
 import kotlinx.coroutines.runBlocking
+import kotlinx.serialization.Serializable
 import no.nav.personbruker.dittnav.common.util.config.BooleanEnvVar.getEnvVarAsBoolean
 import no.nav.personbruker.dittnav.common.util.config.StringEnvVar.getEnvVar
 import no.nav.personbruker.dittnav.common.util.config.StringEnvVar.getEnvVarAsList
@@ -33,8 +34,8 @@ data class Environment(
 
 )
 
+@Serializable
 data class LoginserviceMetadata(val jwks_uri: String, val issuer: String) {
-
     companion object {
         fun get(httpClient: HttpClient, discoveryUrl: String) = runBlocking {
             httpClient.get<LoginserviceMetadata>(discoveryUrl)
