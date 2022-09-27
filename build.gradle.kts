@@ -47,6 +47,7 @@ dependencies {
     implementation(Prometheus.hotspot)
     implementation(Prometheus.logback)
     implementation("com.github.navikt.tms-ktor-token-support:token-support-tokendings-exchange:2022.01.27-13.11-a6b55dd90347")
+    implementation("org.apache.logging.log4j:log4j-core:2.19.0")
     implementation(Unleash.clientJava)
 
     testImplementation(Junit.api)

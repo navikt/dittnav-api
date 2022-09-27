@@ -12,21 +12,18 @@ import java.time.Instant
 object AuthenticatedUserFactory {
 
     private val IDENT_CLAIM: IdentityClaim
-    private val defaultClaim = IdentityClaim.SUBJECT
-    private val oidcIdentityClaimName = "OIDC_CLAIM_CONTAINING_THE_IDENTITY"
-
-    private val NAV_ESSO_COOKIE_NAME = "nav-esso"
+    private const val oidcIdentityClaimName = "OIDC_CLAIM_CONTAINING_THE_IDENTITY"
 
     init {
-        val identityClaimFromEnvVariable = System.getenv(oidcIdentityClaimName) ?: defaultClaim.claimName
+        val identityClaimFromEnvVariable = System.getenv(oidcIdentityClaimName) ?: IdentityClaim.SUBJECT.claimName
         IDENT_CLAIM = IdentityClaim.fromClaimName(identityClaimFromEnvVariable)
     }
-    fun createNewAuthenticatedUser(principal: PrincipalWithTokenString, essoToken: String? = null): AuthenticatedUser {
-        val token = principal.accessToken
 
-        val ident: String = principal.payload.getClaim("pid").asString()//jwtTokenClaims.getStringClaim(IDENT_CLAIM.claimName)
+    private fun createNewAuthenticatedUser(principal: PrincipalWithTokenString): AuthenticatedUser {
+
+        val ident: String = principal.payload.getClaim("pid").asString()
         val loginLevel =
-            extractLoginLevel( principal.payload)
+            extractLoginLevel(principal.payload)
 
         return AuthenticatedUser(ident, loginLevel, principal.accessToken)
     }
@@ -35,9 +32,7 @@ object AuthenticatedUserFactory {
         val principal = call.principal<PrincipalWithTokenString>()
             ?: throw Exception("Principal har ikke blitt satt for authentication context.")
 
-        val essoToken = getEssoTokenIfPresent(call)
-
-        return createNewAuthenticatedUser(principal, essoToken)
+        return createNewAuthenticatedUser(principal)
     }
 
     private fun extractLoginLevel(payload: Payload): Int {
@@ -49,16 +44,6 @@ object AuthenticatedUserFactory {
         }
     }
 
-    private fun getTokenExpirationLocalDateTime(token: JwtToken): Instant {
-        return token.jwtTokenClaims
-            .expirationTime
-            .toInstant()
-    }
-
-    private fun getEssoTokenIfPresent(call: ApplicationCall): String? {
-        return call.request.cookies[NAV_ESSO_COOKIE_NAME]
-            ?: call.request.headers[NAV_ESSO_COOKIE_NAME]
-    }
-
 }
-data class  PrincipalWithTokenString(val accessToken:String, val payload:Payload): Principal
+
+data class PrincipalWithTokenString(val accessToken: String, val payload: Payload) : Principal
