@@ -12,7 +12,7 @@ import java.util.concurrent.TimeUnit
 fun main() {
     val appContext = ApplicationContext()
     val loginserviceMetadata =
-        LoginserviceMetadata.get(appContext.httpClient, appContext.environment.loginservicDiscoveryUrl)
+        LoginserviceMetadata.get(appContext.httpClientIgnoreUnknownKeys, appContext.environment.loginservicDiscoveryUrl)
     val jwkProvider = JwkProviderBuilder(URL(loginserviceMetadata.jwks_uri))
         .cached(10, 24, TimeUnit.HOURS)
         .rateLimited(10, 1, TimeUnit.MINUTES)
