@@ -25,17 +25,18 @@ import org.junit.jupiter.api.Test
 private const val testIssuer = "test-issuer"
 private val jwtStub = JwtStub(testIssuer)
 private val stubToken = jwtStub.createTokenFor("subject", "audience")
+
 class TestApplication {
     private val authCheckEndpoint = "/authPing"
 
     @Test
-    fun `200 for autorisert request`(){
+    fun `200 for autorisert request`() {
         withTestApplication({
             mockApi()
         }) {
-            handleRequest(HttpMethod.Get, authCheckEndpoint){
+            handleRequest(HttpMethod.Get, authCheckEndpoint) {
                 addHeader(HttpHeaders.Cookie, "selvbetjening-idtoken=$stubToken")
-            }.apply{
+            }.apply {
                 response.status() shouldBe HttpStatusCode.OK
             }
 
@@ -48,7 +49,7 @@ class TestApplication {
             mockApi()
         }) {
 
-            handleRequest(HttpMethod.Get, authCheckEndpoint).apply{
+            handleRequest(HttpMethod.Get, authCheckEndpoint).apply {
                 response.status() shouldBe HttpStatusCode.Unauthorized
             }
 
@@ -56,19 +57,18 @@ class TestApplication {
     }
 
     @Test
-    fun `401 if token has expired`(){
+    fun `401 if token has expired`() {
         withTestApplication({
             mockApi()
         }) {
-            handleRequest(HttpMethod.Get, authCheckEndpoint){
-            }.apply{
+            handleRequest(HttpMethod.Get, authCheckEndpoint) {
+            }.apply {
                 response.status() shouldBe HttpStatusCode.Unauthorized
             }
         }
     }
 
 }
-
 
 
 private fun Application.mockApi(
@@ -85,10 +85,9 @@ private fun Application.mockApi(
     unleashService: UnleashService = mockk(relaxed = true),
     digiSosService: DigiSosService = mockk(relaxed = true),
     doneProducer: DoneProducer = mockk(relaxed = true),
-    httpClient: HttpClient = mockk(relaxed = true),
     httpClientIgnoreUnknownKeys: HttpClient = mockk(relaxed = true),
 
-) {
+    ) {
     api(
         corsAllowedOrigins = corsAllowedOrigins,
         corsAllowedSchemes = corsAllowedSchemes,
@@ -103,7 +102,6 @@ private fun Application.mockApi(
         unleashService = unleashService,
         digiSosService = digiSosService,
         doneProducer = doneProducer,
-        httpClient = httpClient,
         httpClientIgnoreUnknownKeys = httpClientIgnoreUnknownKeys,
         jwtAudience = "audience",
         jwkProvider = jwtStub.stubbedJwkProvider(),

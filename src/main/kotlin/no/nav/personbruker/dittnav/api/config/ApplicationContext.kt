@@ -1,8 +1,6 @@
 package no.nav.personbruker.dittnav.api.config
 
 import io.ktor.client.features.json.serializer.*
-import io.micrometer.prometheus.PrometheusConfig
-import io.micrometer.prometheus.PrometheusMeterRegistry
 import no.finn.unleash.DefaultUnleash
 import no.finn.unleash.FakeUnleash
 import no.finn.unleash.Unleash
@@ -36,7 +34,6 @@ import no.nav.tms.token.support.tokendings.exchange.TokendingsServiceBuilder
 class ApplicationContext {
 
     val environment = Environment()
-    val httpClient = HttpClientBuilder.build(KotlinxSerializer(json()))
     val httpClientIgnoreUnknownKeys = HttpClientBuilder.build(KotlinxSerializer(json(ignoreUnknownKeys = true)))
 
     private val tokendingsService = TokendingsServiceBuilder.buildTokendingsService()
@@ -44,12 +41,12 @@ class ApplicationContext {
     private val mineSakerTokendings = MineSakerTokendings(tokendingsService, environment.mineSakerApiClientId)
     private val personaliaTokendings = PersonaliaTokendings(tokendingsService, environment.personaliaApiClientId)
 
-    private val oppgaveConsumer = OppgaveConsumer(httpClient, environment.eventHandlerURL)
-    private val beskjedConsumer = BeskjedConsumer(httpClient, environment.eventHandlerURL)
-    private val innboksConsumer = InnboksConsumer(httpClient, environment.eventHandlerURL)
-    private val mineSakerConsumer = MineSakerConsumer(httpClient, environment.sakerApiUrl)
+    private val oppgaveConsumer = OppgaveConsumer(httpClientIgnoreUnknownKeys, environment.eventHandlerURL)
+    private val beskjedConsumer = BeskjedConsumer(httpClientIgnoreUnknownKeys, environment.eventHandlerURL)
+    private val innboksConsumer = InnboksConsumer(httpClientIgnoreUnknownKeys, environment.eventHandlerURL)
+    private val mineSakerConsumer = MineSakerConsumer(httpClientIgnoreUnknownKeys, environment.sakerApiUrl)
 
-    val doneProducer = DoneProducer(httpClient, eventhandlerTokendings, environment.eventHandlerURL)
+    val doneProducer = DoneProducer(httpClientIgnoreUnknownKeys, eventhandlerTokendings, environment.eventHandlerURL)
 
     val unleashService = createUnleashService(environment)
 
@@ -58,15 +55,15 @@ class ApplicationContext {
     val innboksService = InnboksService(innboksConsumer, eventhandlerTokendings)
     val sakerService = SakerService(mineSakerConsumer, environment.mineSakerURL, mineSakerTokendings)
 
-    private val digiSosConsumer = DigiSosClient(httpClient, environment.digiSosSoknadBaseURL)
+    private val digiSosConsumer = DigiSosClient(httpClientIgnoreUnknownKeys, environment.digiSosSoknadBaseURL)
     val digiSosService = DigiSosService(digiSosConsumer)
 
     val beskjedMergerService = BeskjedMergerService(beskjedService, digiSosService, unleashService)
 
-    private val personaliaConsumer = PersonaliaConsumer(httpClient, environment.personaliaApiUrl)
+    private val personaliaConsumer = PersonaliaConsumer(httpClientIgnoreUnknownKeys, environment.personaliaApiUrl)
     val personaliaService = PersonaliaService(personaliaConsumer, personaliaTokendings)
 
-    private val meldekortConsumer = MeldekortConsumer(httpClient, environment.meldekortApiUrl)
+    private val meldekortConsumer = MeldekortConsumer(httpClientIgnoreUnknownKeys, environment.meldekortApiUrl)
     private val meldekortTokendings = MeldekortTokendings(tokendingsService, environment.meldekortClientId)
     val meldekortService = MeldekortService(meldekortConsumer, meldekortTokendings)
 

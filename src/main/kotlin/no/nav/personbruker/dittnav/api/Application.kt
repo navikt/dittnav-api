@@ -35,7 +35,6 @@ fun main() {
             unleashService = appContext.unleashService,
             digiSosService = appContext.digiSosService,
             doneProducer = appContext.doneProducer,
-            httpClient = appContext.httpClient,
             httpClientIgnoreUnknownKeys = appContext.httpClientIgnoreUnknownKeys,
             jwtAudience = appContext.environment.loginserviceIdportenAudience,
             jwkProvider = jwkProvider,
