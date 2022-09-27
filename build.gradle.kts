@@ -42,6 +42,8 @@ dependencies {
     implementation(Unleash.clientJava)
     implementation("io.github.microutils:kotlin-logging-jvm:3.0.0")
     implementation("org.apache.logging.log4j:log4j-core:2.19.0")
+    implementation(Logback.classic)
+    implementation(Logstash.logbackEncoder)
 
     testImplementation(Junit.api)
     testImplementation(Ktor.clientMock)
