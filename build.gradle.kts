@@ -41,6 +41,7 @@ dependencies {
     implementation("com.github.navikt.tms-ktor-token-support:token-support-tokendings-exchange:2022.01.27-13.11-a6b55dd90347")
     implementation(Unleash.clientJava)
     implementation("io.github.microutils:kotlin-logging-jvm:3.0.0")
+    implementation("org.apache.logging.log4j:log4j-core:2.19.0")
 
     testImplementation(Junit.api)
     testImplementation(Ktor.clientMock)
