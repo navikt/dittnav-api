@@ -14,7 +14,6 @@ import io.ktor.http.HttpStatusCode
 import io.ktor.http.headersOf
 import io.ktor.server.testing.handleRequest
 import io.ktor.server.testing.withTestApplication
-import io.ktor.utils.io.ByteReadChannel
 import io.mockk.mockk
 import no.nav.personbruker.dittnav.api.beskjed.BeskjedMergerService
 import no.nav.personbruker.dittnav.api.config.LoginserviceMetadata
@@ -37,8 +36,6 @@ private val stubToken = jwtStub.createTokenFor("subject", "audience")
 
 class TestApplication {
     private val authCheckEndpoint = "/dittnav-api/authPing"
-    private val isAliveEndpoint = "/dittnav-api/internal/isAlive"
-    private val isReadyEndpoint = "/dittnav-api/internal/isReady"
     private val mockWellknown = this::class.java.classLoader.getResource("wellknown_dummy.json").readText()
 
     @Test
@@ -48,23 +45,6 @@ class TestApplication {
         }) {
             handleRequest(HttpMethod.Get, authCheckEndpoint) {
                 addHeader(HttpHeaders.Cookie, "selvbetjening-idtoken=$stubToken")
-            }.apply {
-                response.status() shouldBe HttpStatusCode.OK
-            }
-
-        }
-    }
-
-    @Test
-    fun `healthApi skal nås uten autentisering`() {
-        withTestApplication({
-            mockApi()
-        }) {
-            handleRequest(HttpMethod.Get, isAliveEndpoint) {
-            }.apply {
-                response.status() shouldBe HttpStatusCode.OK
-            }
-            handleRequest(HttpMethod.Get, isReadyEndpoint) {
             }.apply {
                 response.status() shouldBe HttpStatusCode.OK
             }
@@ -99,7 +79,7 @@ class TestApplication {
 
     @Test
     fun `henter loginservice credentials`() {
-        val mockEngine = MockEngine { request ->
+        val mockEngine = MockEngine {
             respond(
                 content = mockWellknown,
                 status = HttpStatusCode.OK,
@@ -151,10 +131,9 @@ private fun Application.mockApi(
         unleashService = unleashService,
         digiSosService = digiSosService,
         doneProducer = doneProducer,
-        httpClientIgnoreUnknownKeys = httpClientIgnoreUnknownKeys,
+        httpClient = httpClientIgnoreUnknownKeys,
         jwtAudience = "audience",
         jwkProvider = jwtStub.stubbedJwkProvider(),
-        jwtIssuer = testIssuer,
-        httpClient = httpClientIgnoreUnknownKeys
+        jwtIssuer = testIssuer
     )
 }

@@ -41,10 +41,8 @@ import no.nav.personbruker.dittnav.api.saker.SakerService
 import no.nav.personbruker.dittnav.api.saker.saker
 import no.nav.personbruker.dittnav.api.unleash.UnleashService
 import no.nav.personbruker.dittnav.api.unleash.unleash
-import org.slf4j.LoggerFactory
 import java.lang.Exception
 
-private val logger = LoggerFactory.getLogger(ApplicationContext::class.java)
 fun Application.api(
     corsAllowedOrigins: String,
     corsAllowedSchemes: String,
@@ -60,13 +58,11 @@ fun Application.api(
     digiSosService: DigiSosService,
     doneProducer: DoneProducer,
     httpClient: HttpClient,
-    httpClientIgnoreUnknownKeys: HttpClient,
     jwtAudience: String,
     jwkProvider: JwkProvider,
     jwtIssuer: String
 ) {
 
-    logger.info("Initialiserer API")
     DefaultExports.initialize()
     val collectorRegistry = PrometheusMeterRegistry(PrometheusConfig.DEFAULT)
 
@@ -95,7 +91,6 @@ fun Application.api(
 
 
     install(Authentication) {
-        logger.info("Setter opp autentisering")
         jwt {
             verifier(jwkProvider, jwtIssuer) {
                 withAudience(jwtAudience)
@@ -145,17 +140,16 @@ fun Application.api(
                 doneApi(doneProducer)
             }
 
-            configureShutdownHook(listOf(httpClient, httpClientIgnoreUnknownKeys))
+            configureShutdownHook(httpClient)
         }
     }
 }
 
 class CookieNotSetException : Throwable() {}
 
-private fun Application.configureShutdownHook(httpClients: List<HttpClient>) {
+private fun Application.configureShutdownHook(httpClient: HttpClient) {
     environment.monitor.subscribe(ApplicationStopping) {
-        logger.info("Stopper ktor app")
-        httpClients.forEach { httpClient -> httpClient.close() }
+        httpClient.close()
     }
 }
 

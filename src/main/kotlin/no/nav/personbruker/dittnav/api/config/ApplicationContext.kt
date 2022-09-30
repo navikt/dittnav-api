@@ -34,19 +34,19 @@ import no.nav.tms.token.support.tokendings.exchange.TokendingsServiceBuilder
 class ApplicationContext {
 
     val environment = Environment()
-    val httpClientIgnoreUnknownKeys = HttpClientBuilder.build(KotlinxSerializer(json(ignoreUnknownKeys = true)))
+    val httpClient = HttpClientBuilder.build(KotlinxSerializer(json(ignoreUnknownKeys = true)))
 
     private val tokendingsService = TokendingsServiceBuilder.buildTokendingsService()
     private val eventhandlerTokendings = EventhandlerTokendings(tokendingsService, environment.eventhandlerClientId)
     private val mineSakerTokendings = MineSakerTokendings(tokendingsService, environment.mineSakerApiClientId)
     private val personaliaTokendings = PersonaliaTokendings(tokendingsService, environment.personaliaApiClientId)
 
-    private val oppgaveConsumer = OppgaveConsumer(httpClientIgnoreUnknownKeys, environment.eventHandlerURL)
-    private val beskjedConsumer = BeskjedConsumer(httpClientIgnoreUnknownKeys, environment.eventHandlerURL)
-    private val innboksConsumer = InnboksConsumer(httpClientIgnoreUnknownKeys, environment.eventHandlerURL)
-    private val mineSakerConsumer = MineSakerConsumer(httpClientIgnoreUnknownKeys, environment.sakerApiUrl)
+    private val oppgaveConsumer = OppgaveConsumer(httpClient, environment.eventHandlerURL)
+    private val beskjedConsumer = BeskjedConsumer(httpClient, environment.eventHandlerURL)
+    private val innboksConsumer = InnboksConsumer(httpClient, environment.eventHandlerURL)
+    private val mineSakerConsumer = MineSakerConsumer(httpClient, environment.sakerApiUrl)
 
-    val doneProducer = DoneProducer(httpClientIgnoreUnknownKeys, eventhandlerTokendings, environment.eventHandlerURL)
+    val doneProducer = DoneProducer(httpClient, eventhandlerTokendings, environment.eventHandlerURL)
 
     val unleashService = createUnleashService(environment)
 
@@ -55,19 +55,19 @@ class ApplicationContext {
     val innboksService = InnboksService(innboksConsumer, eventhandlerTokendings)
     val sakerService = SakerService(mineSakerConsumer, environment.mineSakerURL, mineSakerTokendings)
 
-    private val digiSosConsumer = DigiSosClient(httpClientIgnoreUnknownKeys, environment.digiSosSoknadBaseURL)
+    private val digiSosConsumer = DigiSosClient(httpClient, environment.digiSosSoknadBaseURL)
     val digiSosService = DigiSosService(digiSosConsumer)
 
     val beskjedMergerService = BeskjedMergerService(beskjedService, digiSosService, unleashService)
 
-    private val personaliaConsumer = PersonaliaConsumer(httpClientIgnoreUnknownKeys, environment.personaliaApiUrl)
+    private val personaliaConsumer = PersonaliaConsumer(httpClient, environment.personaliaApiUrl)
     val personaliaService = PersonaliaService(personaliaConsumer, personaliaTokendings)
 
-    private val meldekortConsumer = MeldekortConsumer(httpClientIgnoreUnknownKeys, environment.meldekortApiUrl)
+    private val meldekortConsumer = MeldekortConsumer(httpClient, environment.meldekortApiUrl)
     private val meldekortTokendings = MeldekortTokendings(tokendingsService, environment.meldekortClientId)
     val meldekortService = MeldekortService(meldekortConsumer, meldekortTokendings)
 
-    private val oppfolgingConsumer = OppfolgingConsumer(httpClientIgnoreUnknownKeys, environment.oppfolgingApiUrl)
+    private val oppfolgingConsumer = OppfolgingConsumer(httpClient, environment.oppfolgingApiUrl)
     val oppfolgingService = OppfolgingService(oppfolgingConsumer)
 
     private fun createUnleashService(environment: Environment): UnleashService {
