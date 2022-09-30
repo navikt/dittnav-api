@@ -36,9 +36,9 @@ private val jwtStub = JwtStub(testIssuer)
 private val stubToken = jwtStub.createTokenFor("subject", "audience")
 
 class TestApplication {
-    private val authCheckEndpoint = "/authPing"
-    private val isAliveEndpoint = "/internal/isAlive"
-    private val isReadyEndpoint = "/internal/isReady"
+    private val authCheckEndpoint = "/dittnav-api/authPing"
+    private val isAliveEndpoint = "/dittnav-api/internal/isAlive"
+    private val isReadyEndpoint = "/dittnav-api/internal/isReady"
     private val mockWellknown = this::class.java.classLoader.getResource("wellknown_dummy.json").readText()
 
     @Test

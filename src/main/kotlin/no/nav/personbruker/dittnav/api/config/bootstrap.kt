@@ -3,7 +3,6 @@ package no.nav.personbruker.dittnav.api.config
 import com.auth0.jwk.JwkProvider
 import io.ktor.application.*
 import io.ktor.auth.*
-import io.ktor.auth.jwt.JWTPrincipal
 import io.ktor.auth.jwt.jwt
 import io.ktor.client.*
 import io.ktor.features.*
@@ -44,7 +43,6 @@ import no.nav.personbruker.dittnav.api.unleash.UnleashService
 import no.nav.personbruker.dittnav.api.unleash.unleash
 import org.slf4j.LoggerFactory
 import java.lang.Exception
-import java.time.Instant
 
 private val logger = LoggerFactory.getLogger(ApplicationContext::class.java)
 fun Application.api(
@@ -74,8 +72,8 @@ fun Application.api(
 
     install(DefaultHeaders)
 
-    install(StatusPages){
-        exception<CookieNotSetException>{
+    install(StatusPages) {
+        exception<CookieNotSetException> {
             log.info("401: fant ikke selvbetjening-idtoken")
             call.respond(HttpStatusCode.Unauthorized)
         }
@@ -99,7 +97,7 @@ fun Application.api(
     install(Authentication) {
         logger.info("Setter opp autentisering")
         jwt {
-            verifier(jwkProvider, jwtIssuer){
+            verifier(jwkProvider, jwtIssuer) {
                 withAudience(jwtAudience)
             }
 
@@ -112,7 +110,10 @@ fun Application.api(
                 requireNotNull(credentials.payload.claims["pid"]) {
                     "Token må inneholde fødselsnummer for personen i pid claim"
                 }
-                PrincipalWithTokenString(accessToken = request.cookies["selvbetjening-idtoken"]?:throw CookieNotSetException(), payload = credentials.payload)
+                PrincipalWithTokenString(
+                    accessToken = request.cookies["selvbetjening-idtoken"] ?: throw CookieNotSetException(),
+                    payload = credentials.payload
+                )
             }
         }
     }
@@ -126,25 +127,26 @@ fun Application.api(
     }
 
     routing {
-        healthApi(collectorRegistry)
-        authenticate {
-
-            meldekortApi(meldekortService)
-            oppfolgingApi(oppfolgingService)
-            oppgave(oppgaveService)
-            beskjed(beskjedMergerService)
-            innboks(innboksService)
-            saker(sakerService)
-            personalia(personaliaService)
-            unleash(unleashService)
-            if (isRunningInDev()) {
-                digiSos(digiSosService)
+        route("/dittnav-api") {
+            healthApi(collectorRegistry)
+            authenticate {
+                meldekortApi(meldekortService)
+                oppfolgingApi(oppfolgingService)
+                oppgave(oppgaveService)
+                beskjed(beskjedMergerService)
+                innboks(innboksService)
+                saker(sakerService)
+                personalia(personaliaService)
+                unleash(unleashService)
+                if (isRunningInDev()) {
+                    digiSos(digiSosService)
+                }
+                authenticationCheck()
+                doneApi(doneProducer)
             }
-            authenticationCheck()
-            doneApi(doneProducer)
-        }
 
-        configureShutdownHook(listOf(httpClient, httpClientIgnoreUnknownKeys))
+            configureShutdownHook(listOf(httpClient, httpClientIgnoreUnknownKeys))
+        }
     }
 }
 
@@ -154,7 +156,8 @@ private fun Application.configureShutdownHook(httpClients: List<HttpClient>) {
     environment.monitor.subscribe(ApplicationStopping) {
         logger.info("Stopper ktor app")
         httpClients.forEach { httpClient -> httpClient.close() }
-    } }
+    }
+}
 
 private fun isRunningInDev(clusterName: String? = System.getenv("NAIS_CLUSTER_NAME")): Boolean {
     var runningInDev = true
@@ -163,5 +166,6 @@ private fun isRunningInDev(clusterName: String? = System.getenv("NAIS_CLUSTER_NA
     }
     return runningInDev
 }
+
 val PipelineContext<Unit, ApplicationCall>.authenticatedUser: AuthenticatedUser
     get() = AuthenticatedUserFactory.createNewAuthenticatedUser(call)
