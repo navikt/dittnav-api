@@ -45,7 +45,7 @@ import no.nav.personbruker.dittnav.api.unleash.unleash
 import org.slf4j.LoggerFactory
 import java.time.Instant
 
-val log = LoggerFactory.getLogger(ApplicationContext::class.java)
+private val logger = LoggerFactory.getLogger(ApplicationContext::class.java)
 fun Application.api(
     corsAllowedOrigins: String,
     corsAllowedSchemes: String,
@@ -67,6 +67,7 @@ fun Application.api(
     jwtIssuer: String
 ) {
 
+    logger.info("Initialiserer API")
     DefaultExports.initialize()
     val collectorRegistry = PrometheusMeterRegistry(PrometheusConfig.DEFAULT)
 
@@ -91,6 +92,7 @@ fun Application.api(
 
 
     install(Authentication) {
+        logger.info("Setter opp autentisering")
         jwt {
             verifier(jwkProvider, jwtIssuer){
                 withAudience(jwtAudience)
@@ -144,6 +146,7 @@ fun Application.api(
 class CookieNotSetException : Throwable() {}
 
 private fun Application.configureShutdownHook(httpClients: List<HttpClient>) {
+    logger.info("Shutdown hook")
     environment.monitor.subscribe(ApplicationStopping) {
         httpClients.forEach { httpClient -> httpClient.close() }
     }

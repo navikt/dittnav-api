@@ -1,6 +1,5 @@
 package no.nav.personbruker.dittnav.api.config
 
-import com.auth0.jwk.JwkProviderBuilder
 import io.ktor.client.HttpClient
 import io.ktor.client.request.get
 import kotlinx.coroutines.runBlocking
@@ -10,8 +9,10 @@ import no.nav.personbruker.dittnav.common.util.config.StringEnvVar.getEnvVar
 import no.nav.personbruker.dittnav.common.util.config.StringEnvVar.getEnvVarAsList
 import no.nav.personbruker.dittnav.common.util.config.UrlEnvVar.getEnvVarAsURL
 import java.net.URL
-import java.util.concurrent.TimeUnit
+import org.slf4j.LoggerFactory
 
+
+private val logger = LoggerFactory.getLogger(Environment::class.java)
 data class Environment(
     val eventHandlerURL: URL = getEnvVarAsURL("EVENT_HANDLER_URL", trimTrailingSlash = true),
     val corsAllowedOrigins: String = getEnvVar("CORS_ALLOWED_ORIGINS"),
@@ -38,7 +39,10 @@ data class Environment(
 data class LoginserviceMetadata(val jwks_uri: String, val issuer: String) {
     companion object {
         fun get(httpClient: HttpClient, discoveryUrl: String) = runBlocking {
+            logger.info("Forsøker å hente loginservie credentials fra $discoveryUrl")
             httpClient.get<LoginserviceMetadata>(discoveryUrl)
+        }.also {
+            logger.info("Fant loginservice-credentials: $it")
         }
 
     }
