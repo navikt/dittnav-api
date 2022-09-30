@@ -105,7 +105,7 @@ private fun Application.mockApi(
         httpClientIgnoreUnknownKeys = httpClientIgnoreUnknownKeys,
         jwtAudience = "audience",
         jwkProvider = jwtStub.stubbedJwkProvider(),
-        jwtIssuer = testIssuer
-
+        jwtIssuer = testIssuer,
+        httpClient = httpClientIgnoreUnknownKeys
     )
 }

@@ -1,17 +1,17 @@
 package no.nav.personbruker.dittnav.api.beskjed
 
-import mu.KotlinLogging
 import no.nav.personbruker.dittnav.api.authentication.AuthenticatedUser
 import no.nav.personbruker.dittnav.api.tokenx.EventhandlerTokendings
 import no.nav.personbruker.dittnav.api.common.MultiSourceResult
 import no.nav.personbruker.dittnav.api.tokenx.AccessToken
+import org.slf4j.LoggerFactory
 
 class BeskjedService(
     private val beskjedConsumer: BeskjedConsumer,
     private val eventhandlerTokendings: EventhandlerTokendings
 ) {
 
-    private val log = KotlinLogging.logger {  }
+    private val log = LoggerFactory.getLogger(BeskjedService::class.java)
 
     private val kilde = KildeType.EVENTHANDLER
 

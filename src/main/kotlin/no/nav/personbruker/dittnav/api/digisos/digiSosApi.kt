@@ -5,16 +5,15 @@ import io.ktor.http.*
 import io.ktor.request.*
 import io.ktor.response.*
 import io.ktor.routing.*
-import mu.KotlinLogging
 import no.nav.personbruker.dittnav.api.common.respondWithError
 import no.nav.personbruker.dittnav.api.config.authenticatedUser
-
+import org.slf4j.LoggerFactory
 
 fun Route.digiSos(
     service: DigiSosService
 ) {
 
-    val log = KotlinLogging.logger {  }
+    val log = LoggerFactory.getLogger(DigiSosService::class.java)
 
     post("/digisos/paabegynte/done") {
             try {

@@ -3,14 +3,12 @@ package no.nav.personbruker.dittnav.api
 import com.auth0.jwk.JwkProviderBuilder
 import io.ktor.server.engine.embeddedServer
 import io.ktor.server.netty.Netty
-import mu.KotlinLogging
 import no.nav.personbruker.dittnav.api.config.ApplicationContext
 import no.nav.personbruker.dittnav.api.config.LoginserviceMetadata
 import no.nav.personbruker.dittnav.api.config.api
 import java.net.URL
 import java.util.concurrent.TimeUnit
 
-private val logger = KotlinLogging.logger {}
 fun main() {
     val appContext = ApplicationContext()
     val loginserviceMetadata =
@@ -38,9 +36,9 @@ fun main() {
             httpClientIgnoreUnknownKeys = appContext.httpClientIgnoreUnknownKeys,
             jwtAudience = appContext.environment.loginserviceIdportenAudience,
             jwkProvider = jwkProvider,
+            httpClient = appContext.httpClientIgnoreUnknownKeys,
             jwtIssuer = loginserviceMetadata.issuer,
         )
-    }.also {
-        logger.debug { "starter opp applikasjon med env ${appContext.environment}" }
+
     }
 }
