@@ -20,33 +20,30 @@ fun main() {
         .rateLimited(10, 1, TimeUnit.MINUTES)
         .build()
 
-    try {
-        embeddedServer(Netty, port = 8080) {
-            logger.info("Forsøker å starte server")
-            api(
-                corsAllowedOrigins = appContext.environment.corsAllowedOrigins,
-                corsAllowedSchemes = appContext.environment.corsAllowedSchemes,
-                corsAllowedHeaders = appContext.environment.corsAllowedHeaders,
-                meldekortService = appContext.meldekortService,
-                oppfolgingService = appContext.oppfolgingService,
-                oppgaveService = appContext.oppgaveService,
-                beskjedMergerService = appContext.beskjedMergerService,
-                innboksService = appContext.innboksService,
-                sakerService = appContext.sakerService,
-                personaliaService = appContext.personaliaService,
-                unleashService = appContext.unleashService,
-                digiSosService = appContext.digiSosService,
-                doneProducer = appContext.doneProducer,
-                httpClientIgnoreUnknownKeys = appContext.httpClientIgnoreUnknownKeys,
-                jwtAudience = appContext.environment.loginserviceIdportenAudience,
-                jwkProvider = jwkProvider,
-                httpClient = appContext.httpClientIgnoreUnknownKeys,
-                jwtIssuer = loginserviceMetadata.issuer,
-            )
 
-        }
-    } catch (e: Exception) {
-        logger.error("Kunne ikke starte server: ${e.message}")
-        throw e
-    }
+    embeddedServer(Netty, port = 8080) {
+        logger.info("Forsøker å starte server")
+        api(
+            corsAllowedOrigins = appContext.environment.corsAllowedOrigins,
+            corsAllowedSchemes = appContext.environment.corsAllowedSchemes,
+            corsAllowedHeaders = appContext.environment.corsAllowedHeaders,
+            meldekortService = appContext.meldekortService,
+            oppfolgingService = appContext.oppfolgingService,
+            oppgaveService = appContext.oppgaveService,
+            beskjedMergerService = appContext.beskjedMergerService,
+            innboksService = appContext.innboksService,
+            sakerService = appContext.sakerService,
+            personaliaService = appContext.personaliaService,
+            unleashService = appContext.unleashService,
+            digiSosService = appContext.digiSosService,
+            doneProducer = appContext.doneProducer,
+            httpClientIgnoreUnknownKeys = appContext.httpClientIgnoreUnknownKeys,
+            jwtAudience = appContext.environment.loginserviceIdportenAudience,
+            jwkProvider = jwkProvider,
+            httpClient = appContext.httpClientIgnoreUnknownKeys,
+            jwtIssuer = loginserviceMetadata.issuer,
+        )
+
+    }.start(wait = true)
+
 }
