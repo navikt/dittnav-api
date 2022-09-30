@@ -37,7 +37,9 @@ private val stubToken = jwtStub.createTokenFor("subject", "audience")
 
 class TestApplication {
     private val authCheckEndpoint = "/authPing"
-    val mockWellknown = this::class.java.classLoader.getResource("wellknown_dummy.json").readText()
+    private val isAliveEndpoint = "/internal/isAlive"
+    private val isReadyEndpoint = "/internal/isReady"
+    private val mockWellknown = this::class.java.classLoader.getResource("wellknown_dummy.json").readText()
 
     @Test
     fun `200 for autorisert request`() {
@@ -46,6 +48,23 @@ class TestApplication {
         }) {
             handleRequest(HttpMethod.Get, authCheckEndpoint) {
                 addHeader(HttpHeaders.Cookie, "selvbetjening-idtoken=$stubToken")
+            }.apply {
+                response.status() shouldBe HttpStatusCode.OK
+            }
+
+        }
+    }
+
+    @Test
+    fun `healthApi skal nås uten autentisering`() {
+        withTestApplication({
+            mockApi()
+        }) {
+            handleRequest(HttpMethod.Get, isAliveEndpoint) {
+            }.apply {
+                response.status() shouldBe HttpStatusCode.OK
+            }
+            handleRequest(HttpMethod.Get, isReadyEndpoint) {
             }.apply {
                 response.status() shouldBe HttpStatusCode.OK
             }
