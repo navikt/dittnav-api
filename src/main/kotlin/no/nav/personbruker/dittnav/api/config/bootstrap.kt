@@ -43,6 +43,7 @@ import no.nav.personbruker.dittnav.api.saker.saker
 import no.nav.personbruker.dittnav.api.unleash.UnleashService
 import no.nav.personbruker.dittnav.api.unleash.unleash
 import org.slf4j.LoggerFactory
+import java.lang.Exception
 import java.time.Instant
 
 private val logger = LoggerFactory.getLogger(ApplicationContext::class.java)
@@ -77,6 +78,10 @@ fun Application.api(
         exception<CookieNotSetException>{
             log.info("401: fant ikke selvbetjening-idtoken")
             call.respond(HttpStatusCode.Unauthorized)
+        }
+        exception<Exception> { execption ->
+            log.info(execption.message)
+            call.respond(HttpStatusCode.InternalServerError)
         }
     }
 
@@ -146,11 +151,10 @@ fun Application.api(
 class CookieNotSetException : Throwable() {}
 
 private fun Application.configureShutdownHook(httpClients: List<HttpClient>) {
-    logger.info("Shutdown hook")
     environment.monitor.subscribe(ApplicationStopping) {
+        logger.info("Stopper ktor app")
         httpClients.forEach { httpClient -> httpClient.close() }
-    }
-}
+    } }
 
 private fun isRunningInDev(clusterName: String? = System.getenv("NAIS_CLUSTER_NAME")): Boolean {
     var runningInDev = true

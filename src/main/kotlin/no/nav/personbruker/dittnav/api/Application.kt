@@ -20,7 +20,6 @@ fun main() {
         .rateLimited(10, 1, TimeUnit.MINUTES)
         .build()
 
-
     embeddedServer(Netty, port = 8080) {
         logger.info("Forsøker å starte server")
         api(
@@ -45,5 +44,4 @@ fun main() {
         )
 
     }.start(wait = true)
-
 }
