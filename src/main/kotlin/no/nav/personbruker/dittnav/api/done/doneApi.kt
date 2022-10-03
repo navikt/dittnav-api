@@ -7,17 +7,14 @@ import io.ktor.response.*
 import io.ktor.routing.*
 import io.ktor.util.pipeline.*
 import no.nav.personbruker.dittnav.api.config.authenticatedUser
-import no.nav.personbruker.dittnav.api.config.executeOnUnexpiredTokensOnly
 
 fun Route.doneApi(doneProducer: DoneProducer) {
 
     post("/produce/done") {
-        executeOnUnexpiredTokensOnly {
             respondForParameterType<DoneDTO> { doneDto ->
                 val response = doneProducer.postDoneEvents(doneDto, authenticatedUser)
                 response
             }
-        }
     }
 }
 

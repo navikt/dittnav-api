@@ -3,10 +3,11 @@ package no.nav.personbruker.dittnav.api.beskjed
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.withContext
+import no.nav.personbruker.dittnav.api.authentication.AuthenticatedUser
 import no.nav.personbruker.dittnav.api.common.MultiSourceResult
 import no.nav.personbruker.dittnav.api.digisos.DigiSosService
 import no.nav.personbruker.dittnav.api.unleash.UnleashService
-import no.nav.personbruker.dittnav.common.security.AuthenticatedUser
+
 
 class BeskjedMergerService(
     private val beskjedService: BeskjedService,

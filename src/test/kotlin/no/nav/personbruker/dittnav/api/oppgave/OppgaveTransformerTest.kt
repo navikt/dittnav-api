@@ -16,7 +16,7 @@ class OppgaveTransformerTest {
         oppgaveDTO.eventId shouldBe oppgave1.eventId
         oppgaveDTO.tekst shouldBe oppgave1.tekst
         oppgaveDTO.link shouldBe oppgave1.link
-        oppgaveDTO.produsent!! shouldBe oppgave1.produsent!!
+        oppgaveDTO.produsent shouldBe oppgave1.produsent
         oppgaveDTO.sistOppdatert shouldBe oppgave1.sistOppdatert
         oppgaveDTO.sikkerhetsnivaa shouldBe oppgave1.sikkerhetsnivaa
         oppgaveDTO.aktiv shouldBe oppgave1.aktiv
@@ -33,7 +33,7 @@ class OppgaveTransformerTest {
         oppgaveDTO.eventId shouldBe oppgave.eventId
         oppgaveDTO.tekst shouldBe "***"
         oppgaveDTO.link shouldBe "***"
-        oppgaveDTO.produsent!! shouldBe "***"
+        oppgaveDTO.produsent shouldBe "***"
         oppgaveDTO.sistOppdatert shouldBe oppgave.sistOppdatert
         oppgaveDTO.sikkerhetsnivaa shouldBe oppgave.sikkerhetsnivaa
         oppgaveDTO.eksternVarslingSendt shouldBe oppgave.eksternVarslingSendt

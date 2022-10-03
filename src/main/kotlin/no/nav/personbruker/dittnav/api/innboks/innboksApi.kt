@@ -7,7 +7,6 @@ import io.ktor.routing.Route
 import io.ktor.routing.get
 import no.nav.personbruker.dittnav.api.common.respondWithError
 import no.nav.personbruker.dittnav.api.config.authenticatedUser
-import no.nav.personbruker.dittnav.api.config.executeOnUnexpiredTokensOnly
 import org.slf4j.LoggerFactory
 
 fun Route.innboks(innboksService: InnboksService) {
@@ -15,24 +14,20 @@ fun Route.innboks(innboksService: InnboksService) {
     val log = LoggerFactory.getLogger(InnboksService::class.java)
 
     get("/innboks") {
-        executeOnUnexpiredTokensOnly {
-            try {
-                val innboksEvents = innboksService.getActiveInnboksEvents(authenticatedUser)
-                call.respond(HttpStatusCode.OK, innboksEvents)
-            } catch (exception: Exception) {
-                respondWithError(call, log, exception)
-            }
+        try {
+            val innboksEvents = innboksService.getActiveInnboksEvents(authenticatedUser)
+            call.respond(HttpStatusCode.OK, innboksEvents)
+        } catch (exception: Exception) {
+            respondWithError(call, log, exception)
         }
     }
 
     get("/innboks/inaktiv") {
-        executeOnUnexpiredTokensOnly {
-            try {
-                val innboksEvents = innboksService.getInactiveInnboksEvents(authenticatedUser)
-                call.respond(HttpStatusCode.OK, innboksEvents)
-            } catch (exception: Exception) {
-                respondWithError(call, log, exception)
-            }
+        try {
+            val innboksEvents = innboksService.getInactiveInnboksEvents(authenticatedUser)
+            call.respond(HttpStatusCode.OK, innboksEvents)
+        } catch (exception: Exception) {
+            respondWithError(call, log, exception)
         }
     }
 }

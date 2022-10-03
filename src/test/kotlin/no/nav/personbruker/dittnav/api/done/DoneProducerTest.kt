@@ -36,13 +36,16 @@ internal class DoneProducerTest {
 
     @Test
     fun `should call post endpoint on event handler`() {
-        val done = DoneDtoObjectMother.createDoneDto(eventId = "dummyEventId")
+        val done = DoneDTO(eventId = "dummyEventId")
 
         val client = HttpClient(MockEngine) {
             engine {
                 addHandler { request ->
                     if (request.url.encodedPath.contains("/produce/done") && request.url.host.contains("event-handler")) {
-                        respond("Ok", headers = headersOf(HttpHeaders.ContentType, ContentType.Application.Json.toString()))
+                        respond(
+                            "Ok",
+                            headers = headersOf(HttpHeaders.ContentType, ContentType.Application.Json.toString())
+                        )
                     } else {
                         respondError(HttpStatusCode.BadRequest)
                     }

@@ -3,10 +3,9 @@ package no.nav.personbruker.dittnav.api.common
 import io.jsonwebtoken.Jwts
 import io.jsonwebtoken.SignatureAlgorithm
 import io.jsonwebtoken.security.Keys
-import no.nav.personbruker.dittnav.common.security.AuthenticatedUser
+import no.nav.personbruker.dittnav.api.authentication.AuthenticatedUser
 import no.nav.security.token.support.core.jwt.JwtToken
 import java.security.Key
-import java.time.ZoneId
 import java.time.ZonedDateTime
 import java.util.*
 
@@ -26,14 +25,13 @@ object AuthenticatedUserObjectMother {
 
     fun createAuthenticatedUser(ident: String, innloggingsnivaa: Int): AuthenticatedUser {
         val inTwoMinutes = ZonedDateTime.now().plusMinutes(2)
-        return createAuthenticatedUserWithValidTokenUntil(ident, innloggingsnivaa, inTwoMinutes, null)
+        return createAuthenticatedUserWithValidTokenUntil(ident, innloggingsnivaa, inTwoMinutes)
     }
 
-    fun createAuthenticatedUserWithValidTokenUntil(
+    private fun createAuthenticatedUserWithValidTokenUntil(
             ident: String,
             innloggingsnivaa: Int,
             tokensUtlopstidspunkt: ZonedDateTime,
-            auxiliaryToken: String?
     ): AuthenticatedUser {
         val jws = Jwts.builder()
                 .setSubject(ident)
@@ -41,16 +39,6 @@ object AuthenticatedUserObjectMother {
                 .setExpiration(Date.from(tokensUtlopstidspunkt.toInstant()))
                 .signWith(key).compact()
         val token = JwtToken(jws)
-        val expirationTime = token.jwtTokenClaims
-                                                .expirationTime
-                                                .toInstant()
-        return AuthenticatedUser(ident, innloggingsnivaa, token.tokenAsString, expirationTime, auxiliaryToken)
-    }
-
-    fun createAuthenticatedUserWithAuxiliaryToken(loginLevel: Int, auxiliaryToken: String?): AuthenticatedUser {
-        val ident = "123"
-        val inTwoMinutes = ZonedDateTime.now().plusMinutes(2)
-
-        return createAuthenticatedUserWithValidTokenUntil(ident, loginLevel, inTwoMinutes, auxiliaryToken)
+        return AuthenticatedUser(ident, innloggingsnivaa, token.tokenAsString)
     }
 }

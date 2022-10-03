@@ -3,9 +3,9 @@ package no.nav.personbruker.dittnav.api.saker
 import java.net.URL
 import java.time.ZonedDateTime
 
-object SakstemaDTOObjectMother {
+object SakstemaTestData {
 
-    fun giveMeTemaDagpenger(): SakstemaDTO {
+    fun temaDagpenger(): SakstemaDTO {
         return SakstemaDTO(
             "Dagpenger",
             "DAG",
@@ -14,7 +14,7 @@ object SakstemaDTOObjectMother {
         )
     }
 
-    fun giveMeTemaBil(): SakstemaDTO {
+    fun temaBil(): SakstemaDTO {
         return SakstemaDTO(
             "Bil",
             "BIL",
@@ -22,9 +22,4 @@ object SakstemaDTOObjectMother {
             URL("https://dummy/BIL")
         )
     }
-
-    fun giveMeList(): List<SakstemaDTO> {
-        return listOf(giveMeTemaDagpenger(), giveMeTemaBil())
-    }
-
 }

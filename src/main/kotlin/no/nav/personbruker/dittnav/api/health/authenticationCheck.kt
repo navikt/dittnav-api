@@ -5,15 +5,12 @@ import io.ktor.http.ContentType
 import io.ktor.response.respondText
 import io.ktor.routing.Route
 import io.ktor.routing.get
-import no.nav.personbruker.dittnav.api.config.executeOnUnexpiredTokensOnly
 
 fun Route.authenticationCheck() {
 
     val pingJsonResponse = """{"ping": "pong"}"""
 
     get("/authPing") {
-        executeOnUnexpiredTokensOnly {
             call.respondText(pingJsonResponse, ContentType.Application.Json)
         }
-    }
 }

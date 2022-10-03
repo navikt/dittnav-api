@@ -1,8 +1,6 @@
 package no.nav.personbruker.dittnav.api.config
 
 import io.ktor.client.features.json.serializer.*
-import io.micrometer.prometheus.PrometheusConfig
-import io.micrometer.prometheus.PrometheusMeterRegistry
 import no.finn.unleash.DefaultUnleash
 import no.finn.unleash.FakeUnleash
 import no.finn.unleash.Unleash
@@ -36,43 +34,40 @@ import no.nav.tms.token.support.tokendings.exchange.TokendingsServiceBuilder
 class ApplicationContext {
 
     val environment = Environment()
-    val appMicrometerRegistry = PrometheusMeterRegistry(PrometheusConfig.DEFAULT)
+    val httpClient = HttpClientBuilder.build(KotlinxSerializer(json(ignoreUnknownKeys = true)))
 
-    val httpClient = HttpClientBuilder.build(KotlinxSerializer(json()))
-    val httpClientIgnoreUnknownKeys = HttpClientBuilder.build(KotlinxSerializer(json(ignoreUnknownKeys = true)))
+    private val tokendingsService = TokendingsServiceBuilder.buildTokendingsService()
+    private val eventhandlerTokendings = EventhandlerTokendings(tokendingsService, environment.eventhandlerClientId)
+    private val mineSakerTokendings = MineSakerTokendings(tokendingsService, environment.mineSakerApiClientId)
+    private val personaliaTokendings = PersonaliaTokendings(tokendingsService, environment.personaliaApiClientId)
 
-    val tokendingsService = TokendingsServiceBuilder.buildTokendingsService()
-    val eventhandlerTokendings = EventhandlerTokendings(tokendingsService, environment.eventhandlerClientId)
-    val mineSakerTokendings = MineSakerTokendings(tokendingsService, environment.mineSakerApiClientId)
-    val personaliaTokendings = PersonaliaTokendings(tokendingsService, environment.personaliaApiClientId)
-
-    val oppgaveConsumer = OppgaveConsumer(httpClient, environment.eventHandlerURL)
-    val beskjedConsumer = BeskjedConsumer(httpClient, environment.eventHandlerURL)
-    val innboksConsumer = InnboksConsumer(httpClient, environment.eventHandlerURL)
-    val mineSakerConsumer = MineSakerConsumer(httpClient, environment.sakerApiUrl)
+    private val oppgaveConsumer = OppgaveConsumer(httpClient, environment.eventHandlerURL)
+    private val beskjedConsumer = BeskjedConsumer(httpClient, environment.eventHandlerURL)
+    private val innboksConsumer = InnboksConsumer(httpClient, environment.eventHandlerURL)
+    private val mineSakerConsumer = MineSakerConsumer(httpClient, environment.sakerApiUrl)
 
     val doneProducer = DoneProducer(httpClient, eventhandlerTokendings, environment.eventHandlerURL)
 
     val unleashService = createUnleashService(environment)
 
     val oppgaveService = OppgaveService(oppgaveConsumer, eventhandlerTokendings)
-    val beskjedService = BeskjedService(beskjedConsumer, eventhandlerTokendings)
+    private val beskjedService = BeskjedService(beskjedConsumer, eventhandlerTokendings)
     val innboksService = InnboksService(innboksConsumer, eventhandlerTokendings)
     val sakerService = SakerService(mineSakerConsumer, environment.mineSakerURL, mineSakerTokendings)
 
-    val digiSosConsumer = DigiSosClient(httpClient, environment.digiSosSoknadBaseURL)
+    private val digiSosConsumer = DigiSosClient(httpClient, environment.digiSosSoknadBaseURL)
     val digiSosService = DigiSosService(digiSosConsumer)
 
     val beskjedMergerService = BeskjedMergerService(beskjedService, digiSosService, unleashService)
 
-    val personaliaConsumer = PersonaliaConsumer(httpClient, environment.personaliaApiUrl)
+    private val personaliaConsumer = PersonaliaConsumer(httpClient, environment.personaliaApiUrl)
     val personaliaService = PersonaliaService(personaliaConsumer, personaliaTokendings)
 
-    val meldekortConsumer = MeldekortConsumer(httpClient, environment.meldekortApiUrl)
-    val meldekortTokendings = MeldekortTokendings(tokendingsService, environment.meldekortClientId)
+    private val meldekortConsumer = MeldekortConsumer(httpClient, environment.meldekortApiUrl)
+    private val meldekortTokendings = MeldekortTokendings(tokendingsService, environment.meldekortClientId)
     val meldekortService = MeldekortService(meldekortConsumer, meldekortTokendings)
 
-    val oppfolgingConsumer = OppfolgingConsumer(httpClientIgnoreUnknownKeys, environment.oppfolgingApiUrl)
+    private val oppfolgingConsumer = OppfolgingConsumer(httpClient, environment.oppfolgingApiUrl)
     val oppfolgingService = OppfolgingService(oppfolgingConsumer)
 
     private fun createUnleashService(environment: Environment): UnleashService {

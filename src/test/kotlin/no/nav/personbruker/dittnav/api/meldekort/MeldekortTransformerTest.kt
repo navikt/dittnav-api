@@ -1,14 +1,18 @@
 package no.nav.personbruker.dittnav.api.meldekort
 
 import io.kotest.matchers.shouldBe
+import no.nav.personbruker.dittnav.api.meldekort.external.MeldekortExternal
+import no.nav.personbruker.dittnav.api.meldekort.external.MeldekortstatusExternal
 import org.junit.jupiter.api.Test
 import java.time.LocalDate
+import java.time.temporal.WeekFields
+import java.util.Locale
 
 internal class MeldekortTransformerTest {
 
     @Test
     fun `should handle empty answer from meldekort`() {
-        val meldekortstatus = MeldekortExternalObjectMother.createEmptyMeldekortStatus()
+        val meldekortstatus = MeldekortstatusExternal()
 
         val result = MeldekortTransformer.toInternal(meldekortstatus)
 
@@ -20,7 +24,7 @@ internal class MeldekortTransformerTest {
 
     @Test
     fun `should transform external meldekortstatus to meldekortinfo`() {
-        val meldekortstatusExternal = MeldekortExternalObjectMother.createMeldekortStatus()
+        val meldekortstatusExternal = createMeldekortStatus()
 
         val meldekortExternal = meldekortstatusExternal.nesteMeldekort
 
@@ -47,8 +51,8 @@ internal class MeldekortTransformerTest {
 
     @Test
     fun `should correctly judge risikertrekk`() {
-        val normalMeldekort = MeldekortExternalObjectMother.createMeldekort(til = LocalDate.now())
-        val meldekortAtRisk = MeldekortExternalObjectMother.createMeldekort(til = LocalDate.now().minusWeeks(2))
+        val normalMeldekort = createMeldekort(til = LocalDate.now())
+        val meldekortAtRisk = createMeldekort(til = LocalDate.now().minusWeeks(2))
 
         val normalResult = MeldekortTransformer.toInternal(normalMeldekort)
         val atRiskResult = MeldekortTransformer.toInternal(meldekortAtRisk)
@@ -56,4 +60,10 @@ internal class MeldekortTransformerTest {
         normalResult.risikerTrekk shouldBe false
         atRiskResult.risikerTrekk shouldBe true
     }
+}
+
+fun createMeldekort(fra: LocalDate = LocalDate.now(), til: LocalDate = fra.plusMonths(1)): MeldekortExternal {
+    val uke = WeekFields.of(Locale.getDefault()).weekOfYear().toString()
+
+    return MeldekortExternal(uke, fra, fra, til)
 }

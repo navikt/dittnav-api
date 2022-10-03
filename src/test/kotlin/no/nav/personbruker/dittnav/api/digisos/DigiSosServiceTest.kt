@@ -6,10 +6,12 @@ import io.mockk.coVerify
 import io.mockk.confirmVerified
 import io.mockk.mockk
 import kotlinx.coroutines.runBlocking
-import no.nav.personbruker.dittnav.api.beskjed.BeskjedDtoObjectMother
+import no.nav.personbruker.dittnav.api.beskjed.BeskjedDTO
 import no.nav.personbruker.dittnav.api.beskjed.KildeType
+import no.nav.personbruker.dittnav.api.beskjed.createActiveBeskjedDto
 import no.nav.personbruker.dittnav.api.common.AuthenticatedUserObjectMother
 import org.junit.jupiter.api.Test
+import java.time.ZonedDateTime
 
 internal class DigiSosServiceTest {
 
@@ -19,7 +21,7 @@ internal class DigiSosServiceTest {
 
     @Test
     fun `Skal hente alle paabegynte soknader som er aktive`() {
-        coEvery { digiSosConsumer.getPaabegynteActive(any()) } returns listOf(BeskjedDtoObjectMother.createActiveBeskjed("eidAct"))
+        coEvery { digiSosConsumer.getPaabegynteActive(any()) } returns listOf(createActiveBeskjedDto("eidAct"))
 
         val result = runBlocking {
             digiSosService.getPaabegynteActive(innloggetBruker)
@@ -34,7 +36,7 @@ internal class DigiSosServiceTest {
 
     @Test
     fun `Skal hente alle paabegynte soknader som er inaktive`() {
-        coEvery { digiSosConsumer.getPaabegynteInactive(any()) } returns listOf(BeskjedDtoObjectMother.createInactiveBeskjed("eidInact"))
+        coEvery { digiSosConsumer.getPaabegynteInactive(any()) } returns listOf(createInactiveBeskjed("eidInact"))
 
         val result = runBlocking {
             digiSosService.getPaabegynteInactive(innloggetBruker)
@@ -58,4 +60,20 @@ internal class DigiSosServiceTest {
         result.failedSources() shouldContain KildeType.DIGISOS
     }
 
+}
+
+private fun createInactiveBeskjed(eventId: String): BeskjedDTO {
+    return BeskjedDTO(
+        forstBehandlet = ZonedDateTime.now(),
+        eventId = eventId,
+        tekst = "Dummytekst",
+        link = "https://dummy.url",
+        produsent = "dummy-produsent",
+        sistOppdatert = ZonedDateTime.now().minusDays(1),
+        sikkerhetsnivaa = 3,
+        aktiv = false,
+        grupperingsId = "654",
+        eksternVarslingSendt = true,
+        eksternVarslingKanaler = listOf("SMS", "EPOST")
+    )
 }

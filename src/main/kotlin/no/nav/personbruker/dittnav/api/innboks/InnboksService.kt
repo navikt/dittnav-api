@@ -1,9 +1,10 @@
 package no.nav.personbruker.dittnav.api.innboks
 
+import no.nav.personbruker.dittnav.api.authentication.AuthenticatedUser
 import no.nav.personbruker.dittnav.api.common.ConsumeEventException
 import no.nav.personbruker.dittnav.api.tokenx.AccessToken
 import no.nav.personbruker.dittnav.api.tokenx.EventhandlerTokendings
-import no.nav.personbruker.dittnav.common.security.AuthenticatedUser
+
 
 class InnboksService (
     private val innboksConsumer: InnboksConsumer,

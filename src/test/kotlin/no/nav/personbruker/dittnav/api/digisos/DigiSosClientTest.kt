@@ -18,6 +18,7 @@ import no.nav.personbruker.dittnav.api.common.AuthenticatedUserObjectMother
 import no.nav.personbruker.dittnav.api.config.json
 import org.junit.jupiter.api.Test
 import java.net.URL
+import java.time.LocalDateTime
 
 internal class DigiSosClientTest {
 
@@ -62,7 +63,7 @@ internal class DigiSosClientTest {
                 addHandler { request ->
                     if (request.url.encodedPath.contains("pabegynte/")) {
                         respond(
-                            json().encodeToString(listOf(PaabegynteObjectMother.giveMeOne(activeEvents))),
+                            json().encodeToString(listOf(påbegyntSøknad(activeEvents))),
                             headers = headersOf(HttpHeaders.ContentType, ContentType.Application.Json.toString())
                         )
 
@@ -76,3 +77,15 @@ internal class DigiSosClientTest {
     }
 
 }
+
+private fun påbegyntSøknad(active: Boolean = false) = Paabegynte(
+    LocalDateTime.now(),
+    "123",
+    "987",
+    "Dette er en dummytekst",
+    "https://nav.no/lenke",
+    4,
+    LocalDateTime.now(),
+    active
+)
+

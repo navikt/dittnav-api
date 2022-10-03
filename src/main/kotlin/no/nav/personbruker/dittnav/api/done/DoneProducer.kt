@@ -3,9 +3,10 @@ package no.nav.personbruker.dittnav.api.done
 import io.ktor.client.*
 import io.ktor.client.statement.*
 import io.ktor.http.*
+import no.nav.personbruker.dittnav.api.authentication.AuthenticatedUser
 import no.nav.personbruker.dittnav.api.config.post
 import no.nav.personbruker.dittnav.api.tokenx.EventhandlerTokendings
-import no.nav.personbruker.dittnav.common.security.AuthenticatedUser
+
 import org.slf4j.LoggerFactory
 import java.net.URL
 

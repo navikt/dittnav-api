@@ -1,11 +1,12 @@
 package no.nav.personbruker.dittnav.api.digisos
 
 import io.ktor.client.statement.*
+import no.nav.personbruker.dittnav.api.authentication.AuthenticatedUser
 import no.nav.personbruker.dittnav.api.beskjed.BeskjedDTO
 import no.nav.personbruker.dittnav.api.beskjed.KildeType
 import no.nav.personbruker.dittnav.api.common.MultiSourceResult
 import no.nav.personbruker.dittnav.api.common.ProduceEventException
-import no.nav.personbruker.dittnav.common.security.AuthenticatedUser
+
 import org.slf4j.LoggerFactory
 
 class DigiSosService(private val digiSosClient: DigiSosClient) {

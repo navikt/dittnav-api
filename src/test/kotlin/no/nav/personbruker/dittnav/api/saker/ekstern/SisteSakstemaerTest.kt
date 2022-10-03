@@ -9,7 +9,7 @@ internal class SisteSakstemaerTest {
 
     private val objectMapper = json()
 
-    val mineSakerRespons = """
+    private val mineSakerRespons = """
         {
           "sistEndrede" : [ {
             "navn" : "Økonomisk sosialhjelp",
@@ -26,7 +26,7 @@ internal class SisteSakstemaerTest {
         }
     """.trimIndent()
 
-    val mineSakerResponsUtenDagpengerSistEndret = """
+    private val mineSakerResponsUtenDagpengerSistEndret = """
         {
           "sistEndrede" : [ {
             "navn" : "Økonomisk sosialhjelp",

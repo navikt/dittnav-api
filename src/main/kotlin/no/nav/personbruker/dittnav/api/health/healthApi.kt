@@ -3,11 +3,12 @@ package no.nav.personbruker.dittnav.api.health
 import io.ktor.application.*
 import io.ktor.http.*
 import io.ktor.response.*
+import io.ktor.routing.Route
 import io.ktor.routing.Routing
 import io.ktor.routing.get
 import io.micrometer.prometheus.PrometheusMeterRegistry
 
-fun Routing.healthApi(collectorRegistry: PrometheusMeterRegistry) {
+fun Route.healthApi(collectorRegistry: PrometheusMeterRegistry) {
 
     val pingJsonResponse = """{"ping": "pong"}"""
 
