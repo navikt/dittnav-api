@@ -2,7 +2,7 @@ package no.nav.personbruker.dittnav.api.personalia
 
 import io.kotest.matchers.nulls.shouldNotBeNull
 import kotlinx.serialization.decodeFromString
-import no.nav.personbruker.dittnav.api.config.json
+import no.nav.personbruker.dittnav.api.config.jsonConfig
 import org.junit.jupiter.api.Test
 
 internal class PersonaliaDTOTest {
@@ -16,7 +16,7 @@ internal class PersonaliaDTOTest {
         }
         """.trimIndent()
 
-        val objectMapper = json()
+        val objectMapper = jsonConfig()
         val deserialized = objectMapper.decodeFromString<PersonaliaNavnDTO>(response)
 
         deserialized.shouldNotBeNull()
@@ -31,7 +31,7 @@ internal class PersonaliaDTOTest {
         }
     """.trimIndent()
 
-        val objectMapper = json()
+        val objectMapper = jsonConfig()
         val deserialized = objectMapper.decodeFromString<PersonaliaIdentDTO>(response)
 
         deserialized.shouldNotBeNull()

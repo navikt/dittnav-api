@@ -2,12 +2,12 @@ package no.nav.personbruker.dittnav.api.saker.ekstern
 
 import io.kotest.matchers.nulls.shouldNotBeNull
 import kotlinx.serialization.decodeFromString
-import no.nav.personbruker.dittnav.api.config.json
+import no.nav.personbruker.dittnav.api.config.jsonConfig
 import org.junit.jupiter.api.Test
 
 internal class SisteSakstemaerTest {
 
-    private val objectMapper = json()
+    private val objectMapper = jsonConfig()
 
     private val mineSakerRespons = """
         {

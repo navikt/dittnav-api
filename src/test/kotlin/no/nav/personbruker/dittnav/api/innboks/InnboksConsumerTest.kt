@@ -5,16 +5,14 @@ import io.ktor.client.HttpClient
 import io.ktor.client.engine.mock.MockEngine
 import io.ktor.client.engine.mock.respond
 import io.ktor.client.engine.mock.respondError
-import io.ktor.client.features.json.JsonFeature
 import io.ktor.http.ContentType
 import io.ktor.http.HttpHeaders
 import io.ktor.http.HttpStatusCode
 import io.ktor.http.headersOf
+import io.ktor.server.testing.testApplication
 import kotlinx.coroutines.runBlocking
-import kotlinx.serialization.encodeToString
-import no.nav.personbruker.dittnav.api.config.json
 import no.nav.personbruker.dittnav.api.tokenx.AccessToken
-import no.nav.personbruker.dittnav.api.util.createBasicMockedHttpClient
+import no.nav.personbruker.dittnav.api.util.applicationHttpClient
 import org.junit.jupiter.api.Test
 import java.net.URL
 
@@ -24,22 +22,29 @@ internal class InnboksConsumerTest {
 
     @Test
     fun `should call innboks endpoint on event handler`() {
-        val client = HttpClient(MockEngine) {
-            engine {
-                addHandler { request ->
-                    if (request.url.encodedPath.contains("/fetch/innboks") && request.url.host.contains("event-handler")) {
-                        respond("[]", headers = headersOf(HttpHeaders.ContentType, ContentType.Application.Json.toString()))
-                    } else {
-                        respondError(HttpStatusCode.BadRequest)
+
+        testApplication {
+            val client = applicationHttpClient()
+            externalServices {
+
+                /*          TODO        if (request.url.encodedPath.contains("/fetch/innboks") && request.url.host.contains("event-handler")) {
+                            respond(
+                                "[]",
+                                headers = headersOf(HttpHeaders.ContentType, ContentType.Application.Json.toString())
+                            )
+                        } else {
+                            respondError(HttpStatusCode.BadRequest)
+                        }
                     }
                 }
+            }*/
             }
-            install(JsonFeature)
-        }
-        val innboksConsumer = InnboksConsumer(client, URL("http://event-handler"))
 
-        runBlocking {
-            innboksConsumer.getExternalActiveEvents(dummyToken) shouldBe emptyList()
+            val innboksConsumer = InnboksConsumer(client, URL("http://event-handler"))
+
+            runBlocking {
+                innboksConsumer.getExternalActiveEvents(dummyToken) shouldBe emptyList()
+            }
         }
     }
 
@@ -47,23 +52,26 @@ internal class InnboksConsumerTest {
     fun `should get list of active Innboks`() {
         val innboksObject1 = createInnboks("1", "1", true)
         val innboksObject2 = createInnboks("2", "2", true)
+        testApplication {
 
-        val client = createBasicMockedHttpClient {
-            respond(
-                    json().encodeToString(listOf(innboksObject1, innboksObject2)),
-                    headers = headersOf(HttpHeaders.ContentType,
-                            ContentType.Application.Json.toString())
-            )
-        }
-        val innboksConsumer = InnboksConsumer(client, URL("http://event-handler"))
+            externalServices {
+                /*TODO
+            jsonConfig().encodeToString(listOf(innboksObject1, innboksObject2)),
+             headers = headersOf(
+             HttpHeaders.ContentType,
+             ContentType.Application.Json.toString()
+                  */
+            }
+            val innboksConsumer = InnboksConsumer(applicationHttpClient(), URL("http://event-handler"))
 
-        runBlocking {
-            val externalActiveEvents = innboksConsumer.getExternalActiveEvents(dummyToken)
-            val event = externalActiveEvents.first()
-            externalActiveEvents.size shouldBe 2
-            event.tekst shouldBe innboksObject1.tekst
-            event.fodselsnummer shouldBe innboksObject1.fodselsnummer
-            event.aktiv shouldBe true
+            runBlocking {
+                val externalActiveEvents = innboksConsumer.getExternalActiveEvents(dummyToken)
+                val event = externalActiveEvents.first()
+                externalActiveEvents.size shouldBe 2
+                event.tekst shouldBe innboksObject1.tekst
+                event.fodselsnummer shouldBe innboksObject1.fodselsnummer
+                event.aktiv shouldBe true
+            }
         }
     }
 
@@ -71,22 +79,26 @@ internal class InnboksConsumerTest {
     fun `should get list of inactive Innboks`() {
         val innboksObject = createInnboks("1", "1", false)
 
-        val client = createBasicMockedHttpClient {
-            respond(
-                    json().encodeToString(listOf(innboksObject)),
+        testApplication {
+            val innboksConsumer = InnboksConsumer(applicationHttpClient(), URL("http://event-handler"))
+            externalServices {
+                /*TODO
+
+                    jsonConfig().encodeToString(listOf(innboksObject)),
                     headers = headersOf(HttpHeaders.ContentType,
                             ContentType.Application.Json.toString())
-            )
-        }
-        val innboksConsumer = InnboksConsumer(client, URL("http://event-handler"))
+        */
+            }
 
-        runBlocking {
-            val externalInactiveEvents = innboksConsumer.getExternalInactiveEvents(dummyToken)
-            val event = externalInactiveEvents.first()
-            externalInactiveEvents.size shouldBe 1
-            event.tekst shouldBe innboksObject.tekst
-            event.fodselsnummer shouldBe innboksObject.fodselsnummer
-            event.aktiv shouldBe false
+
+            runBlocking {
+                val externalInactiveEvents = innboksConsumer.getExternalInactiveEvents(dummyToken)
+                val event = externalInactiveEvents.first()
+                externalInactiveEvents.size shouldBe 1
+                event.tekst shouldBe innboksObject.tekst
+                event.fodselsnummer shouldBe innboksObject.fodselsnummer
+                event.aktiv shouldBe false
+            }
         }
     }
 }

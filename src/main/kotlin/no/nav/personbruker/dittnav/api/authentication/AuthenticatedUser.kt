@@ -1,9 +1,9 @@
 package no.nav.personbruker.dittnav.api.authentication
 
 import com.auth0.jwt.interfaces.Payload
-import io.ktor.application.ApplicationCall
-import io.ktor.auth.Principal
-import io.ktor.auth.principal
+import io.ktor.server.application.ApplicationCall
+import io.ktor.server.auth.Principal
+import io.ktor.server.auth.principal
 
 data class AuthenticatedUser (
     val ident: String,

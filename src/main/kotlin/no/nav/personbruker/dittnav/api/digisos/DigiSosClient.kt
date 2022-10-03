@@ -1,9 +1,18 @@
 package no.nav.personbruker.dittnav.api.digisos
 
-import io.ktor.client.*
-import io.ktor.client.request.*
-import io.ktor.client.statement.*
-import io.ktor.http.*
+
+import io.ktor.client.HttpClient
+import io.ktor.client.call.body
+import io.ktor.client.request.header
+import io.ktor.client.request.post
+import io.ktor.client.request.setBody
+import io.ktor.client.request.url
+import io.ktor.client.statement.HttpResponse
+import io.ktor.http.ContentType
+import io.ktor.http.HttpHeaders
+import io.ktor.http.HttpMethod
+import io.ktor.http.HttpStatusCode
+import io.ktor.http.contentType
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import mu.KotlinLogging
@@ -42,7 +51,7 @@ class DigiSosClient(
             log.warn("Feil mot $donePaabegynteEndpoint: ${response.status.value} ${response.status.description}")
         }
 
-        return response
+        return response.body()
     }
 
     private suspend inline fun <reified T> post(url: URL, done: DoneDTO, user: AuthenticatedUser): T =
@@ -52,8 +61,8 @@ class DigiSosClient(
                 method = HttpMethod.Post
                 header(HttpHeaders.Authorization, user.createAuthenticationHeader())
                 contentType(ContentType.Application.Json)
-                body = done
+                setBody(done)
             }
-        }
+        }.body()
 
 }

@@ -2,7 +2,7 @@ package no.nav.personbruker.dittnav.api.digisos
 
 import io.kotest.matchers.nulls.shouldNotBeNull
 import kotlinx.serialization.decodeFromString
-import no.nav.personbruker.dittnav.api.config.json
+import no.nav.personbruker.dittnav.api.config.jsonConfig
 import org.junit.jupiter.api.Test
 
 internal class PaabegynteTest {
@@ -21,7 +21,7 @@ internal class PaabegynteTest {
 
     @Test
     fun `Skal kunne deserialisere en respons fra DigiSos`() {
-        val objectMapper = json()
+        val objectMapper = jsonConfig()
 
         val paabegynte = objectMapper.decodeFromString<Paabegynte>(respons)
 

@@ -1,10 +1,11 @@
 package no.nav.personbruker.dittnav.api.health
 
-import io.ktor.application.call
 import io.ktor.http.ContentType
-import io.ktor.response.respondText
-import io.ktor.routing.Route
-import io.ktor.routing.get
+import io.ktor.server.application.call
+import io.ktor.server.response.respondText
+import io.ktor.server.routing.Route
+import io.ktor.server.routing.get
+
 
 fun Route.authenticationCheck() {
 

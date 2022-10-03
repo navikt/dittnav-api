@@ -1,22 +1,16 @@
 package no.nav.personbruker.dittnav.api.util
 
-import io.ktor.client.*
-import io.ktor.client.engine.mock.*
-import io.ktor.client.features.*
-import io.ktor.client.features.json.*
-import io.ktor.client.request.*
+import io.ktor.client.HttpClient
+import io.ktor.client.plugins.HttpTimeout
+import io.ktor.serialization.kotlinx.json.json
+import io.ktor.server.testing.ApplicationTestBuilder
+import no.nav.personbruker.dittnav.api.config.jsonConfig
 
-fun createBasicMockedHttpClient(respond: MockRequestHandleScope.() -> HttpResponseData): HttpClient {
-    return HttpClient(MockEngine) {
-        install(HttpTimeout) {
-            requestTimeoutMillis = 500
-        }
 
-        engine {
-            addHandler {
-                respond()
-            }
+fun ApplicationTestBuilder.applicationHttpClient() =
+    createClient {
+        install(io.ktor.client.plugins.contentnegotiation.ContentNegotiation) {
+            json(jsonConfig())
         }
-        install(JsonFeature)
+        install(HttpTimeout)
     }
-}

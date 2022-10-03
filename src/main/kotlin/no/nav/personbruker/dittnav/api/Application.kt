@@ -12,7 +12,6 @@ import java.util.concurrent.TimeUnit
 
 private val log = KotlinLogging.logger {  }
 fun main() {
-    log.info { "Nytt loggoppsettt test" }
     val appContext = ApplicationContext()
     val loginserviceMetadata =
         LoginserviceMetadata.get(appContext.httpClient, appContext.environment.loginservicDiscoveryUrl)
