@@ -6,7 +6,6 @@ import io.jsonwebtoken.security.Keys
 import no.nav.personbruker.dittnav.api.authentication.AuthenticatedUser
 import no.nav.security.token.support.core.jwt.JwtToken
 import java.security.Key
-import java.time.ZoneId
 import java.time.ZonedDateTime
 import java.util.*
 

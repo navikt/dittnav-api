@@ -42,21 +42,22 @@ dependencies {
     implementation(Ktor.serverNetty)
     implementation(Logback.classic)
     implementation(Logstash.logbackEncoder)
-    implementation(NAV.tokenValidatorKtor)
     implementation(Prometheus.common)
     implementation(Prometheus.hotspot)
     implementation(Prometheus.logback)
+    implementation("com.github.navikt.tms-ktor-token-support:token-support-tokendings-exchange:2022.01.27-13.11-a6b55dd90347")
     implementation(Unleash.clientJava)
 
     testImplementation(Junit.api)
     testImplementation(Ktor.clientMock)
     testImplementation(Ktor.clientMockJvm)
     testImplementation(Ktor.serverTestHost)
+    testImplementation(NAV.tokenValidatorKtor)
     testImplementation(Kotest.runnerJunit5)
+    testImplementation(Kotest.assertionsCore)
     testImplementation(Kotest.assertionsCore)
     testImplementation(Kotest.extensions)
     testImplementation(Mockk.mockk)
-    testImplementation("com.github.navikt.tms-ktor-token-support:token-support-tokendings-exchange:2022.01.27-13.11-a6b55dd90347")
     testImplementation(Jjwt.api)
 
     testRuntimeOnly(Bouncycastle.bcprovJdk15on)
@@ -92,7 +93,8 @@ tasks {
         environment("MINE_SAKER_API_CLIENT_ID", "mine-saker-dummy-client-id")
         environment("TOKEN_X_WELL_KNOWN_URL", "http://localhost:9000/.well-known/openid-configuration")
         environment("TOKEN_X_CLIENT_ID", "dummy-tokenX-client-id")
-        val dummyJwks = """{"p":"-xwJW4TQT_KrMVnWR39Mpxf1WSnSaI67E2YXnCdtNoz0l_xc7nf8skc7vD-FbwOm-sEmdQk4jLKWCoTS8IHV0qUTD_Ppix4j88d2uBMMpPyfMXPmvYxUCw-nF4kI50DqweLfwtcpuyr1byMXAHvxuTuWrYnyTJ3AVDOGIaTnRB0","kty":"RSA","q":"ll0WRWtKFB0Hul9DG7ptHZ_VyaIGrPZ1-XEbaHrrbJVECsD5OfulhuINnGAt8OGWNuEmqcBOntC1rdZjOs0-3-yuGsHPbuRzM-mVM1weoUTV98KQjB_sdiE3Ih-CsKwyDmBpgrASApNN-r6LsisNiwqNgRqThsE5nHJTJvSbjJ0","d":"VuV5r7QkDt3Zoiyp5wenXcY3ptNFQdLYCKn-lfYm9TQ4o5ZvjpeXOxE0TEX-TFT67Vs0MpDgsVl7TbmTlqjSvJWxwpy_sSANWlIPImlQWaPsqTSAROQf_NpmZpk_4cvmCg0SM6BWv92g7TKtyX2yV5JdtSCOQU1wV0JD-CZ_bhT7CwwQ9ObEC--JM9ptL1Jy4ZQip7QkvNrfh-TjeIn9f9TW7kETh8GmlmovmYJFHXTiCOpdes1Io3IFYqIFoGtbfTXV1lCavfnHktHYnOrK9Tj5JNAf4Rp_aEymi-Y7sFccM9anWNHukVSc9rrtPIFEt5blAxlNeuYdqwAx0GuBQQ","e":"AQAB","use":"sig","kid":"KID","qi":"muEsRyWwBSl0CPBxmZsLXz7NpSsIgf9gWXMmfeMFGPQvcViL-3Wrv9IPveJy5ihJSzsZGOzPmiaquewntUVXAvm5dOLiIal4MZUtZPAhrhCRxCRspYqLp4u7Fb2aMhMo2CoCBFC5T4MfU250u_tAOZhlrfPzNch_igLLQqoRrGQ","dp":"HlSonLFSKBX7r55WT5SEwboXHIn8rDxxREqUl3v7qRclhCYrY3KCx1XrVTWm_F3IkYk7B-_xMK1xihu5Duvf0-20e7zOfMtLNGrnYByM7nDFGcgSGtsUW7GsUR9wP96LfJfWx0YN-FmcA6yNXrWZ4PHdpWCAL9juHj2K-g1dEdE","alg":"RS256","dq":"JdOfMbGO_kZbVlh2wngA0U4Pc10ufr616R26PmuF5FgcuPPY_uw-tRMTR36usAWgS4gSuOunG673tZbUect-gMjC9_o_2-7eyHV_0l7fWcS-a0joIkg5rXIns47nythW82Tvxi_TKBC0slrTO-w2yP7LoGn2KRVdD-1227r3ksU","n":"k328g4arE1iN78Ig9m--5vmymCO5K_HZul8LKiwOZW88-ALikb_ponB-pN12Dpudrasy0xTyMp10f4qu4EjVeImTey07eIho-57JUX_s7M0Yq9vjoe9uQE0JULLlQuHzky53FJ-CMHR7canGo0giTJGUAZRnOqkoNZaTrkfrjodYB8vuRwIT_PJCOmIIkHiR2i8KDUP2rxCDKnL7Ed-jiyaeyDW8TsB4z3Dmt6Jke03KzOU6061UMySHWeh-OjdHgseGf1iAwAcv1lfsRlLr3_E2PvzE0IVayBZBPy98Y4R8G2svg1EcyXMPJrhWkfuxzu4jTiKXOXKO0nEQfKOhyQ"}"""
+        val dummyJwks =
+            """{"p":"-xwJW4TQT_KrMVnWR39Mpxf1WSnSaI67E2YXnCdtNoz0l_xc7nf8skc7vD-FbwOm-sEmdQk4jLKWCoTS8IHV0qUTD_Ppix4j88d2uBMMpPyfMXPmvYxUCw-nF4kI50DqweLfwtcpuyr1byMXAHvxuTuWrYnyTJ3AVDOGIaTnRB0","kty":"RSA","q":"ll0WRWtKFB0Hul9DG7ptHZ_VyaIGrPZ1-XEbaHrrbJVECsD5OfulhuINnGAt8OGWNuEmqcBOntC1rdZjOs0-3-yuGsHPbuRzM-mVM1weoUTV98KQjB_sdiE3Ih-CsKwyDmBpgrASApNN-r6LsisNiwqNgRqThsE5nHJTJvSbjJ0","d":"VuV5r7QkDt3Zoiyp5wenXcY3ptNFQdLYCKn-lfYm9TQ4o5ZvjpeXOxE0TEX-TFT67Vs0MpDgsVl7TbmTlqjSvJWxwpy_sSANWlIPImlQWaPsqTSAROQf_NpmZpk_4cvmCg0SM6BWv92g7TKtyX2yV5JdtSCOQU1wV0JD-CZ_bhT7CwwQ9ObEC--JM9ptL1Jy4ZQip7QkvNrfh-TjeIn9f9TW7kETh8GmlmovmYJFHXTiCOpdes1Io3IFYqIFoGtbfTXV1lCavfnHktHYnOrK9Tj5JNAf4Rp_aEymi-Y7sFccM9anWNHukVSc9rrtPIFEt5blAxlNeuYdqwAx0GuBQQ","e":"AQAB","use":"sig","kid":"KID","qi":"muEsRyWwBSl0CPBxmZsLXz7NpSsIgf9gWXMmfeMFGPQvcViL-3Wrv9IPveJy5ihJSzsZGOzPmiaquewntUVXAvm5dOLiIal4MZUtZPAhrhCRxCRspYqLp4u7Fb2aMhMo2CoCBFC5T4MfU250u_tAOZhlrfPzNch_igLLQqoRrGQ","dp":"HlSonLFSKBX7r55WT5SEwboXHIn8rDxxREqUl3v7qRclhCYrY3KCx1XrVTWm_F3IkYk7B-_xMK1xihu5Duvf0-20e7zOfMtLNGrnYByM7nDFGcgSGtsUW7GsUR9wP96LfJfWx0YN-FmcA6yNXrWZ4PHdpWCAL9juHj2K-g1dEdE","alg":"RS256","dq":"JdOfMbGO_kZbVlh2wngA0U4Pc10ufr616R26PmuF5FgcuPPY_uw-tRMTR36usAWgS4gSuOunG673tZbUect-gMjC9_o_2-7eyHV_0l7fWcS-a0joIkg5rXIns47nythW82Tvxi_TKBC0slrTO-w2yP7LoGn2KRVdD-1227r3ksU","n":"k328g4arE1iN78Ig9m--5vmymCO5K_HZul8LKiwOZW88-ALikb_ponB-pN12Dpudrasy0xTyMp10f4qu4EjVeImTey07eIho-57JUX_s7M0Yq9vjoe9uQE0JULLlQuHzky53FJ-CMHR7canGo0giTJGUAZRnOqkoNZaTrkfrjodYB8vuRwIT_PJCOmIIkHiR2i8KDUP2rxCDKnL7Ed-jiyaeyDW8TsB4z3Dmt6Jke03KzOU6061UMySHWeh-OjdHgseGf1iAwAcv1lfsRlLr3_E2PvzE0IVayBZBPy98Y4R8G2svg1EcyXMPJrhWkfuxzu4jTiKXOXKO0nEQfKOhyQ"}"""
         environment("TOKEN_X_PRIVATE_JWK", dummyJwks)
 
         main = application.mainClass.get()
