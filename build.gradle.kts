@@ -46,7 +46,6 @@ dependencies {
     implementation(Prometheus.common)
     implementation(Prometheus.hotspot)
     implementation(Prometheus.logback)
-    implementation("com.github.navikt.tms-ktor-token-support:token-support-tokendings-exchange:2022.01.27-13.11-a6b55dd90347")
     implementation(Unleash.clientJava)
 
     testImplementation(Junit.api)
@@ -57,6 +56,7 @@ dependencies {
     testImplementation(Kotest.assertionsCore)
     testImplementation(Kotest.extensions)
     testImplementation(Mockk.mockk)
+    testImplementation("com.github.navikt.tms-ktor-token-support:token-support-tokendings-exchange:2022.01.27-13.11-a6b55dd90347")
     testImplementation(Jjwt.api)
 
     testRuntimeOnly(Bouncycastle.bcprovJdk15on)

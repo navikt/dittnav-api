@@ -1,7 +1,9 @@
 package no.nav.personbruker.dittnav.api.authentication
 
-import java.time.Instant
-
+import com.auth0.jwt.interfaces.Payload
+import io.ktor.application.ApplicationCall
+import io.ktor.auth.Principal
+import io.ktor.auth.principal
 
 data class AuthenticatedUser (
     val ident: String,
@@ -17,25 +19,32 @@ data class AuthenticatedUser (
     }
 }
 
-enum class IdentityClaim(val claimName : String) {
+object AuthenticatedUserFactory {
 
-    SUBJECT("sub"),
-    PID("pid");
+    private fun createNewAuthenticatedUser(principal: PrincipalWithTokenString): AuthenticatedUser {
 
-    companion object {
-        fun fromClaimName(claimName: String): IdentityClaim {
-            values().forEach { currentClaim ->
-                if (currentClaim.claimName == claimName.lowercase()) {
-                    return currentClaim
-                }
-            }
-            val msg = "Ugyldig claim name '$claimName', gyldige verdier er ${values().toSet()}"
-            throw IllegalArgumentException(msg)
+        val ident: String = principal.payload.getClaim("pid").asString()
+        val loginLevel =
+            extractLoginLevel(principal.payload)
+        return AuthenticatedUser(ident, loginLevel, principal.accessToken)
+    }
+
+    fun createNewAuthenticatedUser(call: ApplicationCall): AuthenticatedUser {
+        val principal = call.principal<PrincipalWithTokenString>()
+            ?: throw Exception("Principal har ikke blitt satt for authentication context.")
+
+        return createNewAuthenticatedUser(principal)
+    }
+
+    private fun extractLoginLevel(payload: Payload): Int {
+
+        return when (payload.getClaim("acr").asString()) {
+            "Level3" -> 3
+            "Level4" -> 4
+            else -> throw Exception("Innloggingsnivå ble ikke funnet. Dette skal ikke kunne skje.")
         }
     }
 
-    override fun toString(): String {
-        return "IdentidyClaim(claimName='$claimName')"
-    }
-
 }
+
+data class PrincipalWithTokenString(val accessToken: String, val payload: Payload) : Principal
