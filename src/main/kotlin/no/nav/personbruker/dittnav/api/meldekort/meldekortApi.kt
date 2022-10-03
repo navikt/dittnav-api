@@ -4,12 +4,12 @@ import io.ktor.application.*
 import io.ktor.http.*
 import io.ktor.response.*
 import io.ktor.routing.*
+import mu.KotlinLogging
 import no.nav.personbruker.dittnav.api.config.authenticatedUser
-import org.slf4j.LoggerFactory
 
 fun Route.meldekortApi(meldekortService: MeldekortService) {
 
-    val log = LoggerFactory.getLogger("meldekortApi")
+    val log = KotlinLogging.logger { }
 
     get("/meldekortinfo") {
         try {

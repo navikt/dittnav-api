@@ -6,11 +6,11 @@ import io.ktor.client.statement.*
 import io.ktor.http.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import mu.KotlinLogging
 import no.nav.personbruker.dittnav.api.authentication.AuthenticatedUser
 import no.nav.personbruker.dittnav.api.beskjed.BeskjedDTO
 import no.nav.personbruker.dittnav.api.config.get
 
-import org.slf4j.LoggerFactory
 import java.net.URL
 
 class DigiSosClient(
@@ -18,7 +18,8 @@ class DigiSosClient(
     digiSosSoknadBaseURL: URL
 ) {
 
-    private val log = LoggerFactory.getLogger(DigiSosClient::class.java)
+    private val log = KotlinLogging.logger {  }
+
 
     private val aktivePaabegynteEndpoint = URL("$digiSosSoknadBaseURL/dittnav/pabegynte/aktive")
     private val inaktivePaabegynteEndpoint = URL("$digiSosSoknadBaseURL/dittnav/pabegynte/inaktive")

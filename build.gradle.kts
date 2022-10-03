@@ -46,6 +46,8 @@ dependencies {
     implementation(Prometheus.logback)
     implementation("com.github.navikt.tms-ktor-token-support:token-support-tokendings-exchange:2022.01.27-13.11-a6b55dd90347")
     implementation(Unleash.clientJava)
+    implementation("io.github.microutils:kotlin-logging-jvm:3.0.0")
+
 
     testImplementation(Junit.api)
     testImplementation(Ktor.clientMock)

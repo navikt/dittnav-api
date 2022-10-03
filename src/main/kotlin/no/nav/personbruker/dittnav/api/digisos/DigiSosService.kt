@@ -1,17 +1,17 @@
 package no.nav.personbruker.dittnav.api.digisos
 
 import io.ktor.client.statement.*
+import mu.KotlinLogging
 import no.nav.personbruker.dittnav.api.authentication.AuthenticatedUser
 import no.nav.personbruker.dittnav.api.beskjed.BeskjedDTO
 import no.nav.personbruker.dittnav.api.beskjed.KildeType
 import no.nav.personbruker.dittnav.api.common.MultiSourceResult
 import no.nav.personbruker.dittnav.api.common.ProduceEventException
 
-import org.slf4j.LoggerFactory
 
 class DigiSosService(private val digiSosClient: DigiSosClient) {
 
-    private val log = LoggerFactory.getLogger(DigiSosService::class.java)
+    private val log = KotlinLogging.logger { }
 
     suspend fun getPaabegynteActive(user: AuthenticatedUser): MultiSourceResult<BeskjedDTO, KildeType> {
         return wrapAsMultiSourceResult(user) {

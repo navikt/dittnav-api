@@ -4,14 +4,15 @@ import io.ktor.application.*
 import io.ktor.http.*
 import io.ktor.response.*
 import io.ktor.routing.*
+import mu.KotlinLogging
 import no.nav.personbruker.dittnav.api.common.respondWithError
 import no.nav.personbruker.dittnav.api.config.authenticatedUser
-import org.slf4j.LoggerFactory
+
 
 fun Route.personalia(
     service: PersonaliaService
 ) {
-    val log = LoggerFactory.getLogger(PersonaliaService::class.java)
+    val log = KotlinLogging.logger { }
 
     get("/navn") {
         try {
