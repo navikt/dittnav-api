@@ -15,7 +15,7 @@ object AuthenticatedUserFactory {
     private const val oidcIdentityClaimName = "OIDC_CLAIM_CONTAINING_THE_IDENTITY"
 
     init {
-        val identityClaimFromEnvVariable = System.getenv(oidcIdentityClaimName) ?: IdentityClaim.SUBJECT.claimName
+        val identityClaimFromEnvVariable = System.getenv(oidcIdentityClaimName)
         IDENT_CLAIM = IdentityClaim.fromClaimName(identityClaimFromEnvVariable)
     }
 
