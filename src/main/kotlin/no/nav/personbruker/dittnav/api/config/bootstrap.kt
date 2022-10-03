@@ -133,9 +133,7 @@ fun Application.api(
                 saker(sakerService)
                 personalia(personaliaService)
                 unleash(unleashService)
-                if (isRunningInDev()) {
-                    digiSos(digiSosService)
-                }
+                digiSos(digiSosService)
                 authenticationCheck()
                 doneApi(doneProducer)
             }
@@ -152,14 +150,5 @@ private fun Application.configureShutdownHook(httpClient: HttpClient) {
         httpClient.close()
     }
 }
-
-private fun isRunningInDev(clusterName: String? = System.getenv("NAIS_CLUSTER_NAME")): Boolean {
-    var runningInDev = true
-    if (clusterName != null && clusterName == "prod-sbs") {
-        runningInDev = false
-    }
-    return runningInDev
-}
-
 val PipelineContext<Unit, ApplicationCall>.authenticatedUser: AuthenticatedUser
     get() = AuthenticatedUserFactory.createNewAuthenticatedUser(call)
