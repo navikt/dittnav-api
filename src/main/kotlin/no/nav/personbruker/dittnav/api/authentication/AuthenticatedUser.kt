@@ -19,6 +19,7 @@ data class AuthenticatedUser (
 
 enum class IdentityClaim(val claimName : String) {
 
+    SUBJECT("sub"),
     PID("pid");
 
     companion object {
