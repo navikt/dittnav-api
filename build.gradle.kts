@@ -24,7 +24,6 @@ repositories {
 }
 
 dependencies {
-    implementation(DittNAV.Common.logging)
     implementation(DittNAV.Common.utils)
     implementation(Kotlinx.coroutines)
     implementation(Kotlinx.htmlJvm)
