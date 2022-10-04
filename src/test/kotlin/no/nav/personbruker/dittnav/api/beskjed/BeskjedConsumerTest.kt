@@ -1,7 +1,6 @@
 package no.nav.personbruker.dittnav.api.beskjed
 
 import io.kotest.matchers.shouldBe
-import io.ktor.serialization.kotlinx.json.json
 import io.ktor.server.application.call
 import io.ktor.server.application.install
 import io.ktor.server.plugins.contentnegotiation.ContentNegotiation
@@ -9,8 +8,9 @@ import io.ktor.server.routing.get
 import io.ktor.server.routing.routing
 import io.ktor.server.testing.testApplication
 import kotlinx.coroutines.runBlocking
+import no.nav.personbruker.dittnav.api.config.jsonConfig
 import no.nav.personbruker.dittnav.api.mockApi
-import no.nav.personbruker.dittnav.api.rawEventHandlerBeskjed
+import no.nav.personbruker.dittnav.api.rawEventHandlerVarsel
 import no.nav.personbruker.dittnav.api.respondRawJson
 import no.nav.personbruker.dittnav.api.tokenx.AccessToken
 import no.nav.personbruker.dittnav.api.util.applicationHttpClient
@@ -31,14 +31,13 @@ internal class BeskjedConsumerTest {
             mockApi()
             externalServices {
                 hosts(testEventHandlerUrl) {
-                    install(ContentNegotiation) { json() }
+                    install(ContentNegotiation) { jsonConfig() }
                     routing {
                         get("fetch/beskjed/aktive") {
                             call.respondRawJson("[]")
                         }
                     }
                 }
-
                 runBlocking {
                     beskjedConsumer.getExternalActiveEvents(dummyToken) shouldBe emptyList()
                 }
@@ -57,7 +56,7 @@ internal class BeskjedConsumerTest {
                         get("fetch/beskjed/aktive") {
                             call.respondRawJson(
                                 "[${
-                                    rawEventHandlerBeskjed(
+                                    rawEventHandlerVarsel(
                                         fodselsnummer = expectedFnr,
                                         tekst = expectedTekst,
                                         aktiv = true
@@ -94,14 +93,14 @@ internal class BeskjedConsumerTest {
                         get("fetch/beskjed/inaktive") {
                             call.respondRawJson(
                                 "[${
-                                    rawEventHandlerBeskjed(
+                                    rawEventHandlerVarsel(
                                         fodselsnummer = beskjedObject.fodselsnummer,
                                         eventId = beskjedObject.eventId,
                                         tekst = beskjedObject.tekst,
                                         aktiv = false
                                     )
                                 },${
-                                    rawEventHandlerBeskjed(
+                                    rawEventHandlerVarsel(
                                         fodselsnummer = beskjedObject2.fodselsnummer,
                                         eventId = beskjedObject2.eventId,
                                         tekst = beskjedObject2.tekst,

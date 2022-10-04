@@ -1,16 +1,13 @@
 package no.nav.personbruker.dittnav.api.innboks
 
 import io.kotest.matchers.shouldBe
-import io.ktor.client.HttpClient
-import io.ktor.client.engine.mock.MockEngine
-import io.ktor.client.engine.mock.respond
-import io.ktor.client.engine.mock.respondError
-import io.ktor.http.ContentType
-import io.ktor.http.HttpHeaders
-import io.ktor.http.HttpStatusCode
-import io.ktor.http.headersOf
+import io.ktor.server.application.call
+import io.ktor.server.routing.get
+import io.ktor.server.routing.routing
 import io.ktor.server.testing.testApplication
 import kotlinx.coroutines.runBlocking
+import no.nav.personbruker.dittnav.api.rawEventHandlerVarsel
+import no.nav.personbruker.dittnav.api.respondRawJson
 import no.nav.personbruker.dittnav.api.tokenx.AccessToken
 import no.nav.personbruker.dittnav.api.util.applicationHttpClient
 import org.junit.jupiter.api.Test
@@ -19,86 +16,111 @@ import java.net.URL
 internal class InnboksConsumerTest {
 
     private val dummyToken = AccessToken("<access_token>")
-
-    @Test
-    fun `should call innboks endpoint on event handler`() {
-
-        testApplication {
-            val client = applicationHttpClient()
-            externalServices {
-
-                /*          TODO        if (request.url.encodedPath.contains("/fetch/innboks") && request.url.host.contains("event-handler")) {
-                            respond(
-                                "[]",
-                                headers = headersOf(HttpHeaders.ContentType, ContentType.Application.Json.toString())
-                            )
-                        } else {
-                            respondError(HttpStatusCode.BadRequest)
-                        }
-                    }
-                }
-            }*/
-            }
-
-            val innboksConsumer = InnboksConsumer(client, URL("http://event-handler"))
-
-            runBlocking {
-                innboksConsumer.getExternalActiveEvents(dummyToken) shouldBe emptyList()
-            }
-        }
-    }
+    private val testEventHandlerEndpoint = "http://event-handler"
 
     @Test
     fun `should get list of active Innboks`() {
         val innboksObject1 = createInnboks("1", "1", true)
         val innboksObject2 = createInnboks("2", "2", true)
         testApplication {
-
             externalServices {
-                /*TODO
-            jsonConfig().encodeToString(listOf(innboksObject1, innboksObject2)),
-             headers = headersOf(
-             HttpHeaders.ContentType,
-             ContentType.Application.Json.toString()
-                  */
+                hosts(testEventHandlerEndpoint) {
+                    routing {
+                        get("/fetch/innboks/aktive") {
+                            call.respondRawJson(aktiveInnboksJson(innboksObject1, innboksObject2))
+                        }
+                    }
+                }
             }
-            val innboksConsumer = InnboksConsumer(applicationHttpClient(), URL("http://event-handler"))
+            val innboksConsumer = InnboksConsumer(applicationHttpClient(), URL(testEventHandlerEndpoint))
 
             runBlocking {
                 val externalActiveEvents = innboksConsumer.getExternalActiveEvents(dummyToken)
-                val event = externalActiveEvents.first()
+
                 externalActiveEvents.size shouldBe 2
-                event.tekst shouldBe innboksObject1.tekst
-                event.fodselsnummer shouldBe innboksObject1.fodselsnummer
-                event.aktiv shouldBe true
+                externalActiveEvents shouldContainInnboksObject innboksObject1
+                externalActiveEvents shouldContainInnboksObject innboksObject2
             }
         }
     }
 
     @Test
     fun `should get list of inactive Innboks`() {
-        val innboksObject = createInnboks("1", "1", false)
+        val innboksObject1 = createInnboks("1", "1", false)
+        val innboksObject2 = createInnboks("5", "1", false)
+        val innboksObject3 = createInnboks("6", "22", false)
 
         testApplication {
-            val innboksConsumer = InnboksConsumer(applicationHttpClient(), URL("http://event-handler"))
+            val innboksConsumer = InnboksConsumer(applicationHttpClient(), URL(testEventHandlerEndpoint))
             externalServices {
-                /*TODO
-
-                    jsonConfig().encodeToString(listOf(innboksObject)),
-                    headers = headersOf(HttpHeaders.ContentType,
-                            ContentType.Application.Json.toString())
-        */
+                hosts(testEventHandlerEndpoint) {
+                    routing {
+                        get("/fetch/innboks/inaktive") {
+                            call.respondRawJson(inaktiveInnboksJson(innboksObject1, innboksObject2, innboksObject3))
+                        }
+                    }
+                }
             }
-
 
             runBlocking {
                 val externalInactiveEvents = innboksConsumer.getExternalInactiveEvents(dummyToken)
-                val event = externalInactiveEvents.first()
-                externalInactiveEvents.size shouldBe 1
-                event.tekst shouldBe innboksObject.tekst
-                event.fodselsnummer shouldBe innboksObject.fodselsnummer
-                event.aktiv shouldBe false
+                externalInactiveEvents shouldContainInnboksObject innboksObject1
+                externalInactiveEvents shouldContainInnboksObject innboksObject2
+                externalInactiveEvents shouldContainInnboksObject innboksObject3
             }
         }
     }
 }
+
+private infix fun List<Innboks>.shouldContainInnboksObject(expectedInnboks: Innboks) =
+    find { it.eventId == expectedInnboks.eventId }?.let { event ->
+        event.tekst shouldBe expectedInnboks.tekst
+        event.fodselsnummer shouldBe expectedInnboks.fodselsnummer
+        event.aktiv shouldBe expectedInnboks.aktiv
+    } ?: throw AssertionError("Fant ikke innboksvarsel med eventid ${expectedInnboks.eventId}")
+
+private fun aktiveInnboksJson(innboksObject1: Innboks, innboksObject2: Innboks) =
+    """[
+    ${
+        rawEventHandlerVarsel(
+            innboksObject1.eventId,
+            aktiv = true,
+            tekst = innboksObject1.tekst,
+            fodselsnummer = innboksObject1.fodselsnummer
+        )
+    },
+    ${
+        rawEventHandlerVarsel(
+            innboksObject2.eventId,
+            aktiv = true,
+            tekst = innboksObject2.tekst,
+            fodselsnummer = innboksObject2.fodselsnummer
+        )
+    }]""".trimMargin()
+
+private fun inaktiveInnboksJson(innboksObject1: Innboks, innboksObject2: Innboks, innboksObject3: Innboks) =
+    """[
+    ${
+        rawEventHandlerVarsel(
+            innboksObject1.eventId,
+            aktiv = false,
+            tekst = innboksObject1.tekst,
+            fodselsnummer = innboksObject1.fodselsnummer
+        )
+    },
+    ${
+        rawEventHandlerVarsel(
+            innboksObject2.eventId,
+            aktiv = false,
+            tekst = innboksObject2.tekst,
+            fodselsnummer = innboksObject2.fodselsnummer
+        )
+    },
+    ${
+        rawEventHandlerVarsel(
+            innboksObject3.eventId,
+            aktiv = false,
+            tekst = innboksObject3.tekst,
+            fodselsnummer = innboksObject3.fodselsnummer
+        )
+    }]""".trimMargin()

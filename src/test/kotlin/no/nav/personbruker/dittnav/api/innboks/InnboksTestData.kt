@@ -9,7 +9,7 @@ fun createInnboks(eventId: String, fodselsnummer: String, aktiv: Boolean): Innbo
             fodselsnummer = fodselsnummer,
             eventId = eventId,
             grupperingsId = "Dok123",
-            tekst = "Dette er en oppgave til brukeren",
+            tekst = "Dette er en oppgave til brukeren $eventId",
             link = "https://nav.no/systemX/",
             produsent = "dittnav",
             sikkerhetsnivaa = 4,

@@ -4,6 +4,10 @@ import io.kotest.matchers.shouldBe
 import io.ktor.client.statement.request
 import io.ktor.http.HttpMethod
 import io.ktor.http.HttpStatusCode
+import io.ktor.server.application.call
+import io.ktor.server.response.respond
+import io.ktor.server.routing.post
+import io.ktor.server.routing.routing
 import io.ktor.server.testing.testApplication
 import io.mockk.coEvery
 import io.mockk.mockk
@@ -12,42 +16,30 @@ import no.nav.personbruker.dittnav.api.common.AuthenticatedUserObjectMother
 import no.nav.personbruker.dittnav.api.tokenx.AccessToken
 import no.nav.personbruker.dittnav.api.tokenx.EventhandlerTokendings
 import no.nav.personbruker.dittnav.api.util.applicationHttpClient
-import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import java.net.URL
 
 internal class DoneProducerTest {
 
-    private val user = AuthenticatedUserObjectMother.createAuthenticatedUser()
-    private val dummyToken = AccessToken("<access_token>")
-
-    private val eventhandlerTokendings = mockk<EventhandlerTokendings>()
-
-    @BeforeEach
-    fun setup() {
-        coEvery { eventhandlerTokendings.exchangeToken(user) } returns dummyToken
-    }
-
     @Test
     fun `should call post endpoint on event handler`() {
+        val user = AuthenticatedUserObjectMother.createAuthenticatedUser()
+        val testEventHandler = "http://event-handler"
+        val eventhandlerTokendings = mockk<EventhandlerTokendings>()
+
+        coEvery { eventhandlerTokendings.exchangeToken(user) } returns AccessToken("<access_token>")
         val done = DoneDTO(eventId = "dummyEventId")
         testApplication {
-            val client =
                 externalServices {
-                    /* TODO
+                    hosts(testEventHandler){
+                        routing {
+                            post("/produce/done"){
+                                call.respond(HttpStatusCode.OK)
+                            }
+                        }
+                    }
                 }
-                    addHandler { request ->
-                        if (request.url.encodedPath.contains("/produce/done") && request.url.host.contains("event-handler")) {
-                            respond(
-                                "Ok",
-                                headers = headersOf(HttpHeaders.ContentType, ContentType.Application.Json.toString())
-                            )
-                        } else {
-                            respondError(HttpStatusCode.BadRequest)
-                        }*/
-                }
-
-            val doneProducer = DoneProducer(applicationHttpClient(), eventhandlerTokendings, URL("http://event-handler"))
+            val doneProducer = DoneProducer(applicationHttpClient(), eventhandlerTokendings, URL(testEventHandler))
             runBlocking {
                 doneProducer.postDoneEvents(done, user).status shouldBe HttpStatusCode.OK
                 doneProducer.postDoneEvents(done, user).request.method shouldBe HttpMethod.Post
