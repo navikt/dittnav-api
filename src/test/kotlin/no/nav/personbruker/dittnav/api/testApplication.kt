@@ -5,9 +5,12 @@ import io.ktor.client.HttpClient
 import io.ktor.client.request.header
 import io.ktor.client.request.request
 import io.ktor.client.request.url
+import io.ktor.http.ContentType
 import io.ktor.http.HttpHeaders
 import io.ktor.http.HttpMethod
 import io.ktor.http.HttpStatusCode
+import io.ktor.server.application.ApplicationCall
+import io.ktor.server.response.respondBytes
 import io.ktor.server.testing.TestApplicationBuilder
 import io.ktor.server.testing.testApplication
 import io.mockk.mockk
@@ -24,7 +27,10 @@ import no.nav.personbruker.dittnav.api.personalia.PersonaliaService
 import no.nav.personbruker.dittnav.api.saker.SakerService
 import no.nav.personbruker.dittnav.api.unleash.UnleashService
 import no.nav.personbruker.dittnav.api.util.applicationHttpClient
+import org.intellij.lang.annotations.Language
 import org.junit.jupiter.api.Test
+import java.time.ZonedDateTime
+import java.time.temporal.ChronoUnit
 
 private const val testIssuer = "test-issuer"
 private val jwtStub = JwtStub(testIssuer)
@@ -84,7 +90,7 @@ class TestApplication {
 }
 
 
-private fun TestApplicationBuilder.mockApi(
+internal fun TestApplicationBuilder.mockApi(
     corsAllowedOrigins: String = "*.nav.no",
     corsAllowedSchemes: String = "https",
     corsAllowedHeaders: List<String> = emptyList(),
@@ -124,3 +130,38 @@ private fun TestApplicationBuilder.mockApi(
         )
     }
 }
+
+internal suspend fun ApplicationCall.respondRawJson(s: String) = respondBytes(
+    contentType = ContentType.Application.Json,
+    provider = { s.toByteArray() })
+
+@Language("JSON")
+internal fun rawEventHandlerBeskjed(
+    eventId: String = "12345",
+    fodselsnummer: String = "5432176",
+    grupperingsId: String = "gruppergrupp",
+    førstBehandlet: String = "${ZonedDateTime.now().minusDays(1).truncatedTo(ChronoUnit.SECONDS)}",
+    produsent: String = "testprdusent",
+    sikkerhetsnivå: Int = 4,
+    sistOppdatert: String = "${ZonedDateTime.now().truncatedTo(ChronoUnit.SECONDS)}",
+    tekst: String = "Teskt som er tekst som er tekst",
+    link: String = "https://test.link.tadda",
+    eksternVarslingSendt: Boolean = false,
+    eksternVarslingKanaler: List<String> = emptyList(),
+    aktiv: Boolean
+): String =
+    """ {
+        "fodselsnummer" : "$fodselsnummer",
+        "grupperingsId": "$grupperingsId",
+        "eventId": "$eventId",
+        "forstBehandlet": "$førstBehandlet",
+        "produsent": "$produsent",
+        "sikkerhetsnivaa": "$sikkerhetsnivå",
+        "sistOppdatert": "$sistOppdatert",
+        "tekst": "$tekst",
+        "link": "$link",
+        "aktiv": $aktiv,
+        "eksternVarslingSendt": $eksternVarslingSendt,
+        "eksternVarslingKanaler": $eksternVarslingKanaler 
+         }
+        """.trimIndent()
