@@ -9,7 +9,7 @@ import kotlinx.coroutines.runBlocking
 import no.nav.personbruker.dittnav.api.rawEventHandlerVarsel
 import no.nav.personbruker.dittnav.api.respondRawJson
 import no.nav.personbruker.dittnav.api.tokenx.AccessToken
-import no.nav.personbruker.dittnav.api.util.applicationHttpClient
+import no.nav.personbruker.dittnav.api.applicationHttpClient
 import org.junit.jupiter.api.Test
 import java.net.URL
 

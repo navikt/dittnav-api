@@ -5,7 +5,7 @@ import io.kotest.matchers.shouldBe
 import io.mockk.coEvery
 import io.mockk.mockk
 import kotlinx.coroutines.runBlocking
-import no.nav.personbruker.dittnav.api.common.AuthenticatedUserObjectMother
+import no.nav.personbruker.dittnav.api.authentication.AuthenticatedUserObjectMother
 import no.nav.personbruker.dittnav.api.common.ConsumeEventException
 import no.nav.personbruker.dittnav.api.tokenx.AccessToken
 import no.nav.personbruker.dittnav.api.tokenx.EventhandlerTokendings
@@ -93,14 +93,11 @@ internal class InnboksServiceTest {
     }
 
     @Test
-    fun `should throw exception if fetching active events fails`() {
+    fun `should throw exception if fetching events fails`() {
         coEvery { innboksConsumer.getExternalActiveEvents(dummyToken) } throws Exception("error")
-        shouldThrow<ConsumeEventException> { runBlocking { innboksService.getActiveInnboksEvents(user) } }
-    }
-
-    @Test
-    fun `should throw exception if fetching inactive events fails`() {
         coEvery { innboksConsumer.getExternalInactiveEvents(dummyToken) } throws Exception("error")
+
+        shouldThrow<ConsumeEventException> { runBlocking { innboksService.getActiveInnboksEvents(user) } }
         shouldThrow<ConsumeEventException> { runBlocking { innboksService.getInactiveInnboksEvents(user) } }
     }
 }

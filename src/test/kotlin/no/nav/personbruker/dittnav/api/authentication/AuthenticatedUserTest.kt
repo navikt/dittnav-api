@@ -18,16 +18,8 @@ internal class AuthenticatedUserTest {
         authenticatedUser.ident shouldBe expectedIdent
         authenticatedUser.loginLevel shouldBe  expectedLoginLevel
         authenticatedUser.token shouldNotBe null
+        authenticatedUser.createAuthenticationHeader() shouldBe  "Bearer ${authenticatedUser.token}"
         authenticatedUser shouldNotBe ""
-    }
-
-    @Test
-    fun `should create authentication header`() {
-        val authenticatedUser = AuthenticatedUserObjectMother.createAuthenticatedUser()
-
-        val generatedAuthHeader = authenticatedUser.createAuthenticationHeader()
-
-        generatedAuthHeader shouldBe  "Bearer ${authenticatedUser.token}"
     }
 
     @Test

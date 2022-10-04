@@ -2,53 +2,26 @@ package no.nav.personbruker.dittnav.api.beskjed
 
 import io.kotest.matchers.shouldBe
 import io.ktor.server.application.call
-import io.ktor.server.application.install
-import io.ktor.server.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.server.routing.get
 import io.ktor.server.routing.routing
 import io.ktor.server.testing.testApplication
 import kotlinx.coroutines.runBlocking
-import no.nav.personbruker.dittnav.api.config.jsonConfig
-import no.nav.personbruker.dittnav.api.mockApi
+import no.nav.personbruker.dittnav.api.applicationHttpClient
 import no.nav.personbruker.dittnav.api.rawEventHandlerVarsel
 import no.nav.personbruker.dittnav.api.respondRawJson
 import no.nav.personbruker.dittnav.api.tokenx.AccessToken
-import no.nav.personbruker.dittnav.api.util.applicationHttpClient
 import org.junit.jupiter.api.Test
-import java.lang.AssertionError
 import java.net.URL
+import kotlin.AssertionError
 
 internal class BeskjedConsumerTest {
 
     private val testEventHandlerUrl = "https://test.eventhandler.no"
     private val dummyToken = AccessToken("<access_token>")
 
-
-    @Test
-    fun `Skal kalle beskjed-endepunktet i event-handler`() {
-        testApplication {
-            val beskjedConsumer = BeskjedConsumer(applicationHttpClient(), URL(testEventHandlerUrl))
-            mockApi()
-            externalServices {
-                hosts(testEventHandlerUrl) {
-                    install(ContentNegotiation) { jsonConfig() }
-                    routing {
-                        get("fetch/beskjed/aktive") {
-                            call.respondRawJson("[]")
-                        }
-                    }
-                }
-                runBlocking {
-                    beskjedConsumer.getExternalActiveEvents(dummyToken) shouldBe emptyList()
-                }
-            }
-        }
-    }
-
     @Test
     fun `Skal motta en liste over aktive Beskjeder`() {
-        val expectedTekst = "En tekst som er forventet"
-        val expectedFnr = "8177625478"
+        val beskjedOject = createBeskjed(eventId = "12345", fodselsnummer = "9876543210", aktiv = true)
         testApplication {
             externalServices {
                 hosts(testEventHandlerUrl) {
@@ -57,8 +30,8 @@ internal class BeskjedConsumerTest {
                             call.respondRawJson(
                                 "[${
                                     rawEventHandlerVarsel(
-                                        fodselsnummer = expectedFnr,
-                                        tekst = expectedTekst,
+                                        fodselsnummer = beskjedOject.fodselsnummer,
+                                        tekst = beskjedOject.tekst,
                                         aktiv = true
                                     )
                                 }]"
@@ -71,11 +44,9 @@ internal class BeskjedConsumerTest {
 
             runBlocking {
                 val externalActiveEvents = beskjedConsumer.getExternalActiveEvents(dummyToken)
-                val event = externalActiveEvents.first()
                 externalActiveEvents.size shouldBe 1
-                event.tekst shouldBe expectedTekst
-                event.fodselsnummer shouldBe expectedFnr
-                event.aktiv shouldBe true
+                externalActiveEvents shouldContainBeskjedObject beskjedOject
+                externalActiveEvents.size shouldBe 1
             }
         }
     }
@@ -117,21 +88,18 @@ internal class BeskjedConsumerTest {
             runBlocking {
                 val externalInactiveEvents = beskjedConsumer.getExternalInactiveEvents(dummyToken)
                 externalInactiveEvents.size shouldBe 2
-                externalInactiveEvents.find { it.eventId == beskjedObject.eventId }?.let {
-                    it.tekst shouldBe beskjedObject.tekst
-                    it.fodselsnummer shouldBe beskjedObject.fodselsnummer
-                    it.aktiv shouldBe false
-                }
-                    ?: throw AssertionError("Fant ikke varsel med eventId ${beskjedObject.eventId} i liste $externalInactiveEvents")
-                externalInactiveEvents.find { it.eventId == beskjedObject2.eventId }?.let {
-                    it.tekst shouldBe beskjedObject2.tekst
-                    it.fodselsnummer shouldBe beskjedObject2.fodselsnummer
-                    it.aktiv shouldBe false
-                }
-                    ?: throw AssertionError("Fant ikke varsel med eventId ${beskjedObject2.eventId} i liste $externalInactiveEvents")
+                externalInactiveEvents shouldContainBeskjedObject beskjedObject
+                externalInactiveEvents shouldContainBeskjedObject beskjedObject2
             }
         }
     }
 
 }
+
+private infix fun List<Beskjed>.shouldContainBeskjedObject(expected: Beskjed) =
+    find { it.eventId == expected.eventId }?.let { event ->
+        event.tekst shouldBe expected.tekst
+        event.fodselsnummer shouldBe expected.fodselsnummer
+        event.aktiv shouldBe expected.aktiv
+    } ?: throw AssertionError("Fant ikke beskjed med eventId ${expected.eventId}")
 

@@ -1,13 +1,17 @@
 package no.nav.personbruker.dittnav.api
 
 import io.ktor.client.HttpClient
+import io.ktor.client.plugins.HttpTimeout
 import io.ktor.http.ContentType
+import io.ktor.serialization.kotlinx.json.json
 import io.ktor.server.application.ApplicationCall
 import io.ktor.server.response.respondBytes
+import io.ktor.server.testing.ApplicationTestBuilder
 import io.ktor.server.testing.TestApplicationBuilder
 import io.mockk.mockk
 import no.nav.personbruker.dittnav.api.beskjed.BeskjedMergerService
 import no.nav.personbruker.dittnav.api.config.api
+import no.nav.personbruker.dittnav.api.config.jsonConfig
 import no.nav.personbruker.dittnav.api.digisos.DigiSosService
 import no.nav.personbruker.dittnav.api.done.DoneProducer
 import no.nav.personbruker.dittnav.api.innboks.InnboksService
@@ -67,6 +71,13 @@ internal fun TestApplicationBuilder.mockApi(
     }
 }
 
+fun ApplicationTestBuilder.applicationHttpClient() =
+    createClient {
+        install(io.ktor.client.plugins.contentnegotiation.ContentNegotiation) {
+            json(jsonConfig())
+        }
+        install(HttpTimeout)
+    }
 internal suspend fun ApplicationCall.respondRawJson(s: String) = respondBytes(
     contentType = ContentType.Application.Json,
     provider = { s.toByteArray() })

@@ -9,11 +9,11 @@ import io.ktor.server.routing.get
 import io.ktor.server.routing.routing
 import io.ktor.server.testing.testApplication
 import kotlinx.coroutines.runBlocking
+import no.nav.personbruker.dittnav.api.applicationHttpClient
 import no.nav.personbruker.dittnav.api.beskjed.BeskjedDTO
-import no.nav.personbruker.dittnav.api.common.AuthenticatedUserObjectMother
+import no.nav.personbruker.dittnav.api.authentication.AuthenticatedUserObjectMother
 import no.nav.personbruker.dittnav.api.config.jsonConfig
 import no.nav.personbruker.dittnav.api.respondRawJson
-import no.nav.personbruker.dittnav.api.util.applicationHttpClient
 import org.intellij.lang.annotations.Language
 import org.junit.jupiter.api.Test
 import java.net.URL

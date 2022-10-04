@@ -6,11 +6,12 @@ import io.ktor.server.routing.get
 import io.ktor.server.routing.routing
 import io.ktor.server.testing.testApplication
 import kotlinx.coroutines.runBlocking
+import no.nav.personbruker.dittnav.api.applicationHttpClient
 import no.nav.personbruker.dittnav.api.rawEventHandlerVarsel
 import no.nav.personbruker.dittnav.api.respondRawJson
 import no.nav.personbruker.dittnav.api.tokenx.AccessToken
-import no.nav.personbruker.dittnav.api.util.applicationHttpClient
 import org.junit.jupiter.api.Test
+
 import java.net.URL
 
 internal class OppgaveConsumerTest {
@@ -47,7 +48,7 @@ internal class OppgaveConsumerTest {
     }
 
     @Test
-    fun `should get list of inactive Oppgave`() {
+    fun `should get list of inactive oppgavevarsler`() {
         val oppgaveObject = createOppgave("1", "1", false)
         val oppgaveObject2 = createOppgave("198", "19876413", false)
         val oppgaveObject3 = createOppgave("166", "1961247", false)
@@ -77,33 +78,14 @@ internal class OppgaveConsumerTest {
     }
 }
 
-private infix fun List<Oppgave>.shouldContainOppgaveObject(oppgaveObject: Oppgave) =
-    find { it.eventId == oppgaveObject.eventId }?.let { event ->
-        event.tekst shouldBe oppgaveObject.tekst
-        event.fodselsnummer shouldBe oppgaveObject.fodselsnummer
-        event.aktiv shouldBe oppgaveObject.aktiv
+private infix fun List<Oppgave>.shouldContainOppgaveObject(expected: Oppgave) =
+    find { it.eventId == expected.eventId }?.let { event ->
+        event.tekst shouldBe expected.tekst
+        event.fodselsnummer shouldBe expected.fodselsnummer
+        event.aktiv shouldBe expected.aktiv
     }
 
 private fun aktiveOppgaveJson(oppgaveObjekt1: Oppgave, oppgaveObjekt2: Oppgave) =
-    """[
-    ${
-        rawEventHandlerVarsel(
-            oppgaveObjekt1.eventId,
-            aktiv = true,
-            tekst = oppgaveObjekt1.tekst,
-            fodselsnummer = oppgaveObjekt1.fodselsnummer
-        )
-    },
-    ${
-        rawEventHandlerVarsel(
-            oppgaveObjekt2.eventId,
-            aktiv = true,
-            tekst = oppgaveObjekt2.tekst,
-            fodselsnummer = oppgaveObjekt2.fodselsnummer
-        )
-    }]""".trimMargin()
-
-private fun aktiveInnboksJson(oppgaveObjekt1: Oppgave, oppgaveObjekt2: Oppgave) =
     """[
     ${
         rawEventHandlerVarsel(

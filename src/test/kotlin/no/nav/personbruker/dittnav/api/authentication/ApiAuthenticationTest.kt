@@ -11,11 +11,11 @@ import io.ktor.server.application.call
 import io.ktor.server.routing.get
 import io.ktor.server.routing.routing
 import io.ktor.server.testing.testApplication
+import no.nav.personbruker.dittnav.api.applicationHttpClient
 import no.nav.personbruker.dittnav.api.config.LoginserviceMetadata
 import no.nav.personbruker.dittnav.api.mockApi
 import no.nav.personbruker.dittnav.api.respondRawJson
 import no.nav.personbruker.dittnav.api.stubToken
-import no.nav.personbruker.dittnav.api.util.applicationHttpClient
 import org.junit.jupiter.api.Test
 
 class ApiAuthenticationTest {

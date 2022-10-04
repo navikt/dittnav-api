@@ -9,7 +9,7 @@ import kotlinx.coroutines.runBlocking
 import no.nav.personbruker.dittnav.api.beskjed.BeskjedDTO
 import no.nav.personbruker.dittnav.api.beskjed.KildeType
 import no.nav.personbruker.dittnav.api.beskjed.createActiveBeskjedDto
-import no.nav.personbruker.dittnav.api.common.AuthenticatedUserObjectMother
+import no.nav.personbruker.dittnav.api.authentication.AuthenticatedUserObjectMother
 import org.junit.jupiter.api.Test
 import java.time.ZonedDateTime
 
