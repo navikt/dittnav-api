@@ -1,9 +1,9 @@
 package no.nav.personbruker.dittnav.api.oppfolging;
 
-import io.ktor.client.plugins.websocket.*
-import io.ktor.client.request.*
-import io.ktor.server.testing.*
-import kotlin.test.Test
+import io.ktor.client.request.get
+import io.ktor.server.testing.testApplication
+import org.junit.jupiter.api.Test
+
 
 class OppfolgingApiTest {
 

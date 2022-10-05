@@ -17,6 +17,7 @@ import io.ktor.server.routing.routing
 import io.ktor.server.testing.ApplicationTestBuilder
 import io.ktor.server.testing.TestApplicationBuilder
 import io.mockk.mockk
+import no.nav.personbruker.dittnav.api.authentication.AuthenticatedUser
 import no.nav.personbruker.dittnav.api.beskjed.BeskjedMergerService
 import no.nav.personbruker.dittnav.api.config.api
 import no.nav.personbruker.dittnav.api.config.jsonConfig
@@ -118,11 +119,23 @@ internal fun rawEventHandlerVarsel(
          }
         """.trimIndent()
 
-internal suspend fun HttpClient.authenticatedGet(urlString: String): HttpResponse = request {
+internal suspend fun HttpClient.authenticatedGet(urlString: String, token: String = stubToken): HttpResponse = request {
     url(urlString)
     method = HttpMethod.Get
-    header(HttpHeaders.Cookie, "selvbetjening-idtoken=$stubToken")
+    header(HttpHeaders.Cookie, "selvbetjening-idtoken=$token")
 }
+
+internal suspend fun HttpClient.authenticatedGet(
+    urlString: String,
+    authenticatedUser: AuthenticatedUser
+): HttpResponse = authenticatedGet(
+    urlString = urlString,
+    token = jwtStub.createTokenFor(
+        pid = authenticatedUser.ident,
+        audience = "audience",
+        authLevel = "Level${authenticatedUser.loginLevel}"
+    )
+)
 
 internal fun ApplicationTestBuilder.setupExternalServiceWithJsonResponse(
     hostApiBase: String,
