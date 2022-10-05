@@ -8,7 +8,7 @@ import io.mockk.coVerify
 import io.mockk.confirmVerified
 import io.mockk.mockk
 import kotlinx.coroutines.runBlocking
-import no.nav.personbruker.dittnav.api.authentication.AuthenticatedUserObjectMother
+import no.nav.personbruker.dittnav.api.authentication.AuthenticatedUserTestData
 import no.nav.personbruker.dittnav.api.common.ConsumePersonaliaException
 import no.nav.personbruker.dittnav.api.tokenx.AccessToken
 import org.junit.jupiter.api.Test
@@ -16,7 +16,7 @@ import org.junit.jupiter.api.Test
 internal class PersonaliaServiceTest {
     private val personaliaConsumer = mockk<PersonaliaConsumer>(relaxed = true)
     private val tokendings = mockk<PersonaliaTokendings>()
-    private val dummyUser = AuthenticatedUserObjectMother.createAuthenticatedUser()
+    private val dummyUser = AuthenticatedUserTestData.createAuthenticatedUser()
     private val dummyAccessToken = AccessToken("123")
 
     init {

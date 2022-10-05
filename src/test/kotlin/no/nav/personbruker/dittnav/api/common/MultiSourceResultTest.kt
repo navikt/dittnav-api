@@ -10,6 +10,7 @@ import no.nav.personbruker.dittnav.api.beskjed.BeskjedDTO
 import no.nav.personbruker.dittnav.api.beskjed.KildeType
 import no.nav.personbruker.dittnav.api.oppgave.OppgaveDTO
 import org.junit.jupiter.api.Test
+import java.time.ZonedDateTime
 
 internal class MultiSourceResultTest {
 
@@ -18,8 +19,8 @@ internal class MultiSourceResultTest {
         val expectedSource1 = KildeType.EVENTHANDLER
         val expectedSource2 = KildeType.DIGISOS
 
-        val source1 = MultiSourceResultObjectMother.giveMeNumberOfSuccessfulBeskjedEventsForSource(1, expectedSource1, baseEventId = "beskjed")
-        val source2 = MultiSourceResultObjectMother.giveMeNumberOfSuccessfulBeskjedEventsForSource(2, expectedSource2, baseEventId = "digisos")
+        val source1 = getNumberOfSuccessfulBeskjedEventsForSource(1, expectedSource1, baseEventId = "beskjed")
+        val source2 = getNumberOfSuccessfulBeskjedEventsForSource(2, expectedSource2, baseEventId = "digisos")
 
         val sum = source1 + source2
 
@@ -42,7 +43,7 @@ internal class MultiSourceResultTest {
         val expectedSource1 = KildeType.EVENTHANDLER
         val expectedSource2 = KildeType.DIGISOS
 
-        val source1 = MultiSourceResultObjectMother.giveMeNumberOfSuccessfulBeskjedEventsForSource(1, expectedSource1)
+        val source1 = getNumberOfSuccessfulBeskjedEventsForSource(1, expectedSource1)
         val source2 = MultiSourceResult.createErrorResult<BeskjedDTO, KildeType>(expectedSource2)
 
         val sum = source1 + source2
@@ -88,7 +89,7 @@ internal class MultiSourceResultTest {
     fun `Skal kunne addere et tomt resultatobjekt for beskjed til et annet resultat uten at resultatet endrer seg`() {
         val expectedSource1 = KildeType.EVENTHANDLER
 
-        val validResult = MultiSourceResultObjectMother.giveMeNumberOfSuccessfulBeskjedEventsForSource(1, expectedSource1)
+        val validResult = getNumberOfSuccessfulBeskjedEventsForSource(1, expectedSource1)
         val emptyBeskjedResult = MultiSourceResult.createEmptyResult<BeskjedDTO>()
 
         val sum = validResult + emptyBeskjedResult
@@ -110,7 +111,7 @@ internal class MultiSourceResultTest {
     fun `Skal kunne addere et tomt resultatobjekt for oppgave til et annet resultat uten at resultatet endrer seg`() {
         val expectedSource1 = KildeType.EVENTHANDLER
 
-        val validResult = MultiSourceResultObjectMother.giveMeNumberOfSuccessfulOppgaveEventsForSource(1, expectedSource1)
+        val validResult = getNumberOfSuccessfulOppgaveEventsForSource(1, expectedSource1)
         val emptyBeskjedResult = MultiSourceResult.createEmptyResult<OppgaveDTO>()
 
         val sum = validResult + emptyBeskjedResult
@@ -128,4 +129,34 @@ internal class MultiSourceResultTest {
         sum.determineHttpCode() shouldBe HttpStatusCode.OK
     }
 
+}
+
+private fun getNumberOfSuccessfulOppgaveEventsForSource(
+    numberOfEvents: Int,
+    source: KildeType,
+    baseEventId: String = "oppgave"
+): MultiSourceResult<OppgaveDTO, KildeType> {
+    val events = mutableListOf<OppgaveDTO>()
+    for (lopenummer in 0 until numberOfEvents) {
+        events.add(createActiveOppgave("$baseEventId-$lopenummer"))
+    }
+    return MultiSourceResult.createSuccessfulResult(
+        events,
+        source
+    )
+}
+private fun createActiveOppgave(eventId: String): OppgaveDTO {
+    return OppgaveDTO(
+        forstBehandlet = ZonedDateTime.now(),
+        eventId = eventId,
+        tekst = "Dummytekst",
+        link = "https://dummy.url",
+        produsent = "dummy-produsent",
+        sistOppdatert = ZonedDateTime.now().minusDays(3),
+        sikkerhetsnivaa = 3,
+        aktiv = true,
+        grupperingsId = "321",
+        eksternVarslingSendt = true,
+        eksternVarslingKanaler = listOf("SMS", "EPOST")
+    )
 }

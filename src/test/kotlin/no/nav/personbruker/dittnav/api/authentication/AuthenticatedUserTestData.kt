@@ -8,7 +8,7 @@ import java.security.Key
 import java.time.ZonedDateTime
 import java.util.*
 
-object AuthenticatedUserObjectMother {
+object AuthenticatedUserTestData {
 
     private val key: Key = Keys.secretKeyFor(SignatureAlgorithm.HS256)
 

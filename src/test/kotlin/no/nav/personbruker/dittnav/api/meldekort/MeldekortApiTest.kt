@@ -3,9 +3,6 @@ package no.nav.personbruker.dittnav.api.meldekort;
 import io.kotest.matchers.shouldBe
 import io.ktor.client.statement.bodyAsText
 import io.ktor.http.HttpStatusCode
-import io.ktor.server.application.call
-import io.ktor.server.routing.get
-import io.ktor.server.routing.routing
 import io.ktor.server.testing.ApplicationTestBuilder
 import io.ktor.server.testing.testApplication
 import io.mockk.coEvery
@@ -24,7 +21,7 @@ import no.nav.personbruker.dittnav.api.localdateOrNull
 import no.nav.personbruker.dittnav.api.meldekort.external.MeldekortExternal
 import no.nav.personbruker.dittnav.api.meldekort.external.MeldekortstatusExternal
 import no.nav.personbruker.dittnav.api.mockApi
-import no.nav.personbruker.dittnav.api.respondRawJson
+import no.nav.personbruker.dittnav.api.setupExternalServiceWithJsonResponse
 import no.nav.personbruker.dittnav.api.string
 import no.nav.personbruker.dittnav.api.tokenx.AccessToken
 import org.junit.jupiter.api.BeforeEach
@@ -37,6 +34,7 @@ import java.time.LocalDate
 class MeldekortApiTest {
     private val meldekortTokendings: MeldekortTokendings = mockk()
     private val meldekortApiBase = "https://nav.meldkort.test"
+    private val medlekortStatusEndpoint = "/api/person/meldekortstatus"
 
     @BeforeEach()
     fun `mock tokendings`() {
@@ -44,8 +42,7 @@ class MeldekortApiTest {
     }
 
     @Test
-    fun `henter meldekortinfo for autentisert bruker`() = testApplication {
-        mockApi(meldekortService = MeldekortService(consumer(), meldekortTokendings))
+    fun `henter meldekortinfo for autentisert bruker`() {
         val expectedMeldekortInfo = createMeldekortinfo(
             nyeMeldekort = createNyeMeldekortObject(
                 antall = 3,
@@ -54,53 +51,50 @@ class MeldekortApiTest {
 
             )
         )
-        externalServices {
-            hosts(meldekortApiBase) {
-                routing {
-                    get("/api/person/meldekortstatus") {
-                        call.respondRawJson(externalStatusJson(expectedMeldekortInfo))
+
+        testApplication {
+            mockApi(meldekortService = MeldekortService(meldekortConsumer(), meldekortTokendings))
+
+            setupExternalServiceWithJsonResponse(
+                hostApiBase = meldekortApiBase,
+                endpoint = medlekortStatusEndpoint,
+                content = externalStatusJson(expectedMeldekortInfo)
+            )
+
+            client.authenticatedGet("dittnav-api/meldekortinfo").apply {
+                status shouldBe HttpStatusCode.OK
+                val jsonResponse = Json.parseToJsonElement(bodyAsText()).jsonObject
+                jsonResponse.int("resterendeFeriedager") shouldBe expectedMeldekortInfo.resterendeFeriedager
+                jsonResponse.int("etterregistrerteMeldekort") shouldBe expectedMeldekortInfo.etterregistrerteMeldekort
+                jsonResponse.bool("meldekortbruker") shouldBe true
+                jsonResponse["nyeMeldekort"]?.jsonObject?.also { nyeMeldekortJson ->
+                    nyeMeldekortJson.int("antallNyeMeldekort") shouldBe expectedMeldekortInfo.nyeMeldekort.antallNyeMeldekort
+                    nyeMeldekortJson.localdateOrNull("nesteInnsendingAvMeldekort") shouldBe expectedMeldekortInfo.nyeMeldekort.nesteInnsendingAvMeldekort
+                    nyeMeldekortJson.meldekort("nesteMeldekort")?.also { resultMeldekort ->
+                        val expectedMeldekort = expectedMeldekortInfo.nyeMeldekort.nesteMeldekort!!
+                        resultMeldekort.fra shouldBe expectedMeldekort.fra
+                        resultMeldekort.til shouldBe expectedMeldekort.til
+                        resultMeldekort.uke shouldBe expectedMeldekort.uke
+                        resultMeldekort.sisteDatoForTrekk shouldBe expectedMeldekort.sisteDatoForTrekk
+                        resultMeldekort.risikerTrekk shouldBe expectedMeldekort.risikerTrekk
+                        resultMeldekort.kanSendesFra shouldBe expectedMeldekort.kanSendesFra
+
                     }
-                }
+
+                } ?: throw AssertionError("Fant ikke meldekort ikke object med nøkkel nye meldekort i jsonrespons")
             }
-        }
-
-        client.authenticatedGet("dittnav-api/meldekortinfo").apply {
-            status shouldBe HttpStatusCode.OK
-            val jsonResponse = Json.parseToJsonElement(bodyAsText()).jsonObject
-            jsonResponse.int("resterendeFeriedager") shouldBe expectedMeldekortInfo.resterendeFeriedager
-            jsonResponse.int("etterregistrerteMeldekort") shouldBe expectedMeldekortInfo.etterregistrerteMeldekort
-            jsonResponse.bool("meldekortbruker") shouldBe true
-            jsonResponse["nyeMeldekort"]?.jsonObject?.also { nyeMeldekortJson ->
-                nyeMeldekortJson.int("antallNyeMeldekort") shouldBe expectedMeldekortInfo.nyeMeldekort.antallNyeMeldekort
-                nyeMeldekortJson.localdateOrNull("nesteInnsendingAvMeldekort") shouldBe expectedMeldekortInfo.nyeMeldekort.nesteInnsendingAvMeldekort
-                nyeMeldekortJson.meldekort("nesteMeldekort")?.also { resultMeldekort ->
-                    val expectedMeldekort = expectedMeldekortInfo.nyeMeldekort.nesteMeldekort!!
-                    resultMeldekort.fra shouldBe expectedMeldekort.fra
-                    resultMeldekort.til shouldBe expectedMeldekort.til
-                    resultMeldekort.uke shouldBe expectedMeldekort.uke
-                    resultMeldekort.sisteDatoForTrekk shouldBe expectedMeldekort.sisteDatoForTrekk
-                    resultMeldekort.risikerTrekk shouldBe expectedMeldekort.risikerTrekk
-                    resultMeldekort.kanSendesFra shouldBe expectedMeldekort.kanSendesFra
-
-                }
-
-            } ?: throw AssertionError("Fant ikke meldekort ikke object med nøkkel nye meldekort i jsonrespons")
         }
     }
 
     @Test
     fun `henter meldekortinfo for bruker som ikke har meldekort`() = testApplication {
-        mockApi(meldekortService = MeldekortService(consumer(), meldekortTokendings))
+        mockApi(meldekortService = MeldekortService(meldekortConsumer(), meldekortTokendings))
 
-        externalServices {
-            hosts(meldekortApiBase) {
-                routing {
-                    get("/api/person/meldekortstatus") {
-                        call.respondRawJson(emptyExternalStatusJson)
-                    }
-                }
-            }
-        }
+        setupExternalServiceWithJsonResponse(
+            hostApiBase = meldekortApiBase,
+            endpoint = medlekortStatusEndpoint,
+            content = emptyExternalStatusJson
+        )
 
         client.authenticatedGet("dittnav-api/meldekortinfo").apply {
             status shouldBe HttpStatusCode.OK
@@ -118,7 +112,7 @@ class MeldekortApiTest {
     }
 
     @Test
-    fun `Henter meldekortstatus for autentisert bruker`() = testApplication {
+    fun `Henter meldekortstatus for autentisert bruker`() {
         val now = LocalDate.now()
         val expectedStatus = MeldekortstatusExternal(
             meldekort = 1,
@@ -132,53 +126,35 @@ class MeldekortApiTest {
             ),
             nesteInnsendingAvMeldekort = LocalDate.now().plusDays(14)
         )
-        mockApi(meldekortService = MeldekortService(consumer(), meldekortTokendings))
-        externalServices {
-            hosts(meldekortApiBase) {
-                routing {
-                    get("/api/person/meldekortstatus") {
-                        call.respondRawJson(meldekortStatusJson(expectedStatus))
-                    }
+
+        testApplication {
+            mockApi(meldekortService = MeldekortService(meldekortConsumer(), meldekortTokendings))
+            setupExternalServiceWithJsonResponse(
+                hostApiBase = meldekortApiBase,
+                endpoint = medlekortStatusEndpoint,
+                content = meldekortStatusJson(expectedStatus)
+            )
+
+            client.authenticatedGet("dittnav-api/meldekortstatus").apply {
+                status shouldBe HttpStatusCode.OK
+                val jsonResponse = Json.parseToJsonElement(bodyAsText()).jsonObject
+                jsonResponse.int("meldekort") shouldBe expectedStatus.meldekort
+                jsonResponse.int("etterregistrerteMeldekort") shouldBe expectedStatus.etterregistrerteMeldekort
+                jsonResponse.int("antallGjenstaaendeFeriedager") shouldBe expectedStatus.antallGjenstaaendeFeriedager
+                jsonResponse.localdateOrNull("nesteInnsendingAvMeldekort") shouldBe expectedStatus.nesteInnsendingAvMeldekort
+                jsonResponse.externalMeldekort("nesteMeldekort")?.also { meldekortExternal ->
+                    meldekortExternal.fra shouldBe expectedStatus.nesteMeldekort!!.fra
+                    meldekortExternal.til shouldBe expectedStatus.nesteMeldekort!!.til
+                    meldekortExternal.kanSendesFra shouldBe expectedStatus.nesteMeldekort!!.kanSendesFra
                 }
-            }
-
-        }
-
-        client.authenticatedGet("dittnav-api/meldekortstatus").apply {
-            status shouldBe HttpStatusCode.OK
-            val jsonResponse = Json.parseToJsonElement(bodyAsText()).jsonObject
-            jsonResponse.int("meldekort") shouldBe expectedStatus.meldekort
-            jsonResponse.int("etterregistrerteMeldekort") shouldBe expectedStatus.etterregistrerteMeldekort
-            jsonResponse.int("antallGjenstaaendeFeriedager") shouldBe expectedStatus.antallGjenstaaendeFeriedager
-            jsonResponse.localdateOrNull("nesteInnsendingAvMeldekort") shouldBe expectedStatus.nesteInnsendingAvMeldekort
-            jsonResponse.externalMeldekort("nesteMeldekort")?.also { meldekortExternal ->
-                meldekortExternal.fra shouldBe expectedStatus.nesteMeldekort!!.fra
-                meldekortExternal.til shouldBe expectedStatus.nesteMeldekort!!.til
-                meldekortExternal.kanSendesFra shouldBe expectedStatus.nesteMeldekort!!.kanSendesFra
             }
         }
     }
 
-    private fun ApplicationTestBuilder.consumer(): MeldekortConsumer =
+    private fun ApplicationTestBuilder.meldekortConsumer(): MeldekortConsumer =
         MeldekortConsumer(client = applicationHttpClient(), meldekortApiBaseURL = URL(meldekortApiBase))
 
 }
-
-
-private fun JsonObject.externalMeldekort(key: String) =
-    if (this.isNullObject(key)) {
-        null
-    } else {
-        this.jsonObject[key]?.jsonObject?.let { meldekortJson ->
-            MeldekortExternal(
-                uke = meldekortJson.string("uke"),
-                kanSendesFra = meldekortJson.localdate("kanSendesFra"),
-                fra = meldekortJson.localdate("fra"),
-                til = meldekortJson.localdate("til")
-            )
-        }
-
-    }
 
 
 private fun externalStatusJson(info: Meldekortinfo) = """
@@ -245,6 +221,21 @@ private fun JsonElement?.meldekort(key: String): Meldekort? =
                 risikerTrekk = meldekortJson.bool("risikerTrekk")
             )
         }
+    }
+
+private fun JsonObject.externalMeldekort(key: String) =
+    if (this.isNullObject(key)) {
+        null
+    } else {
+        this.jsonObject[key]?.jsonObject?.let { meldekortJson ->
+            MeldekortExternal(
+                uke = meldekortJson.string("uke"),
+                kanSendesFra = meldekortJson.localdate("kanSendesFra"),
+                fra = meldekortJson.localdate("fra"),
+                til = meldekortJson.localdate("til")
+            )
+        }
+
     }
 
 

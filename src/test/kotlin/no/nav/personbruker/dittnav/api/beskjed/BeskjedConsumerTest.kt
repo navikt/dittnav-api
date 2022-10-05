@@ -1,14 +1,11 @@
 package no.nav.personbruker.dittnav.api.beskjed
 
 import io.kotest.matchers.shouldBe
-import io.ktor.server.application.call
-import io.ktor.server.routing.get
-import io.ktor.server.routing.routing
 import io.ktor.server.testing.testApplication
 import kotlinx.coroutines.runBlocking
 import no.nav.personbruker.dittnav.api.applicationHttpClient
 import no.nav.personbruker.dittnav.api.rawEventHandlerVarsel
-import no.nav.personbruker.dittnav.api.respondRawJson
+import no.nav.personbruker.dittnav.api.setupExternalServiceWithJsonResponse
 import no.nav.personbruker.dittnav.api.tokenx.AccessToken
 import org.junit.jupiter.api.Test
 import java.net.URL
@@ -22,24 +19,21 @@ internal class BeskjedConsumerTest {
     @Test
     fun `Skal motta en liste over aktive Beskjeder`() {
         val beskjedOject = createBeskjed(eventId = "12345", fodselsnummer = "9876543210", aktiv = true)
+        val eventhandlerResponse = "[${
+            rawEventHandlerVarsel(
+                fodselsnummer = beskjedOject.fodselsnummer,
+                tekst = beskjedOject.tekst,
+                aktiv = true
+            )
+        }]"
         testApplication {
-            externalServices {
-                hosts(testEventHandlerUrl) {
-                    routing {
-                        get("fetch/beskjed/aktive") {
-                            call.respondRawJson(
-                                "[${
-                                    rawEventHandlerVarsel(
-                                        fodselsnummer = beskjedOject.fodselsnummer,
-                                        tekst = beskjedOject.tekst,
-                                        aktiv = true
-                                    )
-                                }]"
-                            )
-                        }
-                    }
-                }
-            }
+
+            setupExternalServiceWithJsonResponse(
+                hostApiBase = testEventHandlerUrl,
+                endpoint = "fetch/beskjed/aktive",
+                content = eventhandlerResponse
+            )
+
             val beskjedConsumer = BeskjedConsumer(applicationHttpClient(), URL(testEventHandlerUrl))
 
             runBlocking {
@@ -55,34 +49,30 @@ internal class BeskjedConsumerTest {
     fun `Skal motta en liste over inaktive Beskjeder`() {
         val beskjedObject = createBeskjed(eventId = "1", fodselsnummer = "1", aktiv = false)
         val beskjedObject2 = createBeskjed(eventId = "1", fodselsnummer = "1", aktiv = false)
+        val eventhandlerResponse = "[${
+            rawEventHandlerVarsel(
+                fodselsnummer = beskjedObject.fodselsnummer,
+                eventId = beskjedObject.eventId,
+                tekst = beskjedObject.tekst,
+                aktiv = false
+            )
+        },${
+            rawEventHandlerVarsel(
+                fodselsnummer = beskjedObject2.fodselsnummer,
+                eventId = beskjedObject2.eventId,
+                tekst = beskjedObject2.tekst,
+                aktiv = false
+            )
+        }]"
 
 
         testApplication {
-            externalServices {
-                hosts(testEventHandlerUrl) {
-                    routing {
-                        get("fetch/beskjed/inaktive") {
-                            call.respondRawJson(
-                                "[${
-                                    rawEventHandlerVarsel(
-                                        fodselsnummer = beskjedObject.fodselsnummer,
-                                        eventId = beskjedObject.eventId,
-                                        tekst = beskjedObject.tekst,
-                                        aktiv = false
-                                    )
-                                },${
-                                    rawEventHandlerVarsel(
-                                        fodselsnummer = beskjedObject2.fodselsnummer,
-                                        eventId = beskjedObject2.eventId,
-                                        tekst = beskjedObject2.tekst,
-                                        aktiv = false
-                                    )
-                                }]"
-                            )
-                        }
-                    }
-                }
-            }
+            setupExternalServiceWithJsonResponse(
+                hostApiBase = testEventHandlerUrl,
+                endpoint = "fetch/beskjed/inaktive",
+                content = eventhandlerResponse
+            )
+
             val beskjedConsumer = BeskjedConsumer(applicationHttpClient(), URL(testEventHandlerUrl))
 
             runBlocking {

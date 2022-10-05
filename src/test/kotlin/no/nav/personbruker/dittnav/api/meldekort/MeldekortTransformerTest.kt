@@ -1,12 +1,9 @@
 package no.nav.personbruker.dittnav.api.meldekort
 
 import io.kotest.matchers.shouldBe
-import no.nav.personbruker.dittnav.api.meldekort.external.MeldekortExternal
 import no.nav.personbruker.dittnav.api.meldekort.external.MeldekortstatusExternal
 import org.junit.jupiter.api.Test
 import java.time.LocalDate
-import java.time.temporal.WeekFields
-import java.util.Locale
 
 internal class MeldekortTransformerTest {
 

@@ -1,14 +1,11 @@
 package no.nav.personbruker.dittnav.api.oppgave
 
 import io.kotest.matchers.shouldBe
-import io.ktor.server.application.call
-import io.ktor.server.routing.get
-import io.ktor.server.routing.routing
 import io.ktor.server.testing.testApplication
 import kotlinx.coroutines.runBlocking
 import no.nav.personbruker.dittnav.api.applicationHttpClient
 import no.nav.personbruker.dittnav.api.rawEventHandlerVarsel
-import no.nav.personbruker.dittnav.api.respondRawJson
+import no.nav.personbruker.dittnav.api.setupExternalServiceWithJsonResponse
 import no.nav.personbruker.dittnav.api.tokenx.AccessToken
 import org.junit.jupiter.api.Test
 
@@ -25,19 +22,13 @@ internal class OppgaveConsumerTest {
         val oppgaveObject2 = createOppgave("2", "2", true)
 
         testApplication {
-            val client = applicationHttpClient()
-            externalServices {
-                hosts(testEventHandlerEndpoint) {
-                    routing {
-                        get("/fetch/oppgave/aktive") {
-                            call.respondRawJson(aktiveOppgaveJson(oppgaveObject1, oppgaveObject2))
-                        }
-                    }
-                }
-            }
+            setupExternalServiceWithJsonResponse(
+                hostApiBase = testEventHandlerEndpoint,
+                endpoint = "/fetch/oppgave/aktive",
+                content = aktiveOppgaverJson(oppgaveObject1, oppgaveObject2)
+            )
 
-
-            val oppgaveConsumer = OppgaveConsumer(client, URL(testEventHandlerEndpoint))
+            val oppgaveConsumer = OppgaveConsumer(applicationHttpClient(), URL(testEventHandlerEndpoint))
 
             runBlocking {
                 val externalActiveEvents = oppgaveConsumer.getExternalActiveEvents(dummyToken)
@@ -54,18 +45,14 @@ internal class OppgaveConsumerTest {
         val oppgaveObject3 = createOppgave("166", "1961247", false)
 
         testApplication {
-            val client = applicationHttpClient()
-            externalServices {
-                hosts(testEventHandlerEndpoint) {
-                    routing {
-                        get("/fetch/oppgave/inaktive") {
-                            call.respondRawJson(inaktiveOppgaveJson(oppgaveObject, oppgaveObject2,oppgaveObject3))
-                        }
-                    }
-                }
-            }
 
-            val oppgaveConsumer = OppgaveConsumer(client, URL(testEventHandlerEndpoint))
+            setupExternalServiceWithJsonResponse(
+                hostApiBase = testEventHandlerEndpoint,
+                endpoint = "/fetch/oppgave/inaktive",
+                content = inaktiveOppgaverJson(oppgaveObject, oppgaveObject2, oppgaveObject3)
+            )
+
+            val oppgaveConsumer = OppgaveConsumer(applicationHttpClient(), URL(testEventHandlerEndpoint))
 
             runBlocking {
                 val externalInactiveEvents = oppgaveConsumer.getExternalInactiveEvents(dummyToken)
@@ -85,7 +72,7 @@ private infix fun List<Oppgave>.shouldContainOppgaveObject(expected: Oppgave) =
         event.aktiv shouldBe expected.aktiv
     }
 
-private fun aktiveOppgaveJson(oppgaveObjekt1: Oppgave, oppgaveObjekt2: Oppgave) =
+private fun aktiveOppgaverJson(oppgaveObjekt1: Oppgave, oppgaveObjekt2: Oppgave) =
     """[
     ${
         rawEventHandlerVarsel(
@@ -104,7 +91,7 @@ private fun aktiveOppgaveJson(oppgaveObjekt1: Oppgave, oppgaveObjekt2: Oppgave) 
         )
     }]""".trimMargin()
 
-private fun inaktiveOppgaveJson(oppgaveObject1: Oppgave, oppgaveObject2: Oppgave, oppgaveObject3: Oppgave) =
+private fun inaktiveOppgaverJson(oppgaveObject1: Oppgave, oppgaveObject2: Oppgave, oppgaveObject3: Oppgave) =
     """[
     ${
         rawEventHandlerVarsel(

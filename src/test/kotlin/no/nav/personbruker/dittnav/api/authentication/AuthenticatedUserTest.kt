@@ -13,7 +13,7 @@ internal class AuthenticatedUserTest {
         val expectedIdent = "12345"
         val expectedLoginLevel = 4
 
-        val authenticatedUser = AuthenticatedUserObjectMother.createAuthenticatedUser(expectedIdent, expectedLoginLevel)
+        val authenticatedUser = AuthenticatedUserTestData.createAuthenticatedUser(expectedIdent, expectedLoginLevel)
 
         authenticatedUser.ident shouldBe expectedIdent
         authenticatedUser.loginLevel shouldBe  expectedLoginLevel
@@ -24,7 +24,7 @@ internal class AuthenticatedUserTest {
 
     @Test
     fun `should not include sensitive values in the output for the toString method`() {
-        val authenticatedUser = AuthenticatedUserObjectMother.createAuthenticatedUser()
+        val authenticatedUser = AuthenticatedUserTestData.createAuthenticatedUser()
 
         val outputOfToString = authenticatedUser.toString()
         outputOfToString shouldContain  authenticatedUser.loginLevel.toString()

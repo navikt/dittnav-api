@@ -44,7 +44,8 @@ internal fun createNyeMeldekortObject(
     nesteInnsendingAvMeldekort: LocalDate? = null
 ) = NyeMeldekort(antall, nesteMeldekort, nesteInnsendingAvMeldekort)
 
-internal fun LocalDate.weekNumber(): String = "${Calendar.getInstance().weekYear}"
+internal fun LocalDate.weekNumber(): String =
+    "${Calendar.getInstance().also { it.set(year, monthValue, dayOfYear) }.weekYear}"
 
 internal fun createInternalMedldekortObject(
     uke: String = LocalDate.now().plusWeeks(1).weekNumber(),
@@ -57,7 +58,7 @@ internal fun createInternalMedldekortObject(
     uke = uke,
     kanSendesFra = kanSendesFra,
     fra = fra,
-    til =til,
+    til = til,
     sisteDatoForTrekk = sisteDatoForTrekk,
     risikerTrekk = risikererTrekk
 )

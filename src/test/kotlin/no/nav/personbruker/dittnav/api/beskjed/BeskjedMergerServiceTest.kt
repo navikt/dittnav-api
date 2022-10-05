@@ -4,8 +4,8 @@ import io.kotest.matchers.shouldBe
 import io.mockk.*
 import kotlinx.coroutines.runBlocking
 import no.finn.unleash.FakeUnleash
-import no.nav.personbruker.dittnav.api.authentication.AuthenticatedUserObjectMother
-import no.nav.personbruker.dittnav.api.common.MultiSourceResultObjectMother
+import no.nav.personbruker.dittnav.api.authentication.AuthenticatedUserTestData
+import no.nav.personbruker.dittnav.api.common.getNumberOfSuccessfulBeskjedEventsForSource
 import no.nav.personbruker.dittnav.api.digisos.DigiSosService
 import no.nav.personbruker.dittnav.api.unleash.UnleashService
 import org.junit.jupiter.api.BeforeEach
@@ -16,16 +16,16 @@ internal class BeskjedMergerServiceTest {
     private val beskjedService = mockk<BeskjedService>(relaxed = true)
     private val digiSosService = mockk<DigiSosService>(relaxed = true)
 
-    private val innloggetBruker = AuthenticatedUserObjectMother.createAuthenticatedUser()
+    private val innloggetBruker = AuthenticatedUserTestData.createAuthenticatedUser()
 
     private val eventHandlerDefaultResult =
-        MultiSourceResultObjectMother.giveMeNumberOfSuccessfulBeskjedEventsForSource(
+       getNumberOfSuccessfulBeskjedEventsForSource(
             1,
             KildeType.EVENTHANDLER,
             "handler"
         )
 
-    private val digiSosDefaultResult = MultiSourceResultObjectMother.giveMeNumberOfSuccessfulBeskjedEventsForSource(
+    private val digiSosDefaultResult = getNumberOfSuccessfulBeskjedEventsForSource(
         3,
         KildeType.DIGISOS,
         "digiSos"

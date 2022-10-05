@@ -1,15 +1,12 @@
 package no.nav.personbruker.dittnav.api.innboks
 
 import io.kotest.matchers.shouldBe
-import io.ktor.server.application.call
-import io.ktor.server.routing.get
-import io.ktor.server.routing.routing
 import io.ktor.server.testing.testApplication
 import kotlinx.coroutines.runBlocking
 import no.nav.personbruker.dittnav.api.rawEventHandlerVarsel
-import no.nav.personbruker.dittnav.api.respondRawJson
 import no.nav.personbruker.dittnav.api.tokenx.AccessToken
 import no.nav.personbruker.dittnav.api.applicationHttpClient
+import no.nav.personbruker.dittnav.api.setupExternalServiceWithJsonResponse
 import org.junit.jupiter.api.Test
 import java.net.URL
 
@@ -23,20 +20,16 @@ internal class InnboksConsumerTest {
         val innboksObject1 = createInnboks("1", "1", true)
         val innboksObject2 = createInnboks("2", "2", true)
         testApplication {
-            externalServices {
-                hosts(testEventHandlerEndpoint) {
-                    routing {
-                        get("/fetch/innboks/aktive") {
-                            call.respondRawJson(aktiveInnboksJson(innboksObject1, innboksObject2))
-                        }
-                    }
-                }
-            }
+
+            setupExternalServiceWithJsonResponse(
+                hostApiBase = testEventHandlerEndpoint,
+                endpoint = "/fetch/innboks/aktive",
+                content = aktiveInnboksJson(innboksObject1, innboksObject2)
+            )
             val innboksConsumer = InnboksConsumer(applicationHttpClient(), URL(testEventHandlerEndpoint))
 
             runBlocking {
                 val externalActiveEvents = innboksConsumer.getExternalActiveEvents(dummyToken)
-
                 externalActiveEvents.size shouldBe 2
                 externalActiveEvents shouldContainInnboksObject innboksObject1
                 externalActiveEvents shouldContainInnboksObject innboksObject2
@@ -52,15 +45,11 @@ internal class InnboksConsumerTest {
 
         testApplication {
             val innboksConsumer = InnboksConsumer(applicationHttpClient(), URL(testEventHandlerEndpoint))
-            externalServices {
-                hosts(testEventHandlerEndpoint) {
-                    routing {
-                        get("/fetch/innboks/inaktive") {
-                            call.respondRawJson(inaktiveInnboksJson(innboksObject1, innboksObject2, innboksObject3))
-                        }
-                    }
-                }
-            }
+            setupExternalServiceWithJsonResponse(
+                hostApiBase = testEventHandlerEndpoint,
+                endpoint = "/fetch/innboks/inaktive",
+                content = inaktiveInnboksJson(innboksObject1, innboksObject2, innboksObject3)
+            )
 
             runBlocking {
                 val externalInactiveEvents = innboksConsumer.getExternalInactiveEvents(dummyToken)

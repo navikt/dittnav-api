@@ -2,54 +2,41 @@ package no.nav.personbruker.dittnav.api.digisos
 
 import io.kotest.matchers.nulls.shouldNotBeNull
 import io.kotest.matchers.shouldBe
-import io.ktor.server.application.call
-import io.ktor.server.application.install
-import io.ktor.server.plugins.contentnegotiation.ContentNegotiation
-import io.ktor.server.routing.get
-import io.ktor.server.routing.routing
 import io.ktor.server.testing.testApplication
 import kotlinx.coroutines.runBlocking
 import no.nav.personbruker.dittnav.api.applicationHttpClient
 import no.nav.personbruker.dittnav.api.beskjed.BeskjedDTO
-import no.nav.personbruker.dittnav.api.authentication.AuthenticatedUserObjectMother
-import no.nav.personbruker.dittnav.api.config.jsonConfig
-import no.nav.personbruker.dittnav.api.respondRawJson
+import no.nav.personbruker.dittnav.api.authentication.AuthenticatedUserTestData
+import no.nav.personbruker.dittnav.api.setupExternalServiceWithJsonResponse
 import org.intellij.lang.annotations.Language
 import org.junit.jupiter.api.Test
 import java.net.URL
 
 internal class DigiSosClientTest {
 
-    private val dummyUser = AuthenticatedUserObjectMother.createAuthenticatedUser()
+    private val dummyUser = AuthenticatedUserTestData.createAuthenticatedUser()
 
     private val digiSosSoknadBaseURL = "https://soknad"
 
     @Test
     fun `Skal kunne hente paabegynte aktive soknader`() {
         val expectedStatus = true
+        @Language("JSON") val digiSosResponse =
+            """[
+                  ${rawDigiSosResponse("12345", expectedStatus)},
+                  ${rawDigiSosResponse(eventId = "8765", expectedStatus)},
+                  ${rawDigiSosResponse(eventId = "98659", expectedStatus)}
+            ]""".trimMargin()
 
         testApplication {
-            externalServices {
-                hosts(digiSosSoknadBaseURL) {
-                    install(ContentNegotiation) {
-                        jsonConfig()
-                    }
-                    routing {
-                        get("dittnav/pabegynte/aktive") {
-                            call.respondRawJson(
-                                """[${rawDigiSosResponse("12345", expectedStatus)},
-                                    ${rawDigiSosResponse(eventId = "8765", expectedStatus)},
-                                    ${rawDigiSosResponse(eventId = "98659", expectedStatus)}]""".trimMargin()
-                            )
-                        }
-
-                    }
-                }
-            }
-            val digiSosClient = DigiSosClient(applicationHttpClient(), URL(digiSosSoknadBaseURL))
+            setupExternalServiceWithJsonResponse(
+                hostApiBase = digiSosSoknadBaseURL,
+                endpoint = "/dittnav/pabegynte/aktive",
+                content = digiSosResponse
+            )
 
             val result: List<BeskjedDTO> = runBlocking {
-                digiSosClient.getPaabegynteActive(dummyUser)
+                DigiSosClient(applicationHttpClient(), URL(digiSosSoknadBaseURL)).getPaabegynteActive(dummyUser)
             }
             result.shouldNotBeNull()
             result.size shouldBe 3
@@ -63,30 +50,21 @@ internal class DigiSosClientTest {
     @Test
     fun `Skal kunne hente paabegynte inaktive soknader`() {
         val expectedStatus = false
-
-        testApplication {
-            externalServices {
-                hosts(digiSosSoknadBaseURL) {
-                    install(ContentNegotiation) {
-                        jsonConfig()
-                    }
-                    routing {
-                        get("dittnav/pabegynte/inaktive") {
-                            call.respondRawJson(
-                                """[${rawDigiSosResponse(eventId = "12345", expectedStatus)},
+        val digiSosResponse = """[${rawDigiSosResponse(eventId = "12345", expectedStatus)},
                                     ${rawDigiSosResponse(eventId = "8765", expectedStatus)},
                                     ${rawDigiSosResponse(eventId = "98659", expectedStatus)}, 
                                     ${rawDigiSosResponse(eventId = "98633", expectedStatus)}]""".trimMargin()
-                            )
-                        }
 
-                    }
-                }
-            }
-            val digiSosClient = DigiSosClient(applicationHttpClient(), URL(digiSosSoknadBaseURL))
+        testApplication {
+
+            setupExternalServiceWithJsonResponse(
+                hostApiBase = digiSosSoknadBaseURL,
+                endpoint = "/dittnav/pabegynte/inaktive",
+                content = digiSosResponse
+            )
 
             val result: List<BeskjedDTO> = runBlocking {
-                digiSosClient.getPaabegynteInactive(dummyUser)
+                DigiSosClient(applicationHttpClient(), URL(digiSosSoknadBaseURL)).getPaabegynteInactive(dummyUser)
             }
 
             result.size shouldBe 4
