@@ -12,6 +12,7 @@ import io.ktor.server.routing.get
 import io.ktor.server.routing.routing
 import io.ktor.server.testing.testApplication
 import no.nav.personbruker.dittnav.api.applicationHttpClient
+import no.nav.personbruker.dittnav.api.authenticatedGet
 import no.nav.personbruker.dittnav.api.config.LoginserviceMetadata
 import no.nav.personbruker.dittnav.api.mockApi
 import no.nav.personbruker.dittnav.api.respondRawJson
@@ -26,13 +27,7 @@ class ApiAuthenticationTest {
     fun `200 for autorisert request`() {
         testApplication {
             mockApi()
-            client.request {
-                url(authCheckEndpoint)
-                method = HttpMethod.Get
-                header(HttpHeaders.Cookie, "selvbetjening-idtoken=$stubToken")
-            }.status shouldBe HttpStatusCode.OK
-
-
+            client.authenticatedGet(authCheckEndpoint).status shouldBe HttpStatusCode.OK
         }
     }
 

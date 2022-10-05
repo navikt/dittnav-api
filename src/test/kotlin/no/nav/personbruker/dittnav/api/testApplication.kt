@@ -2,13 +2,28 @@ package no.nav.personbruker.dittnav.api
 
 import io.ktor.client.HttpClient
 import io.ktor.client.plugins.HttpTimeout
+import io.ktor.client.request.header
+import io.ktor.client.request.request
+import io.ktor.client.request.url
+import io.ktor.client.statement.HttpResponse
 import io.ktor.http.ContentType
+import io.ktor.http.HttpHeaders
+import io.ktor.http.HttpMethod
 import io.ktor.serialization.kotlinx.json.json
 import io.ktor.server.application.ApplicationCall
 import io.ktor.server.response.respondBytes
 import io.ktor.server.testing.ApplicationTestBuilder
 import io.ktor.server.testing.TestApplicationBuilder
+import io.ktor.util.reflect.instanceOf
 import io.mockk.mockk
+import kotlinx.serialization.json.JsonElement
+import kotlinx.serialization.json.JsonNull
+import kotlinx.serialization.json.JsonObject
+import kotlinx.serialization.json.boolean
+import kotlinx.serialization.json.int
+import kotlinx.serialization.json.jsonNull
+import kotlinx.serialization.json.jsonObject
+import kotlinx.serialization.json.jsonPrimitive
 import no.nav.personbruker.dittnav.api.beskjed.BeskjedMergerService
 import no.nav.personbruker.dittnav.api.config.api
 import no.nav.personbruker.dittnav.api.config.jsonConfig
@@ -22,7 +37,9 @@ import no.nav.personbruker.dittnav.api.personalia.PersonaliaService
 import no.nav.personbruker.dittnav.api.saker.SakerService
 import no.nav.personbruker.dittnav.api.unleash.UnleashService
 import org.intellij.lang.annotations.Language
+import java.time.LocalDate
 import java.time.ZonedDateTime
+import java.time.format.DateTimeFormatter
 import java.time.temporal.ChronoUnit
 
 private const val testIssuer = "test-issuer"
@@ -71,13 +88,14 @@ internal fun TestApplicationBuilder.mockApi(
     }
 }
 
-fun ApplicationTestBuilder.applicationHttpClient() =
+internal fun ApplicationTestBuilder.applicationHttpClient() =
     createClient {
         install(io.ktor.client.plugins.contentnegotiation.ContentNegotiation) {
             json(jsonConfig())
         }
         install(HttpTimeout)
     }
+
 internal suspend fun ApplicationCall.respondRawJson(s: String) = respondBytes(
     contentType = ContentType.Application.Json,
     provider = { s.toByteArray() })
@@ -112,3 +130,40 @@ internal fun rawEventHandlerVarsel(
         "eksternVarslingKanaler": $eksternVarslingKanaler 
          }
         """.trimIndent()
+
+suspend fun HttpClient.authenticatedGet(urlString: String): HttpResponse = request {
+    url(urlString)
+    method = HttpMethod.Get
+    header(HttpHeaders.Cookie, "selvbetjening-idtoken=$stubToken")
+}
+
+internal fun JsonObject.int(key: String): Int =
+    this[key]?.jsonPrimitive?.int ?: throw IllegalArgumentException("Fant ikke integer med nøkkel $key")
+
+internal fun JsonObject.bool(key: String): Boolean =
+    this[key]?.jsonPrimitive?.boolean ?: throw IllegalArgumentException("Fant ikke boolean med nøkkel $key")
+
+internal fun JsonObject.string(key: String): String =
+    this[key]?.jsonPrimitive?.content ?: throw IllegalArgumentException("Fant ikke boolean med nøkkel $key")
+
+internal fun JsonObject.localdate(key: String, datePattern: String? = null) =
+    this.localdateOrNull(key,datePattern) ?: throw IllegalArgumentException("Fant ikke localdate med nøkkel $key")
+
+internal fun JsonElement?.isNullObject(key: String): Boolean {
+    return when {
+        this == null -> true
+        this.jsonObject[key] is JsonNull -> true
+        else -> false
+    }
+}
+internal fun JsonObject.localdateOrNull(key: String, datePattern: String? = null): LocalDate? =
+    this[key]?.let { dateJsonObject ->
+        if (dateJsonObject is JsonNull) {
+            null
+        } else {
+            require(dateJsonObject.jsonPrimitive.isString)
+            datePattern?.let {
+                LocalDate.parse(dateJsonObject.jsonPrimitive.content, DateTimeFormatter.ofPattern(datePattern))
+            } ?: LocalDate.parse(dateJsonObject.jsonPrimitive.content)
+        }
+    }

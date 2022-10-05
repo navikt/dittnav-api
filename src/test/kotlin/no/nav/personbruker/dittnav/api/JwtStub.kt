@@ -30,6 +30,7 @@ class JwtStub(private val issuer: String = "test issuer") {
             .withIssuer(issuer)
             .withAudience(clientId)
             .withClaim("pid", subject)
+            .withClaim("acr","Level4")
             .sign(algorithm)
     }
 

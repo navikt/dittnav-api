@@ -61,9 +61,3 @@ internal class MeldekortTransformerTest {
         atRiskResult.risikerTrekk shouldBe true
     }
 }
-
-fun createMeldekort(fra: LocalDate = LocalDate.now(), til: LocalDate = fra.plusMonths(1)): MeldekortExternal {
-    val uke = WeekFields.of(Locale.getDefault()).weekOfYear().toString()
-
-    return MeldekortExternal(uke, fra, fra, til)
-}
