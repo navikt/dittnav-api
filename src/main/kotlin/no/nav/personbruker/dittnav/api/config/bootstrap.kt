@@ -40,7 +40,6 @@ import no.nav.personbruker.dittnav.api.personalia.personalia
 import no.nav.personbruker.dittnav.api.saker.SakerService
 import no.nav.personbruker.dittnav.api.saker.saker
 import no.nav.personbruker.dittnav.api.unleash.UnleashService
-import no.nav.personbruker.dittnav.api.unleash.unleash
 import java.lang.Exception
 
 fun Application.api(
@@ -132,7 +131,6 @@ fun Application.api(
                 innboks(innboksService)
                 saker(sakerService)
                 personalia(personaliaService)
-                unleash(unleashService)
                 digiSos(digiSosService)
                 authenticationCheck()
                 doneApi(doneProducer)

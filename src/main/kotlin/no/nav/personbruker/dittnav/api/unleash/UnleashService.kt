@@ -11,20 +11,10 @@ class UnleashService(private val unleashClient: Unleash) {
 
     companion object {
         const val digisosPaabegynteToggleName: String = "digisosPaabegynteEnabled"
-        const val situasjonToggleName: String = "veientilarbeid.kanViseUtfraSituasjon"
-        const val minSideToggleName: String = "minSideEnabled"
     }
 
     suspend fun digiSosPaabegynteEnabled(user: AuthenticatedUser): Boolean = withContext(Dispatchers.IO) {
         unleashClient.isEnabled(digisosPaabegynteToggleName, createUnleashContext(user), false)
-    }
-
-    suspend fun situasjonEnabled(user: AuthenticatedUser): Boolean = withContext(Dispatchers.IO) {
-        unleashClient.isEnabled(situasjonToggleName, createUnleashContext(user), false)
-    }
-
-    suspend fun minSideEnabled(user: AuthenticatedUser): Boolean = withContext(Dispatchers.IO) {
-        unleashClient.isEnabled(minSideToggleName, createUnleashContext(user), false)
     }
 
     private fun createUnleashContext(user: AuthenticatedUser): UnleashContext {
