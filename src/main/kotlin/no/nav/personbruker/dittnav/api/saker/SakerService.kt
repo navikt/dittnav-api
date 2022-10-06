@@ -10,7 +10,7 @@ class SakerService(
     private val mineSakerTokendings: MineSakerTokendings
 ) {
 
-    suspend fun hentSisteToEndredeSakstemaer(user: AuthenticatedUser): SakerDTO {
+    suspend fun hentSistEndredeSakstemaer(user: AuthenticatedUser): SakerDTO {
         return try {
             val exchangedToken = mineSakerTokendings.exchangeToken(user)
             val sisteSakstemaer = mineSakerConsumer.hentSistEndret(exchangedToken)

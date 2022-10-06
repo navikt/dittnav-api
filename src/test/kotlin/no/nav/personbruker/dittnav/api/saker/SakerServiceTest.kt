@@ -39,7 +39,7 @@ internal class SakerServiceTest {
         val service = SakerService(mineSakerConsumer, mineSakerURL, tokendings)
 
         val result = runBlocking {
-            service.hentSisteToEndredeSakstemaer(dummyUser)
+            service.hentSistEndredeSakstemaer(dummyUser)
         }
 
         coVerify(exactly = 1) { tokendings.exchangeToken(any()) }
@@ -61,7 +61,7 @@ internal class SakerServiceTest {
 
         val result = runCatching {
             runBlocking {
-                service.hentSisteToEndredeSakstemaer(dummyUser)
+                service.hentSistEndredeSakstemaer(dummyUser)
             }
 
         }

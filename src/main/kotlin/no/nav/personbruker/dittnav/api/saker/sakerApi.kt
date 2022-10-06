@@ -16,7 +16,7 @@ fun Route.saker(
 
     get("/saker") {
         try {
-            val result = service.hentSisteToEndredeSakstemaer(authenticatedUser)
+            val result = service.hentSistEndredeSakstemaer(authenticatedUser)
             call.respond(HttpStatusCode.OK, result)
 
         } catch (exception: Exception) {
