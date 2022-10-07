@@ -6,6 +6,7 @@ import kotlinx.coroutines.runBlocking
 import no.nav.personbruker.dittnav.api.applicationHttpClient
 import no.nav.personbruker.dittnav.api.rawEventHandlerVarsel
 import no.nav.personbruker.dittnav.api.setupExternalServiceWithJsonResponse
+import no.nav.personbruker.dittnav.api.toSpesificJsonFormat
 import no.nav.personbruker.dittnav.api.tokenx.AccessToken
 import org.junit.jupiter.api.Test
 
@@ -25,7 +26,7 @@ internal class OppgaveConsumerTest {
             setupExternalServiceWithJsonResponse(
                 hostApiBase = testEventHandlerEndpoint,
                 endpoint = "/fetch/oppgave/aktive",
-                content = aktiveOppgaverJson(oppgaveObject1, oppgaveObject2)
+                content = listOf(oppgaveObject1, oppgaveObject2).toSpesificJsonFormat(Oppgave::toEventHandlerJson)
             )
 
             val oppgaveConsumer = OppgaveConsumer(applicationHttpClient(), URL(testEventHandlerEndpoint))
@@ -49,7 +50,11 @@ internal class OppgaveConsumerTest {
             setupExternalServiceWithJsonResponse(
                 hostApiBase = testEventHandlerEndpoint,
                 endpoint = "/fetch/oppgave/inaktive",
-                content = inaktiveOppgaverJson(oppgaveObject, oppgaveObject2, oppgaveObject3)
+                content = listOf(
+                    oppgaveObject,
+                    oppgaveObject2,
+                    oppgaveObject3
+                ).toSpesificJsonFormat(Oppgave::toEventHandlerJson)
             )
 
             val oppgaveConsumer = OppgaveConsumer(applicationHttpClient(), URL(testEventHandlerEndpoint))
@@ -65,55 +70,24 @@ internal class OppgaveConsumerTest {
     }
 }
 
+private fun Oppgave.toEventHandlerJson(): String = rawEventHandlerVarsel(
+    eventId = eventId,
+    fodselsnummer = fodselsnummer,
+    grupperingsId = grupperingsId,
+    førstBehandlet = "$forstBehandlet",
+    produsent = produsent,
+    sikkerhetsnivå = 0,
+    sistOppdatert = "$sistOppdatert",
+    tekst = tekst,
+    link = link,
+    eksternVarslingSendt = eksternVarslingSendt,
+    eksternVarslingKanaler = eksternVarslingKanaler,
+    aktiv = aktiv
+)
+
 private infix fun List<Oppgave>.shouldContainOppgaveObject(expected: Oppgave) =
     find { it.eventId == expected.eventId }?.let { event ->
         event.tekst shouldBe expected.tekst
         event.fodselsnummer shouldBe expected.fodselsnummer
         event.aktiv shouldBe expected.aktiv
     }
-
-private fun aktiveOppgaverJson(oppgaveObjekt1: Oppgave, oppgaveObjekt2: Oppgave) =
-    """[
-    ${
-        rawEventHandlerVarsel(
-            oppgaveObjekt1.eventId,
-            aktiv = true,
-            tekst = oppgaveObjekt1.tekst,
-            fodselsnummer = oppgaveObjekt1.fodselsnummer
-        )
-    },
-    ${
-        rawEventHandlerVarsel(
-            oppgaveObjekt2.eventId,
-            aktiv = true,
-            tekst = oppgaveObjekt2.tekst,
-            fodselsnummer = oppgaveObjekt2.fodselsnummer
-        )
-    }]""".trimMargin()
-
-private fun inaktiveOppgaverJson(oppgaveObject1: Oppgave, oppgaveObject2: Oppgave, oppgaveObject3: Oppgave) =
-    """[
-    ${
-        rawEventHandlerVarsel(
-            oppgaveObject1.eventId,
-            aktiv = false,
-            tekst = oppgaveObject1.tekst,
-            fodselsnummer = oppgaveObject1.fodselsnummer
-        )
-    },
-    ${
-        rawEventHandlerVarsel(
-            oppgaveObject2.eventId,
-            aktiv = false,
-            tekst = oppgaveObject2.tekst,
-            fodselsnummer = oppgaveObject2.fodselsnummer
-        )
-    },
-    ${
-        rawEventHandlerVarsel(
-            oppgaveObject3.eventId,
-            aktiv = false,
-            tekst = oppgaveObject3.tekst,
-            fodselsnummer = oppgaveObject3.fodselsnummer
-        )
-    }]""".trimMargin()

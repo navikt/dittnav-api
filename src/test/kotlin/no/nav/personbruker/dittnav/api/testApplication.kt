@@ -10,6 +10,7 @@ import io.ktor.http.ContentType
 import io.ktor.http.HttpHeaders
 import io.ktor.http.HttpMethod
 import io.ktor.serialization.kotlinx.json.json
+import io.ktor.server.application.ApplicationCall
 import io.ktor.server.application.call
 import io.ktor.server.response.respondBytes
 import io.ktor.server.routing.get
@@ -17,7 +18,6 @@ import io.ktor.server.routing.routing
 import io.ktor.server.testing.ApplicationTestBuilder
 import io.ktor.server.testing.TestApplicationBuilder
 import io.mockk.mockk
-import no.nav.personbruker.dittnav.api.authentication.AuthenticatedUser
 import no.nav.personbruker.dittnav.api.beskjed.BeskjedMergerService
 import no.nav.personbruker.dittnav.api.config.api
 import no.nav.personbruker.dittnav.api.config.jsonConfig
@@ -29,15 +29,10 @@ import no.nav.personbruker.dittnav.api.oppfolging.OppfolgingService
 import no.nav.personbruker.dittnav.api.oppgave.OppgaveService
 import no.nav.personbruker.dittnav.api.personalia.PersonaliaService
 import no.nav.personbruker.dittnav.api.saker.SakerService
-import no.nav.personbruker.dittnav.api.unleash.UnleashService
-import org.intellij.lang.annotations.Language
-import java.time.ZonedDateTime
-import java.time.temporal.ChronoUnit
 
 private const val testIssuer = "test-issuer"
 private val jwtStub = JwtStub(testIssuer)
 private val stubToken = jwtStub.createTokenFor("subject", "audience")
-
 
 internal fun TestApplicationBuilder.mockApi(
     corsAllowedOrigins: String = "*.nav.no",
@@ -50,7 +45,6 @@ internal fun TestApplicationBuilder.mockApi(
     innboksService: InnboksService = mockk(relaxed = true),
     sakerService: SakerService = mockk(relaxed = true),
     personaliaService: PersonaliaService = mockk(relaxed = true),
-    unleashService: UnleashService = mockk(relaxed = true),
     digiSosService: DigiSosService = mockk(relaxed = true),
     doneProducer: DoneProducer = mockk(relaxed = true),
     httpClientIgnoreUnknownKeys: HttpClient = mockk(relaxed = true),
@@ -69,7 +63,6 @@ internal fun TestApplicationBuilder.mockApi(
             innboksService = innboksService,
             sakerService = sakerService,
             personaliaService = personaliaService,
-            unleashService = unleashService,
             digiSosService = digiSosService,
             doneProducer = doneProducer,
             httpClient = httpClientIgnoreUnknownKeys,
@@ -88,54 +81,11 @@ internal fun ApplicationTestBuilder.applicationHttpClient() =
         install(HttpTimeout)
     }
 
-@Language("JSON")
-internal fun rawEventHandlerVarsel(
-    eventId: String = "12345",
-    fodselsnummer: String = "5432176",
-    grupperingsId: String = "gruppergrupp",
-    førstBehandlet: String = "${ZonedDateTime.now().minusDays(1).truncatedTo(ChronoUnit.SECONDS)}",
-    produsent: String = "testprdusent",
-    sikkerhetsnivå: Int = 4,
-    sistOppdatert: String = "${ZonedDateTime.now().truncatedTo(ChronoUnit.SECONDS)}",
-    tekst: String = "Teskt som er tekst som er tekst",
-    link: String = "https://test.link.tadda",
-    eksternVarslingSendt: Boolean = false,
-    eksternVarslingKanaler: List<String> = emptyList(),
-    aktiv: Boolean
-): String =
-    """ {
-        "fodselsnummer" : "$fodselsnummer",
-        "grupperingsId": "$grupperingsId",
-        "eventId": "$eventId",
-        "forstBehandlet": "$førstBehandlet",
-        "produsent": "$produsent",
-        "sikkerhetsnivaa": "$sikkerhetsnivå",
-        "sistOppdatert": "$sistOppdatert",
-        "tekst": "$tekst",
-        "link": "$link",
-        "aktiv": $aktiv,
-        "eksternVarslingSendt": $eksternVarslingSendt,
-        "eksternVarslingKanaler": $eksternVarslingKanaler 
-         }
-        """.trimIndent()
-
 internal suspend fun HttpClient.authenticatedGet(urlString: String, token: String = stubToken): HttpResponse = request {
     url(urlString)
     method = HttpMethod.Get
     header(HttpHeaders.Cookie, "selvbetjening-idtoken=$token")
 }
-
-internal suspend fun HttpClient.authenticatedGet(
-    urlString: String,
-    authenticatedUser: AuthenticatedUser
-): HttpResponse = authenticatedGet(
-    urlString = urlString,
-    token = jwtStub.createTokenFor(
-        pid = authenticatedUser.ident,
-        audience = "audience",
-        authLevel = "Level${authenticatedUser.loginLevel}"
-    )
-)
 
 internal fun ApplicationTestBuilder.setupExternalServiceWithJsonResponse(
     hostApiBase: String,
@@ -146,11 +96,16 @@ internal fun ApplicationTestBuilder.setupExternalServiceWithJsonResponse(
         hosts(hostApiBase) {
             routing {
                 get(endpoint) {
-                    call.respondBytes(
-                        contentType = ContentType.Application.Json,
-                        provider = { content.toByteArray() })
+                    call.respondRawJson(content)
                 }
             }
         }
     }
 }
+
+internal suspend fun ApplicationCall.respondRawJson(content: String) =
+    respondBytes(
+        contentType = ContentType.Application.Json,
+        provider = { content.toByteArray() })
+
+

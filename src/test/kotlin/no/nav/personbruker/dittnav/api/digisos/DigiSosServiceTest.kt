@@ -21,7 +21,11 @@ internal class DigiSosServiceTest {
 
     @Test
     fun `Skal hente alle paabegynte soknader som er aktive`() {
-        coEvery { digiSosConsumer.getPaabegynteActive(any()) } returns listOf(createActiveBeskjedDto("eidAct"))
+        coEvery { digiSosConsumer.getPaabegynteActive(any()) } returns listOf(
+            createActiveBeskjedDto(
+                "eidAct"
+            )
+        )
 
         val result = runBlocking {
             digiSosService.getPaabegynteActive(innloggetBruker)

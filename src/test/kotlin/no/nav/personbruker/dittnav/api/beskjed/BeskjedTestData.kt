@@ -20,18 +20,50 @@ fun createBeskjed(eventId: String, fodselsnummer: String, aktiv: Boolean): Beskj
     )
 }
 
-fun createActiveBeskjedDto(eventId: String): BeskjedDTO {
-    return BeskjedDTO(
-        forstBehandlet = ZonedDateTime.now(),
+fun createActiveBeskjedDto(
+    eventId: String, forstBehandlet: ZonedDateTime = ZonedDateTime.now(),
+    sistOppdatert: ZonedDateTime = ZonedDateTime.now().minusDays(3),
+    tekst: String = "tekst er tekst er tekst"
+): BeskjedDTO =
+    createBeskjedDto(
         eventId = eventId,
-        tekst = "Dummytekst",
-        link = "https://dummy.url",
-        produsent = "dummy-produsent",
-        sistOppdatert = ZonedDateTime.now().minusDays(3),
-        sikkerhetsnivaa = 3,
         aktiv = true,
-        grupperingsId = "321",
-        eksternVarslingSendt = true,
-        eksternVarslingKanaler = listOf("SMS", "EPOST")
+        forstBehandlet = forstBehandlet,
+        sistOppdatert = sistOppdatert,
+        tekst = tekst
+    )
+
+fun createInactiveBeskjedDto(
+    eventId: String,
+    forstBehandlet: ZonedDateTime = ZonedDateTime.now(),
+    sistOppdatert: ZonedDateTime = ZonedDateTime.now().minusDays(3)
+): BeskjedDTO =
+    createBeskjedDto(eventId = eventId, aktiv = false, forstBehandlet = forstBehandlet, sistOppdatert = sistOppdatert)
+
+private fun createBeskjedDto(
+    forstBehandlet: ZonedDateTime = ZonedDateTime.now(),
+    eventId: String = "1234561",
+    tekst: String = "Dummytekst",
+    link: String = "https://dummy.url",
+    produsent: String = "dummy-produsent",
+    sistOppdatert: ZonedDateTime = ZonedDateTime.now().minusDays(3),
+    sikkerhetsnivaa: Int = 3,
+    aktiv: Boolean = true,
+    grupperingsId: String = "321",
+    eksternVarslingSendt: Boolean = false,
+    eksternVarslingKanaler: List<String> = listOf()
+): BeskjedDTO {
+    return BeskjedDTO(
+        forstBehandlet = forstBehandlet,
+        eventId = eventId,
+        tekst = tekst,
+        link = link,
+        produsent = produsent,
+        sistOppdatert = sistOppdatert,
+        sikkerhetsnivaa = sikkerhetsnivaa,
+        aktiv = aktiv,
+        grupperingsId = grupperingsId,
+        eksternVarslingSendt = eksternVarslingSendt,
+        eksternVarslingKanaler = eksternVarslingKanaler
     )
 }

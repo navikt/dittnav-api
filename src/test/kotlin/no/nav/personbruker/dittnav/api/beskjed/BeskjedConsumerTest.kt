@@ -6,6 +6,7 @@ import kotlinx.coroutines.runBlocking
 import no.nav.personbruker.dittnav.api.applicationHttpClient
 import no.nav.personbruker.dittnav.api.rawEventHandlerVarsel
 import no.nav.personbruker.dittnav.api.setupExternalServiceWithJsonResponse
+import no.nav.personbruker.dittnav.api.toSpesificJsonFormat
 import no.nav.personbruker.dittnav.api.tokenx.AccessToken
 import org.junit.jupiter.api.Test
 import java.net.URL
@@ -19,19 +20,12 @@ internal class BeskjedConsumerTest {
     @Test
     fun `Skal motta en liste over aktive Beskjeder`() {
         val beskjedOject = createBeskjed(eventId = "12345", fodselsnummer = "9876543210", aktiv = true)
-        val eventhandlerResponse = "[${
-            rawEventHandlerVarsel(
-                fodselsnummer = beskjedOject.fodselsnummer,
-                tekst = beskjedOject.tekst,
-                aktiv = true
-            )
-        }]"
-        testApplication {
 
+        testApplication {
             setupExternalServiceWithJsonResponse(
                 hostApiBase = testEventHandlerUrl,
                 endpoint = "fetch/beskjed/aktive",
-                content = eventhandlerResponse
+                content = listOf(beskjedOject).toSpesificJsonFormat(Beskjed::toRawEventhandlerVarsel)
             )
 
             val beskjedConsumer = BeskjedConsumer(applicationHttpClient(), URL(testEventHandlerUrl))
@@ -49,28 +43,12 @@ internal class BeskjedConsumerTest {
     fun `Skal motta en liste over inaktive Beskjeder`() {
         val beskjedObject = createBeskjed(eventId = "1", fodselsnummer = "1", aktiv = false)
         val beskjedObject2 = createBeskjed(eventId = "1", fodselsnummer = "1", aktiv = false)
-        val eventhandlerResponse = "[${
-            rawEventHandlerVarsel(
-                fodselsnummer = beskjedObject.fodselsnummer,
-                eventId = beskjedObject.eventId,
-                tekst = beskjedObject.tekst,
-                aktiv = false
-            )
-        },${
-            rawEventHandlerVarsel(
-                fodselsnummer = beskjedObject2.fodselsnummer,
-                eventId = beskjedObject2.eventId,
-                tekst = beskjedObject2.tekst,
-                aktiv = false
-            )
-        }]"
-
 
         testApplication {
             setupExternalServiceWithJsonResponse(
                 hostApiBase = testEventHandlerUrl,
                 endpoint = "fetch/beskjed/inaktive",
-                content = eventhandlerResponse
+                content = listOf(beskjedObject, beskjedObject2).toSpesificJsonFormat(Beskjed::toRawEventhandlerVarsel)
             )
 
             val beskjedConsumer = BeskjedConsumer(applicationHttpClient(), URL(testEventHandlerUrl))
@@ -93,3 +71,17 @@ private infix fun List<Beskjed>.shouldContainBeskjedObject(expected: Beskjed) =
         event.aktiv shouldBe expected.aktiv
     } ?: throw AssertionError("Fant ikke beskjed med eventId ${expected.eventId}")
 
+private fun Beskjed.toRawEventhandlerVarsel(): String = rawEventHandlerVarsel(
+    førstBehandlet = "$forstBehandlet",
+    fodselsnummer = fodselsnummer,
+    eventId = eventId,
+    grupperingsId = grupperingsId,
+    tekst = tekst,
+    link = link,
+    produsent = produsent,
+    sikkerhetsnivå = sikkerhetsnivaa,
+    sistOppdatert = "$sistOppdatert",
+    aktiv = aktiv,
+    eksternVarslingSendt = eksternVarslingSendt,
+    eksternVarslingKanaler = eksternVarslingKanaler
+)

@@ -9,6 +9,7 @@ import no.nav.personbruker.dittnav.api.applicationHttpClient
 import no.nav.personbruker.dittnav.api.authenticatedGet
 import no.nav.personbruker.dittnav.api.mockApi
 import no.nav.personbruker.dittnav.api.setupExternalServiceWithJsonResponse
+import no.nav.personbruker.dittnav.api.toSpesificJsonFormat
 import no.nav.personbruker.dittnav.api.tokenx.AccessToken
 import org.intellij.lang.annotations.Language
 import org.junit.jupiter.api.Test
@@ -60,23 +61,9 @@ class SakerApiTest {
 private fun SakerDTO.mapToEksternJson(): String = """
     {
       "dagpengerSistEndret": "${this.dagpengerSistEndret}",
-      "sistEndrede": [${this.sakstemaer.mapToEksternJson()}]
+      "sistEndrede": ${this.sakstemaer.toSpesificJsonFormat(SakstemaDTO::mapToEksternJson)}
     }
 """.trimIndent()
-
-fun List<SakstemaDTO>.mapToEksternJson(): String {
-    val iterator = this.iterator()
-    return StringBuilder().also { strBuilder ->
-        while (iterator.hasNext()) {
-            strBuilder.append(iterator.next().mapToEksternJson())
-            if (iterator.hasNext()) {
-                strBuilder.append(",")
-            }
-
-        }
-    }.toString()
-}
-
 private fun SakstemaDTO.mapToEksternJson(): String = """
     {
         "navn":"$navn",

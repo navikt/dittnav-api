@@ -32,7 +32,6 @@ fun main() {
             innboksService = appContext.innboksService,
             sakerService = appContext.sakerService,
             personaliaService = appContext.personaliaService,
-            unleashService = appContext.unleashService,
             digiSosService = appContext.digiSosService,
             doneProducer = appContext.doneProducer,
             httpClient = appContext.httpClient,

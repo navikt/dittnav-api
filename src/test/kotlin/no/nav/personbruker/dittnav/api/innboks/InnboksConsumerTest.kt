@@ -6,7 +6,9 @@ import kotlinx.coroutines.runBlocking
 import no.nav.personbruker.dittnav.api.rawEventHandlerVarsel
 import no.nav.personbruker.dittnav.api.tokenx.AccessToken
 import no.nav.personbruker.dittnav.api.applicationHttpClient
+import no.nav.personbruker.dittnav.api.oppgave.Oppgave
 import no.nav.personbruker.dittnav.api.setupExternalServiceWithJsonResponse
+import no.nav.personbruker.dittnav.api.toSpesificJsonFormat
 import org.junit.jupiter.api.Test
 import java.net.URL
 
@@ -24,7 +26,7 @@ internal class InnboksConsumerTest {
             setupExternalServiceWithJsonResponse(
                 hostApiBase = testEventHandlerEndpoint,
                 endpoint = "/fetch/innboks/aktive",
-                content = aktiveInnboksJson(innboksObject1, innboksObject2)
+                content = listOf(innboksObject1, innboksObject2).toSpesificJsonFormat(Innboks::toEventHandlerJson)
             )
             val innboksConsumer = InnboksConsumer(applicationHttpClient(), URL(testEventHandlerEndpoint))
 
@@ -48,7 +50,11 @@ internal class InnboksConsumerTest {
             setupExternalServiceWithJsonResponse(
                 hostApiBase = testEventHandlerEndpoint,
                 endpoint = "/fetch/innboks/inaktive",
-                content = inaktiveInnboksJson(innboksObject1, innboksObject2, innboksObject3)
+                content = listOf(
+                    innboksObject1,
+                    innboksObject2,
+                    innboksObject3
+                ).toSpesificJsonFormat(Innboks::toEventHandlerJson)
             )
 
             runBlocking {
@@ -68,48 +74,17 @@ private infix fun List<Innboks>.shouldContainInnboksObject(expectedInnboks: Innb
         event.aktiv shouldBe expectedInnboks.aktiv
     } ?: throw AssertionError("Fant ikke innboksvarsel med eventid ${expectedInnboks.eventId}")
 
-private fun aktiveInnboksJson(innboksObject1: Innboks, innboksObject2: Innboks) =
-    """[
-    ${
-        rawEventHandlerVarsel(
-            innboksObject1.eventId,
-            aktiv = true,
-            tekst = innboksObject1.tekst,
-            fodselsnummer = innboksObject1.fodselsnummer
-        )
-    },
-    ${
-        rawEventHandlerVarsel(
-            innboksObject2.eventId,
-            aktiv = true,
-            tekst = innboksObject2.tekst,
-            fodselsnummer = innboksObject2.fodselsnummer
-        )
-    }]""".trimMargin()
-
-private fun inaktiveInnboksJson(innboksObject1: Innboks, innboksObject2: Innboks, innboksObject3: Innboks) =
-    """[
-    ${
-        rawEventHandlerVarsel(
-            innboksObject1.eventId,
-            aktiv = false,
-            tekst = innboksObject1.tekst,
-            fodselsnummer = innboksObject1.fodselsnummer
-        )
-    },
-    ${
-        rawEventHandlerVarsel(
-            innboksObject2.eventId,
-            aktiv = false,
-            tekst = innboksObject2.tekst,
-            fodselsnummer = innboksObject2.fodselsnummer
-        )
-    },
-    ${
-        rawEventHandlerVarsel(
-            innboksObject3.eventId,
-            aktiv = false,
-            tekst = innboksObject3.tekst,
-            fodselsnummer = innboksObject3.fodselsnummer
-        )
-    }]""".trimMargin()
+private fun Innboks.toEventHandlerJson(): String = rawEventHandlerVarsel(
+    eventId = eventId,
+    fodselsnummer = fodselsnummer,
+    grupperingsId = grupperingsId,
+    førstBehandlet = "$forstBehandlet",
+    produsent = produsent,
+    sikkerhetsnivå = 0,
+    sistOppdatert = "$sistOppdatert",
+    tekst = tekst,
+    link = link,
+    eksternVarslingSendt = eksternVarslingSendt,
+    eksternVarslingKanaler = eksternVarslingKanaler,
+    aktiv = aktiv
+)
