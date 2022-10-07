@@ -1,10 +1,12 @@
 package no.nav.personbruker.dittnav.api
 
+import kotlinx.serialization.json.JsonArray
 import kotlinx.serialization.json.JsonElement
 import kotlinx.serialization.json.JsonNull
 import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.boolean
 import kotlinx.serialization.json.int
+import kotlinx.serialization.json.jsonArray
 import kotlinx.serialization.json.jsonObject
 import kotlinx.serialization.json.jsonPrimitive
 import org.intellij.lang.annotations.Language
@@ -16,6 +18,10 @@ import java.time.temporal.ChronoUnit
 internal fun JsonObject.int(key: String): Int =
     this[key]?.jsonPrimitive?.int ?: throw IllegalArgumentException("Fant ikke integer med nøkkel $key")
 
+internal fun JsonObject.stringArray(key: String): List<String> = array(key).map { it.jsonPrimitive.content }
+private fun JsonObject.array(key: String): JsonArray =
+    this[key]?.jsonArray?: throw IllegalArgumentException("Fant ikke integer med nøkkel $key")
+
 internal fun JsonObject.bool(key: String): Boolean =
     this[key]?.jsonPrimitive?.boolean ?: throw IllegalArgumentException("Fant ikke boolean med nøkkel $key")
 
@@ -24,6 +30,9 @@ internal fun JsonObject.string(key: String): String =
 
 internal fun JsonObject.localdate(key: String, datePattern: String? = null) =
     this.localdateOrNull(key,datePattern) ?: throw IllegalArgumentException("Fant ikke localdate med nøkkel $key")
+
+internal fun JsonObject.zonedDateTime(key: String, datePattern: String? = null) =
+    this.zonedDateTimeOrNull(key,datePattern) ?: throw IllegalArgumentException("Fant ikke zonedDateTime med nøkkel $key")
 
 internal fun JsonElement?.isNullObject(key: String): Boolean {
     return when {
@@ -41,6 +50,18 @@ internal fun JsonObject.localdateOrNull(key: String, datePattern: String? = null
             datePattern?.let {
                 LocalDate.parse(dateJsonObject.jsonPrimitive.content, DateTimeFormatter.ofPattern(datePattern))
             } ?: LocalDate.parse(dateJsonObject.jsonPrimitive.content)
+        }
+    }
+
+internal fun JsonObject.zonedDateTimeOrNull(key: String, datePattern: String? = null):ZonedDateTime? =
+    this[key]?.let { dateJsonObject ->
+        if (dateJsonObject is JsonNull) {
+            null
+        } else {
+            require(dateJsonObject.jsonPrimitive.isString)
+            datePattern?.let {
+                ZonedDateTime.parse(dateJsonObject.jsonPrimitive.content, DateTimeFormatter.ofPattern(datePattern))
+            } ?: ZonedDateTime.parse(dateJsonObject.jsonPrimitive.content)
         }
     }
 

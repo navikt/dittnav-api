@@ -23,7 +23,7 @@ fun createBeskjed(eventId: String, fodselsnummer: String, aktiv: Boolean): Beskj
 fun createActiveBeskjedDto(
     eventId: String, forstBehandlet: ZonedDateTime = ZonedDateTime.now(),
     sistOppdatert: ZonedDateTime = ZonedDateTime.now().minusDays(3),
-    tekst: String = "tekst er tekst er tekst"
+    tekst: String = "tekst er tekst er tekst",
 ): BeskjedDTO =
     createBeskjedDto(
         eventId = eventId,
@@ -36,9 +36,14 @@ fun createActiveBeskjedDto(
 fun createInactiveBeskjedDto(
     eventId: String,
     forstBehandlet: ZonedDateTime = ZonedDateTime.now(),
-    sistOppdatert: ZonedDateTime = ZonedDateTime.now().minusDays(3)
+    sistOppdatert: ZonedDateTime = ZonedDateTime.now().minusDays(3),
 ): BeskjedDTO =
-    createBeskjedDto(eventId = eventId, aktiv = false, forstBehandlet = forstBehandlet, sistOppdatert = sistOppdatert)
+    createBeskjedDto(
+        eventId = eventId,
+        aktiv = false,
+        forstBehandlet = forstBehandlet,
+        sistOppdatert = sistOppdatert,
+    )
 
 private fun createBeskjedDto(
     forstBehandlet: ZonedDateTime = ZonedDateTime.now(),
