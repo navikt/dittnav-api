@@ -3,10 +3,11 @@ package no.nav.personbruker.dittnav.api.beskjed;
 import io.kotest.assertions.withClue
 import io.kotest.matchers.collections.shouldContainExactly
 import io.kotest.matchers.shouldBe
-import io.ktor.client.request.get
 import io.ktor.client.statement.bodyAsText
 import io.ktor.http.HttpStatusCode
+import io.ktor.server.application.ApplicationCall
 import io.ktor.server.application.call
+import io.ktor.server.response.respond
 import io.ktor.server.routing.get
 import io.ktor.server.routing.routing
 import io.ktor.server.testing.ApplicationTestBuilder
@@ -30,12 +31,11 @@ import no.nav.personbruker.dittnav.api.respondRawJson
 import no.nav.personbruker.dittnav.api.string
 import no.nav.personbruker.dittnav.api.stringArray
 import no.nav.personbruker.dittnav.api.toSpesificJsonFormat
-import no.nav.personbruker.dittnav.api.tokenx.AccessToken
-import no.nav.personbruker.dittnav.api.tokenx.EventhandlerTokendings
+import no.nav.personbruker.dittnav.api.tokenx.*
 import no.nav.personbruker.dittnav.api.unleash.UnleashService
 import no.nav.personbruker.dittnav.api.zonedDateTime
-import org.junit.jupiter.api.BeforeEach
-import org.junit.jupiter.api.Test
+import org.junit.jupiter.params.ParameterizedTest
+import org.junit.jupiter.params.provider.CsvSource
 import java.net.URL
 import java.time.ZonedDateTime
 
@@ -70,21 +70,18 @@ class BeskjedApiTest {
         createActiveBeskjedDto("887765", tekst = "Her er testbeskjed med testtekst").withEksternVarsling()
     )
 
-    @BeforeEach
-    fun clearUnleash() {
-        fakeUnleash.resetAll()
-    }
-
-    @Test
-    fun `henter beskjeder fra digisos og eventhandler`() {
+    @ParameterizedTest
+    @CsvSource("true, dittnav-api/beskjed", "false, dittnav-api/beskjed/inaktiv")
+    fun `beskjeder fra både digisos og eventhandler`(aktive: Boolean, endpoint: String) {
         fakeUnleash.enable(UnleashService.digisosPaabegynteToggleName)
+
         val expectedBeskjedDTOs =
-            expectedBeskjedFromDigsos.filter { it.aktiv } + expectedBeskjedFromEventhandler.filter { it.aktiv }
+            expectedBeskjedFromDigsos.filter { it.aktiv == aktive } + expectedBeskjedFromEventhandler.filter { it.aktiv == aktive }
         testApplication {
             setupExternalBeskjedServices()
             mockApi(beskjedMergerService = createBeskjedMergerService())
 
-            client.authenticatedGet("dittnav-api/beskjed").apply {
+            client.authenticatedGet(endpoint).apply {
                 status shouldBe HttpStatusCode.OK
                 val resultArray = Json.parseToJsonElement(bodyAsText()).jsonArray
                 resultArray shouldHaveContentEqualTo expectedBeskjedDTOs
@@ -92,54 +89,97 @@ class BeskjedApiTest {
         }
     }
 
-    @Test
-    fun `henter beskjeder fra eventhandler`() {
+    @ParameterizedTest
+    @CsvSource("true, dittnav-api/beskjed")
+    fun `beskjeder kun fra eventhandler`(aktive: Boolean, endpoint: String) {
+        fakeUnleash.disable(UnleashService.digisosPaabegynteToggleName)
 
+        val expectedBeskjedDTOs = expectedBeskjedFromEventhandler.filter { it.aktiv == aktive }
         testApplication {
-            val beskjedOject =
+            setupExternalBeskjedServices()
+            mockApi(beskjedMergerService = createBeskjedMergerService())
 
-                client.get("/beskjed").apply {
-                    //TODO("Please write your test here")
+            client.authenticatedGet(endpoint).apply {
+                status shouldBe HttpStatusCode.OK
+                val resultArray = Json.parseToJsonElement(bodyAsText()).jsonArray
+                resultArray shouldHaveContentEqualTo expectedBeskjedDTOs
+            }
+        }
+    }
+
+    @ParameterizedTest
+    @CsvSource("true, dittnav-api/beskjed", "false, dittnav-api/beskjed/inaktiv")
+    fun `beskjeder fra eventhandler hvis digisos feiler`(aktive: Boolean, endpoint: String){
+        fakeUnleash.enable(UnleashService.digisosPaabegynteToggleName)
+        val expectedBeskjedDTOs = expectedBeskjedFromEventhandler.filter { it.aktiv == aktive }
+        testApplication {
+            setupExternalBeskjedServices(withErrorFromDigiSos = true)
+            mockApi(beskjedMergerService = createBeskjedMergerService())
+
+            client.authenticatedGet(endpoint).apply {
+                status shouldBe HttpStatusCode.PartialContent
+                val resultArray = Json.parseToJsonElement(bodyAsText()).jsonArray
+                resultArray shouldHaveContentEqualTo expectedBeskjedDTOs
+            }
+
+        }
+    }
+
+    @ParameterizedTest
+    @CsvSource("true, dittnav-api/beskjed", "false, dittnav-api/beskjed/inaktiv")
+    fun `beskjeder fra digisos hvis eventhandler feiler`(aktive: Boolean, endpoint: String){
+        fakeUnleash.enable(UnleashService.digisosPaabegynteToggleName)
+        val expectedBeskjedDTOs = expectedBeskjedFromDigsos.filter { it.aktiv == aktive }
+        testApplication {
+            setupExternalBeskjedServices(withErrorFromEventhandler = true)
+            mockApi(beskjedMergerService = createBeskjedMergerService())
+
+            client.authenticatedGet(endpoint).apply {
+                status shouldBe HttpStatusCode.PartialContent
+                val resultArray = Json.parseToJsonElement(bodyAsText()).jsonArray
+                resultArray shouldHaveContentEqualTo expectedBeskjedDTOs
+            }
+
+        }
+    }
+
+    private fun ApplicationTestBuilder.setupExternalBeskjedServices(
+        withErrorFromDigiSos: Boolean = false,
+        withErrorFromEventhandler: Boolean = false
+    ) = externalServices {
+        hosts(digisosTestHost, eventhandlerTestHost) {
+            routing {
+                get("/fetch/beskjed/aktive") {
+                    call.customServiceResponse(
+                        beskjeder = expectedBeskjedFromEventhandler.filter { it.aktiv },
+                        withError = withErrorFromEventhandler,
+                        jsonFormatFunction = BeskjedDTO::toEventhandlerJson
+                    )
                 }
-        }
-    }
-
-    @Test
-    fun testGetBeskjedInaktiv() = testApplication {
-
-        client.get("/beskjed/inaktiv").apply {
-            //TODO("Please write your test here")
-        }
-    }
-
-
-    private fun ApplicationTestBuilder.setupExternalBeskjedServices() =
-        externalServices {
-            hosts(digisosTestHost, eventhandlerTestHost) {
-                routing {
-                    get("/fetch/beskjed/aktive") {
-                        val aktiveJson = expectedBeskjedFromEventhandler.filter { it.aktiv }
-                            .toSpesificJsonFormat(BeskjedDTO::toEventhandlerJson)
-                        call.respondRawJson(aktiveJson)
-                    }
-                    get("/fetch/beskjed/inaktive") {
-                        val inaktiveJson = expectedBeskjedFromEventhandler.filter { !it.aktiv }
-                            .toSpesificJsonFormat(BeskjedDTO::toEventhandlerJson)
-                        call.respondRawJson(inaktiveJson)
-                    }
-                    get("/dittnav/pabegynte/aktive") {
-                        val aktiveJson = expectedBeskjedFromDigsos.filter { it.aktiv }
-                            .toSpesificJsonFormat(formatter = BeskjedDTO::toPaabegynteDigisosJson)
-                        call.respondRawJson(aktiveJson)
-                    }
-                    get("/dittnav/pabegynte/inaktive") {
-                        val inaktiveJson = expectedBeskjedFromDigsos.filter { !it.aktiv }
-                            .toSpesificJsonFormat(formatter = BeskjedDTO::toEventhandlerJson)
-                        call.respondRawJson(inaktiveJson)
-                    }
+                get("/fetch/beskjed/inaktive") {
+                    call.customServiceResponse(
+                        beskjeder = expectedBeskjedFromEventhandler.filter { !it.aktiv },
+                        withError = withErrorFromEventhandler,
+                        jsonFormatFunction = BeskjedDTO::toEventhandlerJson
+                    )
+                }
+                get("/dittnav/pabegynte/aktive") {
+                    call.customServiceResponse(
+                        beskjeder = expectedBeskjedFromDigsos.filter { it.aktiv },
+                        withError = withErrorFromDigiSos,
+                        jsonFormatFunction = BeskjedDTO::toPaabegynteDigisosJson
+                    )
+                }
+                get("/dittnav/pabegynte/inaktive") {
+                    call.customServiceResponse(
+                        beskjeder = expectedBeskjedFromDigsos.filter { !it.aktiv },
+                        withError = withErrorFromDigiSos,
+                        jsonFormatFunction = BeskjedDTO::toPaabegynteDigisosJson
+                    )
                 }
             }
         }
+    }
 
     private fun ApplicationTestBuilder.createBeskjedMergerService(): BeskjedMergerService = BeskjedMergerService(
         beskjedService = BeskjedService(
@@ -157,7 +197,19 @@ class BeskjedApiTest {
         ),
         unleashService = UnleashService(unleashClient = fakeUnleash)
     )
+}
 
+private suspend fun ApplicationCall.customServiceResponse(
+    beskjeder: List<BeskjedDTO>,
+    withError: Boolean,
+    jsonFormatFunction: BeskjedDTO.() -> String
+) {
+    if (withError) {
+        respond(HttpStatusCode.InternalServerError)
+    } else {
+        val aktiveJson = beskjeder.toSpesificJsonFormat(jsonFormatFunction)
+        respondRawJson(aktiveJson)
+    }
 }
 
 private infix fun JsonArray.shouldHaveContentEqualTo(expected: List<BeskjedDTO>) {
@@ -226,4 +278,5 @@ private fun BeskjedDTO.toPaabegynteDigisosJson() = """
       "isAktiv": $aktiv
     }
 """.trimIndent()
+
 private fun BeskjedDTO.testIdentifier(key: String): String = "eventId:${eventId}\tkey:$key"
