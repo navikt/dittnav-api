@@ -36,6 +36,7 @@ dependencies {
     implementation(Ktor2.Server.cors)
     implementation(Ktor2.Server.contentNegotiation)
     implementation(Ktor2.Client.apache)
+    implementation(Ktor2.Client.core)
     implementation(Ktor2.Client.contentNegotiation)
     implementation(Ktor2.kotlinX)
     implementation(Ktor2.Server.htmlDsl)

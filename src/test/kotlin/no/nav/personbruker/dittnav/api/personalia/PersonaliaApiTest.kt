@@ -8,6 +8,7 @@ class PersonaliaApiTest {
 
     @Test
     fun testGetIdent() = testApplication {
+        val expectedIdent = "Navn Navnesen"
         client.get("/ident").apply {
         //    TODO("Please write your test here")
         }
@@ -21,3 +22,7 @@ class PersonaliaApiTest {
         }
     }
 }
+
+private fun externalPersonaliaJson() = """
+    
+""".trimIndent()
