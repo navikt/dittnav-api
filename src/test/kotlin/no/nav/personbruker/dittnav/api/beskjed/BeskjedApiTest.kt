@@ -28,6 +28,7 @@ import no.nav.personbruker.dittnav.api.digisos.DigiSosService
 import no.nav.personbruker.dittnav.api.mockApi
 import no.nav.personbruker.dittnav.api.rawEventHandlerVarsel
 import no.nav.personbruker.dittnav.api.respondRawJson
+import no.nav.personbruker.dittnav.api.shouldBeSameDateTimeAs
 import no.nav.personbruker.dittnav.api.string
 import no.nav.personbruker.dittnav.api.stringArray
 import no.nav.personbruker.dittnav.api.toSpesificJsonFormat
@@ -232,9 +233,6 @@ private infix fun List<JsonObject>.shouldContainBeskjedDTO(dto: BeskjedDTO) =
             jsonObject.stringArray("eksternVarslingKanaler") shouldContainExactly dto.eksternVarslingKanaler
         }
     } ?: throw AssertionError("Fant ikke beskjed med eventId ${dto.eventId}")
-
-private infix fun ZonedDateTime.shouldBeSameDateTimeAs(expected: ZonedDateTime) =
-    this.toLocalDateTime() shouldBe expected.toLocalDateTime()
 
 
 private fun BeskjedDTO.withEksternVarsling(kanaler: List<String> = listOf("SMS", "EPOST")): BeskjedDTO =

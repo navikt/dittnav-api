@@ -1,5 +1,6 @@
 package no.nav.personbruker.dittnav.api
 
+import io.kotest.matchers.shouldBe
 import kotlinx.serialization.json.JsonArray
 import kotlinx.serialization.json.JsonElement
 import kotlinx.serialization.json.JsonNull
@@ -65,16 +66,18 @@ internal fun JsonObject.zonedDateTimeOrNull(key: String, datePattern: String? = 
         }
     }
 
+internal infix fun ZonedDateTime.shouldBeSameDateTimeAs(expected: ZonedDateTime) =
+    this.toLocalDateTime().truncatedTo(ChronoUnit.MINUTES) shouldBe expected.toLocalDateTime().truncatedTo(ChronoUnit.MINUTES)
 
 @Language("JSON")
 internal fun rawEventHandlerVarsel(
     eventId: String = "12345",
     fodselsnummer: String = "5432176",
     grupperingsId: String = "gruppergrupp",
-    førstBehandlet: String = "${ZonedDateTime.now().minusDays(1).truncatedTo(ChronoUnit.SECONDS)}",
+    førstBehandlet: String = "${ZonedDateTime.now().minusDays(1).truncatedTo(ChronoUnit.MINUTES)}",
     produsent: String = "testprdusent",
     sikkerhetsnivå: Int = 4,
-    sistOppdatert: String = "${ZonedDateTime.now().truncatedTo(ChronoUnit.SECONDS)}",
+    sistOppdatert: String = "${ZonedDateTime.now().truncatedTo(ChronoUnit.MINUTES)}",
     tekst: String = "Teskt som er tekst som er tekst",
     link: String = "https://test.link.tadda",
     eksternVarslingSendt: Boolean = false,
