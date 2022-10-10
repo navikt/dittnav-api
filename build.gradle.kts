@@ -48,7 +48,7 @@ dependencies {
     implementation(Prometheus.common)
     implementation(Prometheus.hotspot)
     implementation(Prometheus.logback)
-    implementation("com.github.navikt.tms-ktor-token-support:token-support-tokendings-exchange:2022.01.27-13.11-a6b55dd90347")
+    implementation(Ktor2.TmsTokenSupport.tokendingsExchange)
     implementation(Unleash.clientJava)
     implementation("io.github.microutils:kotlin-logging-jvm:3.0.0")
 
