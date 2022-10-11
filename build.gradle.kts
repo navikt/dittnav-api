@@ -50,7 +50,7 @@ dependencies {
     implementation(Prometheus.logback)
     implementation(Ktor2.TmsTokenSupport.tokendingsExchange)
     implementation(Unleash.clientJava)
-    implementation("io.github.microutils:kotlin-logging-jvm:3.0.0")
+    implementation(KotlinLogging.logging)
 
 
     testImplementation(Junit.api)
@@ -64,8 +64,6 @@ dependencies {
     testImplementation(Mockk.mockk)
     testImplementation(Jjwt.api)
     testImplementation(Junit.params)
-    testImplementation("io.ktor:ktor-server-tests-jvm:2.1.1")
-    testImplementation("org.jetbrains.kotlin:kotlin-test-junit:1.7.10")
 
     testRuntimeOnly(Bouncycastle.bcprovJdk15on)
     testRuntimeOnly(Jjwt.impl)
