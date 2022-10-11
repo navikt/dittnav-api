@@ -3,6 +3,7 @@ package no.nav.personbruker.dittnav.api.done
 import io.ktor.client.*
 import io.ktor.client.statement.*
 import io.ktor.http.*
+import kotlinx.serialization.Serializable
 import mu.KotlinLogging
 import no.nav.personbruker.dittnav.api.authentication.AuthenticatedUser
 import no.nav.personbruker.dittnav.api.config.post
@@ -27,3 +28,8 @@ class DoneProducer(
         return response
     }
 }
+
+@Serializable
+data class DoneDTO(
+    val eventId: String
+)
