@@ -10,6 +10,6 @@ class OppfolgingService(private val oppfolgingConsumer: OppfolgingConsumer) {
 
         val oppfolging = oppfolgingConsumer.getOppfolgingStatus(token)
 
-        return OppfolgingTransformer.toInternal(oppfolging)
+        return oppfolging.toInternal()
     }
 }

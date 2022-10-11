@@ -3,13 +3,13 @@ package no.nav.personbruker.dittnav.api.oppgave
 import io.kotest.matchers.shouldBe
 import org.junit.jupiter.api.Test
 
-class OppgaveTransformerTest {
+class OppgaveTest {
 
     @Test
     fun `should transform from Oppgave to OppgaveDTO`() {
         val oppgave1 = createOppgave("1", "1", true)
         val oppgave2 = createOppgave("2", "2", true)
-        val oppgaveDTOList = listOf(oppgave1, oppgave2).map { toOppgaveDTO(it) }
+        val oppgaveDTOList = listOf(oppgave1, oppgave2).map { it.toOppgaveDTO() }
         val oppgaveDTO = oppgaveDTOList.first()
 
         oppgaveDTO.forstBehandlet shouldBe oppgave1.forstBehandlet
@@ -28,7 +28,7 @@ class OppgaveTransformerTest {
     @Test
     fun `should mask tekst, link and produsent`() {
         val oppgave = createOppgave("1", "1", true)
-        val oppgaveDTO = toMaskedOppgaveDTO(oppgave)
+        val oppgaveDTO = oppgave.toMaskedOppgaveDTO()
         oppgaveDTO.forstBehandlet shouldBe oppgave.forstBehandlet
         oppgaveDTO.eventId shouldBe oppgave.eventId
         oppgaveDTO.tekst shouldBe "***"

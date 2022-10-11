@@ -3,7 +3,7 @@ package no.nav.personbruker.dittnav.api.innboks
 import io.kotest.matchers.shouldBe
 import org.junit.jupiter.api.Test
 
-class InnboksTransformerTest {
+class InnboksTest {
 
     @Test
     fun `should transform from Innboks to InnboksDTO`() {

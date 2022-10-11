@@ -6,3 +6,8 @@ import kotlinx.serialization.Serializable
 data class PersonaliaNavnDTO(
     val navn: String
 )
+
+@Serializable
+data class PersonaliaIdentDTO(
+    val ident: String
+)

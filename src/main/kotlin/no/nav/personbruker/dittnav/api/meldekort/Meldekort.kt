@@ -12,3 +12,18 @@ data class Meldekort(
     @Serializable(with = MeldekortLocalDateSerializer::class) val sisteDatoForTrekk: LocalDate,
     val risikerTrekk: Boolean
 )
+
+@Serializable
+data class NyeMeldekort(
+    val antallNyeMeldekort: Int,
+    val nesteMeldekort: Meldekort?,
+    @Serializable(with = MeldekortLocalDateSerializer::class) val nesteInnsendingAvMeldekort: LocalDate?
+)
+
+@Serializable
+data class Meldekortinfo(
+    val nyeMeldekort: NyeMeldekort,
+    val resterendeFeriedager: Int,
+    val etterregistrerteMeldekort: Int,
+    val meldekortbruker: Boolean
+)

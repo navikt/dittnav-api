@@ -1,9 +1,7 @@
 package no.nav.personbruker.dittnav.api.meldekort
 
 import io.ktor.client.*
-import no.nav.personbruker.dittnav.api.config.get
 import no.nav.personbruker.dittnav.api.config.getWithMeldekortTokenx
-import no.nav.personbruker.dittnav.api.meldekort.external.MeldekortstatusExternal
 import no.nav.personbruker.dittnav.api.tokenx.AccessToken
 import java.net.URL
 

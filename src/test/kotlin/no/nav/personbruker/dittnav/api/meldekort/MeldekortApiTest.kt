@@ -18,8 +18,6 @@ import no.nav.personbruker.dittnav.api.int
 import no.nav.personbruker.dittnav.api.isNullObject
 import no.nav.personbruker.dittnav.api.localdate
 import no.nav.personbruker.dittnav.api.localdateOrNull
-import no.nav.personbruker.dittnav.api.meldekort.external.MeldekortExternal
-import no.nav.personbruker.dittnav.api.meldekort.external.MeldekortstatusExternal
 import no.nav.personbruker.dittnav.api.mockApi
 import no.nav.personbruker.dittnav.api.externalServiceWithJsonResponse
 import no.nav.personbruker.dittnav.api.string

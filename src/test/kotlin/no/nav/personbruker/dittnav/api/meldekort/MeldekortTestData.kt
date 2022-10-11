@@ -1,7 +1,5 @@
 package no.nav.personbruker.dittnav.api.meldekort
 
-import no.nav.personbruker.dittnav.api.meldekort.external.MeldekortExternal
-import no.nav.personbruker.dittnav.api.meldekort.external.MeldekortstatusExternal
 import java.time.LocalDate
 import java.time.temporal.WeekFields
 import java.util.Calendar

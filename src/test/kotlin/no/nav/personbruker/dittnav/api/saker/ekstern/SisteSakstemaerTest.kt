@@ -3,6 +3,7 @@ package no.nav.personbruker.dittnav.api.saker.ekstern
 import io.kotest.matchers.nulls.shouldNotBeNull
 import kotlinx.serialization.decodeFromString
 import no.nav.personbruker.dittnav.api.config.jsonConfig
+import no.nav.personbruker.dittnav.api.saker.SisteSakstemaer
 import org.junit.jupiter.api.Test
 
 internal class SisteSakstemaerTest {

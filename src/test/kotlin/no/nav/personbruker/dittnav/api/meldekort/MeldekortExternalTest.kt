@@ -1,17 +1,16 @@
 package no.nav.personbruker.dittnav.api.meldekort
 
 import io.kotest.matchers.shouldBe
-import no.nav.personbruker.dittnav.api.meldekort.external.MeldekortstatusExternal
 import org.junit.jupiter.api.Test
 import java.time.LocalDate
 
-internal class MeldekortTransformerTest {
+internal class MeldekortExternalTest {
 
     @Test
     fun `should handle empty answer from meldekort`() {
         val meldekortstatus = MeldekortstatusExternal()
 
-        val result = MeldekortTransformer.toInternal(meldekortstatus)
+        val result = meldekortstatus.toInternal()
 
         result.nyeMeldekort.nesteMeldekort shouldBe null
         result.etterregistrerteMeldekort shouldBe 0
@@ -25,7 +24,7 @@ internal class MeldekortTransformerTest {
 
         val meldekortExternal = meldekortstatusExternal.nesteMeldekort
 
-        val result = MeldekortTransformer.toInternal(meldekortstatusExternal)
+        val result = meldekortstatusExternal.toInternal()
 
         result.meldekortbruker shouldBe true
         result.etterregistrerteMeldekort shouldBe meldekortstatusExternal.etterregistrerteMeldekort
@@ -51,8 +50,8 @@ internal class MeldekortTransformerTest {
         val normalMeldekort = createMeldekort(til = LocalDate.now())
         val meldekortAtRisk = createMeldekort(til = LocalDate.now().minusWeeks(2))
 
-        val normalResult = MeldekortTransformer.toInternal(normalMeldekort)
-        val atRiskResult = MeldekortTransformer.toInternal(meldekortAtRisk)
+        val normalResult = normalMeldekort.toInternal()
+        val atRiskResult = meldekortAtRisk.toInternal()
 
         normalResult.risikerTrekk shouldBe false
         atRiskResult.risikerTrekk shouldBe true
