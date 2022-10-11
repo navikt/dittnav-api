@@ -21,7 +21,7 @@ import no.nav.personbruker.dittnav.api.localdateOrNull
 import no.nav.personbruker.dittnav.api.meldekort.external.MeldekortExternal
 import no.nav.personbruker.dittnav.api.meldekort.external.MeldekortstatusExternal
 import no.nav.personbruker.dittnav.api.mockApi
-import no.nav.personbruker.dittnav.api.setupExternalServiceWithJsonResponse
+import no.nav.personbruker.dittnav.api.externalServiceWithJsonResponse
 import no.nav.personbruker.dittnav.api.string
 import no.nav.personbruker.dittnav.api.tokenx.AccessToken
 import org.junit.jupiter.api.BeforeEach
@@ -55,7 +55,7 @@ class MeldekortApiTest {
         testApplication {
             mockApi(meldekortService = MeldekortService(meldekortConsumer(), meldekortTokendings))
 
-            setupExternalServiceWithJsonResponse(
+            externalServiceWithJsonResponse(
                 hostApiBase = meldekortApiBase,
                 endpoint = medlekortStatusEndpoint,
                 content = externalStatusJson(expectedMeldekortInfo)
@@ -90,7 +90,7 @@ class MeldekortApiTest {
     fun `henter meldekortinfo for bruker som ikke har meldekort`() = testApplication {
         mockApi(meldekortService = MeldekortService(meldekortConsumer(), meldekortTokendings))
 
-        setupExternalServiceWithJsonResponse(
+        externalServiceWithJsonResponse(
             hostApiBase = meldekortApiBase,
             endpoint = medlekortStatusEndpoint,
             content = emptyExternalStatusJson
@@ -129,7 +129,7 @@ class MeldekortApiTest {
 
         testApplication {
             mockApi(meldekortService = MeldekortService(meldekortConsumer(), meldekortTokendings))
-            setupExternalServiceWithJsonResponse(
+            externalServiceWithJsonResponse(
                 hostApiBase = meldekortApiBase,
                 endpoint = medlekortStatusEndpoint,
                 content = meldekortStatusJson(expectedStatus)

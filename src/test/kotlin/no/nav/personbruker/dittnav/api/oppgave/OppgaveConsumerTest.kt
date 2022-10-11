@@ -5,7 +5,7 @@ import io.ktor.server.testing.testApplication
 import kotlinx.coroutines.runBlocking
 import no.nav.personbruker.dittnav.api.applicationHttpClient
 import no.nav.personbruker.dittnav.api.rawEventHandlerVarsel
-import no.nav.personbruker.dittnav.api.setupExternalServiceWithJsonResponse
+import no.nav.personbruker.dittnav.api.externalServiceWithJsonResponse
 import no.nav.personbruker.dittnav.api.toSpesificJsonFormat
 import no.nav.personbruker.dittnav.api.tokenx.AccessToken
 import org.junit.jupiter.api.Test
@@ -23,7 +23,7 @@ internal class OppgaveConsumerTest {
         val oppgaveObject2 = createOppgave("2", "2", true)
 
         testApplication {
-            setupExternalServiceWithJsonResponse(
+            externalServiceWithJsonResponse(
                 hostApiBase = testEventHandlerEndpoint,
                 endpoint = "/fetch/oppgave/aktive",
                 content = listOf(oppgaveObject1, oppgaveObject2).toSpesificJsonFormat(Oppgave::toEventHandlerJson)
@@ -47,7 +47,7 @@ internal class OppgaveConsumerTest {
 
         testApplication {
 
-            setupExternalServiceWithJsonResponse(
+            externalServiceWithJsonResponse(
                 hostApiBase = testEventHandlerEndpoint,
                 endpoint = "/fetch/oppgave/inaktive",
                 content = listOf(

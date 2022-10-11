@@ -5,10 +5,6 @@ import io.kotest.matchers.collections.shouldContainExactly
 import io.kotest.matchers.shouldBe
 import io.ktor.client.statement.bodyAsText
 import io.ktor.http.HttpStatusCode
-import io.ktor.server.application.call
-import io.ktor.server.response.respond
-import io.ktor.server.routing.get
-import io.ktor.server.routing.routing
 import io.ktor.server.testing.ApplicationTestBuilder
 import io.ktor.server.testing.testApplication
 import io.mockk.coEvery
@@ -21,9 +17,10 @@ import kotlinx.serialization.json.jsonObject
 import no.nav.personbruker.dittnav.api.applicationHttpClient
 import no.nav.personbruker.dittnav.api.authenticatedGet
 import no.nav.personbruker.dittnav.api.bool
+import no.nav.personbruker.dittnav.api.externalServiceWith500Response
 import no.nav.personbruker.dittnav.api.mockApi
 import no.nav.personbruker.dittnav.api.rawEventHandlerVarsel
-import no.nav.personbruker.dittnav.api.setupExternalServiceWithJsonResponse
+import no.nav.personbruker.dittnav.api.externalServiceWithJsonResponse
 import no.nav.personbruker.dittnav.api.shouldBeSameDateTimeAs
 import no.nav.personbruker.dittnav.api.string
 import no.nav.personbruker.dittnav.api.stringArray
@@ -54,7 +51,7 @@ class OppgaveApiTest {
     fun `aktive oppgaver`() = testApplication {
         val expectedOppgaver = oppgaverFromEventhandler.filter { it.aktiv }
         mockApi(oppgaveService = createoppgaveService())
-        setupExternalServiceWithJsonResponse(
+        externalServiceWithJsonResponse(
             hostApiBase = eventhandlerTestHost,
             endpoint = "/fetch/oppgave/aktive",
             content = expectedOppgaver.toSpesificJsonFormat(OppgaveDTO::toEventhandlerJson)
@@ -71,7 +68,7 @@ class OppgaveApiTest {
     fun `inaktive oppgaver`() = testApplication {
         val expectedOppgaver = oppgaverFromEventhandler.filter { !it.aktiv }
         mockApi(oppgaveService = createoppgaveService())
-        setupExternalServiceWithJsonResponse(
+        externalServiceWithJsonResponse(
             hostApiBase = eventhandlerTestHost,
             endpoint = "/fetch/oppgave/inaktive",
             content = expectedOppgaver.toSpesificJsonFormat(OppgaveDTO::toEventhandlerJson)
@@ -87,15 +84,7 @@ class OppgaveApiTest {
     @Test
     fun `503 når dittnav-api feiler mot eventhandlerApi`() = testApplication {
         mockApi(oppgaveService = createoppgaveService())
-        externalServices {
-            hosts(eventhandlerTestHost) {
-                routing {
-                    get("/fetch/oppgave/aktiv") {
-                        call.respond(HttpStatusCode.InternalServerError)
-                    }
-                }
-            }
-        }
+        externalServiceWith500Response(testHost = eventhandlerTestHost, route = "dittnav-api/oppgave/inaktiv")
         client.authenticatedGet("dittnav-api/oppgave/inaktiv").status shouldBe HttpStatusCode.ServiceUnavailable
     }
 

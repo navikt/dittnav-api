@@ -1,7 +1,6 @@
 package no.nav.personbruker.dittnav.api.oppfolging;
 
 import io.kotest.matchers.shouldBe
-import io.ktor.client.request.get
 import io.ktor.client.statement.bodyAsText
 import io.ktor.http.HttpStatusCode
 import io.ktor.server.application.call
@@ -10,13 +9,12 @@ import io.ktor.server.routing.get
 import io.ktor.server.routing.routing
 import io.ktor.server.testing.testApplication
 import kotlinx.serialization.json.Json
-import kotlinx.serialization.json.jsonArray
 import kotlinx.serialization.json.jsonObject
 import no.nav.personbruker.dittnav.api.applicationHttpClient
 import no.nav.personbruker.dittnav.api.authenticatedGet
 import no.nav.personbruker.dittnav.api.bool
 import no.nav.personbruker.dittnav.api.mockApi
-import no.nav.personbruker.dittnav.api.setupExternalServiceWithJsonResponse
+import no.nav.personbruker.dittnav.api.externalServiceWithJsonResponse
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.ValueSource
@@ -38,7 +36,7 @@ class OppfolgingApiTest {
                 )
             )
         )
-        setupExternalServiceWithJsonResponse(
+        externalServiceWithJsonResponse(
             hostApiBase = testHost,
             apiEndpoint,
             content = externalOppfølgingJson(forventetOppfølgingStaus)

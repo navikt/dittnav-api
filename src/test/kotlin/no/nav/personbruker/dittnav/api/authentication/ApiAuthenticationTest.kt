@@ -8,7 +8,7 @@ import no.nav.personbruker.dittnav.api.applicationHttpClient
 import no.nav.personbruker.dittnav.api.authenticatedGet
 import no.nav.personbruker.dittnav.api.config.LoginserviceMetadata
 import no.nav.personbruker.dittnav.api.mockApi
-import no.nav.personbruker.dittnav.api.setupExternalServiceWithJsonResponse
+import no.nav.personbruker.dittnav.api.externalServiceWithJsonResponse
 import org.junit.jupiter.api.Test
 
 class ApiAuthenticationTest {
@@ -35,7 +35,7 @@ class ApiAuthenticationTest {
     @Test
     fun `henter loginservice credentials`() =
         testApplication {
-            setupExternalServiceWithJsonResponse(
+            externalServiceWithJsonResponse(
                 hostApiBase = "https://dummydiscovery.test",
                 endpoint = "/wellknown",
                 content = mockWellknown

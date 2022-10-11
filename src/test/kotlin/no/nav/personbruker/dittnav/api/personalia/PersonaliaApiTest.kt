@@ -1,28 +1,64 @@
 package no.nav.personbruker.dittnav.api.personalia;
 
-import io.ktor.client.request.get
+import io.kotest.matchers.shouldBe
+import io.ktor.client.statement.bodyAsText
+import io.ktor.http.HttpStatusCode
+import io.ktor.server.testing.ApplicationTestBuilder
 import io.ktor.server.testing.testApplication
+import io.mockk.coEvery
+import io.mockk.mockk
+import no.nav.personbruker.dittnav.api.applicationHttpClient
+import no.nav.personbruker.dittnav.api.authenticatedGet
+import no.nav.personbruker.dittnav.api.jsonObject
+import no.nav.personbruker.dittnav.api.mockApi
+import no.nav.personbruker.dittnav.api.externalServiceWithJsonResponse
+import no.nav.personbruker.dittnav.api.string
+import no.nav.personbruker.dittnav.api.tokenx.AccessToken
 import org.junit.jupiter.api.Test
+import java.net.URL
 
 class PersonaliaApiTest {
-
+    private val testhostBaseApi = "https://personalia.test"
     @Test
-    fun testGetIdent() = testApplication {
-        val expectedIdent = "Navn Navnesen"
-        client.get("/ident").apply {
-        //    TODO("Please write your test here")
+    fun `personalia med ident`() = testApplication {
+        mockApi(personaliaService = createPersonaliaService())
+        val expectedIdent = "846541550056"
+        externalServiceWithJsonResponse(
+            hostApiBase = testhostBaseApi,
+            endpoint = "/ident",
+            content = """ { "ident": "$expectedIdent" } """.trimIndent()
+
+        )
+
+        client.authenticatedGet("dittnav-api/ident").apply {
+            status shouldBe HttpStatusCode.OK
+            bodyAsText().jsonObject().string("ident") shouldBe expectedIdent
         }
     }
 
     @Test
-    fun testGetNavn() = testApplication {
+    fun `personalia med navn`() = testApplication {
+        mockApi(personaliaService = createPersonaliaService())
+        val expectedIdent = "846541550056"
+        externalServiceWithJsonResponse(
+            hostApiBase = testhostBaseApi,
+            endpoint = "/ident",
+            content = """ { "ident": "$expectedIdent" } """.trimIndent()
 
-        client.get("/navn").apply {
-         //   TODO("Please write your test here")
+        )
+
+        client.authenticatedGet("dittnav-api/ident").apply {
+            status shouldBe HttpStatusCode.OK
+            bodyAsText().jsonObject().string("ident") shouldBe expectedIdent
         }
     }
+
+    private fun ApplicationTestBuilder.createPersonaliaService(): PersonaliaService  = PersonaliaService(
+        personaliaConsumer = PersonaliaConsumer(
+            client = applicationHttpClient(),
+            personaliaApiURL = URL(testhostBaseApi)
+        ), personaliaTokendings = mockk<PersonaliaTokendings>().also {
+            coEvery { it.exchangeToken(any()) } returns AccessToken("dummytoken")
+        }
+    )
 }
-
-private fun externalPersonaliaJson() = """
-    
-""".trimIndent()

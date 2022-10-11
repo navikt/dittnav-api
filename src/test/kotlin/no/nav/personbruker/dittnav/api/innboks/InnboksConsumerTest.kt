@@ -6,8 +6,7 @@ import kotlinx.coroutines.runBlocking
 import no.nav.personbruker.dittnav.api.rawEventHandlerVarsel
 import no.nav.personbruker.dittnav.api.tokenx.AccessToken
 import no.nav.personbruker.dittnav.api.applicationHttpClient
-import no.nav.personbruker.dittnav.api.oppgave.Oppgave
-import no.nav.personbruker.dittnav.api.setupExternalServiceWithJsonResponse
+import no.nav.personbruker.dittnav.api.externalServiceWithJsonResponse
 import no.nav.personbruker.dittnav.api.toSpesificJsonFormat
 import org.junit.jupiter.api.Test
 import java.net.URL
@@ -23,7 +22,7 @@ internal class InnboksConsumerTest {
         val innboksObject2 = createInnboks("2", "2", true)
         testApplication {
 
-            setupExternalServiceWithJsonResponse(
+            externalServiceWithJsonResponse(
                 hostApiBase = testEventHandlerEndpoint,
                 endpoint = "/fetch/innboks/aktive",
                 content = listOf(innboksObject1, innboksObject2).toSpesificJsonFormat(Innboks::toEventHandlerJson)
@@ -47,7 +46,7 @@ internal class InnboksConsumerTest {
 
         testApplication {
             val innboksConsumer = InnboksConsumer(applicationHttpClient(), URL(testEventHandlerEndpoint))
-            setupExternalServiceWithJsonResponse(
+            externalServiceWithJsonResponse(
                 hostApiBase = testEventHandlerEndpoint,
                 endpoint = "/fetch/innboks/inaktive",
                 content = listOf(

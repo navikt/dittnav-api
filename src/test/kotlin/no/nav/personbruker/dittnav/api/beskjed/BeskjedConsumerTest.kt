@@ -5,7 +5,7 @@ import io.ktor.server.testing.testApplication
 import kotlinx.coroutines.runBlocking
 import no.nav.personbruker.dittnav.api.applicationHttpClient
 import no.nav.personbruker.dittnav.api.rawEventHandlerVarsel
-import no.nav.personbruker.dittnav.api.setupExternalServiceWithJsonResponse
+import no.nav.personbruker.dittnav.api.externalServiceWithJsonResponse
 import no.nav.personbruker.dittnav.api.toSpesificJsonFormat
 import no.nav.personbruker.dittnav.api.tokenx.AccessToken
 import org.junit.jupiter.api.Test
@@ -22,7 +22,7 @@ internal class BeskjedConsumerTest {
         val beskjedOject = createBeskjed(eventId = "12345", fodselsnummer = "9876543210", aktiv = true)
 
         testApplication {
-            setupExternalServiceWithJsonResponse(
+            externalServiceWithJsonResponse(
                 hostApiBase = testEventHandlerUrl,
                 endpoint = "fetch/beskjed/aktive",
                 content = listOf(beskjedOject).toSpesificJsonFormat(Beskjed::toRawEventhandlerVarsel)
@@ -45,7 +45,7 @@ internal class BeskjedConsumerTest {
         val beskjedObject2 = createBeskjed(eventId = "1", fodselsnummer = "1", aktiv = false)
 
         testApplication {
-            setupExternalServiceWithJsonResponse(
+            externalServiceWithJsonResponse(
                 hostApiBase = testEventHandlerUrl,
                 endpoint = "fetch/beskjed/inaktive",
                 content = listOf(beskjedObject, beskjedObject2).toSpesificJsonFormat(Beskjed::toRawEventhandlerVarsel)

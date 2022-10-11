@@ -7,7 +7,7 @@ import kotlinx.coroutines.runBlocking
 import no.nav.personbruker.dittnav.api.applicationHttpClient
 import no.nav.personbruker.dittnav.api.beskjed.BeskjedDTO
 import no.nav.personbruker.dittnav.api.authentication.AuthenticatedUserTestData
-import no.nav.personbruker.dittnav.api.setupExternalServiceWithJsonResponse
+import no.nav.personbruker.dittnav.api.externalServiceWithJsonResponse
 import org.intellij.lang.annotations.Language
 import org.junit.jupiter.api.Test
 import java.net.URL
@@ -29,7 +29,7 @@ internal class DigiSosClientTest {
             ]""".trimMargin()
 
         testApplication {
-            setupExternalServiceWithJsonResponse(
+            externalServiceWithJsonResponse(
                 hostApiBase = digiSosSoknadBaseURL,
                 endpoint = "/dittnav/pabegynte/aktive",
                 content = digiSosResponse
@@ -57,7 +57,7 @@ internal class DigiSosClientTest {
 
         testApplication {
 
-            setupExternalServiceWithJsonResponse(
+            externalServiceWithJsonResponse(
                 hostApiBase = digiSosSoknadBaseURL,
                 endpoint = "/dittnav/pabegynte/inaktive",
                 content = digiSosResponse

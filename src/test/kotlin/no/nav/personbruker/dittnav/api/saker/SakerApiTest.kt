@@ -8,14 +8,13 @@ import io.mockk.mockk
 import no.nav.personbruker.dittnav.api.applicationHttpClient
 import no.nav.personbruker.dittnav.api.authenticatedGet
 import no.nav.personbruker.dittnav.api.mockApi
-import no.nav.personbruker.dittnav.api.setupExternalServiceWithJsonResponse
+import no.nav.personbruker.dittnav.api.externalServiceWithJsonResponse
 import no.nav.personbruker.dittnav.api.toSpesificJsonFormat
 import no.nav.personbruker.dittnav.api.tokenx.AccessToken
 import org.intellij.lang.annotations.Language
 import org.junit.jupiter.api.Test
 import java.net.URL
 import java.time.ZonedDateTime
-import kotlin.text.StringBuilder
 
 private const val minesakerTestUrl = "https://ut.nav/saker-test"
 
@@ -29,7 +28,7 @@ class SakerApiTest {
 
 
     @Test
-    fun `henter saker for bruker`() {
+    fun ` Saker for bruker`() {
         val exoectedSakerDTO =
             createSakerDto(
                 dagpengerSistEndret = ZonedDateTime.now().minusDays(2),
@@ -48,10 +47,9 @@ class SakerApiTest {
                 mineSakerTokendings = tokendingsMock
             )
             mockApi(sakerService = service)
-            setupExternalServiceWithJsonResponse(sakerBaseUrl, saksteamaerEndpoint, exoectedSakerDTO.mapToEksternJson())
+            externalServiceWithJsonResponse(sakerBaseUrl, saksteamaerEndpoint, exoectedSakerDTO.mapToEksternJson())
             client.authenticatedGet("dittnav-api/saker").apply {
                 status shouldBe HttpStatusCode.OK
-                //   TODO("Please write your test here")
             }
         }
     }

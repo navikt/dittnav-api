@@ -9,9 +9,11 @@ import io.ktor.client.statement.HttpResponse
 import io.ktor.http.ContentType
 import io.ktor.http.HttpHeaders
 import io.ktor.http.HttpMethod
+import io.ktor.http.HttpStatusCode
 import io.ktor.serialization.kotlinx.json.json
 import io.ktor.server.application.ApplicationCall
 import io.ktor.server.application.call
+import io.ktor.server.response.respond
 import io.ktor.server.response.respondBytes
 import io.ktor.server.routing.get
 import io.ktor.server.routing.routing
@@ -87,7 +89,19 @@ internal suspend fun HttpClient.authenticatedGet(urlString: String, token: Strin
     header(HttpHeaders.Cookie, "selvbetjening-idtoken=$token")
 }
 
-internal fun ApplicationTestBuilder.setupExternalServiceWithJsonResponse(
+internal fun ApplicationTestBuilder.externalServiceWith500Response(testHost: String, route: String){
+    externalServices {
+        hosts(testHost) {
+            routing {
+                get(route) {
+                    call.respond(HttpStatusCode.InternalServerError)
+                }
+            }
+        }
+    }
+}
+
+internal fun ApplicationTestBuilder.externalServiceWithJsonResponse(
     hostApiBase: String,
     endpoint: String,
     content: String

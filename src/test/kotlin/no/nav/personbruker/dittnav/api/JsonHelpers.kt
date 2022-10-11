@@ -1,6 +1,9 @@
 package no.nav.personbruker.dittnav.api
 
 import io.kotest.matchers.shouldBe
+import io.ktor.client.statement.HttpResponse
+import io.ktor.client.statement.bodyAsText
+import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonArray
 import kotlinx.serialization.json.JsonElement
 import kotlinx.serialization.json.JsonNull
@@ -66,6 +69,8 @@ internal fun JsonObject.zonedDateTimeOrNull(key: String, datePattern: String? = 
         }
     }
 
+internal fun String.jsonObject() = Json.parseToJsonElement(this).jsonObject
+internal  fun String.jsonArray() = Json.parseToJsonElement(this).jsonArray
 internal infix fun ZonedDateTime.shouldBeSameDateTimeAs(expected: ZonedDateTime) =
     this.toLocalDateTime().truncatedTo(ChronoUnit.MINUTES) shouldBe expected.toLocalDateTime().truncatedTo(ChronoUnit.MINUTES)
 
