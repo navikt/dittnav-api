@@ -28,8 +28,8 @@ internal class OppgaveServiceTest {
 
     @Test
     fun `should return list of OppgaveDTO when active Events are received`() {
-        val oppgave1 = createOppgave("1", "1", true)
-        val oppgave2 = createOppgave("2", "2", true)
+        val oppgave1 = createOppgave(eventId = "1", fødselsnummer = "1", aktiv=true)
+        val oppgave2 = createOppgave(eventId = "2", fødselsnummer = "2", aktiv=true)
         coEvery { oppgaveConsumer.getExternalActiveEvents(dummyToken) } returns listOf(oppgave1, oppgave2)
         runBlocking {
             val oppgaveList = oppgaveService.getActiveOppgaver(user)
@@ -39,8 +39,8 @@ internal class OppgaveServiceTest {
 
     @Test
     fun `should return list of OppgaveDTO when inactive Events are received`() {
-        val oppgave1 = createOppgave("1", "1", false)
-        val oppgave2 = createOppgave("2", "2", false)
+        val oppgave1 = createOppgave(eventId = "1", fødselsnummer = "1", aktiv=false)
+        val oppgave2 = createOppgave(eventId = "2", fødselsnummer = "2", aktiv=false)
         coEvery { oppgaveConsumer.getExternalInactiveEvents(dummyToken) } returns listOf(oppgave1, oppgave2)
         runBlocking {
             val oppgaveList = oppgaveService.getInactiveOppgaver(user)
@@ -51,7 +51,7 @@ internal class OppgaveServiceTest {
     @Test
     fun `should mask events with security level higher than current user`() {
         val ident = "1"
-        var oppgave = createOppgave("1", ident, true)
+        var oppgave = createOppgave(eventId = "1", fødselsnummer = ident, aktiv = true)
         oppgave = oppgave.copy(sikkerhetsnivaa = 4)
         user = AuthenticatedUserTestData.createAuthenticatedUser(ident, 3)
         coEvery { eventhandlerTokendings.exchangeToken(user) } returns dummyToken
@@ -67,7 +67,7 @@ internal class OppgaveServiceTest {
 
     @Test
     fun `should not mask events with security level lower than current user`() {
-        var oppgave = createOppgave("1", "1", true)
+        var oppgave = createOppgave(eventId = "1", fødselsnummer = "1", aktiv=true)
         oppgave = oppgave.copy(sikkerhetsnivaa = 3)
         coEvery { oppgaveConsumer.getExternalActiveEvents(dummyToken) } returns listOf(oppgave)
         runBlocking {
@@ -81,7 +81,7 @@ internal class OppgaveServiceTest {
 
     @Test
     fun `should not mask events with security level equal than current user`() {
-        val oppgave = createOppgave("1", "1", true)
+        val oppgave = createOppgave(eventId = "1", fødselsnummer = "1", aktiv=true, sikkerhetsnivaa = 4)
         coEvery { oppgaveConsumer.getExternalActiveEvents(dummyToken) } returns listOf(oppgave)
         runBlocking {
             val oppgaveList = oppgaveService.getActiveOppgaver(user)

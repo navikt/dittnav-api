@@ -7,8 +7,8 @@ class OppgaveTest {
 
     @Test
     fun `should transform from Oppgave to OppgaveDTO`() {
-        val oppgave1 = createOppgave("1", "1", true)
-        val oppgave2 = createOppgave("2", "2", true)
+        val oppgave1 = createOppgave(eventId = "1", fødselsnummer = "1", aktiv = true)
+        val oppgave2 = createOppgave(eventId = "2", fødselsnummer = "2", aktiv = true)
         val oppgaveDTOList = listOf(oppgave1, oppgave2).map { it.toOppgaveDTO() }
         val oppgaveDTO = oppgaveDTOList.first()
 
@@ -27,7 +27,7 @@ class OppgaveTest {
 
     @Test
     fun `should mask tekst, link and produsent`() {
-        val oppgave = createOppgave("1", "1", true)
+        val oppgave = createOppgave(eventId = "1", fødselsnummer = "1", aktiv = true)
         val oppgaveDTO = oppgave.toMaskedOppgaveDTO()
         oppgaveDTO.forstBehandlet shouldBe oppgave.forstBehandlet
         oppgaveDTO.eventId shouldBe oppgave.eventId

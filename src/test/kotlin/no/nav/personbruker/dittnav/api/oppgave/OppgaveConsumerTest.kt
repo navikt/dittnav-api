@@ -19,8 +19,8 @@ internal class OppgaveConsumerTest {
 
     @Test
     fun `should get list of aktive oppgavevarsler`() {
-        val oppgaveObject1 = createOppgave("1", "1", true)
-        val oppgaveObject2 = createOppgave("2", "2", true)
+        val oppgaveObject1 = createOppgave(eventId = "1", fødselsnummer = "1", aktiv=true)
+        val oppgaveObject2 = createOppgave(eventId = "2", fødselsnummer = "2", aktiv=true)
 
         testApplication {
             externalServiceWithJsonResponse(
@@ -41,9 +41,9 @@ internal class OppgaveConsumerTest {
 
     @Test
     fun `should get list of inactive oppgavevarsler`() {
-        val oppgaveObject = createOppgave("1", "1", false)
-        val oppgaveObject2 = createOppgave("198", "19876413", false)
-        val oppgaveObject3 = createOppgave("166", "1961247", false)
+        val oppgaveObject = createOppgave(eventId = "1", fødselsnummer = "1", aktiv = false)
+        val oppgaveObject2 = createOppgave(eventId = "198", fødselsnummer = "19876413", aktiv = false)
+        val oppgaveObject3 = createOppgave(eventId = "166", fødselsnummer = "1961247", aktiv = false)
 
         testApplication {
 

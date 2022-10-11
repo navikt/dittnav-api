@@ -9,10 +9,8 @@ import io.ktor.server.testing.ApplicationTestBuilder
 import io.ktor.server.testing.testApplication
 import io.mockk.coEvery
 import io.mockk.mockk
-import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonArray
 import kotlinx.serialization.json.JsonObject
-import kotlinx.serialization.json.jsonArray
 import kotlinx.serialization.json.jsonObject
 import no.nav.personbruker.dittnav.api.applicationHttpClient
 import no.nav.personbruker.dittnav.api.authenticatedGet
@@ -40,10 +38,10 @@ class OppgaveApiTest {
         coEvery { it.exchangeToken(any()) } returns AccessToken("Access!")
     }
     private val oppgaverFromEventhandler = listOf(
-        createInactiveOppgaveDTO("evhASAF"),
-        createInactiveOppgaveDTO("hjjfkfa"),
-        createInactiveOppgaveDTO("hja-da"),
-        createInactiveOppgaveDTO("hjaanflska"),
+        createInactiveOppgave("evhASAF"),
+        createInactiveOppgave("hjjfkfa"),
+        createInactiveOppgave("hja-da"),
+        createInactiveOppgave("hjaanflska"),
         createActiveOppgave("hlaksjasølkjh"),
         createActiveOppgave("kajljflsf")
     )
@@ -55,7 +53,7 @@ class OppgaveApiTest {
         externalServiceWithJsonResponse(
             hostApiBase = eventhandlerTestHost,
             endpoint = "/fetch/oppgave/aktive",
-            content = expectedOppgaver.filter { it.aktiv }.toSpesificJsonFormat(OppgaveDTO::toEventhandlerJson)
+            content = expectedOppgaver.filter { it.aktiv }.toSpesificJsonFormat(Oppgave::toEventhandlerJson)
         )
 
         client.authenticatedGet("dittnav-api/oppgave").apply {
@@ -72,7 +70,7 @@ class OppgaveApiTest {
         externalServiceWithJsonResponse(
             hostApiBase = eventhandlerTestHost,
             endpoint = "/fetch/oppgave/inaktive",
-            content = expectedOppgaver.filter { !it.aktiv }.toSpesificJsonFormat(OppgaveDTO::toEventhandlerJson)
+            content = expectedOppgaver.filter { !it.aktiv }.toSpesificJsonFormat(Oppgave::toEventhandlerJson)
         )
 
         client.authenticatedGet("dittnav-api/oppgave/inaktiv").apply {
@@ -98,13 +96,13 @@ class OppgaveApiTest {
         )
 }
 
-private infix fun JsonArray.shouldHaveContentEqualTo(expected: List<OppgaveDTO>) {
+private infix fun JsonArray.shouldHaveContentEqualTo(expected: List<Oppgave>) {
     withClue("Feil antall elementer i liste") { size shouldBe expected.size }
     val resultObjects = this.map { it.jsonObject }
-    expected.forEach { oppgaveDTO -> resultObjects shouldContainOppgaveDTO oppgaveDTO }
+    expected.forEach { oppgave -> resultObjects shouldContainOppgaveDTO oppgave }
 }
 
-private infix fun List<JsonObject>.shouldContainOppgaveDTO(dto: OppgaveDTO) {
+private infix fun List<JsonObject>.shouldContainOppgaveDTO(dto: Oppgave) {
     this.find { it.string("eventId") == dto.eventId }?.let { jsonObject ->
         withClue(dto.testIdentifier("aktiv")) { jsonObject.bool("aktiv") shouldBe dto.aktiv }
         withClue(dto.testIdentifier("forstBehandlet")) { jsonObject.zonedDateTime("forstBehandlet") shouldBeSameDateTimeAs dto.forstBehandlet }
@@ -119,7 +117,7 @@ private infix fun List<JsonObject>.shouldContainOppgaveDTO(dto: OppgaveDTO) {
     } ?: throw AssertionError("Fant ikke beskjed med eventId ${dto.eventId}")
 }
 
-private fun OppgaveDTO.toEventhandlerJson() = rawEventHandlerVarsel(
+private fun Oppgave.toEventhandlerJson() = rawEventHandlerVarsel(
     eventId = eventId,
     grupperingsId = grupperingsId,
     førstBehandlet = "$forstBehandlet",
@@ -133,10 +131,10 @@ private fun OppgaveDTO.toEventhandlerJson() = rawEventHandlerVarsel(
     aktiv = aktiv
 )
 
-private fun createInactiveOppgaveDTO(eventId: String) =
-    createOppgaveDTO(eventId = eventId, aktiv = false)
+private fun createInactiveOppgave(eventId: String) =
+    createOppgave(eventId = eventId, aktiv = false)
 
 private fun createActiveOppgave(eventId: String) =
-    createOppgaveDTO(eventId = eventId, aktiv = true)
+    createOppgave(eventId = eventId, aktiv = true)
 
-private fun OppgaveDTO.testIdentifier(key: String): String = "eventId:${eventId}\tkey:$key"
+private fun Oppgave.testIdentifier(key: String): String = "eventId:${eventId}\tkey:$key"
