@@ -9,7 +9,7 @@ import io.mockk.coEvery
 import io.mockk.mockk
 import no.nav.personbruker.dittnav.api.applicationHttpClient
 import no.nav.personbruker.dittnav.api.authenticatedGet
-import no.nav.personbruker.dittnav.api.jsonObject
+import no.nav.personbruker.dittnav.api.toJsonObject
 import no.nav.personbruker.dittnav.api.mockApi
 import no.nav.personbruker.dittnav.api.externalServiceWithJsonResponse
 import no.nav.personbruker.dittnav.api.string
@@ -32,7 +32,7 @@ class PersonaliaApiTest {
 
         client.authenticatedGet("dittnav-api/ident").apply {
             status shouldBe HttpStatusCode.OK
-            bodyAsText().jsonObject().string("ident") shouldBe expectedIdent
+            bodyAsText().toJsonObject().string("ident") shouldBe expectedIdent
         }
     }
 
@@ -49,7 +49,7 @@ class PersonaliaApiTest {
 
         client.authenticatedGet("dittnav-api/ident").apply {
             status shouldBe HttpStatusCode.OK
-            bodyAsText().jsonObject().string("ident") shouldBe expectedIdent
+            bodyAsText().toJsonObject().string("ident") shouldBe expectedIdent
         }
     }
 

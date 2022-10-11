@@ -7,8 +7,8 @@ class InnboksTest {
 
     @Test
     fun `should transform from Innboks to InnboksDTO`() {
-        val innboks1 = createInnboks("1", "1", true)
-        val innboks2 = createInnboks("2", "2", true)
+        val innboks1 = createInnboks(eventId = "1", fodselsnummer = "1", aktiv =  true)
+        val innboks2 = createInnboks(eventId = "2", fodselsnummer =  "2", aktiv = true)
         val innboksDTOList = listOf(innboks1, innboks2).map { toInnboksDTO(it) }
         val innboksDTO = innboksDTOList.first()
 
@@ -25,7 +25,7 @@ class InnboksTest {
 
     @Test
     fun `should mask tekst, link and produsent`() {
-        val innboks = createInnboks("1", "1", true)
+        val innboks = createInnboks(eventId = "1", fodselsnummer = "1", aktiv = true)
         val innboksDTO = toMaskedInnboksDTO(innboks)
         innboksDTO.forstBehandlet shouldBe innboks.forstBehandlet
         innboksDTO.eventId shouldBe innboks.eventId

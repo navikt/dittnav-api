@@ -24,6 +24,7 @@ import no.nav.personbruker.dittnav.api.externalServiceWithJsonResponse
 import no.nav.personbruker.dittnav.api.shouldBeSameDateTimeAs
 import no.nav.personbruker.dittnav.api.string
 import no.nav.personbruker.dittnav.api.stringArray
+import no.nav.personbruker.dittnav.api.toJsonArray
 import no.nav.personbruker.dittnav.api.toSpesificJsonFormat
 import no.nav.personbruker.dittnav.api.tokenx.AccessToken
 import no.nav.personbruker.dittnav.api.tokenx.EventhandlerTokendings
@@ -54,13 +55,13 @@ class OppgaveApiTest {
         externalServiceWithJsonResponse(
             hostApiBase = eventhandlerTestHost,
             endpoint = "/fetch/oppgave/aktive",
-            content = expectedOppgaver.toSpesificJsonFormat(OppgaveDTO::toEventhandlerJson)
+            content = expectedOppgaver.filter { it.aktiv }.toSpesificJsonFormat(OppgaveDTO::toEventhandlerJson)
         )
 
         client.authenticatedGet("dittnav-api/oppgave").apply {
             status shouldBe HttpStatusCode.OK
-            val resultArray = Json.parseToJsonElement(bodyAsText()).jsonArray
-            resultArray shouldHaveContentEqualTo expectedOppgaver
+            val resultArray = bodyAsText().toJsonArray()
+            resultArray shouldHaveContentEqualTo expectedOppgaver.filter { it.aktiv }
         }
     }
 
@@ -71,13 +72,13 @@ class OppgaveApiTest {
         externalServiceWithJsonResponse(
             hostApiBase = eventhandlerTestHost,
             endpoint = "/fetch/oppgave/inaktive",
-            content = expectedOppgaver.toSpesificJsonFormat(OppgaveDTO::toEventhandlerJson)
+            content = expectedOppgaver.filter { !it.aktiv }.toSpesificJsonFormat(OppgaveDTO::toEventhandlerJson)
         )
 
         client.authenticatedGet("dittnav-api/oppgave/inaktiv").apply {
             status shouldBe HttpStatusCode.OK
             val resultArray = Json.parseToJsonElement(bodyAsText()).jsonArray
-            resultArray shouldHaveContentEqualTo expectedOppgaver
+            resultArray shouldHaveContentEqualTo expectedOppgaver.filter { !it.aktiv }
         }
     }
 

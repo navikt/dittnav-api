@@ -14,10 +14,8 @@ import io.ktor.server.testing.ApplicationTestBuilder
 import io.ktor.server.testing.testApplication
 import io.mockk.coEvery
 import io.mockk.mockk
-import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonArray
 import kotlinx.serialization.json.JsonObject
-import kotlinx.serialization.json.jsonArray
 import kotlinx.serialization.json.jsonObject
 import no.finn.unleash.FakeUnleash
 import no.nav.personbruker.dittnav.api.applicationHttpClient
@@ -31,6 +29,7 @@ import no.nav.personbruker.dittnav.api.respondRawJson
 import no.nav.personbruker.dittnav.api.shouldBeSameDateTimeAs
 import no.nav.personbruker.dittnav.api.string
 import no.nav.personbruker.dittnav.api.stringArray
+import no.nav.personbruker.dittnav.api.toJsonArray
 import no.nav.personbruker.dittnav.api.toSpesificJsonFormat
 import no.nav.personbruker.dittnav.api.tokenx.*
 import no.nav.personbruker.dittnav.api.unleash.UnleashService
@@ -84,7 +83,7 @@ class BeskjedApiTest {
 
             client.authenticatedGet(endpoint).apply {
                 status shouldBe HttpStatusCode.OK
-                val resultArray = Json.parseToJsonElement(bodyAsText()).jsonArray
+                val resultArray = bodyAsText().toJsonArray()
                 resultArray shouldHaveContentEqualTo expectedBeskjedDTOs
             }
         }
@@ -102,7 +101,7 @@ class BeskjedApiTest {
 
             client.authenticatedGet(endpoint).apply {
                 status shouldBe HttpStatusCode.OK
-                val resultArray = Json.parseToJsonElement(bodyAsText()).jsonArray
+                val resultArray = bodyAsText().toJsonArray()
                 resultArray shouldHaveContentEqualTo expectedBeskjedDTOs
             }
         }
@@ -119,7 +118,7 @@ class BeskjedApiTest {
 
             client.authenticatedGet(endpoint).apply {
                 status shouldBe HttpStatusCode.PartialContent
-                val resultArray = Json.parseToJsonElement(bodyAsText()).jsonArray
+                val resultArray = bodyAsText().toJsonArray()
                 resultArray shouldHaveContentEqualTo expectedBeskjedDTOs
             }
 
@@ -137,7 +136,7 @@ class BeskjedApiTest {
 
             client.authenticatedGet(endpoint).apply {
                 status shouldBe HttpStatusCode.PartialContent
-                val resultArray = Json.parseToJsonElement(bodyAsText()).jsonArray
+                val resultArray = bodyAsText().toJsonArray()
                 resultArray shouldHaveContentEqualTo expectedBeskjedDTOs
             }
 

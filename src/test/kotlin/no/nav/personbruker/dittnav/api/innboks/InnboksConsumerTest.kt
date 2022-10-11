@@ -18,8 +18,8 @@ internal class InnboksConsumerTest {
 
     @Test
     fun `should get list of active Innboks`() {
-        val innboksObject1 = createInnboks("1", "1", true)
-        val innboksObject2 = createInnboks("2", "2", true)
+        val innboksObject1 = createInnboks(eventId = "1", fodselsnummer = "1", aktiv = true)
+        val innboksObject2 = createInnboks(eventId = "2", fodselsnummer = "2", aktiv = true)
         testApplication {
 
             externalServiceWithJsonResponse(
@@ -40,9 +40,9 @@ internal class InnboksConsumerTest {
 
     @Test
     fun `should get list of inactive Innboks`() {
-        val innboksObject1 = createInnboks("1", "1", false)
-        val innboksObject2 = createInnboks("5", "1", false)
-        val innboksObject3 = createInnboks("6", "22", false)
+        val innboksObject1 = createInnboks(eventId = "1", fodselsnummer = "1", aktiv = false)
+        val innboksObject2 = createInnboks(eventId = "5", fodselsnummer = "1", aktiv = false)
+        val innboksObject3 = createInnboks(eventId = "6", fodselsnummer = "22", aktiv = false)
 
         testApplication {
             val innboksConsumer = InnboksConsumer(applicationHttpClient(), URL(testEventHandlerEndpoint))
@@ -72,18 +72,3 @@ private infix fun List<Innboks>.shouldContainInnboksObject(expectedInnboks: Innb
         event.fodselsnummer shouldBe expectedInnboks.fodselsnummer
         event.aktiv shouldBe expectedInnboks.aktiv
     } ?: throw AssertionError("Fant ikke innboksvarsel med eventid ${expectedInnboks.eventId}")
-
-private fun Innboks.toEventHandlerJson(): String = rawEventHandlerVarsel(
-    eventId = eventId,
-    fodselsnummer = fodselsnummer,
-    grupperingsId = grupperingsId,
-    førstBehandlet = "$forstBehandlet",
-    produsent = produsent,
-    sikkerhetsnivå = 0,
-    sistOppdatert = "$sistOppdatert",
-    tekst = tekst,
-    link = link,
-    eksternVarslingSendt = eksternVarslingSendt,
-    eksternVarslingKanaler = eksternVarslingKanaler,
-    aktiv = aktiv
-)

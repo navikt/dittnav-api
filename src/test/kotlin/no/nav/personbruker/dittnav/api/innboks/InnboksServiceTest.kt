@@ -28,8 +28,8 @@ internal class InnboksServiceTest {
 
     @Test
     fun `should return list of InnboksDTO when active Events are received`() {
-        val innboks1 = createInnboks("1", "1", true)
-        val innboks2 = createInnboks("2", "2", true)
+        val innboks1 = createInnboks(eventId = "1", fodselsnummer = "1", aktiv = true)
+        val innboks2 = createInnboks(eventId = "2", fodselsnummer = "2", aktiv = true)
         coEvery { innboksConsumer.getExternalActiveEvents(dummyToken) } returns listOf(innboks1, innboks2)
         runBlocking {
             val innboksList = innboksService.getActiveInnboksEvents(user)
@@ -39,8 +39,8 @@ internal class InnboksServiceTest {
 
     @Test
     fun `should return list of InnboksDTO when inactive Events are received`() {
-        val innboks1 = createInnboks("1", "1", false)
-        val innboks2 = createInnboks("2", "2", false)
+        val innboks1 = createInnboks(eventId = "1", fodselsnummer = "1", aktiv = false)
+        val innboks2 = createInnboks(eventId = "2", fodselsnummer = "2", aktiv = false)
         coEvery { innboksConsumer.getExternalInactiveEvents(dummyToken) } returns listOf(innboks1, innboks2)
         runBlocking {
             val innboksList = innboksService.getInactiveInnboksEvents(user)
@@ -51,7 +51,7 @@ internal class InnboksServiceTest {
     @Test
     fun `should mask events with security level higher than current user`() {
         val ident = "1"
-        var innboks = createInnboks("1", ident, true)
+        var innboks = createInnboks(eventId = "1", fodselsnummer = ident, aktiv = true)
         innboks = innboks.copy(sikkerhetsnivaa = 4)
         user = AuthenticatedUserTestData.createAuthenticatedUser(ident, 3)
         coEvery { eventhandlerTokendings.exchangeToken(user) } returns dummyToken
@@ -67,7 +67,7 @@ internal class InnboksServiceTest {
 
     @Test
     fun `should not mask events with security level lower than current user`() {
-        var innboks = createInnboks("1", "1", true)
+        var innboks = createInnboks(eventId = "1", fodselsnummer = "1", aktiv = true)
         innboks = innboks.copy(sikkerhetsnivaa = 3)
         coEvery { innboksConsumer.getExternalActiveEvents(dummyToken) } returns listOf(innboks)
         runBlocking {
@@ -81,7 +81,7 @@ internal class InnboksServiceTest {
 
     @Test
     fun `should not mask events with security level equal than current user`() {
-        val innboks = createInnboks("1", "1", true)
+        val innboks = createInnboks(eventId = "1", fodselsnummer = "1", aktiv = true)
         coEvery { innboksConsumer.getExternalActiveEvents(dummyToken) } returns listOf(innboks)
         runBlocking {
             val innboksList = innboksService.getActiveInnboksEvents(user)
