@@ -21,10 +21,7 @@ internal class PaabegynteTest {
 
     @Test
     fun `Skal kunne deserialisere en respons fra DigiSos`() {
-        val objectMapper = jsonConfig()
-
-        val paabegynte = objectMapper.decodeFromString<Paabegynte>(respons)
-
+        val paabegynte = jsonConfig().decodeFromString<Paabegynte>(respons)
         paabegynte.shouldNotBeNull()
     }
 

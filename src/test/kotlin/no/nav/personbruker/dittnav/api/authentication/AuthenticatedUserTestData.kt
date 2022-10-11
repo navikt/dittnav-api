@@ -14,10 +14,6 @@ object AuthenticatedUserTestData {
 
     fun createAuthenticatedUser(): AuthenticatedUser {
         val ident = "12345"
-        return createAuthenticatedUser(ident)
-    }
-
-    fun createAuthenticatedUser(ident: String): AuthenticatedUser {
         val innloggingsnivaa = 4
         return createAuthenticatedUser(ident, innloggingsnivaa)
     }

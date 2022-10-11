@@ -64,6 +64,8 @@ dependencies {
     testImplementation(Mockk.mockk)
     testImplementation(Jjwt.api)
     testImplementation(Junit.params)
+    testImplementation("io.ktor:ktor-server-tests-jvm:2.1.1")
+    testImplementation("org.jetbrains.kotlin:kotlin-test-junit:1.7.10")
 
     testRuntimeOnly(Bouncycastle.bcprovJdk15on)
     testRuntimeOnly(Jjwt.impl)

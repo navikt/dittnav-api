@@ -20,20 +20,38 @@ data class Innboks(
         val aktiv: Boolean,
         val eksternVarslingSendt: Boolean,
         val eksternVarslingKanaler: List<String>
-) {
-    override fun toString(): String {
-        return "Innboks(" +
-                "forstBehandlet=$forstBehandlet, " +
-                "fodselsnummer=***, " +
-                "eventId=$eventId, " +
-                "grupperingsId=$grupperingsId, " +
-                "tekst=***, " +
-                "link=***, " +
-                "produsent=$produsent, " +
-                "sikkerhetsnivaa=$sikkerhetsnivaa, " +
-                "sistOppdatert=$sistOppdatert, " +
-                "aktiv=$aktiv, " +
-                "eksternVarslingSendt=$eksternVarslingSendt, " +
-                "eksternVarslingKanaler=$eksternVarslingKanaler"
+)
+
+@Serializable
+data class InnboksDTO(
+    val forstBehandlet: ZonedDateTime,
+    val eventId: String,
+    val tekst: String,
+    val link: String,
+    val produsent: String,
+    val sistOppdatert: ZonedDateTime,
+    val sikkerhetsnivaa: Int,
+    val eksternVarslingSendt: Boolean,
+    val eksternVarslingKanaler: List<String>
+)
+
+fun toInnboksDTO(innboks: Innboks): InnboksDTO =
+    innboks.let {
+        InnboksDTO(
+            forstBehandlet = it.forstBehandlet,
+            eventId = it.eventId,
+            tekst = it.tekst,
+            link = it.link,
+            produsent = it.produsent,
+            sistOppdatert = it.sistOppdatert,
+            sikkerhetsnivaa = it.sikkerhetsnivaa,
+            eksternVarslingSendt = it.eksternVarslingSendt,
+            eksternVarslingKanaler = it.eksternVarslingKanaler
+        )
     }
-}
+
+fun toMaskedInnboksDTO(innboks: Innboks): InnboksDTO =
+    innboks.let {
+        var maskedInnboksDTO = toInnboksDTO(innboks)
+        return maskedInnboksDTO.copy(tekst = "***", link = "***", produsent = "***")
+    }

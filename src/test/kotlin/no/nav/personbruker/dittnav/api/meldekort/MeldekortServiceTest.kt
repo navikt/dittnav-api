@@ -16,7 +16,7 @@ internal class MeldekortServiceTest {
     private val tokendings: MeldekortTokendings = mockk()
     private val meldekortService = MeldekortService(consumer, tokendings)
 
-    private val user = AuthenticatedUserTestData.createAuthenticatedUser("123")
+    private val user = AuthenticatedUserTestData.createAuthenticatedUser("123",4)
     private val token = AccessToken(user.token)
 
     @Test

@@ -62,6 +62,7 @@ private fun SakerDTO.mapToEksternJson(): String = """
       "sistEndrede": ${this.sakstemaer.toSpesificJsonFormat(SakstemaDTO::mapToEksternJson)}
     }
 """.trimIndent()
+
 private fun SakstemaDTO.mapToEksternJson(): String = """
     {
         "navn":"$navn",
