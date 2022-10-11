@@ -1,6 +1,7 @@
 package no.nav.personbruker.dittnav.api.digisos
 
-import io.ktor.client.statement.*
+
+import io.ktor.client.statement.HttpResponse
 import mu.KotlinLogging
 import no.nav.personbruker.dittnav.api.authentication.AuthenticatedUser
 import no.nav.personbruker.dittnav.api.beskjed.BeskjedDTO

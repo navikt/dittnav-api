@@ -7,7 +7,6 @@ import io.ktor.server.testing.ApplicationTestBuilder
 import io.ktor.server.testing.testApplication
 import io.mockk.coEvery
 import io.mockk.mockk
-import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonElement
 import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.jsonObject
@@ -21,6 +20,7 @@ import no.nav.personbruker.dittnav.api.localdateOrNull
 import no.nav.personbruker.dittnav.api.mockApi
 import no.nav.personbruker.dittnav.api.externalServiceWithJsonResponse
 import no.nav.personbruker.dittnav.api.string
+import no.nav.personbruker.dittnav.api.toJsonObject
 import no.nav.personbruker.dittnav.api.tokenx.AccessToken
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -61,7 +61,7 @@ class MeldekortApiTest {
 
             client.authenticatedGet("dittnav-api/meldekortinfo").apply {
                 status shouldBe HttpStatusCode.OK
-                val jsonResponse = Json.parseToJsonElement(bodyAsText()).jsonObject
+                val jsonResponse = bodyAsText().toJsonObject()
                 jsonResponse.int("resterendeFeriedager") shouldBe expectedMeldekortInfo.resterendeFeriedager
                 jsonResponse.int("etterregistrerteMeldekort") shouldBe expectedMeldekortInfo.etterregistrerteMeldekort
                 jsonResponse.bool("meldekortbruker") shouldBe true
@@ -96,7 +96,7 @@ class MeldekortApiTest {
 
         client.authenticatedGet("dittnav-api/meldekortinfo").apply {
             status shouldBe HttpStatusCode.OK
-            val jsonResponse = Json.parseToJsonElement(bodyAsText()).jsonObject
+            val jsonResponse = bodyAsText().toJsonObject()
             jsonResponse.int("resterendeFeriedager") shouldBe 0
             jsonResponse.int("etterregistrerteMeldekort") shouldBe 0
             jsonResponse.bool("meldekortbruker") shouldBe false
@@ -135,7 +135,7 @@ class MeldekortApiTest {
 
             client.authenticatedGet("dittnav-api/meldekortstatus").apply {
                 status shouldBe HttpStatusCode.OK
-                val jsonResponse = Json.parseToJsonElement(bodyAsText()).jsonObject
+                val jsonResponse = bodyAsText().toJsonObject()
                 jsonResponse.int("meldekort") shouldBe expectedStatus.meldekort
                 jsonResponse.int("etterregistrerteMeldekort") shouldBe expectedStatus.etterregistrerteMeldekort
                 jsonResponse.int("antallGjenstaaendeFeriedager") shouldBe expectedStatus.antallGjenstaaendeFeriedager

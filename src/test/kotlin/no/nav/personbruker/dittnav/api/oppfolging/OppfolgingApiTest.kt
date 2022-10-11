@@ -15,6 +15,7 @@ import no.nav.personbruker.dittnav.api.authenticatedGet
 import no.nav.personbruker.dittnav.api.bool
 import no.nav.personbruker.dittnav.api.mockApi
 import no.nav.personbruker.dittnav.api.externalServiceWithJsonResponse
+import no.nav.personbruker.dittnav.api.toJsonObject
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.ValueSource
@@ -43,7 +44,7 @@ class OppfolgingApiTest {
         )
         client.authenticatedGet("dittnav-api/oppfolging").apply {
             status shouldBe HttpStatusCode.OK
-            val jsonBody = Json.parseToJsonElement(bodyAsText()).jsonObject.bool("erBrukerUnderOppfolging")
+            val jsonBody = bodyAsText().toJsonObject().bool("erBrukerUnderOppfolging")
             jsonBody shouldBe forventetOppfølgingStaus
         }
     }

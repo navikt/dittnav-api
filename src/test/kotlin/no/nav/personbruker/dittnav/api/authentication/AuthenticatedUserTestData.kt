@@ -6,7 +6,7 @@ import io.jsonwebtoken.security.Keys
 import no.nav.security.token.support.core.jwt.JwtToken
 import java.security.Key
 import java.time.ZonedDateTime
-import java.util.*
+import java.util.Date
 
 object AuthenticatedUserTestData {
 

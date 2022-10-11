@@ -1,6 +1,6 @@
 package no.nav.personbruker.dittnav.api.oppfolging
 
-import io.ktor.client.*
+import io.ktor.client.HttpClient
 import no.nav.personbruker.dittnav.api.config.getWithConsumerId
 import no.nav.personbruker.dittnav.api.tokenx.AccessToken
 import java.net.URL

@@ -77,7 +77,7 @@ class OppgaveApiTest {
 
         client.authenticatedGet("dittnav-api/oppgave/inaktiv").apply {
             status shouldBe HttpStatusCode.OK
-            val resultArray = Json.parseToJsonElement(bodyAsText()).jsonArray
+            val resultArray = bodyAsText().toJsonArray()
             resultArray shouldHaveContentEqualTo expectedOppgaver.filter { !it.aktiv }
         }
     }

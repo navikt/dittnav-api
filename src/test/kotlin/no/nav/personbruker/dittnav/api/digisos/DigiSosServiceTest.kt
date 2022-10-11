@@ -6,14 +6,11 @@ import io.mockk.coVerify
 import io.mockk.confirmVerified
 import io.mockk.mockk
 import kotlinx.coroutines.runBlocking
-import no.nav.personbruker.dittnav.api.beskjed.BeskjedDTO
 import no.nav.personbruker.dittnav.api.beskjed.KildeType
 import no.nav.personbruker.dittnav.api.beskjed.createActiveBeskjedDto
 import no.nav.personbruker.dittnav.api.authentication.AuthenticatedUserTestData
-import no.nav.personbruker.dittnav.api.beskjed.createInactiveBeskjed
 import no.nav.personbruker.dittnav.api.beskjed.createInactiveBeskjedDto
 import org.junit.jupiter.api.Test
-import java.time.ZonedDateTime
 
 internal class DigiSosServiceTest {
 

@@ -1,6 +1,7 @@
 package no.nav.personbruker.dittnav.api.beskjed
 
-import io.ktor.client.*
+
+import io.ktor.client.HttpClient
 import no.nav.personbruker.dittnav.api.common.retryOnConnectionClosed
 import no.nav.personbruker.dittnav.api.config.get
 import no.nav.personbruker.dittnav.api.tokenx.AccessToken

@@ -1,7 +1,11 @@
 package no.nav.personbruker.dittnav.api.beskjed
 
 import io.kotest.matchers.shouldBe
-import io.mockk.*
+import io.mockk.clearMocks
+import io.mockk.coEvery
+import io.mockk.coVerify
+import io.mockk.confirmVerified
+import io.mockk.mockk
 import kotlinx.coroutines.runBlocking
 import no.finn.unleash.FakeUnleash
 import no.nav.personbruker.dittnav.api.authentication.AuthenticatedUserTestData
