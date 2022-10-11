@@ -10,6 +10,7 @@ import no.nav.personbruker.dittnav.api.beskjed.BeskjedDTO
 import no.nav.personbruker.dittnav.api.beskjed.KildeType
 import no.nav.personbruker.dittnav.api.beskjed.createActiveBeskjedDto
 import no.nav.personbruker.dittnav.api.authentication.AuthenticatedUserTestData
+import no.nav.personbruker.dittnav.api.beskjed.createInactiveBeskjed
 import org.junit.jupiter.api.Test
 import java.time.ZonedDateTime
 
@@ -64,20 +65,4 @@ internal class DigiSosServiceTest {
         result.failedSources() shouldContain KildeType.DIGISOS
     }
 
-}
-
-private fun createInactiveBeskjed(eventId: String): BeskjedDTO {
-    return BeskjedDTO(
-        forstBehandlet = ZonedDateTime.now(),
-        eventId = eventId,
-        tekst = "Dummytekst",
-        link = "https://dummy.url",
-        produsent = "dummy-produsent",
-        sistOppdatert = ZonedDateTime.now().minusDays(1),
-        sikkerhetsnivaa = 3,
-        aktiv = false,
-        grupperingsId = "654",
-        eksternVarslingSendt = true,
-        eksternVarslingKanaler = listOf("SMS", "EPOST")
-    )
 }

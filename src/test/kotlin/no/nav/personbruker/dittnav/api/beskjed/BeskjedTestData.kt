@@ -20,6 +20,22 @@ fun createBeskjed(eventId: String, fodselsnummer: String, aktiv: Boolean): Beskj
     )
 }
 
+fun createInactiveBeskjed(eventId: String): BeskjedDTO {
+    return BeskjedDTO(
+        forstBehandlet = ZonedDateTime.now(),
+        eventId = eventId,
+        tekst = "Dummytekst",
+        link = "https://dummy.url",
+        produsent = "dummy-produsent",
+        sistOppdatert = ZonedDateTime.now().minusDays(1),
+        sikkerhetsnivaa = 3,
+        aktiv = false,
+        grupperingsId = "654",
+        eksternVarslingSendt = true,
+        eksternVarslingKanaler = listOf("SMS", "EPOST")
+    )
+}
+
 fun createActiveBeskjedDto(
     eventId: String, forstBehandlet: ZonedDateTime = ZonedDateTime.now(),
     sistOppdatert: ZonedDateTime = ZonedDateTime.now().minusDays(3),
