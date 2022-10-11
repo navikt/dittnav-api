@@ -51,23 +51,23 @@ class BeskjedApiTest {
 
     private val expectedBeskjedFromDigsos =
         listOf(
-            createActiveBeskjedDto("123", tekst = "Fordi variasjon er bra å ha").withDigiSosProdusent(),
-            createActiveBeskjedDto("188").withDigiSosProdusent(),
-            createInactiveBeskjedDto(
+            createActiveBeskjed("123", tekst = "Fordi variasjon er bra å ha").withDigiSosProdusent(),
+            createActiveBeskjed("188").withDigiSosProdusent(),
+            createInactiveBeskjed(
                 eventId = "199",
                 forstBehandlet = now.minusDays(30),
                 sistOppdatert = now.minusDays(10),
             ).withDigiSosProdusent()
         )
     private val expectedBeskjedFromEventhandler = listOf(
-        createInactiveBeskjedDto("665544"),
-        createActiveBeskjedDto("8877", tekst = "Tekst er tekst er tekst").withEksternVarsling(listOf("SMS")),
-        createActiveBeskjedDto(
+        createInactiveBeskjed("665544"),
+        createActiveBeskjed("8877", tekst = "Tekst er tekst er tekst").withEksternVarsling(listOf("SMS")),
+        createActiveBeskjed(
             "8879",
             forstBehandlet = now.minusHours(1),
             sistOppdatert = now.minusMinutes(30),
         ),
-        createActiveBeskjedDto("887765", tekst = "Her er testbeskjed med testtekst").withEksternVarsling()
+        createActiveBeskjed("887765", tekst = "Her er testbeskjed med testtekst").withEksternVarsling()
     )
 
     @ParameterizedTest
@@ -75,16 +75,15 @@ class BeskjedApiTest {
     fun `beskjeder fra både digisos og eventhandler`(aktive: Boolean, endpoint: String) {
         fakeUnleash.enable(UnleashService.digisosPaabegynteToggleName)
 
-        val expectedBeskjedDTOs =
+        val expectedBeskjedContent =
             expectedBeskjedFromDigsos.filter { it.aktiv == aktive } + expectedBeskjedFromEventhandler.filter { it.aktiv == aktive }
         testApplication {
             setupExternalBeskjedServices()
             mockApi(beskjedMergerService = createBeskjedMergerService())
-
             client.authenticatedGet(endpoint).apply {
                 status shouldBe HttpStatusCode.OK
                 val resultArray = bodyAsText().toJsonArray()
-                resultArray shouldHaveContentEqualTo expectedBeskjedDTOs
+                resultArray shouldHaveContentEqualTo expectedBeskjedContent
             }
         }
     }
@@ -153,28 +152,28 @@ class BeskjedApiTest {
                     call.customServiceResponse(
                         beskjeder = expectedBeskjedFromEventhandler.filter { it.aktiv },
                         withError = withErrorFromEventhandler,
-                        jsonFormatFunction = BeskjedDTO::toEventhandlerJson
+                        jsonFormatFunction = Beskjed::toEventhandlerJson
                     )
                 }
                 get("/fetch/beskjed/inaktive") {
                     call.customServiceResponse(
                         beskjeder = expectedBeskjedFromEventhandler.filter { !it.aktiv },
                         withError = withErrorFromEventhandler,
-                        jsonFormatFunction = BeskjedDTO::toEventhandlerJson
+                        jsonFormatFunction = Beskjed::toEventhandlerJson
                     )
                 }
                 get("/dittnav/pabegynte/aktive") {
                     call.customServiceResponse(
                         beskjeder = expectedBeskjedFromDigsos.filter { it.aktiv },
                         withError = withErrorFromDigiSos,
-                        jsonFormatFunction = BeskjedDTO::toPaabegynteDigisosJson
+                        jsonFormatFunction = Beskjed::toPaabegynteDigisosJson
                     )
                 }
                 get("/dittnav/pabegynte/inaktive") {
                     call.customServiceResponse(
                         beskjeder = expectedBeskjedFromDigsos.filter { !it.aktiv },
                         withError = withErrorFromDigiSos,
-                        jsonFormatFunction = BeskjedDTO::toPaabegynteDigisosJson
+                        jsonFormatFunction = Beskjed::toPaabegynteDigisosJson
                     )
                 }
             }
@@ -200,9 +199,9 @@ class BeskjedApiTest {
 }
 
 private suspend fun ApplicationCall.customServiceResponse(
-    beskjeder: List<BeskjedDTO>,
+    beskjeder: List<Beskjed>,
     withError: Boolean,
-    jsonFormatFunction: BeskjedDTO.() -> String
+    jsonFormatFunction: Beskjed.() -> String
 ) {
     if (withError) {
         respond(HttpStatusCode.InternalServerError)
@@ -212,14 +211,14 @@ private suspend fun ApplicationCall.customServiceResponse(
     }
 }
 
-private infix fun JsonArray.shouldHaveContentEqualTo(expected: List<BeskjedDTO>) {
+private infix fun JsonArray.shouldHaveContentEqualTo(expected: List<Beskjed>) {
     withClue("Feil antall elementer i liste") { size shouldBe expected.size }
     val resultObjects = this.map { it.jsonObject }
     expected.forEach { beskjedDTO -> resultObjects shouldContainBeskjedDTO beskjedDTO }
 }
 
 
-private infix fun List<JsonObject>.shouldContainBeskjedDTO(dto: BeskjedDTO) =
+private infix fun List<JsonObject>.shouldContainBeskjedDTO(dto: Beskjed) =
     this.find { it.string("eventId") == dto.eventId }?.let { jsonObject ->
         withClue(dto.testIdentifier("aktiv")) { jsonObject.bool("aktiv") shouldBe dto.aktiv }
         withClue(dto.testIdentifier("forstBehandlet")) { jsonObject.zonedDateTime("forstBehandlet") shouldBeSameDateTimeAs dto.forstBehandlet }
@@ -234,14 +233,14 @@ private infix fun List<JsonObject>.shouldContainBeskjedDTO(dto: BeskjedDTO) =
     } ?: throw AssertionError("Fant ikke beskjed med eventId ${dto.eventId}")
 
 
-private fun BeskjedDTO.withEksternVarsling(kanaler: List<String> = listOf("SMS", "EPOST")): BeskjedDTO =
+private fun Beskjed.withEksternVarsling(kanaler: List<String> = listOf("SMS", "EPOST")): Beskjed =
     if (this.produsent == "digiSos") {
         throw IllegalArgumentException("Beskjeder fra digisos inneholder ikke eksterne varlinger")
     } else {
         this.copy(eksternVarslingKanaler = kanaler, eksternVarslingSendt = true)
     }
 
-private fun BeskjedDTO.withDigiSosProdusent(): BeskjedDTO =
+private fun Beskjed.withDigiSosProdusent(): Beskjed =
     if (eksternVarslingSendt) {
         throw IllegalArgumentException("Beskjeder fra digisos inneholder ikke eksterne varlinger")
     } else {
@@ -249,7 +248,7 @@ private fun BeskjedDTO.withDigiSosProdusent(): BeskjedDTO =
     }
 
 
-private fun BeskjedDTO.toEventhandlerJson() = rawEventHandlerVarsel(
+private fun Beskjed.toEventhandlerJson() = rawEventHandlerVarsel(
     eventId = eventId,
     grupperingsId = grupperingsId,
     førstBehandlet = "$forstBehandlet",
@@ -263,7 +262,7 @@ private fun BeskjedDTO.toEventhandlerJson() = rawEventHandlerVarsel(
     aktiv = aktiv
 )
 
-private fun BeskjedDTO.toPaabegynteDigisosJson() = """
+private fun Beskjed.toPaabegynteDigisosJson() = """
     {
       "eventTidspunkt": "${forstBehandlet.toLocalDateTime()}",
       "eventId": "$eventId",
@@ -276,4 +275,4 @@ private fun BeskjedDTO.toPaabegynteDigisosJson() = """
     }
 """.trimIndent()
 
-private fun BeskjedDTO.testIdentifier(key: String): String = "eventId:${eventId}\tkey:$key"
+private fun Beskjed.testIdentifier(key: String): String = "eventId:${eventId}\tkey:$key"

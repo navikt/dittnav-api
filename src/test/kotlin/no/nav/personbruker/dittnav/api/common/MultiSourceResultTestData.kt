@@ -2,6 +2,7 @@ package no.nav.personbruker.dittnav.api.common
 
 import no.nav.personbruker.dittnav.api.beskjed.BeskjedDTO
 import no.nav.personbruker.dittnav.api.beskjed.KildeType
+import no.nav.personbruker.dittnav.api.beskjed.createActiveBeskjed
 import no.nav.personbruker.dittnav.api.beskjed.createActiveBeskjedDto
 
 fun getNumberOfSuccessfulBeskjedEventsForSource(

@@ -11,6 +11,7 @@ import no.nav.personbruker.dittnav.api.beskjed.KildeType
 import no.nav.personbruker.dittnav.api.beskjed.createActiveBeskjedDto
 import no.nav.personbruker.dittnav.api.authentication.AuthenticatedUserTestData
 import no.nav.personbruker.dittnav.api.beskjed.createInactiveBeskjed
+import no.nav.personbruker.dittnav.api.beskjed.createInactiveBeskjedDto
 import org.junit.jupiter.api.Test
 import java.time.ZonedDateTime
 
@@ -41,7 +42,7 @@ internal class DigiSosServiceTest {
 
     @Test
     fun `Skal hente alle paabegynte soknader som er inaktive`() {
-        coEvery { digiSosConsumer.getPaabegynteInactive(any()) } returns listOf(createInactiveBeskjed("eidInact"))
+        coEvery { digiSosConsumer.getPaabegynteInactive(any()) } returns listOf(createInactiveBeskjedDto("eidInact"))
 
         val result = runBlocking {
             digiSosService.getPaabegynteInactive(innloggetBruker)
