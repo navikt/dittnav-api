@@ -39,9 +39,9 @@ class OppgaveService(
 
     private fun transformToDTO(oppgave: Oppgave, operatingLoginLevel: Int): OppgaveDTO {
         return if(userIsAllowedToViewAllDataInEvent(oppgave, operatingLoginLevel)) {
-            toOppgaveDTO(oppgave)
+            oppgave.toOppgaveDTO()
         } else {
-            toMaskedOppgaveDTO(oppgave)
+            oppgave.toMaskedOppgaveDTO()
         }
     }
 

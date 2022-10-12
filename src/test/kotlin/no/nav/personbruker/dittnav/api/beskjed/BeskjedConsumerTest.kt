@@ -1,91 +1,87 @@
 package no.nav.personbruker.dittnav.api.beskjed
 
 import io.kotest.matchers.shouldBe
-import io.ktor.client.HttpClient
-import io.ktor.client.engine.mock.MockEngine
-import io.ktor.client.engine.mock.respond
-import io.ktor.client.engine.mock.respondError
-import io.ktor.client.features.json.JsonFeature
-import io.ktor.http.ContentType
-import io.ktor.http.HttpHeaders
-import io.ktor.http.HttpStatusCode
-import io.ktor.http.headersOf
+import io.ktor.server.testing.testApplication
 import kotlinx.coroutines.runBlocking
-import kotlinx.serialization.encodeToString
-import no.nav.personbruker.dittnav.api.config.json
+import no.nav.personbruker.dittnav.api.applicationHttpClient
+import no.nav.personbruker.dittnav.api.rawEventHandlerVarsel
+import no.nav.personbruker.dittnav.api.externalServiceWithJsonResponse
+import no.nav.personbruker.dittnav.api.toSpesificJsonFormat
 import no.nav.personbruker.dittnav.api.tokenx.AccessToken
-import no.nav.personbruker.dittnav.api.util.createBasicMockedHttpClient
 import org.junit.jupiter.api.Test
 import java.net.URL
+import kotlin.AssertionError
 
 internal class BeskjedConsumerTest {
 
+    private val testEventHandlerUrl = "https://test.eventhandler.no"
     private val dummyToken = AccessToken("<access_token>")
 
     @Test
-    fun `Skal kalle beskjed-endepunktet i event-handler`() {
-        val client = HttpClient(MockEngine) {
-            engine {
-                addHandler { request ->
-                    if (request.url.encodedPath.contains("/fetch/beskjed") && request.url.host.contains("event-handler")) {
-                        respond("[]", headers = headersOf(HttpHeaders.ContentType, ContentType.Application.Json.toString()))
-                    } else {
-                        respondError(HttpStatusCode.BadRequest)
-                    }
-                }
-            }
-            install(JsonFeature)
-        }
-        val beskjedConsumer = BeskjedConsumer(client, URL("http://event-handler"))
-
-        runBlocking {
-            beskjedConsumer.getExternalActiveEvents(dummyToken) shouldBe emptyList()
-        }
-    }
-
-    @Test
     fun `Skal motta en liste over aktive Beskjeder`() {
-        val beskjedObject = createBeskjed(eventId = "1", fodselsnummer = "1", aktiv = true)
-        val client = createBasicMockedHttpClient {
-            respond(
-                    json().encodeToString(listOf(beskjedObject)),
-                    headers = headersOf(HttpHeaders.ContentType,
-                            ContentType.Application.Json.toString())
-            )
-        }
-        val beskjedConsumer = BeskjedConsumer(client, URL("http://event-handler"))
+        val beskjedOject = createBeskjed(eventId = "12345", fodselsnummer = "9876543210", aktiv = true)
 
-        runBlocking {
-            val externalActiveEvents = beskjedConsumer.getExternalActiveEvents(dummyToken)
-            val event = externalActiveEvents.first()
-            externalActiveEvents.size shouldBe 1
-            event.tekst shouldBe beskjedObject.tekst
-            event.fodselsnummer shouldBe beskjedObject.fodselsnummer
-            event.aktiv shouldBe true
+        testApplication {
+            externalServiceWithJsonResponse(
+                hostApiBase = testEventHandlerUrl,
+                endpoint = "fetch/beskjed/aktive",
+                content = listOf(beskjedOject).toSpesificJsonFormat(Beskjed::toRawEventhandlerVarsel)
+            )
+
+            val beskjedConsumer = BeskjedConsumer(applicationHttpClient(), URL(testEventHandlerUrl))
+
+            runBlocking {
+                val externalActiveEvents = beskjedConsumer.getExternalActiveEvents(dummyToken)
+                externalActiveEvents.size shouldBe 1
+                externalActiveEvents shouldContainBeskjedObject beskjedOject
+                externalActiveEvents.size shouldBe 1
+            }
         }
     }
 
     @Test
     fun `Skal motta en liste over inaktive Beskjeder`() {
         val beskjedObject = createBeskjed(eventId = "1", fodselsnummer = "1", aktiv = false)
+        val beskjedObject2 = createBeskjed(eventId = "1", fodselsnummer = "1", aktiv = false)
 
-        val client = createBasicMockedHttpClient {
-            respond(
-                    json().encodeToString(listOf(beskjedObject)),
-                    headers = headersOf(HttpHeaders.ContentType,
-                            ContentType.Application.Json.toString())
+        testApplication {
+            externalServiceWithJsonResponse(
+                hostApiBase = testEventHandlerUrl,
+                endpoint = "fetch/beskjed/inaktive",
+                content = listOf(beskjedObject, beskjedObject2).toSpesificJsonFormat(Beskjed::toRawEventhandlerVarsel)
             )
-        }
-        val beskjedConsumer = BeskjedConsumer(client, URL("http://event-handler"))
 
-        runBlocking {
-            val externalInactiveEvents = beskjedConsumer.getExternalInactiveEvents(dummyToken)
-            val event = externalInactiveEvents.first()
-            externalInactiveEvents.size shouldBe 1
-            event.tekst shouldBe beskjedObject.tekst
-            event.fodselsnummer shouldBe beskjedObject.fodselsnummer
-            event.aktiv shouldBe false
+            val beskjedConsumer = BeskjedConsumer(applicationHttpClient(), URL(testEventHandlerUrl))
+
+            runBlocking {
+                val externalInactiveEvents = beskjedConsumer.getExternalInactiveEvents(dummyToken)
+                externalInactiveEvents.size shouldBe 2
+                externalInactiveEvents shouldContainBeskjedObject beskjedObject
+                externalInactiveEvents shouldContainBeskjedObject beskjedObject2
+            }
         }
     }
 
 }
+
+private infix fun List<Beskjed>.shouldContainBeskjedObject(expected: Beskjed) =
+    find { it.eventId == expected.eventId }?.let { event ->
+        event.tekst shouldBe expected.tekst
+        event.fodselsnummer shouldBe expected.fodselsnummer
+        event.aktiv shouldBe expected.aktiv
+    } ?: throw AssertionError("Fant ikke beskjed med eventId ${expected.eventId}")
+
+private fun Beskjed.toRawEventhandlerVarsel(): String = rawEventHandlerVarsel(
+    førstBehandlet = "$forstBehandlet",
+    fodselsnummer = fodselsnummer,
+    eventId = eventId,
+    grupperingsId = grupperingsId,
+    tekst = tekst,
+    link = link,
+    produsent = produsent,
+    sikkerhetsnivå = sikkerhetsnivaa,
+    sistOppdatert = "$sistOppdatert",
+    aktiv = aktiv,
+    eksternVarslingSendt = eksternVarslingSendt,
+    eksternVarslingKanaler = eksternVarslingKanaler
+)

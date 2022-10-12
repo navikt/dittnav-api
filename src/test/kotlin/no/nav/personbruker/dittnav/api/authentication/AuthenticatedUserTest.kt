@@ -13,26 +13,18 @@ internal class AuthenticatedUserTest {
         val expectedIdent = "12345"
         val expectedLoginLevel = 4
 
-        val authenticatedUser = AuthenticatedUserObjectMother.createAuthenticatedUser(expectedIdent, expectedLoginLevel)
+        val authenticatedUser = AuthenticatedUserTestData.createAuthenticatedUser(expectedIdent, expectedLoginLevel)
 
         authenticatedUser.ident shouldBe expectedIdent
         authenticatedUser.loginLevel shouldBe  expectedLoginLevel
         authenticatedUser.token shouldNotBe null
+        authenticatedUser.createAuthenticationHeader() shouldBe  "Bearer ${authenticatedUser.token}"
         authenticatedUser shouldNotBe ""
     }
 
     @Test
-    fun `should create authentication header`() {
-        val authenticatedUser = AuthenticatedUserObjectMother.createAuthenticatedUser()
-
-        val generatedAuthHeader = authenticatedUser.createAuthenticationHeader()
-
-        generatedAuthHeader shouldBe  "Bearer ${authenticatedUser.token}"
-    }
-
-    @Test
     fun `should not include sensitive values in the output for the toString method`() {
-        val authenticatedUser = AuthenticatedUserObjectMother.createAuthenticatedUser()
+        val authenticatedUser = AuthenticatedUserTestData.createAuthenticatedUser()
 
         val outputOfToString = authenticatedUser.toString()
         outputOfToString shouldContain  authenticatedUser.loginLevel.toString()

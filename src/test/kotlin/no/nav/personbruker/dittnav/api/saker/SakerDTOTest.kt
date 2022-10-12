@@ -2,14 +2,14 @@ package no.nav.personbruker.dittnav.api.saker
 
 import io.kotest.matchers.nulls.shouldNotBeNull
 import kotlinx.serialization.encodeToString
-import no.nav.personbruker.dittnav.api.config.json
+import no.nav.personbruker.dittnav.api.config.jsonConfig
 import org.junit.jupiter.api.Test
 import java.net.URL
 import java.time.ZonedDateTime
 
 internal class SakerDTOTest {
 
-    private val objectMapper = json()
+    private val objectMapper = jsonConfig()
 
     @Test
     fun `Skal kunne serialiseres til JSON`() {

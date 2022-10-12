@@ -5,30 +5,27 @@ import io.jsonwebtoken.SignatureAlgorithm
 import io.jsonwebtoken.security.Keys
 import no.nav.security.token.support.core.jwt.JwtToken
 import java.security.Key
+import java.time.ZonedDateTime
 import java.util.Date
 
-object AuthenticatedUserObjectMother {
+object AuthenticatedUserTestData {
 
     private val key: Key = Keys.secretKeyFor(SignatureAlgorithm.HS256)
 
     fun createAuthenticatedUser(): AuthenticatedUser {
         val ident = "12345"
-        return createAuthenticatedUser(ident)
+        val innloggingsnivaa = 4
+        return createAuthenticatedUser(ident, innloggingsnivaa)
     }
 
-    fun createAuthenticatedUser(ident: String): AuthenticatedUser {
-        val loginLevel = 4
-        return createAuthenticatedUser(ident, loginLevel)
-    }
-
-    fun createAuthenticatedUser(ident: String, loginLevel: Int): AuthenticatedUser {
+    fun createAuthenticatedUser(ident: String, innloggingsnivaa: Int): AuthenticatedUser {
+        val inTwoMinutes = ZonedDateTime.now().plusMinutes(2)
         val jws = Jwts.builder()
             .setSubject(ident)
-            .addClaims(mutableMapOf(Pair("acr", "Level$loginLevel")) as Map<String, Any>?)
-            .setExpiration(Date(System.currentTimeMillis().plus(1000000)))
+            .addClaims(mutableMapOf(Pair("acr", "Level$innloggingsnivaa")) as Map<String, Any>?)
+            .setExpiration(Date.from(inTwoMinutes.toInstant()))
             .signWith(key).compact()
         val token = JwtToken(jws)
-        return AuthenticatedUser(ident, loginLevel, token.tokenAsString)
+        return AuthenticatedUser(ident, innloggingsnivaa, token.tokenAsString)
     }
-
 }

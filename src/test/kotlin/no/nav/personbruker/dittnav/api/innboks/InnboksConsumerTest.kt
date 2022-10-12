@@ -1,92 +1,74 @@
 package no.nav.personbruker.dittnav.api.innboks
 
 import io.kotest.matchers.shouldBe
-import io.ktor.client.HttpClient
-import io.ktor.client.engine.mock.MockEngine
-import io.ktor.client.engine.mock.respond
-import io.ktor.client.engine.mock.respondError
-import io.ktor.client.features.json.JsonFeature
-import io.ktor.http.ContentType
-import io.ktor.http.HttpHeaders
-import io.ktor.http.HttpStatusCode
-import io.ktor.http.headersOf
+import io.ktor.server.testing.testApplication
 import kotlinx.coroutines.runBlocking
-import kotlinx.serialization.encodeToString
-import no.nav.personbruker.dittnav.api.config.json
+import no.nav.personbruker.dittnav.api.rawEventHandlerVarsel
 import no.nav.personbruker.dittnav.api.tokenx.AccessToken
-import no.nav.personbruker.dittnav.api.util.createBasicMockedHttpClient
+import no.nav.personbruker.dittnav.api.applicationHttpClient
+import no.nav.personbruker.dittnav.api.externalServiceWithJsonResponse
+import no.nav.personbruker.dittnav.api.toSpesificJsonFormat
 import org.junit.jupiter.api.Test
 import java.net.URL
 
 internal class InnboksConsumerTest {
 
     private val dummyToken = AccessToken("<access_token>")
-
-    @Test
-    fun `should call innboks endpoint on event handler`() {
-        val client = HttpClient(MockEngine) {
-            engine {
-                addHandler { request ->
-                    if (request.url.encodedPath.contains("/fetch/innboks") && request.url.host.contains("event-handler")) {
-                        respond("[]", headers = headersOf(HttpHeaders.ContentType, ContentType.Application.Json.toString()))
-                    } else {
-                        respondError(HttpStatusCode.BadRequest)
-                    }
-                }
-            }
-            install(JsonFeature)
-        }
-        val innboksConsumer = InnboksConsumer(client, URL("http://event-handler"))
-
-        runBlocking {
-            innboksConsumer.getExternalActiveEvents(dummyToken) shouldBe emptyList()
-        }
-    }
+    private val testEventHandlerEndpoint = "http://event-handler"
 
     @Test
     fun `should get list of active Innboks`() {
-        val innboksObject1 = createInnboks("1", "1", true)
-        val innboksObject2 = createInnboks("2", "2", true)
+        val innboksObject1 = createInnboks(eventId = "1", fodselsnummer = "1", aktiv = true)
+        val innboksObject2 = createInnboks(eventId = "2", fodselsnummer = "2", aktiv = true)
+        testApplication {
 
-        val client = createBasicMockedHttpClient {
-            respond(
-                    json().encodeToString(listOf(innboksObject1, innboksObject2)),
-                    headers = headersOf(HttpHeaders.ContentType,
-                            ContentType.Application.Json.toString())
+            externalServiceWithJsonResponse(
+                hostApiBase = testEventHandlerEndpoint,
+                endpoint = "/fetch/innboks/aktive",
+                content = listOf(innboksObject1, innboksObject2).toSpesificJsonFormat(Innboks::toEventHandlerJson)
             )
-        }
-        val innboksConsumer = InnboksConsumer(client, URL("http://event-handler"))
+            val innboksConsumer = InnboksConsumer(applicationHttpClient(), URL(testEventHandlerEndpoint))
 
-        runBlocking {
-            val externalActiveEvents = innboksConsumer.getExternalActiveEvents(dummyToken)
-            val event = externalActiveEvents.first()
-            externalActiveEvents.size shouldBe 2
-            event.tekst shouldBe innboksObject1.tekst
-            event.fodselsnummer shouldBe innboksObject1.fodselsnummer
-            event.aktiv shouldBe true
+            runBlocking {
+                val externalActiveEvents = innboksConsumer.getExternalActiveEvents(dummyToken)
+                externalActiveEvents.size shouldBe 2
+                externalActiveEvents shouldContainInnboksObject innboksObject1
+                externalActiveEvents shouldContainInnboksObject innboksObject2
+            }
         }
     }
 
     @Test
     fun `should get list of inactive Innboks`() {
-        val innboksObject = createInnboks("1", "1", false)
+        val innboksObject1 = createInnboks(eventId = "1", fodselsnummer = "1", aktiv = false)
+        val innboksObject2 = createInnboks(eventId = "5", fodselsnummer = "1", aktiv = false)
+        val innboksObject3 = createInnboks(eventId = "6", fodselsnummer = "22", aktiv = false)
 
-        val client = createBasicMockedHttpClient {
-            respond(
-                    json().encodeToString(listOf(innboksObject)),
-                    headers = headersOf(HttpHeaders.ContentType,
-                            ContentType.Application.Json.toString())
+        testApplication {
+            val innboksConsumer = InnboksConsumer(applicationHttpClient(), URL(testEventHandlerEndpoint))
+            externalServiceWithJsonResponse(
+                hostApiBase = testEventHandlerEndpoint,
+                endpoint = "/fetch/innboks/inaktive",
+                content = listOf(
+                    innboksObject1,
+                    innboksObject2,
+                    innboksObject3
+                ).toSpesificJsonFormat(Innboks::toEventHandlerJson)
             )
-        }
-        val innboksConsumer = InnboksConsumer(client, URL("http://event-handler"))
 
-        runBlocking {
-            val externalInactiveEvents = innboksConsumer.getExternalInactiveEvents(dummyToken)
-            val event = externalInactiveEvents.first()
-            externalInactiveEvents.size shouldBe 1
-            event.tekst shouldBe innboksObject.tekst
-            event.fodselsnummer shouldBe innboksObject.fodselsnummer
-            event.aktiv shouldBe false
+            runBlocking {
+                val externalInactiveEvents = innboksConsumer.getExternalInactiveEvents(dummyToken)
+                externalInactiveEvents shouldContainInnboksObject innboksObject1
+                externalInactiveEvents shouldContainInnboksObject innboksObject2
+                externalInactiveEvents shouldContainInnboksObject innboksObject3
+            }
         }
     }
 }
+
+private infix fun List<Innboks>.shouldContainInnboksObject(expectedInnboks: Innboks) =
+    find { it.eventId == expectedInnboks.eventId }?.let { event ->
+        event.tekst shouldBe expectedInnboks.tekst
+        event.fodselsnummer shouldBe expectedInnboks.fodselsnummer
+        event.aktiv shouldBe expectedInnboks.aktiv
+    } ?: throw AssertionError("Fant ikke innboksvarsel med eventid ${expectedInnboks.eventId}")

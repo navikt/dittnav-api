@@ -4,7 +4,7 @@ import io.kotest.matchers.nulls.shouldNotBeNull
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.encodeToString
-import no.nav.personbruker.dittnav.api.config.json
+import no.nav.personbruker.dittnav.api.config.jsonConfig
 import org.junit.jupiter.api.Test
 import java.net.URL
 
@@ -12,7 +12,7 @@ internal class URLSerializerTest {
 
     @Test
     fun `Skal kunne serialisere og deserialisere felter av typen URL`() {
-        val objectMapper = json()
+        val objectMapper = jsonConfig()
 
         val dto = DtoMedURL(
             URL("http://dummy.url")

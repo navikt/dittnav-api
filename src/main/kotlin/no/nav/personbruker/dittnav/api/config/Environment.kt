@@ -1,7 +1,9 @@
 package no.nav.personbruker.dittnav.api.config
 
 import io.ktor.client.HttpClient
+import io.ktor.client.call.body
 import io.ktor.client.request.get
+import io.ktor.client.request.url
 import kotlinx.coroutines.runBlocking
 import kotlinx.serialization.Serializable
 import no.nav.personbruker.dittnav.common.util.config.BooleanEnvVar.getEnvVarAsBoolean
@@ -36,8 +38,8 @@ data class Environment(
 @Serializable
 data class LoginserviceMetadata(val jwks_uri: String, val issuer: String) {
     companion object {
-        fun get(httpClient: HttpClient, discoveryUrl: String) = runBlocking {
-             httpClient.get<LoginserviceMetadata>(discoveryUrl)
+        fun get(httpClient: HttpClient, discoveryUrl: String): LoginserviceMetadata = runBlocking {
+            httpClient.get { url(discoveryUrl) }.body()
         }
     }
 }

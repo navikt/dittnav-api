@@ -1,16 +1,18 @@
 package no.nav.personbruker.dittnav.api.oppgave
 
-import io.ktor.application.*
-import io.ktor.http.*
-import io.ktor.response.*
-import io.ktor.routing.*
+
+import io.ktor.http.HttpStatusCode
+import io.ktor.server.application.call
+import io.ktor.server.response.respond
+import io.ktor.server.routing.Route
+import io.ktor.server.routing.get
+import mu.KotlinLogging
 import no.nav.personbruker.dittnav.api.common.respondWithError
 import no.nav.personbruker.dittnav.api.config.authenticatedUser
-import org.slf4j.LoggerFactory
 
 fun Route.oppgave(oppgaveService: OppgaveService) {
 
-    val log = LoggerFactory.getLogger(OppgaveService::class.java)
+    val log = KotlinLogging.logger { }
 
     get("/oppgave") {
         try {

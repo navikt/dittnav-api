@@ -2,7 +2,7 @@ package no.nav.personbruker.dittnav.api.config
 
 import kotlinx.serialization.json.Json
 
-fun json(ignoreUnknownKeys: Boolean = false): Json {
+fun jsonConfig(ignoreUnknownKeys: Boolean = true): Json {
     return Json {
         this.ignoreUnknownKeys = ignoreUnknownKeys
     }

@@ -1,11 +1,15 @@
 package no.nav.personbruker.dittnav.api.beskjed
 
 import io.kotest.matchers.shouldBe
-import io.mockk.*
+import io.mockk.clearMocks
+import io.mockk.coEvery
+import io.mockk.coVerify
+import io.mockk.confirmVerified
+import io.mockk.mockk
 import kotlinx.coroutines.runBlocking
 import no.finn.unleash.FakeUnleash
-import no.nav.personbruker.dittnav.api.common.AuthenticatedUserObjectMother
-import no.nav.personbruker.dittnav.api.common.MultiSourceResultObjectMother
+import no.nav.personbruker.dittnav.api.authentication.AuthenticatedUserTestData
+import no.nav.personbruker.dittnav.api.common.getNumberOfSuccessfulBeskjedEventsForSource
 import no.nav.personbruker.dittnav.api.digisos.DigiSosService
 import no.nav.personbruker.dittnav.api.unleash.UnleashService
 import org.junit.jupiter.api.BeforeEach
@@ -16,15 +20,16 @@ internal class BeskjedMergerServiceTest {
     private val beskjedService = mockk<BeskjedService>(relaxed = true)
     private val digiSosService = mockk<DigiSosService>(relaxed = true)
 
-    private val innloggetBruker = AuthenticatedUserObjectMother.createAuthenticatedUser()
+    private val innloggetBruker = AuthenticatedUserTestData.createAuthenticatedUser()
 
-    private val eventHandlerDefaultResult = MultiSourceResultObjectMother.giveMeNumberOfSuccessfulBeskjedEventsForSource(
-        1,
-        KildeType.EVENTHANDLER,
-        "handler"
-    )
+    private val eventHandlerDefaultResult =
+       getNumberOfSuccessfulBeskjedEventsForSource(
+            1,
+            KildeType.EVENTHANDLER,
+            "handler"
+        )
 
-    private val digiSosDefaultResult = MultiSourceResultObjectMother.giveMeNumberOfSuccessfulBeskjedEventsForSource(
+    private val digiSosDefaultResult = getNumberOfSuccessfulBeskjedEventsForSource(
         3,
         KildeType.DIGISOS,
         "digiSos"
@@ -43,9 +48,7 @@ internal class BeskjedMergerServiceTest {
 
     @Test
     fun `Hent aktive alltid fra event-handler`() {
-        val fakeUnleash = FakeUnleash()
-        val unleashService = UnleashService(fakeUnleash)
-
+        val unleashService = UnleashService(FakeUnleash())
         val beskjedMerger = BeskjedMergerService(beskjedService, digiSosService, unleashService)
 
         val result = runBlocking {
@@ -64,10 +67,9 @@ internal class BeskjedMergerServiceTest {
 
     @Test
     fun `Hent påbegynte søknader fra DigiSos hvis aktivert`() {
-        val fakeUnleash = FakeUnleash().apply {
-            enable(UnleashService.digisosPaabegynteToggleName)
-        }
-        val unleashService = UnleashService(fakeUnleash)
+        val unleashService = UnleashService(
+            FakeUnleash().apply { enable(UnleashService.digisosPaabegynteToggleName) }
+        )
 
         val beskjedMerger = BeskjedMergerService(beskjedService, digiSosService, unleashService)
 
@@ -87,10 +89,9 @@ internal class BeskjedMergerServiceTest {
 
     @Test
     fun `Hent aktive fra alle kilder hvis aktivert`() {
-        val fakeUnleash = FakeUnleash().apply {
-            enable(UnleashService.digisosPaabegynteToggleName)
-        }
-        val unleashService = UnleashService(fakeUnleash)
+        val unleashService = UnleashService(
+            FakeUnleash().apply { enable(UnleashService.digisosPaabegynteToggleName) }
+        )
 
         val beskjedMerger = BeskjedMergerService(beskjedService, digiSosService, unleashService)
 
@@ -110,8 +111,7 @@ internal class BeskjedMergerServiceTest {
 
     @Test
     fun `Hent inaktive alltid fra event-handler`() {
-        val fakeUnleash = FakeUnleash()
-        val unleashService = UnleashService(fakeUnleash)
+        val unleashService = UnleashService(FakeUnleash())
 
         val beskjedMerger = BeskjedMergerService(beskjedService, digiSosService, unleashService)
 
@@ -131,10 +131,9 @@ internal class BeskjedMergerServiceTest {
 
     @Test
     fun `Hent inaktive fra DigiSos hvis aktivert`() {
-        val fakeUnleash = FakeUnleash().apply {
-            enable(UnleashService.digisosPaabegynteToggleName)
-        }
-        val unleashService = UnleashService(fakeUnleash)
+        val unleashService = UnleashService(
+            FakeUnleash().apply { enable(UnleashService.digisosPaabegynteToggleName) }
+        )
 
         val beskjedMerger = BeskjedMergerService(beskjedService, digiSosService, unleashService)
 
@@ -154,10 +153,9 @@ internal class BeskjedMergerServiceTest {
 
     @Test
     fun `Hent inaktive fra alle kilder hvis aktivert`() {
-        val fakeUnleash = FakeUnleash().apply {
-            enable(UnleashService.digisosPaabegynteToggleName)
-        }
-        val unleashService = UnleashService(fakeUnleash)
+        val unleashService = UnleashService(
+            FakeUnleash().apply { enable(UnleashService.digisosPaabegynteToggleName) }
+        )
         val beskjedMerger = BeskjedMergerService(beskjedService, digiSosService, unleashService)
 
         val result = runBlocking {

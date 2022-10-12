@@ -1,99 +1,93 @@
 package no.nav.personbruker.dittnav.api.oppgave
 
 import io.kotest.matchers.shouldBe
-import io.ktor.client.HttpClient
-import io.ktor.client.engine.mock.MockEngine
-import io.ktor.client.engine.mock.respond
-import io.ktor.client.engine.mock.respondError
-import io.ktor.client.features.HttpTimeout
-import io.ktor.client.features.json.JsonFeature
-import io.ktor.http.ContentType
-import io.ktor.http.HttpHeaders
-import io.ktor.http.HttpStatusCode
-import io.ktor.http.headersOf
+import io.ktor.server.testing.testApplication
 import kotlinx.coroutines.runBlocking
-import kotlinx.serialization.encodeToString
-import no.nav.personbruker.dittnav.api.config.json
+import no.nav.personbruker.dittnav.api.applicationHttpClient
+import no.nav.personbruker.dittnav.api.rawEventHandlerVarsel
+import no.nav.personbruker.dittnav.api.externalServiceWithJsonResponse
+import no.nav.personbruker.dittnav.api.toSpesificJsonFormat
 import no.nav.personbruker.dittnav.api.tokenx.AccessToken
-import no.nav.personbruker.dittnav.api.util.createBasicMockedHttpClient
 import org.junit.jupiter.api.Test
+
 import java.net.URL
 
 internal class OppgaveConsumerTest {
 
     private val dummyToken = AccessToken("<access_token>")
+    private val testEventHandlerEndpoint = "https://eventhandler.no"
 
     @Test
-    fun `should call oppgave endpoint on event handler`() {
+    fun `should get list of aktive oppgavevarsler`() {
+        val oppgaveObject1 = createOppgave(eventId = "1", fødselsnummer = "1", aktiv=true)
+        val oppgaveObject2 = createOppgave(eventId = "2", fødselsnummer = "2", aktiv=true)
 
-        val client = HttpClient(MockEngine) {
-            install(HttpTimeout) {
-                requestTimeoutMillis = 500
+        testApplication {
+            externalServiceWithJsonResponse(
+                hostApiBase = testEventHandlerEndpoint,
+                endpoint = "/fetch/oppgave/aktive",
+                content = listOf(oppgaveObject1, oppgaveObject2).toSpesificJsonFormat(Oppgave::toEventHandlerJson)
+            )
+
+            val oppgaveConsumer = OppgaveConsumer(applicationHttpClient(), URL(testEventHandlerEndpoint))
+
+            runBlocking {
+                val externalActiveEvents = oppgaveConsumer.getExternalActiveEvents(dummyToken)
+                externalActiveEvents shouldContainOppgaveObject oppgaveObject1
+                externalActiveEvents shouldContainOppgaveObject oppgaveObject2
             }
-
-            engine {
-                addHandler { request ->
-                    if (request.url.encodedPath.contains("/fetch/oppgave") && request.url.host.contains("event-handler")) {
-                        respond("[]", headers = headersOf(HttpHeaders.ContentType, ContentType.Application.Json.toString()))
-                    } else {
-                        respondError(HttpStatusCode.BadRequest)
-                    }
-                }
-            }
-            install(JsonFeature)
-        }
-
-        val oppgaveConsumer = OppgaveConsumer(client, URL("http://event-handler"))
-
-        runBlocking {
-            oppgaveConsumer.getExternalActiveEvents(dummyToken) shouldBe emptyList()
         }
     }
 
     @Test
-    fun `should get list of active Oppgave`() {
-        val oppgaveObject1 = createOppgave("1", "1", true)
-        val oppgaveObject2 = createOppgave("2", "2", true)
+    fun `should get list of inactive oppgavevarsler`() {
+        val oppgaveObject = createOppgave(eventId = "1", fødselsnummer = "1", aktiv = false)
+        val oppgaveObject2 = createOppgave(eventId = "198", fødselsnummer = "19876413", aktiv = false)
+        val oppgaveObject3 = createOppgave(eventId = "166", fødselsnummer = "1961247", aktiv = false)
 
-        val client = createBasicMockedHttpClient {
-            respond(
-                    json().encodeToString(listOf(oppgaveObject1, oppgaveObject2)),
-                    headers = headersOf(HttpHeaders.ContentType,
-                            ContentType.Application.Json.toString())
+        testApplication {
+
+            externalServiceWithJsonResponse(
+                hostApiBase = testEventHandlerEndpoint,
+                endpoint = "/fetch/oppgave/inaktive",
+                content = listOf(
+                    oppgaveObject,
+                    oppgaveObject2,
+                    oppgaveObject3
+                ).toSpesificJsonFormat(Oppgave::toEventHandlerJson)
             )
-        }
-        val oppgaveConsumer = OppgaveConsumer(client, URL("http://event-handler"))
 
-        runBlocking {
-            val externalActiveEvents = oppgaveConsumer.getExternalActiveEvents(dummyToken)
-            val event = externalActiveEvents.first()
-            externalActiveEvents.size shouldBe 2
-            event.tekst shouldBe oppgaveObject1.tekst
-            event.fodselsnummer shouldBe oppgaveObject1.fodselsnummer
-            event.aktiv shouldBe true
-        }
-    }
+            val oppgaveConsumer = OppgaveConsumer(applicationHttpClient(), URL(testEventHandlerEndpoint))
 
-    @Test
-    fun `should get list of inactive Oppgave`() {
-        val oppgaveObject = createOppgave("1", "1", false)
-
-        val client = createBasicMockedHttpClient {
-            respond(
-                    json().encodeToString(listOf(oppgaveObject)),
-                    headers = headersOf(HttpHeaders.ContentType,
-                            ContentType.Application.Json.toString())
-            )
-        }
-        val oppgaveConsumer = OppgaveConsumer(client, URL("http://event-handler"))
-
-        runBlocking {
-            val externalInactiveEvents = oppgaveConsumer.getExternalInactiveEvents(dummyToken)
-            val event = externalInactiveEvents.first()
-            externalInactiveEvents.size shouldBe 1
-            event.tekst shouldBe oppgaveObject.tekst
-            event.fodselsnummer shouldBe oppgaveObject.fodselsnummer
-            event.aktiv shouldBe false
+            runBlocking {
+                val externalInactiveEvents = oppgaveConsumer.getExternalInactiveEvents(dummyToken)
+                externalInactiveEvents.size shouldBe 3
+                externalInactiveEvents shouldContainOppgaveObject oppgaveObject
+                externalInactiveEvents shouldContainOppgaveObject oppgaveObject2
+                externalInactiveEvents shouldContainOppgaveObject oppgaveObject3
+            }
         }
     }
 }
+
+private fun Oppgave.toEventHandlerJson(): String = rawEventHandlerVarsel(
+    eventId = eventId,
+    fodselsnummer = fodselsnummer,
+    grupperingsId = grupperingsId,
+    førstBehandlet = "$forstBehandlet",
+    produsent = produsent,
+    sikkerhetsnivå = 0,
+    sistOppdatert = "$sistOppdatert",
+    tekst = tekst,
+    link = link,
+    eksternVarslingSendt = eksternVarslingSendt,
+    eksternVarslingKanaler = eksternVarslingKanaler,
+    aktiv = aktiv
+)
+
+private infix fun List<Oppgave>.shouldContainOppgaveObject(expected: Oppgave) =
+    find { it.eventId == expected.eventId }?.let { event ->
+        event.tekst shouldBe expected.tekst
+        event.fodselsnummer shouldBe expected.fodselsnummer
+        event.aktiv shouldBe expected.aktiv
+    }

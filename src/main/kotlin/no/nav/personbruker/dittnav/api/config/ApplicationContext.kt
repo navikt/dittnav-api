@@ -1,6 +1,5 @@
 package no.nav.personbruker.dittnav.api.config
 
-import io.ktor.client.features.json.serializer.*
 import no.finn.unleash.DefaultUnleash
 import no.finn.unleash.FakeUnleash
 import no.finn.unleash.Unleash
@@ -34,7 +33,7 @@ import no.nav.tms.token.support.tokendings.exchange.TokendingsServiceBuilder
 class ApplicationContext {
 
     val environment = Environment()
-    val httpClient = HttpClientBuilder.build(KotlinxSerializer(json(ignoreUnknownKeys = true)))
+    val httpClient = HttpClientBuilder.build()
 
     private val tokendingsService = TokendingsServiceBuilder.buildTokendingsService()
     private val eventhandlerTokendings = EventhandlerTokendings(tokendingsService, environment.eventhandlerClientId)

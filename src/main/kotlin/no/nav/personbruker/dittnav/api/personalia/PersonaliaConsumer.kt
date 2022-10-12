@@ -1,6 +1,6 @@
 package no.nav.personbruker.dittnav.api.personalia
 
-import io.ktor.client.*
+import io.ktor.client.HttpClient
 import no.nav.personbruker.dittnav.api.config.get
 import no.nav.personbruker.dittnav.api.tokenx.AccessToken
 import java.net.URL

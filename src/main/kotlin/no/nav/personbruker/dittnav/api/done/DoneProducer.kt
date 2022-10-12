@@ -3,11 +3,12 @@ package no.nav.personbruker.dittnav.api.done
 import io.ktor.client.*
 import io.ktor.client.statement.*
 import io.ktor.http.*
+import kotlinx.serialization.Serializable
+import mu.KotlinLogging
 import no.nav.personbruker.dittnav.api.authentication.AuthenticatedUser
 import no.nav.personbruker.dittnav.api.config.post
 import no.nav.personbruker.dittnav.api.tokenx.EventhandlerTokendings
 
-import org.slf4j.LoggerFactory
 import java.net.URL
 
 class DoneProducer(
@@ -15,7 +16,7 @@ class DoneProducer(
     private val eventhandlerTokendings: EventhandlerTokendings,
     dittNAVBaseURL: URL) {
 
-    private val log = LoggerFactory.getLogger(DoneProducer::class.java)
+    private val log = KotlinLogging.logger {  }
     private val completePathToEndpoint = URL("$dittNAVBaseURL/produce/done")
 
     suspend fun postDoneEvents(done: DoneDTO, user: AuthenticatedUser): HttpResponse {
@@ -27,3 +28,8 @@ class DoneProducer(
         return response
     }
 }
+
+@Serializable
+data class DoneDTO(
+    val eventId: String
+)

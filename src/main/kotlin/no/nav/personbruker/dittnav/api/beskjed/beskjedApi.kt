@@ -1,17 +1,18 @@
 package no.nav.personbruker.dittnav.api.beskjed
 
-import io.ktor.application.*
-import io.ktor.response.*
-import io.ktor.routing.*
+import io.ktor.server.application.call
+import io.ktor.server.response.respond
+import io.ktor.server.routing.Route
+import io.ktor.server.routing.get
+import mu.KotlinLogging
 import no.nav.personbruker.dittnav.api.common.respondWithError
 import no.nav.personbruker.dittnav.api.config.authenticatedUser
-import org.slf4j.LoggerFactory
 
 fun Route.beskjed(
     beskjedMergerService: BeskjedMergerService
 ) {
 
-    val log = LoggerFactory.getLogger(BeskjedService::class.java)
+    val log = KotlinLogging.logger { }
 
     get("/beskjed") {
         try {

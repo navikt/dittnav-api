@@ -7,7 +7,7 @@ repositories {
     maven("https://jitpack.io")
 }
 
-val dittNavDependenciesVersion = "2022.04.26-13.19-0c38fa7d68db"
+val dittNavDependenciesVersion = "2022.09.30-13.36-d6f3a015568d"
 
 dependencies {
     implementation("com.github.navikt:dittnav-dependencies:$dittNavDependenciesVersion")

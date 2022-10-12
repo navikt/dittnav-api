@@ -2,90 +2,93 @@ package no.nav.personbruker.dittnav.api.digisos
 
 import io.kotest.matchers.nulls.shouldNotBeNull
 import io.kotest.matchers.shouldBe
-import io.ktor.client.HttpClient
-import io.ktor.client.engine.mock.MockEngine
-import io.ktor.client.engine.mock.respond
-import io.ktor.client.engine.mock.respondError
-import io.ktor.client.features.json.JsonFeature
-import io.ktor.http.ContentType
-import io.ktor.http.HttpHeaders
-import io.ktor.http.HttpStatusCode
-import io.ktor.http.headersOf
+import io.ktor.server.testing.testApplication
 import kotlinx.coroutines.runBlocking
-import kotlinx.serialization.encodeToString
+import no.nav.personbruker.dittnav.api.applicationHttpClient
 import no.nav.personbruker.dittnav.api.beskjed.BeskjedDTO
-import no.nav.personbruker.dittnav.api.common.AuthenticatedUserObjectMother
-import no.nav.personbruker.dittnav.api.config.json
+import no.nav.personbruker.dittnav.api.authentication.AuthenticatedUserTestData
+import no.nav.personbruker.dittnav.api.externalServiceWithJsonResponse
+import org.intellij.lang.annotations.Language
 import org.junit.jupiter.api.Test
 import java.net.URL
-import java.time.LocalDateTime
 
 internal class DigiSosClientTest {
 
-    private val dummyUser = AuthenticatedUserObjectMother.createAuthenticatedUser()
+    private val dummyUser = AuthenticatedUserTestData.createAuthenticatedUser()
 
-    private val digiSosSoknadBaseURL = URL("https://soknad")
+    private val digiSosSoknadBaseURL = "https://soknad"
 
     @Test
     fun `Skal kunne hente paabegynte aktive soknader`() {
         val expectedStatus = true
-        val clientMock = createDigiSosClientWithMockedResponses(expectedStatus)
-        val digiSosClient = DigiSosClient(clientMock, digiSosSoknadBaseURL)
+        @Language("JSON") val digiSosResponse =
+            """[
+                  ${rawDigiSosResponse("12345", expectedStatus)},
+                  ${rawDigiSosResponse(eventId = "8765", expectedStatus)},
+                  ${rawDigiSosResponse(eventId = "98659", expectedStatus)}
+            ]""".trimMargin()
 
-        val result : List<BeskjedDTO> = runBlocking {
-            digiSosClient.getPaabegynteActive(dummyUser)
+        testApplication {
+            externalServiceWithJsonResponse(
+                hostApiBase = digiSosSoknadBaseURL,
+                endpoint = "/dittnav/pabegynte/aktive",
+                content = digiSosResponse
+            )
+
+            val result: List<BeskjedDTO> = runBlocking {
+                DigiSosClient(applicationHttpClient(), URL(digiSosSoknadBaseURL)).getPaabegynteActive(dummyUser)
+            }
+            result.shouldNotBeNull()
+            result.size shouldBe 3
+            result.all { it.aktiv } shouldBe true
+            result.find { it.eventId == "12345" } ?: throw AssertionError("Fant ikke aktiv søknad med eventId 12345")
+            result.find { it.eventId == "8765" } ?: throw AssertionError("Fant ikke aktiv søknad med eventId 8765")
+            result.find { it.eventId == "98659" } ?: throw AssertionError("Fant ikke aktiv søknad med eventId 12345")
         }
-
-        result.shouldNotBeNull()
-        result[0]::class shouldBe BeskjedDTO::class
-        result[0].aktiv shouldBe expectedStatus
     }
 
     @Test
     fun `Skal kunne hente paabegynte inaktive soknader`() {
         val expectedStatus = false
-        val clientMock = createDigiSosClientWithMockedResponses(expectedStatus)
-        val digiSosClient = DigiSosClient(clientMock, digiSosSoknadBaseURL)
+        val digiSosResponse = """[${rawDigiSosResponse(eventId = "12345", expectedStatus)},
+                                    ${rawDigiSosResponse(eventId = "8765", expectedStatus)},
+                                    ${rawDigiSosResponse(eventId = "98659", expectedStatus)}, 
+                                    ${rawDigiSosResponse(eventId = "98633", expectedStatus)}]""".trimMargin()
 
-        val result : List<BeskjedDTO> = runBlocking {
-            digiSosClient.getPaabegynteInactive(dummyUser)
-        }
+        testApplication {
 
-        result.shouldNotBeNull()
-        result[0]::class shouldBe BeskjedDTO::class
-        result[0].aktiv shouldBe expectedStatus
-    }
+            externalServiceWithJsonResponse(
+                hostApiBase = digiSosSoknadBaseURL,
+                endpoint = "/dittnav/pabegynte/inaktive",
+                content = digiSosResponse
+            )
 
-    private fun createDigiSosClientWithMockedResponses(activeEvents: Boolean): HttpClient {
-        val clientMock = HttpClient(MockEngine) {
-            install(JsonFeature)
-            engine {
-                addHandler { request ->
-                    if (request.url.encodedPath.contains("pabegynte/")) {
-                        respond(
-                            json().encodeToString(listOf(påbegyntSøknad(activeEvents))),
-                            headers = headersOf(HttpHeaders.ContentType, ContentType.Application.Json.toString())
-                        )
-
-                    } else {
-                        respondError(HttpStatusCode.BadRequest, "Noe feilet ved kalle til ${request.url}")
-                    }
-                }
+            val result: List<BeskjedDTO> = runBlocking {
+                DigiSosClient(applicationHttpClient(), URL(digiSosSoknadBaseURL)).getPaabegynteInactive(dummyUser)
             }
+
+            result.size shouldBe 4
+            result.all { !it.aktiv } shouldBe true
+            result.find { it.eventId == "12345" } ?: throw AssertionError("Fant ikke inaktiv søknad med eventId 12345")
+            result.find { it.eventId == "8765" } ?: throw AssertionError("Fant ikke inaktiv søknad med eventId 8765")
+            result.find { it.eventId == "98659" } ?: throw AssertionError("Fant ikke inaktiv søknad med eventId 12345")
+            result.find { it.eventId == "98633" } ?: throw AssertionError("Fant ikke inaktiv søknad med eventId 98633")
         }
-        return clientMock
     }
 
 }
 
-private fun påbegyntSøknad(active: Boolean = false) = Paabegynte(
-    LocalDateTime.now(),
-    "123",
-    "987",
-    "Dette er en dummytekst",
-    "https://nav.no/lenke",
-    4,
-    LocalDateTime.now(),
-    active
-)
-
+@Language("JSON")
+private fun rawDigiSosResponse(eventId: String, active: Boolean) =
+    """
+    {
+        "eventId": "$eventId",
+        "eventTidspunkt": "2022-10-04T12:38:53.80262",
+        "grupperingsId": "8877",
+        "isAktiv": $active,
+        "link": "https://nav.no/lenke",
+        "sikkerhetsnivaa": 4,
+        "sistOppdatert": "2022-10-04T12:38:53.802654",
+        "tekst": "Dette er en dummytekst"
+    }
+""".trimIndent()

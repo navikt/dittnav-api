@@ -8,7 +8,7 @@ import io.mockk.coVerify
 import io.mockk.confirmVerified
 import io.mockk.mockk
 import kotlinx.coroutines.runBlocking
-import no.nav.personbruker.dittnav.api.common.AuthenticatedUserObjectMother
+import no.nav.personbruker.dittnav.api.authentication.AuthenticatedUserTestData
 import no.nav.personbruker.dittnav.api.common.ConsumeSakerException
 import no.nav.personbruker.dittnav.api.tokenx.AccessToken
 import org.junit.jupiter.api.Test
@@ -20,7 +20,7 @@ internal class SakerServiceTest {
     private val mineSakerConsumer = mockk<MineSakerConsumer>(relaxed = true)
     private val mineSakerURL = URL("http://mine-saker")
     private val tokendings = mockk<MineSakerTokendings>()
-    private val dummyUser = AuthenticatedUserObjectMother.createAuthenticatedUser()
+    private val dummyUser = AuthenticatedUserTestData.createAuthenticatedUser()
     private val dummyAccessToken = AccessToken("123")
 
     init {
@@ -39,7 +39,7 @@ internal class SakerServiceTest {
         val service = SakerService(mineSakerConsumer, mineSakerURL, tokendings)
 
         val result = runBlocking {
-            service.hentSisteToEndredeSakstemaer(dummyUser)
+            service.hentSistEndredeSakstemaer(dummyUser)
         }
 
         coVerify(exactly = 1) { tokendings.exchangeToken(any()) }
@@ -61,7 +61,7 @@ internal class SakerServiceTest {
 
         val result = runCatching {
             runBlocking {
-                service.hentSisteToEndredeSakstemaer(dummyUser)
+                service.hentSistEndredeSakstemaer(dummyUser)
             }
 
         }

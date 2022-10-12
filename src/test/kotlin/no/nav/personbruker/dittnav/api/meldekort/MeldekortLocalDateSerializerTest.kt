@@ -5,7 +5,9 @@ import io.kotest.matchers.shouldBe
 import org.junit.jupiter.api.Test
 import java.time.LocalDate
 import java.time.LocalDateTime
-import java.time.format.DateTimeFormatter.*
+import java.time.format.DateTimeFormatter.ISO_DATE
+import java.time.format.DateTimeFormatter.ISO_DATE_TIME
+import java.time.format.DateTimeFormatter.ofPattern
 
 internal class MeldekortLocalDateSerializerTest {
     private val serializer = MeldekortLocalDateSerializer()

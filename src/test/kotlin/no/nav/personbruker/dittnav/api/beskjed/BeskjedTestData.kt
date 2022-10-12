@@ -3,35 +3,87 @@ package no.nav.personbruker.dittnav.api.beskjed
 import java.time.ZoneId
 import java.time.ZonedDateTime
 
-fun createBeskjed(eventId: String, fodselsnummer: String, aktiv: Boolean): Beskjed {
+fun createBeskjed(
+    eventId: String,
+    fodselsnummer: String = "1234567890",
+    aktiv: Boolean,
+    forstBehandlet: ZonedDateTime = ZonedDateTime.now(ZoneId.of("Europe/Oslo")),
+    grupperingsId: String = "Dok123",
+    tekst: String = "Dette er beskjed til brukeren",
+    link: String = "https://nav.no/systemX/",
+    produsent: String = "dittnav",
+    sikkerhetsnivaa: Int = 4,
+    sistOppdatert: ZonedDateTime = ZonedDateTime.now(ZoneId.of("Europe/Oslo")),
+    eksternVarslingSendt: Boolean = false,
+    eksternVarslingKanaler: List<String> = listOf()
+): Beskjed {
     return Beskjed(
-            forstBehandlet = ZonedDateTime.now(ZoneId.of("Europe/Oslo")),
-            fodselsnummer = fodselsnummer,
-            eventId = eventId,
-            grupperingsId = "Dok123",
-            tekst = "Dette er beskjed til brukeren",
-            link = "https://nav.no/systemX/",
-            produsent = "dittnav",
-            sikkerhetsnivaa = 4,
-            sistOppdatert = ZonedDateTime.now(ZoneId.of("Europe/Oslo")),
-            aktiv = aktiv,
-            eksternVarslingSendt = true,
-            eksternVarslingKanaler = listOf("SMS", "EPOST")
+        forstBehandlet = forstBehandlet,
+        fodselsnummer = fodselsnummer,
+        eventId = eventId,
+        grupperingsId = grupperingsId,
+        tekst = tekst,
+        link = link,
+        produsent = produsent,
+        sikkerhetsnivaa = sikkerhetsnivaa,
+        sistOppdatert = sistOppdatert,
+        aktiv = aktiv,
+        eksternVarslingSendt = eksternVarslingSendt,
+        eksternVarslingKanaler = eksternVarslingKanaler
     )
 }
 
-fun createActiveBeskjedDto(eventId: String): BeskjedDTO {
-        return BeskjedDTO(
-                forstBehandlet = ZonedDateTime.now(),
-                eventId = eventId,
-                tekst = "Dummytekst",
-                link = "https://dummy.url",
-                produsent = "dummy-produsent",
-                sistOppdatert = ZonedDateTime.now().minusDays(3),
-                sikkerhetsnivaa = 3,
-                aktiv = true,
-                grupperingsId = "321",
-                eksternVarslingSendt = true,
-                eksternVarslingKanaler = listOf("SMS", "EPOST")
-        )
-}
+fun createActiveBeskjed(
+    eventId: String, forstBehandlet: ZonedDateTime = ZonedDateTime.now(),
+    sistOppdatert: ZonedDateTime = ZonedDateTime.now().minusDays(3),
+    tekst: String = "tekst er tekst er tekst",
+): Beskjed =
+    createBeskjed(
+        eventId = eventId,
+        aktiv = true,
+        forstBehandlet = forstBehandlet,
+        sistOppdatert = sistOppdatert,
+        tekst = tekst
+    )
+
+fun createInactiveBeskjed(
+    eventId: String,
+    forstBehandlet: ZonedDateTime = ZonedDateTime.now(),
+    sistOppdatert: ZonedDateTime = ZonedDateTime.now().minusDays(3),
+): Beskjed =
+    createBeskjed(
+        eventId = eventId,
+        aktiv = false,
+        forstBehandlet = forstBehandlet,
+        sistOppdatert = sistOppdatert,
+    )
+
+fun createActiveBeskjedDto(
+    eventId: String,
+    forstBehandlet: ZonedDateTime = ZonedDateTime.now(),
+    sistOppdatert: ZonedDateTime = ZonedDateTime.now().minusDays(3),
+    tekst: String = "tekst er tekst er tekst",
+) = createBeskjedDto(eventId=eventId, forstBehandlet=forstBehandlet,sistOppdatert=sistOppdatert, tekst=tekst, aktiv = false)
+
+fun createInactiveBeskjedDto(eventId: String) = createBeskjedDto(eventId=eventId)
+
+private fun createBeskjedDto(
+    eventId: String,
+    forstBehandlet: ZonedDateTime = ZonedDateTime.now(),
+    sistOppdatert: ZonedDateTime = ZonedDateTime.now().minusDays(3),
+    tekst: String = "tekst er tekst er tekst",
+    aktiv: Boolean =false
+): BeskjedDTO =
+    BeskjedDTO(
+        eventId = eventId,
+        aktiv = aktiv,
+        forstBehandlet = forstBehandlet,
+        sistOppdatert = sistOppdatert,
+        tekst = tekst,
+        link = "https://dummy.link",
+        produsent = "askhfalks",
+        sikkerhetsnivaa = 4,
+        grupperingsId = "ahfkaj",
+        eksternVarslingSendt = false,
+        eksternVarslingKanaler = listOf()
+    )

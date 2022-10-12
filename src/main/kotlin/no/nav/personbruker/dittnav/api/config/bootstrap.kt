@@ -1,21 +1,32 @@
 package no.nav.personbruker.dittnav.api.config
 
 import com.auth0.jwk.JwkProvider
-import io.ktor.application.*
-import io.ktor.auth.*
-import io.ktor.auth.jwt.jwt
-import io.ktor.client.*
-import io.ktor.features.*
-import io.ktor.http.*
+import io.ktor.client.HttpClient
+import io.ktor.http.HttpHeaders
+import io.ktor.http.HttpStatusCode
 import io.ktor.http.auth.HttpAuthHeader
-import io.ktor.metrics.micrometer.*
-import io.ktor.response.*
-import io.ktor.routing.*
-import io.ktor.serialization.*
-import io.ktor.util.pipeline.*
+import io.ktor.serialization.kotlinx.json.json
+import io.ktor.server.application.Application
+import io.ktor.server.application.ApplicationCall
+import io.ktor.server.application.ApplicationStopping
+import io.ktor.server.application.call
+import io.ktor.server.application.install
+import io.ktor.server.auth.Authentication
+import io.ktor.server.auth.authenticate
+import io.ktor.server.auth.jwt.jwt
+import io.ktor.server.metrics.micrometer.MicrometerMetrics
+import io.ktor.server.plugins.contentnegotiation.ContentNegotiation
+import io.ktor.server.plugins.cors.routing.CORS
+import io.ktor.server.plugins.defaultheaders.DefaultHeaders
+import io.ktor.server.plugins.statuspages.StatusPages
+import io.ktor.server.response.respond
+import io.ktor.server.routing.route
+import io.ktor.server.routing.routing
+import io.ktor.util.pipeline.PipelineContext
 import io.micrometer.prometheus.PrometheusConfig
 import io.micrometer.prometheus.PrometheusMeterRegistry
 import io.prometheus.client.hotspot.DefaultExports
+import mu.KotlinLogging
 import no.nav.personbruker.dittnav.api.authentication.AuthenticatedUser
 import no.nav.personbruker.dittnav.api.authentication.AuthenticatedUserFactory
 import no.nav.personbruker.dittnav.api.authentication.PrincipalWithTokenString
@@ -39,9 +50,8 @@ import no.nav.personbruker.dittnav.api.personalia.PersonaliaService
 import no.nav.personbruker.dittnav.api.personalia.personalia
 import no.nav.personbruker.dittnav.api.saker.SakerService
 import no.nav.personbruker.dittnav.api.saker.saker
-import no.nav.personbruker.dittnav.api.unleash.UnleashService
-import java.lang.Exception
 
+private val log = KotlinLogging.logger {  }
 fun Application.api(
     corsAllowedOrigins: String,
     corsAllowedSchemes: String,
@@ -53,7 +63,6 @@ fun Application.api(
     innboksService: InnboksService,
     sakerService: SakerService,
     personaliaService: PersonaliaService,
-    unleashService: UnleashService,
     digiSosService: DigiSosService,
     doneProducer: DoneProducer,
     httpClient: HttpClient,
@@ -68,22 +77,26 @@ fun Application.api(
     install(DefaultHeaders)
 
     install(StatusPages) {
-        exception<CookieNotSetException> {
-            log.info("401: fant ikke selvbetjening-idtoken")
-            call.respond(HttpStatusCode.Unauthorized)
-        }
-        exception<Exception> { execption ->
-            log.info(execption.message)
-            call.respond(HttpStatusCode.InternalServerError)
+        exception<Throwable> { call, cause ->
+            when (cause) {
+                is CookieNotSetException -> {
+                    log.info("401: fant ikke selvbetjening-idtoken")
+                    call.respond(HttpStatusCode.Unauthorized)
+                }
+                else -> {
+                    log.info(cause.message)
+                    call.respond(HttpStatusCode.InternalServerError)
+                }
+            }
         }
     }
 
     install(CORS) {
-        host(corsAllowedOrigins, schemes = listOf(corsAllowedSchemes))
+        allowHost(corsAllowedOrigins, schemes = listOf(corsAllowedSchemes))
         allowCredentials = true
-        header(HttpHeaders.ContentType)
+        allowHeader(HttpHeaders.ContentType)
         corsAllowedHeaders.forEach { approvedHeader ->
-            header(approvedHeader)
+            allowHeader(approvedHeader)
         }
     }
 
@@ -113,7 +126,7 @@ fun Application.api(
     }
 
     install(ContentNegotiation) {
-        json(no.nav.personbruker.dittnav.api.config.json())
+        json(jsonConfig())
     }
 
     install(MicrometerMetrics) {
@@ -135,10 +148,9 @@ fun Application.api(
                 authenticationCheck()
                 doneApi(doneProducer)
             }
-
-            configureShutdownHook(httpClient)
         }
     }
+    configureShutdownHook(httpClient)
 }
 
 class CookieNotSetException : Throwable() {}
@@ -148,5 +160,6 @@ private fun Application.configureShutdownHook(httpClient: HttpClient) {
         httpClient.close()
     }
 }
+
 val PipelineContext<Unit, ApplicationCall>.authenticatedUser: AuthenticatedUser
     get() = AuthenticatedUserFactory.createNewAuthenticatedUser(call)
