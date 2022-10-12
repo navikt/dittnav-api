@@ -50,10 +50,10 @@ suspend fun respondWithError(call: ApplicationCall, log: KLogger, exception: Exc
     }
 }
 
-class ConsumeSakerException(message: String, cause: Throwable) : java.lang.Exception(message, cause)
+class ConsumeSakerException(message: String, cause: Throwable) : Exception(message,cause)
 
-class ConsumePersonaliaException(message: String, cause: Throwable) : java.lang.Exception(message, cause)
+class ConsumePersonaliaException(message: String, cause: Throwable) : Exception(message, cause)
 
-class ConsumeEventException(message: String, cause: Throwable) : java.lang.Exception(message, cause)
+class ConsumeEventException(message: String, cause: Throwable) : Exception(message, cause)
 
-class ProduceEventException(message: String, cause: Throwable) : java.lang.Exception(message, cause)
+class ProduceEventException(message: String, cause: Throwable) : Exception(message, cause)

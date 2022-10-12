@@ -10,7 +10,6 @@ import no.nav.personbruker.dittnav.api.config.api
 import java.net.URL
 import java.util.concurrent.TimeUnit
 
-private val log = KotlinLogging.logger {  }
 fun main() {
     val appContext = ApplicationContext()
     val loginserviceMetadata =
