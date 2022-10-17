@@ -7,8 +7,9 @@ import no.finn.unleash.util.UnleashConfig
 import no.nav.personbruker.dittnav.api.beskjed.BeskjedConsumer
 import no.nav.personbruker.dittnav.api.beskjed.BeskjedMergerService
 import no.nav.personbruker.dittnav.api.beskjed.BeskjedService
-import no.nav.personbruker.dittnav.api.digisos.DigiSosClient
+import no.nav.personbruker.dittnav.api.digisos.DigiSosConsumer
 import no.nav.personbruker.dittnav.api.digisos.DigiSosService
+import no.nav.personbruker.dittnav.api.digisos.DigiSosTokendings
 import no.nav.personbruker.dittnav.api.done.DoneProducer
 import no.nav.personbruker.dittnav.api.innboks.InnboksConsumer
 import no.nav.personbruker.dittnav.api.innboks.InnboksService
@@ -54,8 +55,9 @@ class ApplicationContext {
     val innboksService = InnboksService(innboksConsumer, eventhandlerTokendings)
     val sakerService = SakerService(mineSakerConsumer, environment.mineSakerURL, mineSakerTokendings)
 
-    private val digiSosConsumer = DigiSosClient(httpClient, environment.digiSosSoknadBaseURL)
-    val digiSosService = DigiSosService(digiSosConsumer)
+    private val digiSosConsumer = DigiSosConsumer(httpClient, environment.digiSosSoknadBaseURL)
+    private val digiSosTokendings = DigiSosTokendings(tokendingsService, environment.digiSosClientId)
+    val digiSosService = DigiSosService(digiSosConsumer, digiSosTokendings)
 
     val beskjedMergerService = BeskjedMergerService(beskjedService, digiSosService, unleashService)
 

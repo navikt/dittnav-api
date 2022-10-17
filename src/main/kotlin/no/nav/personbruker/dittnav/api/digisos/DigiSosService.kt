@@ -10,25 +10,31 @@ import no.nav.personbruker.dittnav.api.common.MultiSourceResult
 import no.nav.personbruker.dittnav.api.common.ProduceEventException
 
 
-class DigiSosService(private val digiSosClient: DigiSosClient) {
+class DigiSosService(
+    private val digiSosConsumer: DigiSosConsumer,
+    private val tokendings: DigiSosTokendings,
+) {
 
     private val log = KotlinLogging.logger { }
 
     suspend fun getPaabegynteActive(user: AuthenticatedUser): MultiSourceResult<BeskjedDTO, KildeType> {
         return wrapAsMultiSourceResult(user) {
-            digiSosClient.getPaabegynteActive(user)
+            val token = tokendings.exchangeToken(user)
+            digiSosConsumer.getPaabegynteActive(token)
         }
     }
 
     suspend fun getPaabegynteInactive(user: AuthenticatedUser): MultiSourceResult<BeskjedDTO, KildeType> {
         return wrapAsMultiSourceResult(user) {
-            digiSosClient.getPaabegynteInactive(user)
+            val token = tokendings.exchangeToken(user)
+            digiSosConsumer.getPaabegynteInactive(token)
         }
     }
 
     suspend fun markEventAsDone(user: AuthenticatedUser, dto: DoneDTO): HttpResponse {
         val res = runCatching {
-            digiSosClient.markEventAsDone(user, dto)
+            val token = tokendings.exchangeToken(user)
+            digiSosConsumer.markEventAsDone(token, dto)
 
         }.onFailure { cause ->
             throw ProduceEventException("Klarte ikke å markere event hos DigiSos som lest.", cause)
