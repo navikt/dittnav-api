@@ -19,33 +19,33 @@ import mu.KotlinLogging
 import no.nav.personbruker.dittnav.api.authentication.AuthenticatedUser
 import no.nav.personbruker.dittnav.api.beskjed.BeskjedDTO
 import no.nav.personbruker.dittnav.api.config.get
+import no.nav.personbruker.dittnav.api.tokenx.AccessToken
 
 import java.net.URL
 
-class DigiSosClient(
+class DigiSosConsumer(
     private val client: HttpClient,
     digiSosSoknadBaseURL: URL
 ) {
 
     private val log = KotlinLogging.logger {  }
 
-
     private val aktivePaabegynteEndpoint = URL("$digiSosSoknadBaseURL/dittnav/pabegynte/aktive")
     private val inaktivePaabegynteEndpoint = URL("$digiSosSoknadBaseURL/dittnav/pabegynte/inaktive")
     private val donePaabegynteEndpoint = URL("$digiSosSoknadBaseURL/dittnav/pabegynte/lest")
 
-    suspend fun getPaabegynteActive(user: AuthenticatedUser): List<BeskjedDTO> {
-        val external = client.get<List<Paabegynte>>(aktivePaabegynteEndpoint, user)
+    suspend fun getPaabegynteActive(token: AccessToken): List<BeskjedDTO> {
+        val external = client.get<List<Paabegynte>>(aktivePaabegynteEndpoint, token)
         return external.toInternals()
     }
 
-    suspend fun getPaabegynteInactive(user: AuthenticatedUser): List<BeskjedDTO> {
-        val externals = client.get<List<Paabegynte>>(inaktivePaabegynteEndpoint, user)
+    suspend fun getPaabegynteInactive(token: AccessToken): List<BeskjedDTO> {
+        val externals = client.get<List<Paabegynte>>(inaktivePaabegynteEndpoint, token)
         return externals.toInternals()
     }
 
-    suspend fun markEventAsDone(user: AuthenticatedUser, done: DoneDTO): HttpResponse {
-        val response: HttpResponse = post(donePaabegynteEndpoint, done, user)
+    suspend fun markEventAsDone(token: AccessToken, done: DoneDTO): HttpResponse {
+        val response: HttpResponse = post(donePaabegynteEndpoint, done, token)
 
         if (response.status != HttpStatusCode.OK) {
             log.warn("Feil mot $donePaabegynteEndpoint: ${response.status.value} ${response.status.description}")
@@ -54,12 +54,12 @@ class DigiSosClient(
         return response.body()
     }
 
-    private suspend inline fun <reified T> post(url: URL, done: DoneDTO, user: AuthenticatedUser): T =
+    private suspend inline fun <reified T> post(url: URL, done: DoneDTO, token: AccessToken): T =
         withContext(Dispatchers.IO) {
             client.post {
                 url(url)
                 method = HttpMethod.Post
-                header(HttpHeaders.Authorization, user.createAuthenticationHeader())
+                header(HttpHeaders.Authorization, "Bearer ${token.value}")
                 contentType(ContentType.Application.Json)
                 setBody(done)
             }

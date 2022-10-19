@@ -8,13 +8,15 @@ import no.nav.personbruker.dittnav.api.applicationHttpClient
 import no.nav.personbruker.dittnav.api.beskjed.BeskjedDTO
 import no.nav.personbruker.dittnav.api.authentication.AuthenticatedUserTestData
 import no.nav.personbruker.dittnav.api.externalServiceWithJsonResponse
+import no.nav.personbruker.dittnav.api.tokenx.AccessToken
 import org.intellij.lang.annotations.Language
 import org.junit.jupiter.api.Test
 import java.net.URL
 
-internal class DigiSosClientTest {
+internal class DigiSosConsumerTest {
 
     private val dummyUser = AuthenticatedUserTestData.createAuthenticatedUser()
+    private val token = AccessToken("Access!")
 
     private val digiSosSoknadBaseURL = "https://soknad"
 
@@ -36,7 +38,7 @@ internal class DigiSosClientTest {
             )
 
             val result: List<BeskjedDTO> = runBlocking {
-                DigiSosClient(applicationHttpClient(), URL(digiSosSoknadBaseURL)).getPaabegynteActive(dummyUser)
+                DigiSosConsumer(applicationHttpClient(), URL(digiSosSoknadBaseURL)).getPaabegynteActive(token)
             }
             result.shouldNotBeNull()
             result.size shouldBe 3
@@ -64,7 +66,7 @@ internal class DigiSosClientTest {
             )
 
             val result: List<BeskjedDTO> = runBlocking {
-                DigiSosClient(applicationHttpClient(), URL(digiSosSoknadBaseURL)).getPaabegynteInactive(dummyUser)
+                DigiSosConsumer(applicationHttpClient(), URL(digiSosSoknadBaseURL)).getPaabegynteInactive(token)
             }
 
             result.size shouldBe 4

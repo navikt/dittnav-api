@@ -21,8 +21,9 @@ import no.finn.unleash.FakeUnleash
 import no.nav.personbruker.dittnav.api.applicationHttpClient
 import no.nav.personbruker.dittnav.api.authenticatedGet
 import no.nav.personbruker.dittnav.api.bool
-import no.nav.personbruker.dittnav.api.digisos.DigiSosClient
+import no.nav.personbruker.dittnav.api.digisos.DigiSosConsumer
 import no.nav.personbruker.dittnav.api.digisos.DigiSosService
+import no.nav.personbruker.dittnav.api.digisos.DigiSosTokendings
 import no.nav.personbruker.dittnav.api.mockApi
 import no.nav.personbruker.dittnav.api.rawEventHandlerVarsel
 import no.nav.personbruker.dittnav.api.respondRawJson
@@ -44,7 +45,10 @@ class BeskjedApiTest {
     private val now = ZonedDateTime.now()
     private val digisosTestHost = "https://digisos.test"
     private val eventhandlerTestHost = "https://digisos.test"
-    private val mockkTokendings = mockk<EventhandlerTokendings>().also {
+    private val mockkHandlerTokendings = mockk<EventhandlerTokendings>().also {
+        coEvery { it.exchangeToken(any()) } returns AccessToken("Access!")
+    }
+    private val mockkDigiSosTokendings = mockk<DigiSosTokendings>().also {
         coEvery { it.exchangeToken(any()) } returns AccessToken("Access!")
     }
     private val fakeUnleash = FakeUnleash()
@@ -186,13 +190,14 @@ class BeskjedApiTest {
                 client = applicationHttpClient(),
                 eventHandlerBaseURL = URL(eventhandlerTestHost)
             ),
-            eventhandlerTokendings = mockkTokendings
+            eventhandlerTokendings = mockkHandlerTokendings
         ),
         digiSosService = DigiSosService(
-            digiSosClient = DigiSosClient(
+            digiSosConsumer = DigiSosConsumer(
                 client = applicationHttpClient(),
                 digiSosSoknadBaseURL = URL(digisosTestHost)
-            )
+            ),
+            mockkDigiSosTokendings
         ),
         unleashService = UnleashService(unleashClient = fakeUnleash)
     )

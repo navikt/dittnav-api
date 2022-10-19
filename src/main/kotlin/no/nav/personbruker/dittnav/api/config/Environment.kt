@@ -21,6 +21,7 @@ data class Environment(
     val fakeUnleashIncludeDigiSos: Boolean = getEnvVarAsBoolean("FAKE_UNLEASH_INCLUDE_DIGISOS", false),
     val unleashApiUrl: String = getEnvVar("UNLEASH_API_URL"),
     val digiSosSoknadBaseURL: URL = getEnvVarAsURL("DIGISOS_API_URL", trimTrailingSlash = true),
+    val digiSosClientId: String = getEnvVar("DIGISOS_API_CLIENT_ID"),
     val mineSakerURL: URL = getEnvVarAsURL("MINE_SAKER_URL", trimTrailingSlash = true),
     val sakerApiUrl: URL = getEnvVarAsURL("MINE_SAKER_API_URL", trimTrailingSlash = true),
     val mineSakerApiClientId: String = getEnvVar("MINE_SAKER_API_CLIENT_ID"),

@@ -30,6 +30,7 @@ spec:
       external:
         - host: person.dev.nav.no
         - host: www.dev.nav.no
+        - host: sosialhjelp-soknad-api.dev-fss-pub.nais.io
       rules:
         - application: "mine-saker-api"
           namespace: "personbruker"
