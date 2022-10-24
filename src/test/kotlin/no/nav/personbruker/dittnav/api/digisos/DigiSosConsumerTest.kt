@@ -6,7 +6,7 @@ import io.ktor.server.testing.testApplication
 import kotlinx.coroutines.runBlocking
 import no.nav.personbruker.dittnav.api.applicationHttpClient
 import no.nav.personbruker.dittnav.api.beskjed.BeskjedDTO
-import no.nav.personbruker.dittnav.api.TestData
+import no.nav.personbruker.dittnav.api.TestUser
 import no.nav.personbruker.dittnav.api.externalServiceWithJsonResponse
 import no.nav.personbruker.dittnav.api.tokenx.AccessToken
 import org.intellij.lang.annotations.Language
@@ -16,7 +16,7 @@ import java.net.URL
 internal class DigiSosConsumerTest {
 
     private val token = AccessToken("Access!")
-    private val dummyUser = TestData.createAuthenticatedUser()
+    private val dummyUser = TestUser.createAuthenticatedUser()
 
     private val digiSosSoknadBaseURL = "https://soknad"
 

@@ -5,7 +5,8 @@ import io.kotest.matchers.shouldBe
 import io.mockk.coEvery
 import io.mockk.mockk
 import kotlinx.coroutines.runBlocking
-import no.nav.personbruker.dittnav.api.TestData
+import no.nav.personbruker.dittnav.api.TestUser
+import no.nav.personbruker.dittnav.api.createBeskjed
 import no.nav.personbruker.dittnav.api.tokenx.AccessToken
 import no.nav.personbruker.dittnav.api.tokenx.EventhandlerTokendings
 import org.junit.jupiter.api.BeforeEach
@@ -13,7 +14,7 @@ import org.junit.jupiter.api.Test
 
 internal class BeskjedServiceTest {
 
-    private var user = TestData.createAuthenticatedUser()
+    private var user = TestUser.createAuthenticatedUser()
     private val dummyToken = AccessToken("<access_token>")
 
     private val beskjedConsumer = mockk<BeskjedConsumer>()
@@ -52,7 +53,7 @@ internal class BeskjedServiceTest {
         val ident = "1"
         var beskjed = createBeskjed(eventId = "1", fodselsnummer = ident, aktiv = true)
         beskjed = beskjed.copy(sikkerhetsnivaa = 4)
-        user = TestData.createAuthenticatedUser(ident, 3)
+        user = TestUser.createAuthenticatedUser(ident, 3)
         coEvery { eventhandlerTokendings.exchangeToken(user) } returns dummyToken
         coEvery { beskjedConsumer.getExternalActiveEvents(dummyToken) } returns listOf(beskjed)
         runBlocking {

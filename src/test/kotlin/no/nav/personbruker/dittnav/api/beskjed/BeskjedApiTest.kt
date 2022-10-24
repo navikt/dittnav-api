@@ -21,6 +21,8 @@ import no.finn.unleash.FakeUnleash
 import no.nav.personbruker.dittnav.api.applicationHttpClient
 import no.nav.personbruker.dittnav.api.authenticatedGet
 import no.nav.personbruker.dittnav.api.bool
+import no.nav.personbruker.dittnav.api.createActiveBeskjed
+import no.nav.personbruker.dittnav.api.createInactiveBeskjed
 import no.nav.personbruker.dittnav.api.digisos.DigiSosConsumer
 import no.nav.personbruker.dittnav.api.digisos.DigiSosService
 import no.nav.personbruker.dittnav.api.digisos.DigiSosTokendings

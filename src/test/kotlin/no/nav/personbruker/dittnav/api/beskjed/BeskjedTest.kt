@@ -1,15 +1,16 @@
 package no.nav.personbruker.dittnav.api.beskjed
 
 import io.kotest.matchers.shouldBe
+import no.nav.personbruker.dittnav.api.createBeskjed
 import org.junit.jupiter.api.Test
 
-class BeskjedTransformerTest {
+class BeskjedTest {
 
     @Test
     fun `should transform from Beskjed to BeskjedDTO`() {
-        val beskjed1 = createBeskjed(eventId = "1", fodselsnummer = "1",  aktiv = true)
-        val beskjed2 = createBeskjed(eventId = "2", fodselsnummer = "2", aktiv = true)
-        val beskjedDTOList = listOf(beskjed1, beskjed2).map { toBeskjedDTO(it) }
+        val beskjed1 = createBeskjed(eventId = "1", fodselsnummer = "1",  aktiv = true, sikkerhetsnivaa = 4)
+        val beskjed2 = createBeskjed(eventId = "2", fodselsnummer = "2", aktiv = true, sikkerhetsnivaa = 4)
+        val beskjedDTOList = listOf(beskjed1, beskjed2).map { it.toBeskjedDto(operatingLoginLevel = 4) }
         val beskjedDTO = beskjedDTOList.first()
 
         beskjedDTO.forstBehandlet shouldBe beskjed1.forstBehandlet
@@ -26,8 +27,8 @@ class BeskjedTransformerTest {
 
     @Test
     fun `should mask tekst, link and produsent`() {
-        val beskjed = createBeskjed(eventId = "1", fodselsnummer = "1", aktiv = true)
-        val beskjedDTO = toMaskedBeskjedDTO(beskjed)
+        val beskjed = createBeskjed(eventId = "1", fodselsnummer = "1", aktiv = true, sikkerhetsnivaa = 4)
+        val beskjedDTO = beskjed.toBeskjedDto(operatingLoginLevel = 3)
         beskjedDTO.forstBehandlet shouldBe beskjed.forstBehandlet
         beskjedDTO.eventId shouldBe beskjed.eventId
         beskjedDTO.tekst shouldBe "***"

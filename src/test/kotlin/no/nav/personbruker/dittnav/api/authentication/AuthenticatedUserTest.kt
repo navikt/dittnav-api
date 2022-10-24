@@ -1,6 +1,6 @@
 package no.nav.personbruker.dittnav.api.authentication
 
-import no.nav.personbruker.dittnav.api.TestData
+import no.nav.personbruker.dittnav.api.TestUser
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNotBe
 import io.kotest.matchers.string.shouldContain
@@ -14,7 +14,7 @@ internal class AuthenticatedUserTest {
         val expectedIdent = "12345"
         val expectedLoginLevel = 4
 
-        val authenticatedUser = TestData.createAuthenticatedUser(expectedIdent, expectedLoginLevel)
+        val authenticatedUser = TestUser.createAuthenticatedUser(expectedIdent, expectedLoginLevel)
 
         authenticatedUser.ident shouldBe expectedIdent
         authenticatedUser.loginLevel shouldBe  expectedLoginLevel
@@ -25,7 +25,7 @@ internal class AuthenticatedUserTest {
 
     @Test
     fun `should not include sensitive values in the output for the toString method`() {
-        val authenticatedUser = TestData.createAuthenticatedUser()
+        val authenticatedUser = TestUser.createAuthenticatedUser()
 
         val outputOfToString = authenticatedUser.toString()
         outputOfToString shouldContain  authenticatedUser.loginLevel.toString()

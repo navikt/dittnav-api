@@ -5,7 +5,7 @@ import io.kotest.matchers.shouldBe
 import io.mockk.coEvery
 import io.mockk.mockk
 import kotlinx.coroutines.runBlocking
-import no.nav.personbruker.dittnav.api.TestData
+import no.nav.personbruker.dittnav.api.TestUser
 import no.nav.personbruker.dittnav.api.common.ConsumeEventException
 import no.nav.personbruker.dittnav.api.tokenx.AccessToken
 import no.nav.personbruker.dittnav.api.tokenx.EventhandlerTokendings
@@ -14,7 +14,7 @@ import org.junit.jupiter.api.Test
 
 internal class OppgaveServiceTest {
 
-    private var user = TestData.createAuthenticatedUser()
+    private var user = TestUser.createAuthenticatedUser()
     private val dummyToken = AccessToken("<access_token>")
 
     private val oppgaveConsumer = mockk<OppgaveConsumer>()
@@ -53,7 +53,7 @@ internal class OppgaveServiceTest {
         val ident = "1"
         var oppgave = createOppgave(eventId = "1", fødselsnummer = ident, aktiv = true)
         oppgave = oppgave.copy(sikkerhetsnivaa = 4)
-        user = TestData.createAuthenticatedUser(ident, 3)
+        user = TestUser.createAuthenticatedUser(ident, 3)
         coEvery { eventhandlerTokendings.exchangeToken(user) } returns dummyToken
         coEvery { oppgaveConsumer.getExternalActiveEvents(dummyToken) } returns listOf(oppgave)
         runBlocking {

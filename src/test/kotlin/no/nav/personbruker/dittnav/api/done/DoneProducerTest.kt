@@ -12,7 +12,7 @@ import io.ktor.server.testing.testApplication
 import io.mockk.coEvery
 import io.mockk.mockk
 import kotlinx.coroutines.runBlocking
-import no.nav.personbruker.dittnav.api.TestData
+import no.nav.personbruker.dittnav.api.TestUser
 import no.nav.personbruker.dittnav.api.tokenx.AccessToken
 import no.nav.personbruker.dittnav.api.tokenx.EventhandlerTokendings
 import no.nav.personbruker.dittnav.api.applicationHttpClient
@@ -23,7 +23,7 @@ internal class DoneProducerTest {
 
     @Test
     fun `should call post endpoint on event handler`() {
-        val user = TestData.createAuthenticatedUser()
+        val user = TestUser.createAuthenticatedUser()
         val testEventHandler = "http://event-handler"
         val eventhandlerTokendings = mockk<EventhandlerTokendings>()
 
