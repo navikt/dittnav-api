@@ -8,7 +8,7 @@ import io.mockk.confirmVerified
 import io.mockk.mockk
 import kotlinx.coroutines.runBlocking
 import no.finn.unleash.FakeUnleash
-import no.nav.personbruker.dittnav.api.authentication.AuthenticatedUserTestData
+import no.nav.personbruker.dittnav.api.TestData
 import no.nav.personbruker.dittnav.api.common.getNumberOfSuccessfulBeskjedEventsForSource
 import no.nav.personbruker.dittnav.api.digisos.DigiSosService
 import no.nav.personbruker.dittnav.api.unleash.UnleashService
@@ -20,7 +20,7 @@ internal class BeskjedMergerServiceTest {
     private val beskjedService = mockk<BeskjedService>(relaxed = true)
     private val digiSosService = mockk<DigiSosService>(relaxed = true)
 
-    private val innloggetBruker = AuthenticatedUserTestData.createAuthenticatedUser()
+    private val innloggetBruker = TestData.createAuthenticatedUser()
 
     private val eventHandlerDefaultResult =
        getNumberOfSuccessfulBeskjedEventsForSource(

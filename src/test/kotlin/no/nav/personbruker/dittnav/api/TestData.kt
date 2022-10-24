@@ -1,14 +1,15 @@
-package no.nav.personbruker.dittnav.api.authentication
+package no.nav.personbruker.dittnav.api
 
 import io.jsonwebtoken.Jwts
 import io.jsonwebtoken.SignatureAlgorithm
 import io.jsonwebtoken.security.Keys
+import no.nav.personbruker.dittnav.api.authentication.AuthenticatedUser
 import no.nav.security.token.support.core.jwt.JwtToken
 import java.security.Key
 import java.time.ZonedDateTime
 import java.util.Date
 
-object AuthenticatedUserTestData {
+object TestData {
 
     private val key: Key = Keys.secretKeyFor(SignatureAlgorithm.HS256)
 

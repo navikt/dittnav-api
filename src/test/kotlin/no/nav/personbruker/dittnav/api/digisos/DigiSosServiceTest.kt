@@ -8,7 +8,7 @@ import io.mockk.mockk
 import kotlinx.coroutines.runBlocking
 import no.nav.personbruker.dittnav.api.beskjed.KildeType
 import no.nav.personbruker.dittnav.api.beskjed.createActiveBeskjedDto
-import no.nav.personbruker.dittnav.api.authentication.AuthenticatedUserTestData
+import no.nav.personbruker.dittnav.api.TestData
 import no.nav.personbruker.dittnav.api.beskjed.createInactiveBeskjedDto
 import no.nav.personbruker.dittnav.api.tokenx.AccessToken
 import org.junit.jupiter.api.Test
@@ -19,8 +19,8 @@ internal class DigiSosServiceTest {
     private val digiSosTokendings = mockk<DigiSosTokendings>().also {
         coEvery { it.exchangeToken(any()) } returns AccessToken("Access!")
     }
-    private val innloggetBruker = AuthenticatedUserTestData.createAuthenticatedUser()
     private val digiSosService = DigiSosService(digiSosConsumer, digiSosTokendings)
+    private val innloggetBruker = TestData.createAuthenticatedUser()
 
     @Test
     fun `Skal hente alle paabegynte soknader som er aktive`() {
