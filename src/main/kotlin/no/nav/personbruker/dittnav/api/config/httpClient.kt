@@ -80,17 +80,3 @@ suspend inline fun <reified T> HttpClient.getWithTokenx(url: URL, accessToken: A
             }
         }.body()
     }
-
-suspend inline fun <reified T> HttpClient.getWithMeldekortTokenx(url: URL, accessToken: AccessToken): T =
-    withContext(Dispatchers.IO) {
-        request {
-            url(url)
-            method = HttpMethod.Get
-            header("TokenXAuthorization", "Bearer ${accessToken.value}")
-            timeout {
-                socketTimeoutMillis = 30000
-                connectTimeoutMillis = 10000
-                requestTimeoutMillis = 40000
-            }
-        }.body()
-    }
