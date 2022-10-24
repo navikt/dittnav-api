@@ -48,7 +48,7 @@ class ApplicationContext {
 
     val doneProducer = DoneProducer(httpClient, eventhandlerTokendings, environment.eventHandlerURL)
 
-    val unleashService = createUnleashService(environment)
+    private val unleashService = createUnleashService(environment)
 
     val oppgaveService = OppgaveService(oppgaveConsumer, eventhandlerTokendings)
     private val beskjedService = BeskjedService(beskjedConsumer, eventhandlerTokendings)

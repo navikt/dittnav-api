@@ -26,6 +26,7 @@ import io.ktor.util.pipeline.PipelineContext
 import io.micrometer.prometheus.PrometheusConfig
 import io.micrometer.prometheus.PrometheusMeterRegistry
 import io.prometheus.client.hotspot.DefaultExports
+import kotlinx.serialization.json.Json
 import mu.KotlinLogging
 import no.nav.personbruker.dittnav.api.authentication.AuthenticatedUser
 import no.nav.personbruker.dittnav.api.authentication.AuthenticatedUserFactory
@@ -149,3 +150,9 @@ private fun Application.configureShutdownHook(httpClient: HttpClient) {
 
 val PipelineContext<Unit, ApplicationCall>.authenticatedUser: AuthenticatedUser
     get() = AuthenticatedUserFactory.createNewAuthenticatedUser(call)
+
+fun jsonConfig(ignoreUnknownKeys: Boolean = true): Json {
+    return Json {
+        this.ignoreUnknownKeys = ignoreUnknownKeys
+    }
+}
