@@ -66,17 +66,3 @@ suspend inline fun <reified T> HttpClient.getWithConsumerId(url: URL, accessToke
             header(consumerIdHeaderName, consumerIdHeaderValue)
         }.body()
     }
-
-suspend inline fun <reified T> HttpClient.getWithTokenx(url: URL, accessToken: AccessToken): T =
-    withContext(Dispatchers.IO) {
-        request {
-            url(url)
-            method = HttpMethod.Get
-            header(TokenXHeader.Authorization, "Bearer ${accessToken.value}")
-            timeout {
-                socketTimeoutMillis = 30000
-                connectTimeoutMillis = 10000
-                requestTimeoutMillis = 40000
-            }
-        }.body()
-    }

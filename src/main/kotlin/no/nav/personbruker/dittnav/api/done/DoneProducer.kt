@@ -26,33 +26,34 @@ import java.net.URL
 class DoneProducer(
     private val httpClient: HttpClient,
     private val eventhandlerTokendings: EventhandlerTokendings,
-    dittNAVBaseURL: URL) {
+    dittNAVBaseURL: URL
+) {
 
-    private val log = KotlinLogging.logger {  }
+    private val log = KotlinLogging.logger { }
     private val completePathToEndpoint = URL("$dittNAVBaseURL/produce/done")
 
     suspend fun postDoneEvents(done: DoneDTO, user: AuthenticatedUser): HttpResponse {
         val exchangedToken = eventhandlerTokendings.exchangeToken(user)
-        val response: HttpResponse = httpClient.post(completePathToEndpoint, done, exchangedToken)
+        val response: HttpResponse = httpClient.post(done, exchangedToken)
         if (response.status != HttpStatusCode.OK) {
             log.warn("Feil mot $completePathToEndpoint: ${response.status.value} ${response.status.description}")
         }
         return response
     }
+
+    private suspend fun HttpClient.post(done: DoneDTO, accessToken: AccessToken) =
+        withContext(Dispatchers.IO) {
+            post {
+                url(completePathToEndpoint)
+                method = HttpMethod.Post
+                header(HttpHeaders.Authorization, "Bearer ${accessToken.value}")
+                contentType(ContentType.Application.Json)
+                setBody(done)
+            }
+        }
 }
 
 @Serializable
 data class DoneDTO(
     val eventId: String
 )
-
-private suspend inline fun <reified T> HttpClient.post(url: URL, done: DoneDTO, accessToken: AccessToken): T =
-    withContext(Dispatchers.IO) {
-        post {
-            url(url)
-            method = HttpMethod.Post
-            header(HttpHeaders.Authorization, "Bearer ${accessToken.value}")
-            contentType(ContentType.Application.Json)
-            setBody(done)
-        }.body()
-    }
