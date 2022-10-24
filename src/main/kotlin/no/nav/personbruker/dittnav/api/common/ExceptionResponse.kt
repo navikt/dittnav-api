@@ -28,6 +28,8 @@ internal fun Application.installStatusPages() {
                     call.respondServiceUnavailable("Klarte ikke å hente personalia", cause)
                 is ProduceEventException ->
                     call.respondServiceUnavailable("Kunne ikke markere varsel som lest", cause)
+                is ConnectionFailedException ->
+                    call.respondServiceUnavailable(cause.message?: "ConnectionFailedException",cause)
                 else ->
                     call.respondServiceUnavailable("Ukjent feil",cause)
             }

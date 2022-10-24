@@ -94,15 +94,3 @@ suspend inline fun <reified T> HttpClient.getWithMeldekortTokenx(url: URL, acces
             }
         }.body()
     }
-
-
-suspend inline fun <reified T> HttpClient.post(url: URL, done: DoneDTO, accessToken: AccessToken): T =
-    withContext(Dispatchers.IO) {
-        post {
-            url(url)
-            method = HttpMethod.Post
-            header(HttpHeaders.Authorization, "Bearer ${accessToken.value}")
-            contentType(ContentType.Application.Json)
-            setBody(done)
-        }.body()
-    }
