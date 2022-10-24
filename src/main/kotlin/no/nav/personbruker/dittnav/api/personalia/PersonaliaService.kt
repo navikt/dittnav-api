@@ -1,7 +1,7 @@
 package no.nav.personbruker.dittnav.api.personalia
 
 import no.nav.personbruker.dittnav.api.authentication.AuthenticatedUser
-import no.nav.personbruker.dittnav.api.common.ConsumePersonaliaException
+import no.nav.personbruker.dittnav.api.config.ConsumePersonaliaException
 
 
 class PersonaliaService (

@@ -3,7 +3,6 @@ package no.nav.personbruker.dittnav.api.config
 import com.auth0.jwk.JwkProvider
 import io.ktor.client.HttpClient
 import io.ktor.http.HttpHeaders
-import io.ktor.http.HttpStatusCode
 import io.ktor.http.auth.HttpAuthHeader
 import io.ktor.serialization.kotlinx.json.json
 import io.ktor.server.application.Application
@@ -18,8 +17,6 @@ import io.ktor.server.metrics.micrometer.MicrometerMetrics
 import io.ktor.server.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.server.plugins.cors.routing.CORS
 import io.ktor.server.plugins.defaultheaders.DefaultHeaders
-import io.ktor.server.plugins.statuspages.StatusPages
-import io.ktor.server.response.respond
 import io.ktor.server.routing.route
 import io.ktor.server.routing.routing
 import io.ktor.util.pipeline.PipelineContext
@@ -27,13 +24,11 @@ import io.micrometer.prometheus.PrometheusConfig
 import io.micrometer.prometheus.PrometheusMeterRegistry
 import io.prometheus.client.hotspot.DefaultExports
 import kotlinx.serialization.json.Json
-import mu.KotlinLogging
 import no.nav.personbruker.dittnav.api.authentication.AuthenticatedUser
 import no.nav.personbruker.dittnav.api.authentication.AuthenticatedUserFactory
 import no.nav.personbruker.dittnav.api.authentication.PrincipalWithTokenString
 import no.nav.personbruker.dittnav.api.beskjed.BeskjedMergerService
 import no.nav.personbruker.dittnav.api.beskjed.beskjed
-import no.nav.personbruker.dittnav.api.common.installStatusPages
 import no.nav.personbruker.dittnav.api.digisos.DigiSosService
 import no.nav.personbruker.dittnav.api.digisos.digiSos
 import no.nav.personbruker.dittnav.api.done.DoneProducer

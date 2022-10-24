@@ -1,7 +1,7 @@
 package no.nav.personbruker.dittnav.api.saker
 
 import no.nav.personbruker.dittnav.api.authentication.AuthenticatedUser
-import no.nav.personbruker.dittnav.api.common.ConsumeSakerException
+import no.nav.personbruker.dittnav.api.config.ConsumeSakerException
 import java.net.URL
 
 class SakerService(

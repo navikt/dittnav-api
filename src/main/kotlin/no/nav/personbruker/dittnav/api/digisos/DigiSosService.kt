@@ -7,7 +7,7 @@ import no.nav.personbruker.dittnav.api.authentication.AuthenticatedUser
 import no.nav.personbruker.dittnav.api.beskjed.BeskjedDTO
 import no.nav.personbruker.dittnav.api.beskjed.KildeType
 import no.nav.personbruker.dittnav.api.common.MultiSourceResult
-import no.nav.personbruker.dittnav.api.common.ProduceEventException
+import no.nav.personbruker.dittnav.api.config.ProduceEventException
 
 
 class DigiSosService(

@@ -9,7 +9,7 @@ import io.mockk.confirmVerified
 import io.mockk.mockk
 import kotlinx.coroutines.runBlocking
 import no.nav.personbruker.dittnav.api.TestUser
-import no.nav.personbruker.dittnav.api.common.ConsumePersonaliaException
+import no.nav.personbruker.dittnav.api.config.ConsumePersonaliaException
 import no.nav.personbruker.dittnav.api.tokenx.AccessToken
 import org.junit.jupiter.api.Test
 

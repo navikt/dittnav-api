@@ -1,5 +1,4 @@
-package no.nav.personbruker.dittnav.api.common
-
+package no.nav.personbruker.dittnav.api.config
 
 import io.ktor.http.HttpStatusCode
 import io.ktor.server.application.Application
@@ -8,7 +7,7 @@ import io.ktor.server.application.install
 import io.ktor.server.plugins.statuspages.StatusPages
 import io.ktor.server.response.respond
 import mu.KotlinLogging
-import no.nav.personbruker.dittnav.api.config.CookieNotSetException
+import no.nav.personbruker.dittnav.api.common.ConnectionFailedException
 
 private val log = KotlinLogging.logger {  }
 

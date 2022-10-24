@@ -9,7 +9,7 @@ import io.mockk.confirmVerified
 import io.mockk.mockk
 import kotlinx.coroutines.runBlocking
 import no.nav.personbruker.dittnav.api.TestUser
-import no.nav.personbruker.dittnav.api.common.ConsumeSakerException
+import no.nav.personbruker.dittnav.api.config.ConsumeSakerException
 import no.nav.personbruker.dittnav.api.tokenx.AccessToken
 import org.junit.jupiter.api.Test
 import java.net.URL
