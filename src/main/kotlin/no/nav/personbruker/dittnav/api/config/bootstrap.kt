@@ -32,6 +32,7 @@ import no.nav.personbruker.dittnav.api.authentication.AuthenticatedUserFactory
 import no.nav.personbruker.dittnav.api.authentication.PrincipalWithTokenString
 import no.nav.personbruker.dittnav.api.beskjed.BeskjedMergerService
 import no.nav.personbruker.dittnav.api.beskjed.beskjed
+import no.nav.personbruker.dittnav.api.common.installStatusPages
 import no.nav.personbruker.dittnav.api.digisos.DigiSosService
 import no.nav.personbruker.dittnav.api.digisos.digiSos
 import no.nav.personbruker.dittnav.api.done.DoneProducer
@@ -51,7 +52,6 @@ import no.nav.personbruker.dittnav.api.personalia.personalia
 import no.nav.personbruker.dittnav.api.saker.SakerService
 import no.nav.personbruker.dittnav.api.saker.saker
 
-private val log = KotlinLogging.logger {  }
 fun Application.api(
     corsAllowedOrigins: String,
     corsAllowedSchemes: String,
@@ -75,21 +75,7 @@ fun Application.api(
     val collectorRegistry = PrometheusMeterRegistry(PrometheusConfig.DEFAULT)
 
     install(DefaultHeaders)
-
-    install(StatusPages) {
-        exception<Throwable> { call, cause ->
-            when (cause) {
-                is CookieNotSetException -> {
-                    log.info("401: fant ikke selvbetjening-idtoken")
-                    call.respond(HttpStatusCode.Unauthorized)
-                }
-                else -> {
-                    log.info(cause.message)
-                    call.respond(HttpStatusCode.InternalServerError)
-                }
-            }
-        }
-    }
+    installStatusPages()
 
     install(CORS) {
         allowHost(corsAllowedOrigins, schemes = listOf(corsAllowedSchemes))

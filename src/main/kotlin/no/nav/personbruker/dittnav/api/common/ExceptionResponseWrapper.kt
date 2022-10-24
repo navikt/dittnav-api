@@ -2,55 +2,45 @@ package no.nav.personbruker.dittnav.api.common
 
 
 import io.ktor.http.HttpStatusCode
+import io.ktor.server.application.Application
 import io.ktor.server.application.ApplicationCall
+import io.ktor.server.application.install
+import io.ktor.server.plugins.statuspages.StatusPages
 import io.ktor.server.response.respond
-import mu.KLogger
+import mu.KotlinLogging
+import no.nav.personbruker.dittnav.api.config.CookieNotSetException
 
+private val log = KotlinLogging.logger {  }
 
-suspend fun respondWithError(call: ApplicationCall, log: KLogger, exception: Exception) {
-    when (exception) {
-        is ConsumeEventException -> {
-            val feilkode = HttpStatusCode.ServiceUnavailable
-            call.respond(feilkode)
-            log.warn(
-                "Klarte ikke å hente eventer. Returnerer feilkoden '$feilkode' til frontend. $exception",
-                exception
-            )
-        }
-
-        is ConsumeSakerException -> {
-            val feilkode = HttpStatusCode.ServiceUnavailable
-            call.respond(feilkode)
-            log.warn("Klarte ikke å hente saker. Returnerer feilkoden '$feilkode' til frontend. $exception", exception)
-        }
-
-        is ConsumePersonaliaException -> {
-            val feilkode = HttpStatusCode.ServiceUnavailable
-            call.respond(feilkode)
-            log.warn(
-                "Klarte ikke å hente personalia. Returnerer feilkoden '$feilkode' til frontend. $exception",
-                exception
-            )
-        }
-
-        is ProduceEventException -> {
-            val feilkode = HttpStatusCode.ServiceUnavailable
-            call.respond(feilkode)
-            log.warn(
-                "Klarte ikke å produsere done-event. Returnerer feilkoden '$feilkode' til frontend. $exception",
-                exception
-            )
-        }
-
-        else -> {
-            val feilkode = HttpStatusCode.InternalServerError
-            call.respond(feilkode)
-            log.error("Ukjent feil oppstod. Returnerer feilkoden '$feilkode' til frontend", exception)
+internal fun Application.installStatusPages() {
+    install(StatusPages) {
+        exception<Throwable> { call, cause ->
+            when (cause) {
+                is CookieNotSetException -> {
+                    log.info("401: fant ikke selvbetjening-idtoken")
+                    call.respond(HttpStatusCode.Unauthorized)
+                }
+                is ConsumeEventException ->
+                    call.respondServiceUnavailable("Klarte ikke å hente eventer", cause)
+                is ConsumeSakerException ->
+                    call.respondServiceUnavailable("Klarte ikke å hente saker", cause)
+                is ConsumePersonaliaException ->
+                    call.respondServiceUnavailable("Klarte ikke å hente personalia", cause)
+                is ProduceEventException ->
+                    call.respondServiceUnavailable("Kunne ikke markere varsel som lest", cause)
+                else ->
+                    call.respondServiceUnavailable("Ukjent feil",cause)
+            }
         }
     }
 }
 
-class ConsumeSakerException(message: String, cause: Throwable) : Exception(message,cause)
+suspend fun ApplicationCall.respondServiceUnavailable(message: String, cause: Throwable) {
+    respond(HttpStatusCode.ServiceUnavailable)
+    log.warn("$message. $cause", cause)
+}
+
+class ConsumeSakerException(message: String, cause: Throwable) : Exception(message, cause)
 
 class ConsumePersonaliaException(message: String, cause: Throwable) : Exception(message, cause)
 
