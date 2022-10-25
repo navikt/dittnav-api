@@ -6,7 +6,6 @@ import no.nav.personbruker.dittnav.api.digisos.DigiSosConsumer
 import no.nav.personbruker.dittnav.api.digisos.DigiSosTokendings
 import no.nav.personbruker.dittnav.api.done.DoneProducer
 import no.nav.personbruker.dittnav.api.innboks.InnboksConsumer
-import no.nav.personbruker.dittnav.api.innboks.InnboksService
 import no.nav.personbruker.dittnav.api.meldekort.MeldekortConsumer
 import no.nav.personbruker.dittnav.api.meldekort.MeldekortTokendings
 import no.nav.personbruker.dittnav.api.oppfolging.OppfolgingConsumer
@@ -33,13 +32,12 @@ class ApplicationContext {
 
     private val oppgaveConsumer = OppgaveConsumer(httpClient, environment.eventHandlerURL)
     private val beskjedConsumer = BeskjedConsumer(httpClient, eventhandlerTokendings,environment.eventHandlerURL)
-    private val innboksConsumer = InnboksConsumer(httpClient, environment.eventHandlerURL)
+    val innboksConsumer = InnboksConsumer(httpClient, eventhandlerTokendings,environment.eventHandlerURL)
     private val mineSakerConsumer = MineSakerConsumer(httpClient, environment.sakerApiUrl)
 
     val doneProducer = DoneProducer(httpClient, eventhandlerTokendings, environment.eventHandlerURL)
 
     val oppgaveService = OppgaveService(oppgaveConsumer, eventhandlerTokendings)
-    val innboksService = InnboksService(innboksConsumer, eventhandlerTokendings)
     val sakerService = SakerService(mineSakerConsumer, environment.mineSakerURL, mineSakerTokendings)
 
     private val digiSosTokendings = DigiSosTokendings(tokendingsService, environment.digiSosClientId)

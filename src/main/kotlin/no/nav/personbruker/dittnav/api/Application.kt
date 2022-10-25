@@ -27,7 +27,7 @@ fun main() {
             oppfolgingConsumer = appContext.oppfolgingConsumer,
             oppgaveService = appContext.oppgaveService,
             beskjedMergerService = appContext.beskjedMergerService,
-            innboksService = appContext.innboksService,
+            innboksConsumer = appContext.innboksConsumer,
             sakerService = appContext.sakerService,
             personaliaService = appContext.personaliaService,
             digiSosConsumer = appContext.digiSosConsumer,

@@ -35,7 +35,7 @@ import no.nav.personbruker.dittnav.api.done.DoneProducer
 import no.nav.personbruker.dittnav.api.done.doneApi
 import no.nav.personbruker.dittnav.api.health.authenticationCheck
 import no.nav.personbruker.dittnav.api.health.healthApi
-import no.nav.personbruker.dittnav.api.innboks.InnboksService
+import no.nav.personbruker.dittnav.api.innboks.InnboksConsumer
 import no.nav.personbruker.dittnav.api.innboks.innboks
 import no.nav.personbruker.dittnav.api.meldekort.MeldekortConsumer
 import no.nav.personbruker.dittnav.api.meldekort.meldekortApi
@@ -56,7 +56,7 @@ fun Application.api(
     oppfolgingConsumer: OppfolgingConsumer,
     oppgaveService: OppgaveService,
     beskjedMergerService: BeskjedMergerService,
-    innboksService: InnboksService,
+    innboksConsumer: InnboksConsumer,
     sakerService: SakerService,
     personaliaService: PersonaliaService,
     digiSosConsumer: DigiSosConsumer,
@@ -123,7 +123,7 @@ fun Application.api(
                 oppfolgingApi(oppfolgingConsumer)
                 oppgave(oppgaveService)
                 beskjed(beskjedMergerService)
-                innboks(innboksService)
+                innboks(innboksConsumer)
                 saker(sakerService)
                 personalia(personaliaService)
                 digiSos(digiSosConsumer)

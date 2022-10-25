@@ -42,32 +42,36 @@ class InnboksApiTest {
     )
 
     @ParameterizedTest
-    @CsvSource("true, /fetch/innboks/aktive, dittnav-api/innboks", "false, /fetch/innboks/inaktive, dittnav-api/innboks/inaktiv")
-    fun `innboks-varsler`(expectedAktivStatus:Boolean, eventhandlerEndpoint:String, dittnavApiEndpoint: String) = testApplication {
-        mockApi(innboksService = createInnboksService())
-        externalServiceWithJsonResponse(
-            eventhandlerTestHost,
-            eventhandlerEndpoint,
-            innboksFraEventhandler.filter { it.aktiv == expectedAktivStatus }.toSpesificJsonFormat(Innboks::toEventHandlerJson)
-        )
-        client.authenticatedGet(dittnavApiEndpoint).apply {
-            status shouldBe HttpStatusCode.OK
-            val resultArray = bodyAsText().toJsonArray()
-            resultArray shouldHaveContentEqualTo innboksFraEventhandler.filter { it.aktiv == expectedAktivStatus }
+    @CsvSource(
+        "true, /fetch/innboks/aktive, dittnav-api/innboks",
+        "false, /fetch/innboks/inaktive, dittnav-api/innboks/inaktiv"
+    )
+    fun `innboks-varsler`(expectedAktivStatus: Boolean, eventhandlerEndpoint: String, dittnavApiEndpoint: String) =
+        testApplication {
+            mockApi(innboksConsumer = createInnboksConsumer())
+            externalServiceWithJsonResponse(
+                eventhandlerTestHost,
+                eventhandlerEndpoint,
+                innboksFraEventhandler.filter { it.aktiv == expectedAktivStatus }
+                    .toSpesificJsonFormat(Innboks::toEventHandlerJson)
+            )
+            client.authenticatedGet(dittnavApiEndpoint).apply {
+                status shouldBe HttpStatusCode.OK
+                val resultArray = bodyAsText().toJsonArray()
+                resultArray shouldHaveContentEqualTo innboksFraEventhandler.filter { it.aktiv == expectedAktivStatus }
+            }
         }
-    }
 
-    private fun ApplicationTestBuilder.createInnboksService(): InnboksService = InnboksService(
-        innboksConsumer = InnboksConsumer(
-            client = applicationHttpClient(),
-            eventHandlerBaseURL = URL(eventhandlerTestHost)
-        ),
+    private fun ApplicationTestBuilder.createInnboksConsumer(): InnboksConsumer = InnboksConsumer(
+        client = applicationHttpClient(),
+        eventHandlerBaseURL = URL(eventhandlerTestHost),
         eventhandlerTokenDings = mockk<EventhandlerTokendings>().also {
             coEvery { it.exchangeToken(any()) } returns AccessToken("duumyToken")
-        }
-    )
+        })
+
 
 }
+
 private infix fun JsonArray.shouldHaveContentEqualTo(expected: List<Innboks>) {
     withClue("Feil antall elementer i liste") { size shouldBe expected.size }
     val resultObjects = this.map { it.jsonObject }

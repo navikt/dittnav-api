@@ -25,7 +25,7 @@ import no.nav.personbruker.dittnav.api.config.api
 import no.nav.personbruker.dittnav.api.config.jsonConfig
 import no.nav.personbruker.dittnav.api.digisos.DigiSosConsumer
 import no.nav.personbruker.dittnav.api.done.DoneProducer
-import no.nav.personbruker.dittnav.api.innboks.InnboksService
+import no.nav.personbruker.dittnav.api.innboks.InnboksConsumer
 import no.nav.personbruker.dittnav.api.meldekort.MeldekortConsumer
 import no.nav.personbruker.dittnav.api.oppfolging.OppfolgingConsumer
 import no.nav.personbruker.dittnav.api.oppgave.OppgaveService
@@ -44,7 +44,7 @@ internal fun TestApplicationBuilder.mockApi(
     oppfolgingConsumer: OppfolgingConsumer = mockk(relaxed = true),
     oppgaveService: OppgaveService = mockk(relaxed = true),
     beskjedMergerService: BeskjedMergerService = mockk(relaxed = true),
-    innboksService: InnboksService = mockk(relaxed = true),
+    innboksConsumer: InnboksConsumer = mockk(relaxed = true),
     sakerService: SakerService = mockk(relaxed = true),
     personaliaService: PersonaliaService = mockk(relaxed = true),
     digiSosConsumer: DigiSosConsumer = mockk(relaxed = true),
@@ -62,7 +62,7 @@ internal fun TestApplicationBuilder.mockApi(
             oppfolgingConsumer = oppfolgingConsumer,
             oppgaveService = oppgaveService,
             beskjedMergerService = beskjedMergerService,
-            innboksService = innboksService,
+            innboksConsumer = innboksConsumer,
             sakerService = sakerService,
             personaliaService = personaliaService,
             digiSosConsumer = digiSosConsumer,

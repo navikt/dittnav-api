@@ -7,15 +7,15 @@ import io.ktor.server.routing.Route
 import io.ktor.server.routing.get
 import no.nav.personbruker.dittnav.api.config.authenticatedUser
 
-fun Route.innboks(innboksService: InnboksService) {
+fun Route.innboks(innboksConsumer: InnboksConsumer) {
 
     get("/innboks") {
-        val innboksEvents = innboksService.getActiveInnboksEvents(authenticatedUser)
+        val innboksEvents = innboksConsumer.getActiveInnboksEvents(authenticatedUser)
         call.respond(HttpStatusCode.OK, innboksEvents)
     }
 
     get("/innboks/inaktiv") {
-        val innboksEvents = innboksService.getInactiveInnboksEvents(authenticatedUser)
+        val innboksEvents = innboksConsumer.getInactiveInnboksEvents(authenticatedUser)
         call.respond(HttpStatusCode.OK, innboksEvents)
     }
 }
