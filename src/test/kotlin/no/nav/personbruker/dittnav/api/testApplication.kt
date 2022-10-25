@@ -26,7 +26,7 @@ import no.nav.personbruker.dittnav.api.config.jsonConfig
 import no.nav.personbruker.dittnav.api.digisos.DigiSosService
 import no.nav.personbruker.dittnav.api.done.DoneProducer
 import no.nav.personbruker.dittnav.api.innboks.InnboksService
-import no.nav.personbruker.dittnav.api.meldekort.MeldekortService
+import no.nav.personbruker.dittnav.api.meldekort.MeldekortConsumer
 import no.nav.personbruker.dittnav.api.oppfolging.OppfolgingConsumer
 import no.nav.personbruker.dittnav.api.oppgave.OppgaveService
 import no.nav.personbruker.dittnav.api.personalia.PersonaliaService
@@ -40,7 +40,7 @@ internal fun TestApplicationBuilder.mockApi(
     corsAllowedOrigins: String = "*.nav.no",
     corsAllowedSchemes: String = "https",
     corsAllowedHeaders: List<String> = emptyList(),
-    meldekortService: MeldekortService = mockk(relaxed = true),
+    meldekortConsumer: MeldekortConsumer = mockk(relaxed = true),
     oppfolgingConsumer: OppfolgingConsumer = mockk(relaxed = true),
     oppgaveService: OppgaveService = mockk(relaxed = true),
     beskjedMergerService: BeskjedMergerService = mockk(relaxed = true),
@@ -58,7 +58,7 @@ internal fun TestApplicationBuilder.mockApi(
             corsAllowedOrigins = corsAllowedOrigins,
             corsAllowedSchemes = corsAllowedSchemes,
             corsAllowedHeaders = corsAllowedHeaders,
-            meldekortService = meldekortService,
+            meldekortConsumer = meldekortConsumer,
             oppfolgingConsumer = oppfolgingConsumer,
             oppgaveService = oppgaveService,
             beskjedMergerService = beskjedMergerService,

@@ -14,7 +14,6 @@ import no.nav.personbruker.dittnav.api.done.DoneProducer
 import no.nav.personbruker.dittnav.api.innboks.InnboksConsumer
 import no.nav.personbruker.dittnav.api.innboks.InnboksService
 import no.nav.personbruker.dittnav.api.meldekort.MeldekortConsumer
-import no.nav.personbruker.dittnav.api.meldekort.MeldekortService
 import no.nav.personbruker.dittnav.api.meldekort.MeldekortTokendings
 import no.nav.personbruker.dittnav.api.oppfolging.OppfolgingConsumer
 import no.nav.personbruker.dittnav.api.oppgave.OppgaveConsumer
@@ -63,9 +62,8 @@ class ApplicationContext {
     private val personaliaConsumer = PersonaliaConsumer(httpClient, environment.personaliaApiUrl)
     val personaliaService = PersonaliaService(personaliaConsumer, personaliaTokendings)
 
-    private val meldekortConsumer = MeldekortConsumer(httpClient, environment.meldekortApiUrl)
     private val meldekortTokendings = MeldekortTokendings(tokendingsService, environment.meldekortClientId)
-    val meldekortService = MeldekortService(meldekortConsumer, meldekortTokendings)
+    val meldekortConsumer = MeldekortConsumer(httpClient, meldekortTokendings,environment.meldekortApiUrl)
 
     val oppfolgingConsumer = OppfolgingConsumer(httpClient, environment.oppfolgingApiUrl)
 

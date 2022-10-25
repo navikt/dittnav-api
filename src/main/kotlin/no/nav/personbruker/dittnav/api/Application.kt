@@ -23,7 +23,7 @@ fun main() {
             corsAllowedOrigins = appContext.environment.corsAllowedOrigins,
             corsAllowedSchemes = appContext.environment.corsAllowedSchemes,
             corsAllowedHeaders = appContext.environment.corsAllowedHeaders,
-            meldekortService = appContext.meldekortService,
+            meldekortConsumer = appContext.meldekortConsumer,
             oppfolgingConsumer = appContext.oppfolgingConsumer,
             oppgaveService = appContext.oppgaveService,
             beskjedMergerService = appContext.beskjedMergerService,

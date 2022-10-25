@@ -51,7 +51,7 @@ class MeldekortApiTest {
         )
 
         testApplication {
-            mockApi(meldekortService = MeldekortService(meldekortConsumer(), meldekortTokendings))
+            mockApi(meldekortConsumer = meldekortConsumer())
 
             externalServiceWithJsonResponse(
                 hostApiBase = meldekortApiBase,
@@ -86,7 +86,7 @@ class MeldekortApiTest {
 
     @Test
     fun `henter meldekortinfo for bruker som ikke har meldekort`() = testApplication {
-        mockApi(meldekortService = MeldekortService(meldekortConsumer(), meldekortTokendings))
+        mockApi(meldekortConsumer = meldekortConsumer())
 
         externalServiceWithJsonResponse(
             hostApiBase = meldekortApiBase,
@@ -126,7 +126,7 @@ class MeldekortApiTest {
         )
 
         testApplication {
-            mockApi(meldekortService = MeldekortService(meldekortConsumer(), meldekortTokendings))
+            mockApi(meldekortConsumer = meldekortConsumer())
             externalServiceWithJsonResponse(
                 hostApiBase = meldekortApiBase,
                 endpoint = medlekortStatusEndpoint,
@@ -150,7 +150,11 @@ class MeldekortApiTest {
     }
 
     private fun ApplicationTestBuilder.meldekortConsumer(): MeldekortConsumer =
-        MeldekortConsumer(client = applicationHttpClient(), meldekortApiBaseURL = URL(meldekortApiBase))
+        MeldekortConsumer(
+            client = applicationHttpClient(),
+            meldekortApiBaseURL = URL(meldekortApiBase),
+            meldekortTokendings = meldekortTokendings
+        )
 
 }
 
