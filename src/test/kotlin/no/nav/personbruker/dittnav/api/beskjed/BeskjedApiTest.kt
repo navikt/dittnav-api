@@ -1,4 +1,4 @@
-package no.nav.personbruker.dittnav.api.beskjed;
+package no.nav.personbruker.dittnav.api.beskjed
 
 import io.kotest.assertions.withClue
 import io.kotest.matchers.collections.shouldContainExactly
@@ -17,7 +17,6 @@ import io.mockk.mockk
 import kotlinx.serialization.json.JsonArray
 import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.jsonObject
-import no.finn.unleash.FakeUnleash
 import no.nav.personbruker.dittnav.api.applicationHttpClient
 import no.nav.personbruker.dittnav.api.authenticatedGet
 import no.nav.personbruker.dittnav.api.bool
@@ -34,8 +33,8 @@ import no.nav.personbruker.dittnav.api.string
 import no.nav.personbruker.dittnav.api.stringArray
 import no.nav.personbruker.dittnav.api.toJsonArray
 import no.nav.personbruker.dittnav.api.toSpesificJsonFormat
-import no.nav.personbruker.dittnav.api.tokenx.*
-import no.nav.personbruker.dittnav.api.unleash.UnleashService
+import no.nav.personbruker.dittnav.api.tokenx.AccessToken
+import no.nav.personbruker.dittnav.api.tokenx.EventhandlerTokendings
 import no.nav.personbruker.dittnav.api.zonedDateTime
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.CsvSource
@@ -53,7 +52,6 @@ class BeskjedApiTest {
     private val mockkDigiSosTokendings = mockk<DigiSosTokendings>().also {
         coEvery { it.exchangeToken(any()) } returns AccessToken("Access!")
     }
-    private val fakeUnleash = FakeUnleash()
 
     private val expectedBeskjedFromDigsos =
         listOf(
@@ -79,7 +77,6 @@ class BeskjedApiTest {
     @ParameterizedTest
     @CsvSource("true, dittnav-api/beskjed", "false, dittnav-api/beskjed/inaktiv")
     fun `beskjeder fra både digisos og eventhandler`(aktive: Boolean, endpoint: String) {
-        fakeUnleash.enable(UnleashService.digisosPaabegynteToggleName)
 
         val expectedBeskjedContent =
             expectedBeskjedFromDigsos.filter { it.aktiv == aktive } + expectedBeskjedFromEventhandler.filter { it.aktiv == aktive }
@@ -94,29 +91,11 @@ class BeskjedApiTest {
         }
     }
 
-    @ParameterizedTest
-    @CsvSource("true, dittnav-api/beskjed")
-    fun `beskjeder kun fra eventhandler`(aktive: Boolean, endpoint: String) {
-        fakeUnleash.disable(UnleashService.digisosPaabegynteToggleName)
-
-        val expectedBeskjedDTOs = expectedBeskjedFromEventhandler.filter { it.aktiv == aktive }
-        testApplication {
-            setupExternalBeskjedServices()
-            mockApi(beskjedMergerService = createBeskjedMergerService())
-
-            client.authenticatedGet(endpoint).apply {
-                status shouldBe HttpStatusCode.OK
-                val resultArray = bodyAsText().toJsonArray()
-                resultArray shouldHaveContentEqualTo expectedBeskjedDTOs
-            }
-        }
-    }
 
     @ParameterizedTest
     @CsvSource("true, dittnav-api/beskjed", "false, dittnav-api/beskjed/inaktiv")
     fun `beskjeder fra eventhandler hvis digisos feiler`(aktive: Boolean, endpoint: String){
-        fakeUnleash.enable(UnleashService.digisosPaabegynteToggleName)
-        val expectedBeskjedDTOs = expectedBeskjedFromEventhandler.filter { it.aktiv == aktive }
+         val expectedBeskjedDTOs = expectedBeskjedFromEventhandler.filter { it.aktiv == aktive }
         testApplication {
             setupExternalBeskjedServices(withErrorFromDigiSos = true)
             mockApi(beskjedMergerService = createBeskjedMergerService())
@@ -133,7 +112,6 @@ class BeskjedApiTest {
     @ParameterizedTest
     @CsvSource("true, dittnav-api/beskjed", "false, dittnav-api/beskjed/inaktiv")
     fun `beskjeder fra digisos hvis eventhandler feiler`(aktive: Boolean, endpoint: String){
-        fakeUnleash.enable(UnleashService.digisosPaabegynteToggleName)
         val expectedBeskjedDTOs = expectedBeskjedFromDigsos.filter { it.aktiv == aktive }
         testApplication {
             setupExternalBeskjedServices(withErrorFromEventhandler = true)
@@ -200,8 +178,7 @@ class BeskjedApiTest {
                 digiSosSoknadBaseURL = URL(digisosTestHost)
             ),
             mockkDigiSosTokendings
-        ),
-        unleashService = UnleashService(unleashClient = fakeUnleash)
+        )
     )
 }
 

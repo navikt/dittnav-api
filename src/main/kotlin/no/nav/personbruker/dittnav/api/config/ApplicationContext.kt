@@ -46,8 +46,6 @@ class ApplicationContext {
 
     val doneProducer = DoneProducer(httpClient, eventhandlerTokendings, environment.eventHandlerURL)
 
-    private val unleashService = createUnleashService(environment)
-
     val oppgaveService = OppgaveService(oppgaveConsumer, eventhandlerTokendings)
     private val beskjedService = BeskjedService(beskjedConsumer, eventhandlerTokendings)
     val innboksService = InnboksService(innboksConsumer, eventhandlerTokendings)
@@ -57,7 +55,7 @@ class ApplicationContext {
     private val digiSosTokendings = DigiSosTokendings(tokendingsService, environment.digiSosClientId)
     val digiSosService = DigiSosService(digiSosConsumer, digiSosTokendings)
 
-    val beskjedMergerService = BeskjedMergerService(beskjedService, digiSosService, unleashService)
+    val beskjedMergerService = BeskjedMergerService(beskjedService, digiSosService)
 
     private val personaliaConsumer = PersonaliaConsumer(httpClient, environment.personaliaApiUrl)
     val personaliaService = PersonaliaService(personaliaConsumer, personaliaTokendings)
@@ -66,41 +64,4 @@ class ApplicationContext {
     val meldekortConsumer = MeldekortConsumer(httpClient, meldekortTokendings,environment.meldekortApiUrl)
 
     val oppfolgingConsumer = OppfolgingConsumer(httpClient, environment.oppfolgingApiUrl)
-
-    private fun createUnleashService(environment: Environment): UnleashService {
-
-        val unleashClient = if (environment.unleashApiUrl == "fake") {
-            createFakeUnleashClient(environment)
-        } else {
-            createUnleashClient(environment)
-        }
-
-        return UnleashService(unleashClient)
-    }
-
-    private fun createUnleashClient(environment: Environment): Unleash {
-        val unleashUrl = environment.unleashApiUrl
-
-        val appName = "dittnav-api"
-        val envContext = if (NaisEnvironment.isRunningInDev()) "dev" else "prod"
-
-        val byEnvironment = ByEnvironmentStrategy(envContext)
-
-        val config = UnleashConfig.builder()
-            .appName(appName)
-            .unleashAPI(unleashUrl)
-            .build()
-
-        return DefaultUnleash(config, byEnvironment)
-    }
-
-    private fun createFakeUnleashClient(environment: Environment): Unleash {
-        return FakeUnleash().apply {
-            if (environment.fakeUnleashIncludeDigiSos) {
-                enable(UnleashService.digisosPaabegynteToggleName)
-            } else {
-                disable(UnleashService.digisosPaabegynteToggleName)
-            }
-        }
-    }
 }

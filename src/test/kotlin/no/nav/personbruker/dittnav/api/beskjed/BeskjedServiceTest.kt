@@ -49,50 +49,6 @@ internal class BeskjedServiceTest {
     }
 
     @Test
-    fun `should mask events with security level higher than current user`() {
-        val ident = "1"
-        var beskjed = createBeskjed(eventId = "1", fodselsnummer = ident, aktiv = true)
-        beskjed = beskjed.copy(sikkerhetsnivaa = 4)
-        user = TestUser.createAuthenticatedUser(ident, 3)
-        coEvery { eventhandlerTokendings.exchangeToken(user) } returns dummyToken
-        coEvery { beskjedConsumer.getExternalActiveEvents(dummyToken) } returns listOf(beskjed)
-        runBlocking {
-            val beskjedResult = beskjedService.getActiveBeskjedEvents(user)
-            val beskjedDTO = beskjedResult.results().first()
-            beskjedDTO.tekst shouldBe "***"
-            beskjedDTO.link shouldBe "***"
-            beskjedDTO.sikkerhetsnivaa shouldBe 4
-        }
-    }
-
-    @Test
-    fun `should not mask events with security level lower than current user`() {
-        var beskjed = createBeskjed(eventId = "1", fodselsnummer = "1", aktiv = true)
-        beskjed = beskjed.copy(sikkerhetsnivaa = 3)
-        coEvery { beskjedConsumer.getExternalActiveEvents(dummyToken) } returns listOf(beskjed)
-        runBlocking {
-            val beskjedResult = beskjedService.getActiveBeskjedEvents(user)
-            val beskjedDTO = beskjedResult.results().first()
-            beskjedDTO.tekst shouldBe beskjed.tekst
-            beskjedDTO.link shouldBe beskjed.link
-            beskjedDTO.sikkerhetsnivaa shouldBe 3
-        }
-    }
-
-    @Test
-    fun `should not mask events with security level equal than current user`() {
-        val beskjed = createBeskjed(eventId = "1", fodselsnummer = "1", aktiv = true)
-        coEvery { beskjedConsumer.getExternalActiveEvents(dummyToken) } returns listOf(beskjed)
-        runBlocking {
-            val beskjedResult = beskjedService.getActiveBeskjedEvents(user)
-            val beskjedDTO = beskjedResult.results().first()
-            beskjedDTO.tekst shouldBe beskjed.tekst
-            beskjedDTO.link shouldBe beskjed.link
-            beskjedDTO.sikkerhetsnivaa shouldBe 4
-        }
-    }
-
-    @Test
     fun `should throw exception if fetching active events fails`() {
         coEvery { beskjedConsumer.getExternalActiveEvents(dummyToken) } throws Exception("error")
         runBlocking {

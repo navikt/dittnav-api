@@ -7,37 +7,53 @@ import org.junit.jupiter.api.Test
 class BeskjedTest {
 
     @Test
-    fun `should transform from Beskjed to BeskjedDTO`() {
-        val beskjed1 = createBeskjed(eventId = "1", fodselsnummer = "1",  aktiv = true, sikkerhetsnivaa = 4)
-        val beskjed2 = createBeskjed(eventId = "2", fodselsnummer = "2", aktiv = true, sikkerhetsnivaa = 4)
-        val beskjedDTOList = listOf(beskjed1, beskjed2).map { it.toBeskjedDto(operatingLoginLevel = 4) }
-        val beskjedDTO = beskjedDTOList.first()
-
-        beskjedDTO.forstBehandlet shouldBe beskjed1.forstBehandlet
-        beskjedDTO.eventId shouldBe beskjed1.eventId
-        beskjedDTO.tekst shouldBe beskjed1.tekst
-        beskjedDTO.link shouldBe beskjed1.link
-        beskjedDTO.produsent shouldBe beskjed1.produsent
-        beskjedDTO.sistOppdatert shouldBe beskjed1.sistOppdatert
-        beskjedDTO.sikkerhetsnivaa shouldBe beskjed1.sikkerhetsnivaa
-        beskjedDTO.grupperingsId shouldBe beskjed1.grupperingsId
-        beskjedDTO.eksternVarslingSendt shouldBe beskjed1.eksternVarslingSendt
-        beskjedDTO.eksternVarslingKanaler shouldBe beskjed1.eksternVarslingKanaler
+    fun `should mask beskjed with security level higher than current user`() {
+        val beskjed = createBeskjed(eventId = "1", fodselsnummer = "1", aktiv = true, sikkerhetsnivaa = 4)
+        beskjed.toBeskjedDto(operatingLoginLevel = 3).apply {
+            forstBehandlet shouldBe beskjed.forstBehandlet
+            eventId shouldBe beskjed.eventId
+            tekst shouldBe "***"
+            link shouldBe "***"
+            produsent shouldBe "***"
+            sistOppdatert shouldBe beskjed.sistOppdatert
+            sikkerhetsnivaa shouldBe beskjed.sikkerhetsnivaa
+            grupperingsId shouldBe beskjed.grupperingsId
+            eksternVarslingSendt shouldBe beskjed.eksternVarslingSendt
+            eksternVarslingKanaler shouldBe beskjed.eksternVarslingKanaler
+        }
     }
 
     @Test
-    fun `should mask tekst, link and produsent`() {
-        val beskjed = createBeskjed(eventId = "1", fodselsnummer = "1", aktiv = true, sikkerhetsnivaa = 4)
-        val beskjedDTO = beskjed.toBeskjedDto(operatingLoginLevel = 3)
-        beskjedDTO.forstBehandlet shouldBe beskjed.forstBehandlet
-        beskjedDTO.eventId shouldBe beskjed.eventId
-        beskjedDTO.tekst shouldBe "***"
-        beskjedDTO.link shouldBe "***"
-        beskjedDTO.produsent shouldBe "***"
-        beskjedDTO.sistOppdatert shouldBe beskjed.sistOppdatert
-        beskjedDTO.sikkerhetsnivaa shouldBe beskjed.sikkerhetsnivaa
-        beskjedDTO.grupperingsId shouldBe beskjed.grupperingsId
-        beskjedDTO.eksternVarslingSendt shouldBe beskjed.eksternVarslingSendt
-        beskjedDTO.eksternVarslingKanaler shouldBe beskjed.eksternVarslingKanaler
+    fun `should not mask beskjed with security level lower than current user`() {
+        val beskjed = createBeskjed(eventId = "1", fodselsnummer = "1", aktiv = true, sikkerhetsnivaa = 3)
+        beskjed.toBeskjedDto(4).apply {
+            forstBehandlet shouldBe beskjed.forstBehandlet
+            eventId shouldBe beskjed.eventId
+            tekst shouldBe beskjed.tekst
+            link shouldBe beskjed.link
+            produsent shouldBe beskjed.produsent
+            sistOppdatert shouldBe beskjed.sistOppdatert
+            sikkerhetsnivaa shouldBe beskjed.sikkerhetsnivaa
+            grupperingsId shouldBe beskjed.grupperingsId
+            eksternVarslingSendt shouldBe beskjed.eksternVarslingSendt
+            eksternVarslingKanaler shouldBe beskjed.eksternVarslingKanaler
+        }
+    }
+
+    @Test
+    fun `should not mask beskjed with security level equal to the current user`() {
+        val beskjed1 = createBeskjed(eventId = "1", fodselsnummer = "1", aktiv = true, sikkerhetsnivaa = 4)
+        beskjed1.toBeskjedDto(4).apply {
+            forstBehandlet shouldBe beskjed1.forstBehandlet
+            eventId shouldBe beskjed1.eventId
+            tekst shouldBe beskjed1.tekst
+            link shouldBe beskjed1.link
+            produsent shouldBe beskjed1.produsent
+            sistOppdatert shouldBe beskjed1.sistOppdatert
+            sikkerhetsnivaa shouldBe beskjed1.sikkerhetsnivaa
+            grupperingsId shouldBe beskjed1.grupperingsId
+            eksternVarslingSendt shouldBe beskjed1.eksternVarslingSendt
+            eksternVarslingKanaler shouldBe beskjed1.eksternVarslingKanaler
+        }
     }
 }

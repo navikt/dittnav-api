@@ -11,8 +11,7 @@ import no.nav.personbruker.dittnav.api.unleash.UnleashService
 
 class BeskjedMergerService(
     private val beskjedService: BeskjedService,
-    private val digiSosService: DigiSosService,
-    private val unleashService: UnleashService
+    private val digiSosService: DigiSosService
 ) {
 
     suspend fun getActiveEvents(user: AuthenticatedUser): MultiSourceResult<BeskjedDTO, KildeType> = withContext(Dispatchers.IO) {
@@ -21,18 +20,12 @@ class BeskjedMergerService(
         }
 
         val paabegynte = async {
-            fetchActiveFromDigiSosIfEnabled(user)
+            digiSosService.getPaabegynteActive(user)
         }
 
         beskjeder.await() + paabegynte.await()
     }
 
-    private suspend fun fetchActiveFromDigiSosIfEnabled(user: AuthenticatedUser) =
-        if (unleashService.digiSosPaabegynteEnabled(user)) {
-            digiSosService.getPaabegynteActive(user)
-        } else {
-            MultiSourceResult.createEmptyResult()
-        }
 
     suspend fun getInactiveEvents(user: AuthenticatedUser): MultiSourceResult<BeskjedDTO, KildeType> = withContext(Dispatchers.IO) {
         val beskjeder = async {
@@ -40,17 +33,10 @@ class BeskjedMergerService(
         }
 
         val paabegynte = async {
-            fetchInactiveFromDigiSosIfEnabled(user)
+            digiSosService.getPaabegynteInactive(user)
         }
 
         beskjeder.await() + paabegynte.await()
     }
-
-    private suspend fun fetchInactiveFromDigiSosIfEnabled(user: AuthenticatedUser) =
-        if (unleashService.digiSosPaabegynteEnabled(user)) {
-            digiSosService.getPaabegynteInactive(user)
-        } else {
-            MultiSourceResult.createEmptyResult()
-        }
 
 }
