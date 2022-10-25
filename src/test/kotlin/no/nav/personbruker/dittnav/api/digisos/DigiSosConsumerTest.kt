@@ -5,20 +5,27 @@ import io.kotest.matchers.collections.shouldContainExactly
 import io.kotest.matchers.nulls.shouldNotBeNull
 import io.kotest.matchers.shouldBe
 import io.ktor.http.HttpStatusCode
+import io.ktor.server.application.ApplicationCall
 import io.ktor.server.application.call
+import io.ktor.server.request.receive
 import io.ktor.server.response.respond
 import io.ktor.server.routing.get
+import io.ktor.server.routing.post
 import io.ktor.server.routing.routing
 import io.ktor.server.testing.testApplication
 import io.mockk.coEvery
 import io.mockk.mockk
 import kotlinx.coroutines.runBlocking
+import kotlinx.serialization.json.jsonObject
 import no.nav.personbruker.dittnav.api.TestUser
 import no.nav.personbruker.dittnav.api.applicationHttpClient
 import no.nav.personbruker.dittnav.api.beskjed.BeskjedDTO
 import no.nav.personbruker.dittnav.api.beskjed.KildeType
+import no.nav.personbruker.dittnav.api.config.jsonConfig
 import no.nav.personbruker.dittnav.api.externalServiceWithJsonResponse
+import no.nav.personbruker.dittnav.api.string
 import no.nav.personbruker.dittnav.api.tokenx.AccessToken
+import org.eclipse.jetty.http.HttpStatus
 import org.intellij.lang.annotations.Language
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.params.ParameterizedTest
@@ -123,6 +130,37 @@ internal class DigiSosConsumerTest {
             digiSosConsumer.getPaabegynteInactive(dummyUser).failedSources().shouldContainExactly(KildeType.DIGISOS)
 
         }
+
+    @Test
+    fun `Sender done til digisos`() =
+        testApplication {
+            val digiSosConsumer = DigiSosConsumer(
+                client = applicationHttpClient(),
+                tokendings = mockTokendings,
+                digiSosSoknadBaseURL = URL(digiSosSoknadBaseURL)
+            )
+            externalServices {
+                hosts(digiSosSoknadBaseURL) {
+                    routing {
+                        post("/dittnav/pabegynte/lest") {
+                            when (call.eventId()) {
+                                "233" -> call.respond(HttpStatusCode.OK)
+                                "288" -> call.respond(HttpStatusCode.InternalServerError)
+                                else -> call.respond(HttpStatusCode.BadRequest)
+                            }
+                        }
+                    }
+                }
+            }
+
+            digiSosConsumer.markEventAsDone(dummyUser, DoneDTO("233", "3456"))
+                .status shouldBe HttpStatusCode.OK
+            digiSosConsumer.markEventAsDone(dummyUser, DoneDTO("288", "3456"))
+                .status shouldBe HttpStatusCode.InternalServerError
+            digiSosConsumer.markEventAsDone(dummyUser, DoneDTO("200", "3456"))
+                .status shouldBe HttpStatusCode.BadRequest
+        }
+
 }
 
 private infix fun List<BeskjedDTO>.shouldContainEventId(eventId: String) {
@@ -143,3 +181,8 @@ private fun rawDigiSosResponse(eventId: String, active: Boolean) =
         "tekst": "Dette er en dummytekst"
     }
 """.trimIndent()
+
+
+private suspend fun ApplicationCall.eventId() = this.receive<String>().let {
+    jsonConfig().parseToJsonElement(it).jsonObject.string("eventId")
+}
