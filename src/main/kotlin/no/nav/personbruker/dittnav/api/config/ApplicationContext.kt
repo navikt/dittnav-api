@@ -17,7 +17,6 @@ import no.nav.personbruker.dittnav.api.meldekort.MeldekortConsumer
 import no.nav.personbruker.dittnav.api.meldekort.MeldekortService
 import no.nav.personbruker.dittnav.api.meldekort.MeldekortTokendings
 import no.nav.personbruker.dittnav.api.oppfolging.OppfolgingConsumer
-import no.nav.personbruker.dittnav.api.oppfolging.OppfolgingService
 import no.nav.personbruker.dittnav.api.oppgave.OppgaveConsumer
 import no.nav.personbruker.dittnav.api.oppgave.OppgaveService
 import no.nav.personbruker.dittnav.api.tokenx.EventhandlerTokendings
@@ -68,8 +67,7 @@ class ApplicationContext {
     private val meldekortTokendings = MeldekortTokendings(tokendingsService, environment.meldekortClientId)
     val meldekortService = MeldekortService(meldekortConsumer, meldekortTokendings)
 
-    private val oppfolgingConsumer = OppfolgingConsumer(httpClient, environment.oppfolgingApiUrl)
-    val oppfolgingService = OppfolgingService(oppfolgingConsumer)
+    val oppfolgingConsumer = OppfolgingConsumer(httpClient, environment.oppfolgingApiUrl)
 
     private fun createUnleashService(environment: Environment): UnleashService {
 

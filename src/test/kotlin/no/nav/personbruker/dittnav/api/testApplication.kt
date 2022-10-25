@@ -27,7 +27,7 @@ import no.nav.personbruker.dittnav.api.digisos.DigiSosService
 import no.nav.personbruker.dittnav.api.done.DoneProducer
 import no.nav.personbruker.dittnav.api.innboks.InnboksService
 import no.nav.personbruker.dittnav.api.meldekort.MeldekortService
-import no.nav.personbruker.dittnav.api.oppfolging.OppfolgingService
+import no.nav.personbruker.dittnav.api.oppfolging.OppfolgingConsumer
 import no.nav.personbruker.dittnav.api.oppgave.OppgaveService
 import no.nav.personbruker.dittnav.api.personalia.PersonaliaService
 import no.nav.personbruker.dittnav.api.saker.SakerService
@@ -41,7 +41,7 @@ internal fun TestApplicationBuilder.mockApi(
     corsAllowedSchemes: String = "https",
     corsAllowedHeaders: List<String> = emptyList(),
     meldekortService: MeldekortService = mockk(relaxed = true),
-    oppfolgingService: OppfolgingService = mockk(relaxed = true),
+    oppfolgingConsumer: OppfolgingConsumer = mockk(relaxed = true),
     oppgaveService: OppgaveService = mockk(relaxed = true),
     beskjedMergerService: BeskjedMergerService = mockk(relaxed = true),
     innboksService: InnboksService = mockk(relaxed = true),
@@ -59,7 +59,7 @@ internal fun TestApplicationBuilder.mockApi(
             corsAllowedSchemes = corsAllowedSchemes,
             corsAllowedHeaders = corsAllowedHeaders,
             meldekortService = meldekortService,
-            oppfolgingService = oppfolgingService,
+            oppfolgingConsumer = oppfolgingConsumer,
             oppgaveService = oppgaveService,
             beskjedMergerService = beskjedMergerService,
             innboksService = innboksService,

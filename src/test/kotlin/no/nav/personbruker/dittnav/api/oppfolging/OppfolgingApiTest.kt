@@ -8,8 +8,6 @@ import io.ktor.server.response.respond
 import io.ktor.server.routing.get
 import io.ktor.server.routing.routing
 import io.ktor.server.testing.testApplication
-import kotlinx.serialization.json.Json
-import kotlinx.serialization.json.jsonObject
 import no.nav.personbruker.dittnav.api.applicationHttpClient
 import no.nav.personbruker.dittnav.api.authenticatedGet
 import no.nav.personbruker.dittnav.api.bool
@@ -30,11 +28,9 @@ class OppfolgingApiTest {
     @ValueSource(booleans = [true, false])
     fun `Under oppfølging`(forventetOppfølgingStaus: Boolean) = testApplication {
         mockApi(
-            oppfolgingService = OppfolgingService(
-                oppfolgingConsumer = OppfolgingConsumer(
-                    client = applicationHttpClient(),
-                    oppfolgingApiBaseURL = URL(testHost)
-                )
+            oppfolgingConsumer = OppfolgingConsumer(
+                client = applicationHttpClient(),
+                oppfolgingApiBaseURL = URL(testHost)
             )
         )
         externalServiceWithJsonResponse(
@@ -52,18 +48,16 @@ class OppfolgingApiTest {
     @Test
     fun `500 når dittnav-api feiler mot eventhandlerApi`() = testApplication {
         mockApi(
-            oppfolgingService = OppfolgingService(
-                oppfolgingConsumer = OppfolgingConsumer(
-                    client = applicationHttpClient(),
-                    oppfolgingApiBaseURL = URL(testHost)
-                )
+            oppfolgingConsumer = OppfolgingConsumer(
+                client = applicationHttpClient(),
+                oppfolgingApiBaseURL = URL(testHost)
             )
         )
 
         externalServices {
-            hosts(testHost){
+            hosts(testHost) {
                 routing {
-                    get(apiEndpoint){
+                    get(apiEndpoint) {
                         call.respond(HttpStatusCode.InternalServerError)
                     }
                 }

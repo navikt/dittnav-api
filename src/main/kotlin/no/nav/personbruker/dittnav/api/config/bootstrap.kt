@@ -39,7 +39,7 @@ import no.nav.personbruker.dittnav.api.innboks.InnboksService
 import no.nav.personbruker.dittnav.api.innboks.innboks
 import no.nav.personbruker.dittnav.api.meldekort.MeldekortService
 import no.nav.personbruker.dittnav.api.meldekort.meldekortApi
-import no.nav.personbruker.dittnav.api.oppfolging.OppfolgingService
+import no.nav.personbruker.dittnav.api.oppfolging.OppfolgingConsumer
 import no.nav.personbruker.dittnav.api.oppfolging.oppfolgingApi
 import no.nav.personbruker.dittnav.api.oppgave.OppgaveService
 import no.nav.personbruker.dittnav.api.oppgave.oppgave
@@ -53,7 +53,7 @@ fun Application.api(
     corsAllowedSchemes: String,
     corsAllowedHeaders: List<String>,
     meldekortService: MeldekortService,
-    oppfolgingService: OppfolgingService,
+    oppfolgingConsumer: OppfolgingConsumer,
     oppgaveService: OppgaveService,
     beskjedMergerService: BeskjedMergerService,
     innboksService: InnboksService,
@@ -120,7 +120,7 @@ fun Application.api(
             healthApi(collectorRegistry)
             authenticate {
                 meldekortApi(meldekortService)
-                oppfolgingApi(oppfolgingService)
+                oppfolgingApi(oppfolgingConsumer)
                 oppgave(oppgaveService)
                 beskjed(beskjedMergerService)
                 innboks(innboksService)

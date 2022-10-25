@@ -9,13 +9,13 @@ import io.ktor.server.routing.get
 import mu.KotlinLogging
 import no.nav.personbruker.dittnav.api.config.authenticatedUser
 
-fun Route.oppfolgingApi(oppfolgingService: OppfolgingService) {
+fun Route.oppfolgingApi(oppfolgingConsumer: OppfolgingConsumer) {
 
     val log = KotlinLogging.logger { }
 
     get("/oppfolging") {
         try {
-            val oppfolgingInfo = oppfolgingService.getOppfolging(authenticatedUser)
+            val oppfolgingInfo = oppfolgingConsumer.getOppfolging(authenticatedUser)
 
             call.respond(oppfolgingInfo)
         } catch (e: Exception) {
