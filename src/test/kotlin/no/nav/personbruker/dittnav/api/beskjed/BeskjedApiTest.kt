@@ -94,8 +94,8 @@ class BeskjedApiTest {
 
     @ParameterizedTest
     @CsvSource("true, dittnav-api/beskjed", "false, dittnav-api/beskjed/inaktiv")
-    fun `beskjeder fra eventhandler hvis digisos feiler`(aktive: Boolean, endpoint: String){
-         val expectedBeskjedDTOs = expectedBeskjedFromEventhandler.filter { it.aktiv == aktive }
+    fun `beskjeder fra eventhandler hvis digisos feiler`(aktive: Boolean, endpoint: String) {
+        val expectedBeskjedDTOs = expectedBeskjedFromEventhandler.filter { it.aktiv == aktive }
         testApplication {
             setupExternalBeskjedServices(withErrorFromDigiSos = true)
             mockApi(beskjedMergerService = createBeskjedMergerService())
@@ -111,7 +111,7 @@ class BeskjedApiTest {
 
     @ParameterizedTest
     @CsvSource("true, dittnav-api/beskjed", "false, dittnav-api/beskjed/inaktiv")
-    fun `beskjeder fra digisos hvis eventhandler feiler`(aktive: Boolean, endpoint: String){
+    fun `beskjeder fra digisos hvis eventhandler feiler`(aktive: Boolean, endpoint: String) {
         val expectedBeskjedDTOs = expectedBeskjedFromDigsos.filter { it.aktiv == aktive }
         testApplication {
             setupExternalBeskjedServices(withErrorFromEventhandler = true)
@@ -165,11 +165,9 @@ class BeskjedApiTest {
     }
 
     private fun ApplicationTestBuilder.createBeskjedMergerService(): BeskjedMergerService = BeskjedMergerService(
-        beskjedService = BeskjedService(
-            beskjedConsumer = BeskjedConsumer(
-                client = applicationHttpClient(),
-                eventHandlerBaseURL = URL(eventhandlerTestHost)
-            ),
+        beskjedConsumer = BeskjedConsumer(
+            client = applicationHttpClient(),
+            eventHandlerBaseURL = URL(eventhandlerTestHost),
             eventhandlerTokendings = mockkHandlerTokendings
         ),
         digiSosService = DigiSosService(

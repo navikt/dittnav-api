@@ -1,12 +1,7 @@
 package no.nav.personbruker.dittnav.api.config
 
-import no.finn.unleash.DefaultUnleash
-import no.finn.unleash.FakeUnleash
-import no.finn.unleash.Unleash
-import no.finn.unleash.util.UnleashConfig
 import no.nav.personbruker.dittnav.api.beskjed.BeskjedConsumer
 import no.nav.personbruker.dittnav.api.beskjed.BeskjedMergerService
-import no.nav.personbruker.dittnav.api.beskjed.BeskjedService
 import no.nav.personbruker.dittnav.api.digisos.DigiSosConsumer
 import no.nav.personbruker.dittnav.api.digisos.DigiSosService
 import no.nav.personbruker.dittnav.api.digisos.DigiSosTokendings
@@ -25,8 +20,6 @@ import no.nav.personbruker.dittnav.api.personalia.PersonaliaTokendings
 import no.nav.personbruker.dittnav.api.saker.MineSakerConsumer
 import no.nav.personbruker.dittnav.api.saker.MineSakerTokendings
 import no.nav.personbruker.dittnav.api.saker.SakerService
-import no.nav.personbruker.dittnav.api.unleash.ByEnvironmentStrategy
-import no.nav.personbruker.dittnav.api.unleash.UnleashService
 import no.nav.tms.token.support.tokendings.exchange.TokendingsServiceBuilder
 
 class ApplicationContext {
@@ -40,14 +33,13 @@ class ApplicationContext {
     private val personaliaTokendings = PersonaliaTokendings(tokendingsService, environment.personaliaApiClientId)
 
     private val oppgaveConsumer = OppgaveConsumer(httpClient, environment.eventHandlerURL)
-    private val beskjedConsumer = BeskjedConsumer(httpClient, environment.eventHandlerURL)
+    private val beskjedConsumer = BeskjedConsumer(httpClient, eventhandlerTokendings,environment.eventHandlerURL)
     private val innboksConsumer = InnboksConsumer(httpClient, environment.eventHandlerURL)
     private val mineSakerConsumer = MineSakerConsumer(httpClient, environment.sakerApiUrl)
 
     val doneProducer = DoneProducer(httpClient, eventhandlerTokendings, environment.eventHandlerURL)
 
     val oppgaveService = OppgaveService(oppgaveConsumer, eventhandlerTokendings)
-    private val beskjedService = BeskjedService(beskjedConsumer, eventhandlerTokendings)
     val innboksService = InnboksService(innboksConsumer, eventhandlerTokendings)
     val sakerService = SakerService(mineSakerConsumer, environment.mineSakerURL, mineSakerTokendings)
 
@@ -55,7 +47,7 @@ class ApplicationContext {
     private val digiSosTokendings = DigiSosTokendings(tokendingsService, environment.digiSosClientId)
     val digiSosService = DigiSosService(digiSosConsumer, digiSosTokendings)
 
-    val beskjedMergerService = BeskjedMergerService(beskjedService, digiSosService)
+    val beskjedMergerService = BeskjedMergerService(beskjedConsumer, digiSosService)
 
     private val personaliaConsumer = PersonaliaConsumer(httpClient, environment.personaliaApiUrl)
     val personaliaService = PersonaliaService(personaliaConsumer, personaliaTokendings)

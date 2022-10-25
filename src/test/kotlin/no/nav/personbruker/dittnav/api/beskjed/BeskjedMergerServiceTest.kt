@@ -15,7 +15,7 @@ import org.junit.jupiter.api.Test
 
 internal class BeskjedMergerServiceTest {
 
-    private val beskjedService = mockk<BeskjedService>(relaxed = true)
+    private val beskjedService = mockk<BeskjedConsumer>(relaxed = true)
     private val digiSosService = mockk<DigiSosService>(relaxed = true)
 
     private val innloggetBruker = TestUser.createAuthenticatedUser()
