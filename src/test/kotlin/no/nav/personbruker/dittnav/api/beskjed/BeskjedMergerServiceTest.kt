@@ -9,8 +9,8 @@ import io.mockk.mockk
 import kotlinx.coroutines.runBlocking
 import no.finn.unleash.FakeUnleash
 import no.nav.personbruker.dittnav.api.TestUser
-import no.nav.personbruker.dittnav.api.common.getNumberOfSuccessfulBeskjedEventsForSource
 import no.nav.personbruker.dittnav.api.digisos.DigiSosService
+import no.nav.personbruker.dittnav.api.getNumberOfSuccessfulBeskjedEventsForSource
 import no.nav.personbruker.dittnav.api.unleash.UnleashService
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test

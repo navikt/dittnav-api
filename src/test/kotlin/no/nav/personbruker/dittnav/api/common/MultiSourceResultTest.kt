@@ -8,6 +8,7 @@ import io.kotest.matchers.shouldBe
 import io.ktor.http.HttpStatusCode
 import no.nav.personbruker.dittnav.api.beskjed.BeskjedDTO
 import no.nav.personbruker.dittnav.api.beskjed.KildeType
+import no.nav.personbruker.dittnav.api.getNumberOfSuccessfulBeskjedEventsForSource
 import no.nav.personbruker.dittnav.api.oppgave.OppgaveDTO
 import org.junit.jupiter.api.Test
 import java.time.ZonedDateTime
