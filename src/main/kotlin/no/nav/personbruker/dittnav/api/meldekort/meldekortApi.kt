@@ -34,3 +34,4 @@ fun Route.meldekortApi(meldekortService: MeldekortService) {
         }
     }
 }
+

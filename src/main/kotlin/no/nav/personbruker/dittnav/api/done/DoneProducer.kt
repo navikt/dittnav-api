@@ -34,11 +34,11 @@ class DoneProducer(
 
     suspend fun postDoneEvents(done: DoneDTO, user: AuthenticatedUser): HttpResponse {
         val exchangedToken = eventhandlerTokendings.exchangeToken(user)
-        val response: HttpResponse = httpClient.post(done, exchangedToken)
-        if (response.status != HttpStatusCode.OK) {
-            log.warn("Feil mot $completePathToEndpoint: ${response.status.value} ${response.status.description}")
+        return httpClient.post(done, exchangedToken). also { response ->
+            if (response.status != HttpStatusCode.OK) {
+                log.warn("Feil mot $completePathToEndpoint: ${response.status.value} ${response.status.description}")
+            }
         }
-        return response
     }
 
     private suspend fun HttpClient.post(done: DoneDTO, accessToken: AccessToken) =

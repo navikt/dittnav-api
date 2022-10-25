@@ -10,10 +10,7 @@ class MeldekortService(
 
     suspend fun getMeldekortInfo(user: AuthenticatedUser): Meldekortinfo {
         val token = meldekortTokendings.exchangeToken(user)
-
-        val meldekortStatus = meldekortConsumer.getMeldekortStatus(token)
-
-        return meldekortStatus.toInternal()
+        return meldekortConsumer.getMeldekortStatus(token).toInternal()
     }
 
     suspend fun getMeldekortStatus(user: AuthenticatedUser): MeldekortstatusExternal {

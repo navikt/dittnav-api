@@ -32,21 +32,9 @@ class InnboksService (
     ): List<InnboksDTO> {
         return try {
             val externalEvents = getEvents(exchangedToken)
-            externalEvents.map { innboks -> transformToDTO(innboks, user.loginLevel) }
+            externalEvents.map { innboks -> innboks.toInnboksDTO(user.loginLevel) }
         } catch (exception: Exception) {
             throw ConsumeEventException("Klarte ikke hente eventer av type Innboks", exception)
         }
-    }
-
-    private fun transformToDTO(innboks: Innboks, operatingLoginLevel: Int): InnboksDTO {
-        return if(userIsAllowedToViewAllDataInEvent(innboks, operatingLoginLevel)) {
-            toInnboksDTO(innboks)
-        } else {
-            toMaskedInnboksDTO(innboks)
-        }
-    }
-
-    private fun userIsAllowedToViewAllDataInEvent(innboks: Innboks, operatingLoginLevel: Int): Boolean {
-        return operatingLoginLevel >= innboks.sikkerhetsnivaa
     }
 }

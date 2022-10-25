@@ -1,4 +1,5 @@
 @file:UseSerializers(ZonedDateTimeSerializer::class)
+
 package no.nav.personbruker.dittnav.api.innboks
 
 import kotlinx.serialization.Serializable
@@ -8,19 +9,46 @@ import java.time.ZonedDateTime
 
 @Serializable
 data class Innboks(
-        val forstBehandlet: ZonedDateTime,
-        val fodselsnummer: String,
-        val eventId: String,
-        val grupperingsId: String,
-        val tekst: String,
-        val link: String,
-        val produsent: String,
-        val sikkerhetsnivaa: Int,
-        val sistOppdatert: ZonedDateTime,
-        val aktiv: Boolean,
-        val eksternVarslingSendt: Boolean,
-        val eksternVarslingKanaler: List<String>
-)
+    val forstBehandlet: ZonedDateTime,
+    val fodselsnummer: String,
+    val eventId: String,
+    val grupperingsId: String,
+    val tekst: String,
+    val link: String,
+    val produsent: String,
+    val sikkerhetsnivaa: Int,
+    val sistOppdatert: ZonedDateTime,
+    val aktiv: Boolean,
+    val eksternVarslingSendt: Boolean,
+    val eksternVarslingKanaler: List<String>
+) {
+
+    private fun toInnboksDTO(): InnboksDTO =
+        InnboksDTO(
+            forstBehandlet = forstBehandlet,
+            eventId = eventId,
+            tekst = tekst,
+            link = link,
+            produsent = produsent,
+            sistOppdatert = sistOppdatert,
+            sikkerhetsnivaa = sikkerhetsnivaa,
+            eksternVarslingSendt = eksternVarslingSendt,
+            eksternVarslingKanaler = eksternVarslingKanaler
+        )
+
+    private fun toMaskedInnboksDTO(): InnboksDTO =
+        toInnboksDTO().copy(tekst = "***", link = "***", produsent = "***")
+
+
+    fun toInnboksDTO(operatingLoginLevel: Int): InnboksDTO {
+        return if(operatingLoginLevel >= sikkerhetsnivaa) {
+            toInnboksDTO()
+        } else {
+            toMaskedInnboksDTO()
+        }
+    }
+
+}
 
 @Serializable
 data class InnboksDTO(
@@ -34,24 +62,3 @@ data class InnboksDTO(
     val eksternVarslingSendt: Boolean,
     val eksternVarslingKanaler: List<String>
 )
-
-fun toInnboksDTO(innboks: Innboks): InnboksDTO =
-    innboks.let {
-        InnboksDTO(
-            forstBehandlet = it.forstBehandlet,
-            eventId = it.eventId,
-            tekst = it.tekst,
-            link = it.link,
-            produsent = it.produsent,
-            sistOppdatert = it.sistOppdatert,
-            sikkerhetsnivaa = it.sikkerhetsnivaa,
-            eksternVarslingSendt = it.eksternVarslingSendt,
-            eksternVarslingKanaler = it.eksternVarslingKanaler
-        )
-    }
-
-fun toMaskedInnboksDTO(innboks: Innboks): InnboksDTO =
-    innboks.let {
-        var maskedInnboksDTO = toInnboksDTO(innboks)
-        return maskedInnboksDTO.copy(tekst = "***", link = "***", produsent = "***")
-    }
