@@ -6,7 +6,6 @@ import io.ktor.server.testing.testApplication
 import kotlinx.coroutines.runBlocking
 import no.nav.personbruker.dittnav.api.applicationHttpClient
 import no.nav.personbruker.dittnav.api.beskjed.BeskjedDTO
-import no.nav.personbruker.dittnav.api.TestUser
 import no.nav.personbruker.dittnav.api.externalServiceWithJsonResponse
 import no.nav.personbruker.dittnav.api.tokenx.AccessToken
 import org.intellij.lang.annotations.Language
@@ -16,8 +15,6 @@ import java.net.URL
 internal class DigiSosConsumerTest {
 
     private val token = AccessToken("Access!")
-    private val dummyUser = TestUser.createAuthenticatedUser()
-
     private val digiSosSoknadBaseURL = "https://soknad"
 
     @Test
@@ -43,9 +40,9 @@ internal class DigiSosConsumerTest {
             result.shouldNotBeNull()
             result.size shouldBe 3
             result.all { it.aktiv } shouldBe true
-            result.find { it.eventId == "12345" } ?: throw AssertionError("Fant ikke aktiv søknad med eventId 12345")
-            result.find { it.eventId == "8765" } ?: throw AssertionError("Fant ikke aktiv søknad med eventId 8765")
-            result.find { it.eventId == "98659" } ?: throw AssertionError("Fant ikke aktiv søknad med eventId 12345")
+            result shouldContainEventId "12345"
+            result shouldContainEventId "8765"
+            result shouldContainEventId "98659"
         }
     }
 
@@ -71,13 +68,17 @@ internal class DigiSosConsumerTest {
 
             result.size shouldBe 4
             result.all { !it.aktiv } shouldBe true
-            result.find { it.eventId == "12345" } ?: throw AssertionError("Fant ikke inaktiv søknad med eventId 12345")
-            result.find { it.eventId == "8765" } ?: throw AssertionError("Fant ikke inaktiv søknad med eventId 8765")
-            result.find { it.eventId == "98659" } ?: throw AssertionError("Fant ikke inaktiv søknad med eventId 12345")
-            result.find { it.eventId == "98633" } ?: throw AssertionError("Fant ikke inaktiv søknad med eventId 98633")
+            result shouldContainEventId  "12345"
+            result shouldContainEventId  "8765"
+            result shouldContainEventId  "98659"
+            result shouldContainEventId  "98633"
         }
     }
 
+}
+
+private infix fun List<BeskjedDTO>.shouldContainEventId(eventId: String) {
+    find { it.eventId == eventId } ?: throw AssertionError("Fant ikke søknad med eventId $eventId i liste")
 }
 
 @Language("JSON")
