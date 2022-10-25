@@ -5,12 +5,13 @@ import kotlinx.coroutines.async
 import kotlinx.coroutines.withContext
 import no.nav.personbruker.dittnav.api.authentication.AuthenticatedUser
 import no.nav.personbruker.dittnav.api.common.MultiSourceResult
-import no.nav.personbruker.dittnav.api.digisos.DigiSosService
+import no.nav.personbruker.dittnav.api.digisos.DigiSosConsumer
+
 
 
 class BeskjedMergerService(
     private val beskjedConsumer: BeskjedConsumer,
-    private val digiSosService: DigiSosService
+    private val digiSosConsumer: DigiSosConsumer
 ) {
 
     suspend fun getActiveEvents(user: AuthenticatedUser): MultiSourceResult<BeskjedDTO, KildeType> = withContext(Dispatchers.IO) {
@@ -19,7 +20,7 @@ class BeskjedMergerService(
         }
 
         val paabegynte = async {
-            digiSosService.getPaabegynteActive(user)
+            digiSosConsumer.getPaabegynteActive(user)
         }
 
         beskjeder.await() + paabegynte.await()
@@ -32,7 +33,7 @@ class BeskjedMergerService(
         }
 
         val paabegynte = async {
-            digiSosService.getPaabegynteInactive(user)
+            digiSosConsumer.getPaabegynteInactive(user)
         }
 
         beskjeder.await() + paabegynte.await()

@@ -23,7 +23,7 @@ import io.mockk.mockk
 import no.nav.personbruker.dittnav.api.beskjed.BeskjedMergerService
 import no.nav.personbruker.dittnav.api.config.api
 import no.nav.personbruker.dittnav.api.config.jsonConfig
-import no.nav.personbruker.dittnav.api.digisos.DigiSosService
+import no.nav.personbruker.dittnav.api.digisos.DigiSosConsumer
 import no.nav.personbruker.dittnav.api.done.DoneProducer
 import no.nav.personbruker.dittnav.api.innboks.InnboksService
 import no.nav.personbruker.dittnav.api.meldekort.MeldekortConsumer
@@ -47,7 +47,7 @@ internal fun TestApplicationBuilder.mockApi(
     innboksService: InnboksService = mockk(relaxed = true),
     sakerService: SakerService = mockk(relaxed = true),
     personaliaService: PersonaliaService = mockk(relaxed = true),
-    digiSosService: DigiSosService = mockk(relaxed = true),
+    digiSosConsumer: DigiSosConsumer = mockk(relaxed = true),
     doneProducer: DoneProducer = mockk(relaxed = true),
     httpClientIgnoreUnknownKeys: HttpClient = mockk(relaxed = true),
 
@@ -65,7 +65,7 @@ internal fun TestApplicationBuilder.mockApi(
             innboksService = innboksService,
             sakerService = sakerService,
             personaliaService = personaliaService,
-            digiSosService = digiSosService,
+            digiSosConsumer = digiSosConsumer,
             doneProducer = doneProducer,
             httpClient = httpClientIgnoreUnknownKeys,
             jwtAudience = "audience",

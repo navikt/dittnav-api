@@ -7,16 +7,15 @@ import io.ktor.server.request.receive
 import io.ktor.server.response.respond
 import io.ktor.server.routing.Route
 import io.ktor.server.routing.post
-import mu.KotlinLogging
 import no.nav.personbruker.dittnav.api.config.authenticatedUser
 
 fun Route.digiSos(
-    service: DigiSosService
+    consumer: DigiSosConsumer
 ) {
 
     post("/digisos/paabegynte/done") {
         val doneDto = call.receive<DoneDTO>()
-        service.markEventAsDone(authenticatedUser, doneDto)
+        consumer.markEventAsDone(authenticatedUser, doneDto)
         call.respond(HttpStatusCode.OK)
     }
 }

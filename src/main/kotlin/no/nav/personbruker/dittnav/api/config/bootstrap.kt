@@ -29,7 +29,7 @@ import no.nav.personbruker.dittnav.api.authentication.AuthenticatedUserFactory
 import no.nav.personbruker.dittnav.api.authentication.PrincipalWithTokenString
 import no.nav.personbruker.dittnav.api.beskjed.BeskjedMergerService
 import no.nav.personbruker.dittnav.api.beskjed.beskjed
-import no.nav.personbruker.dittnav.api.digisos.DigiSosService
+import no.nav.personbruker.dittnav.api.digisos.DigiSosConsumer
 import no.nav.personbruker.dittnav.api.digisos.digiSos
 import no.nav.personbruker.dittnav.api.done.DoneProducer
 import no.nav.personbruker.dittnav.api.done.doneApi
@@ -59,7 +59,7 @@ fun Application.api(
     innboksService: InnboksService,
     sakerService: SakerService,
     personaliaService: PersonaliaService,
-    digiSosService: DigiSosService,
+    digiSosConsumer: DigiSosConsumer,
     doneProducer: DoneProducer,
     httpClient: HttpClient,
     jwtAudience: String,
@@ -126,7 +126,7 @@ fun Application.api(
                 innboks(innboksService)
                 saker(sakerService)
                 personalia(personaliaService)
-                digiSos(digiSosService)
+                digiSos(digiSosConsumer)
                 authenticationCheck()
                 doneApi(doneProducer)
             }

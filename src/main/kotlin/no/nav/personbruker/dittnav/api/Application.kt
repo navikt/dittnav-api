@@ -30,7 +30,7 @@ fun main() {
             innboksService = appContext.innboksService,
             sakerService = appContext.sakerService,
             personaliaService = appContext.personaliaService,
-            digiSosService = appContext.digiSosService,
+            digiSosConsumer = appContext.digiSosConsumer,
             doneProducer = appContext.doneProducer,
             httpClient = appContext.httpClient,
             jwtAudience = appContext.environment.loginserviceIdportenAudience,

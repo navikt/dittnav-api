@@ -23,7 +23,6 @@ import no.nav.personbruker.dittnav.api.bool
 import no.nav.personbruker.dittnav.api.createActiveBeskjed
 import no.nav.personbruker.dittnav.api.createInactiveBeskjed
 import no.nav.personbruker.dittnav.api.digisos.DigiSosConsumer
-import no.nav.personbruker.dittnav.api.digisos.DigiSosService
 import no.nav.personbruker.dittnav.api.digisos.DigiSosTokendings
 import no.nav.personbruker.dittnav.api.mockApi
 import no.nav.personbruker.dittnav.api.rawEventHandlerVarsel
@@ -170,12 +169,10 @@ class BeskjedApiTest {
             eventHandlerBaseURL = URL(eventhandlerTestHost),
             eventhandlerTokendings = mockkHandlerTokendings
         ),
-        digiSosService = DigiSosService(
-            digiSosConsumer = DigiSosConsumer(
-                client = applicationHttpClient(),
-                digiSosSoknadBaseURL = URL(digisosTestHost)
-            ),
-            mockkDigiSosTokendings
+        digiSosConsumer = DigiSosConsumer(
+            client = applicationHttpClient(),
+            digiSosSoknadBaseURL = URL(digisosTestHost),
+            tokendings = mockkDigiSosTokendings
         )
     )
 }

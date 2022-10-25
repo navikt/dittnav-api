@@ -3,12 +3,10 @@ package no.nav.personbruker.dittnav.api.beskjed
 import io.kotest.matchers.shouldBe
 import io.mockk.clearMocks
 import io.mockk.coEvery
-import io.mockk.coVerify
-import io.mockk.confirmVerified
 import io.mockk.mockk
 import kotlinx.coroutines.runBlocking
 import no.nav.personbruker.dittnav.api.TestUser
-import no.nav.personbruker.dittnav.api.digisos.DigiSosService
+import no.nav.personbruker.dittnav.api.digisos.DigiSosConsumer
 import no.nav.personbruker.dittnav.api.getNumberOfSuccessfulBeskjedEventsForSource
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -16,7 +14,7 @@ import org.junit.jupiter.api.Test
 internal class BeskjedMergerServiceTest {
 
     private val beskjedService = mockk<BeskjedConsumer>(relaxed = true)
-    private val digiSosService = mockk<DigiSosService>(relaxed = true)
+    private val digiSosConsumer = mockk<DigiSosConsumer>(relaxed = true)
 
     private val innloggetBruker = TestUser.createAuthenticatedUser()
 
@@ -35,19 +33,19 @@ internal class BeskjedMergerServiceTest {
 
     @BeforeEach
     fun setup() {
-        clearMocks(beskjedService, digiSosService)
+        clearMocks(beskjedService, digiSosConsumer)
 
         coEvery { beskjedService.getActiveBeskjedEvents(any()) } returns eventHandlerDefaultResult
         coEvery { beskjedService.getInactiveBeskjedEvents(any()) } returns eventHandlerDefaultResult
 
-        coEvery { digiSosService.getPaabegynteActive(any()) } returns digiSosDefaultResult
-        coEvery { digiSosService.getPaabegynteInactive(any()) } returns digiSosDefaultResult
+        coEvery { digiSosConsumer.getPaabegynteActive(any()) } returns digiSosDefaultResult
+        coEvery { digiSosConsumer.getPaabegynteInactive(any()) } returns digiSosDefaultResult
     }
 
     @Test
     fun `Henter aktiver beskjeder fra eventhandler og digisos`() {
 
-        val beskjedMerger = BeskjedMergerService(beskjedService, digiSosService)
+        val beskjedMerger = BeskjedMergerService(beskjedService, digiSosConsumer)
         val result = runBlocking {
             beskjedMerger.getActiveEvents(innloggetBruker)
         }
@@ -59,7 +57,7 @@ internal class BeskjedMergerServiceTest {
     @Test
     fun `Henter inaktive beskjeder fra eventhandler og digisos`() {
 
-        val beskjedMerger = BeskjedMergerService(beskjedService, digiSosService)
+        val beskjedMerger = BeskjedMergerService(beskjedService, digiSosConsumer)
 
         val result = runBlocking {
             beskjedMerger.getInactiveEvents(innloggetBruker)
