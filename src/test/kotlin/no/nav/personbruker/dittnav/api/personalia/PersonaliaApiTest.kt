@@ -19,9 +19,13 @@ import java.net.URL
 
 class PersonaliaApiTest {
     private val testhostBaseApi = "https://personalia.test"
+    private val mockTokending = mockk<PersonaliaTokendings>().also {
+        coEvery { it.exchangeToken(any()) } returns AccessToken("tadda!")
+    }
+
     @Test
     fun `personalia med ident`() = testApplication {
-        mockApi(personaliaService = createPersonaliaService())
+        mockApi(personaliaConsumer = createPersonaliaConsumer())
         val expectedIdent = "846541550056"
         externalServiceWithJsonResponse(
             hostApiBase = testhostBaseApi,
@@ -38,7 +42,7 @@ class PersonaliaApiTest {
 
     @Test
     fun `personalia med navn`() = testApplication {
-        mockApi(personaliaService = createPersonaliaService())
+        mockApi(personaliaConsumer = createPersonaliaConsumer())
         val expectedIdent = "846541550056"
         externalServiceWithJsonResponse(
             hostApiBase = testhostBaseApi,
@@ -53,11 +57,10 @@ class PersonaliaApiTest {
         }
     }
 
-    private fun ApplicationTestBuilder.createPersonaliaService(): PersonaliaService  = PersonaliaService(
-        personaliaConsumer = PersonaliaConsumer(
-            client = applicationHttpClient(),
-            personaliaApiURL = URL(testhostBaseApi)
-        ), personaliaTokendings = mockk<PersonaliaTokendings>().also {
+    private fun ApplicationTestBuilder.createPersonaliaConsumer(): PersonaliaConsumer = PersonaliaConsumer(
+        client = applicationHttpClient(),
+        personaliaApiURL = URL(testhostBaseApi),
+        personaliaTokendings = mockk<PersonaliaTokendings>().also {
             coEvery { it.exchangeToken(any()) } returns AccessToken("dummytoken")
         }
     )

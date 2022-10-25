@@ -29,7 +29,7 @@ import no.nav.personbruker.dittnav.api.innboks.InnboksConsumer
 import no.nav.personbruker.dittnav.api.meldekort.MeldekortConsumer
 import no.nav.personbruker.dittnav.api.oppfolging.OppfolgingConsumer
 import no.nav.personbruker.dittnav.api.oppgave.OppgaveConsumer
-import no.nav.personbruker.dittnav.api.personalia.PersonaliaService
+import no.nav.personbruker.dittnav.api.personalia.PersonaliaConsumer
 import no.nav.personbruker.dittnav.api.saker.SakerService
 
 private const val testIssuer = "test-issuer"
@@ -46,7 +46,7 @@ internal fun TestApplicationBuilder.mockApi(
     beskjedMergerService: BeskjedMergerService = mockk(relaxed = true),
     innboksConsumer: InnboksConsumer = mockk(relaxed = true),
     sakerService: SakerService = mockk(relaxed = true),
-    personaliaService: PersonaliaService = mockk(relaxed = true),
+    personaliaConsumer: PersonaliaConsumer = mockk(relaxed = true),
     digiSosConsumer: DigiSosConsumer = mockk(relaxed = true),
     doneProducer: DoneProducer = mockk(relaxed = true),
     httpClientIgnoreUnknownKeys: HttpClient = mockk(relaxed = true),
@@ -64,7 +64,7 @@ internal fun TestApplicationBuilder.mockApi(
             beskjedMergerService = beskjedMergerService,
             innboksConsumer = innboksConsumer,
             sakerService = sakerService,
-            personaliaService = personaliaService,
+            personaliaConsumer = personaliaConsumer,
             digiSosConsumer = digiSosConsumer,
             doneProducer = doneProducer,
             httpClient = httpClientIgnoreUnknownKeys,

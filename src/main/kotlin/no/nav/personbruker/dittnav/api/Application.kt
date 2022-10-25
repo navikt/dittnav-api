@@ -29,7 +29,7 @@ fun main() {
             beskjedMergerService = appContext.beskjedMergerService,
             innboksConsumer = appContext.innboksConsumer,
             sakerService = appContext.sakerService,
-            personaliaService = appContext.personaliaService,
+            personaliaConsumer = appContext.personaliaConsumer,
             digiSosConsumer = appContext.digiSosConsumer,
             doneProducer = appContext.doneProducer,
             httpClient = appContext.httpClient,

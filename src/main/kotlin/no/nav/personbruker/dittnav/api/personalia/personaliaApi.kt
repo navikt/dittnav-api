@@ -10,18 +10,17 @@ import no.nav.personbruker.dittnav.api.config.authenticatedUser
 
 
 fun Route.personalia(
-    service: PersonaliaService
+    consumer: PersonaliaConsumer
 ) {
 
     get("/navn") {
-        val result = service.hentNavn(authenticatedUser)
+        val result = consumer.hentNavn(authenticatedUser)
         call.respond(HttpStatusCode.OK, result)
     }
 
     get("/ident") {
-        val result = service.hentIdent(authenticatedUser)
+        val result = consumer.hentIdent(authenticatedUser)
         call.respond(HttpStatusCode.OK, result)
     }
-
 
 }

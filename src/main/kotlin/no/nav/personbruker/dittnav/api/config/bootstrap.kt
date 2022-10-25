@@ -43,7 +43,7 @@ import no.nav.personbruker.dittnav.api.oppfolging.OppfolgingConsumer
 import no.nav.personbruker.dittnav.api.oppfolging.oppfolgingApi
 import no.nav.personbruker.dittnav.api.oppgave.OppgaveConsumer
 import no.nav.personbruker.dittnav.api.oppgave.oppgave
-import no.nav.personbruker.dittnav.api.personalia.PersonaliaService
+import no.nav.personbruker.dittnav.api.personalia.PersonaliaConsumer
 import no.nav.personbruker.dittnav.api.personalia.personalia
 import no.nav.personbruker.dittnav.api.saker.SakerService
 import no.nav.personbruker.dittnav.api.saker.saker
@@ -58,7 +58,7 @@ fun Application.api(
     beskjedMergerService: BeskjedMergerService,
     innboksConsumer: InnboksConsumer,
     sakerService: SakerService,
-    personaliaService: PersonaliaService,
+    personaliaConsumer: PersonaliaConsumer,
     digiSosConsumer: DigiSosConsumer,
     doneProducer: DoneProducer,
     httpClient: HttpClient,
@@ -125,7 +125,7 @@ fun Application.api(
                 beskjed(beskjedMergerService)
                 innboks(innboksConsumer)
                 saker(sakerService)
-                personalia(personaliaService)
+                personalia(personaliaConsumer)
                 digiSos(digiSosConsumer)
                 authenticationCheck()
                 doneApi(doneProducer)
