@@ -8,15 +8,15 @@ import io.ktor.server.routing.Route
 import io.ktor.server.routing.get
 import no.nav.personbruker.dittnav.api.config.authenticatedUser
 
-fun Route.oppgave(oppgaveService: OppgaveService) {
+fun Route.oppgave(oppgaveConsumer: OppgaveConsumer) {
 
     get("/oppgave") {
-        val oppgaveEvents = oppgaveService.getActiveOppgaver(authenticatedUser)
+        val oppgaveEvents = oppgaveConsumer.getActiveOppgaver(authenticatedUser)
         call.respond(HttpStatusCode.OK, oppgaveEvents)
     }
 
     get("/oppgave/inaktiv") {
-        val oppgaveEvents = oppgaveService.getInactiveOppgaver(authenticatedUser)
+        val oppgaveEvents = oppgaveConsumer.getInactiveOppgaver(authenticatedUser)
         call.respond(HttpStatusCode.OK, oppgaveEvents)
     }
 

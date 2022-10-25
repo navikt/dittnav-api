@@ -28,7 +28,7 @@ import no.nav.personbruker.dittnav.api.done.DoneProducer
 import no.nav.personbruker.dittnav.api.innboks.InnboksConsumer
 import no.nav.personbruker.dittnav.api.meldekort.MeldekortConsumer
 import no.nav.personbruker.dittnav.api.oppfolging.OppfolgingConsumer
-import no.nav.personbruker.dittnav.api.oppgave.OppgaveService
+import no.nav.personbruker.dittnav.api.oppgave.OppgaveConsumer
 import no.nav.personbruker.dittnav.api.personalia.PersonaliaService
 import no.nav.personbruker.dittnav.api.saker.SakerService
 
@@ -42,7 +42,7 @@ internal fun TestApplicationBuilder.mockApi(
     corsAllowedHeaders: List<String> = emptyList(),
     meldekortConsumer: MeldekortConsumer = mockk(relaxed = true),
     oppfolgingConsumer: OppfolgingConsumer = mockk(relaxed = true),
-    oppgaveService: OppgaveService = mockk(relaxed = true),
+    oppgaveConsumer: OppgaveConsumer = mockk(relaxed = true),
     beskjedMergerService: BeskjedMergerService = mockk(relaxed = true),
     innboksConsumer: InnboksConsumer = mockk(relaxed = true),
     sakerService: SakerService = mockk(relaxed = true),
@@ -60,7 +60,7 @@ internal fun TestApplicationBuilder.mockApi(
             corsAllowedHeaders = corsAllowedHeaders,
             meldekortConsumer = meldekortConsumer,
             oppfolgingConsumer = oppfolgingConsumer,
-            oppgaveService = oppgaveService,
+            oppgaveConsumer = oppgaveConsumer,
             beskjedMergerService = beskjedMergerService,
             innboksConsumer = innboksConsumer,
             sakerService = sakerService,

@@ -41,7 +41,7 @@ import no.nav.personbruker.dittnav.api.meldekort.MeldekortConsumer
 import no.nav.personbruker.dittnav.api.meldekort.meldekortApi
 import no.nav.personbruker.dittnav.api.oppfolging.OppfolgingConsumer
 import no.nav.personbruker.dittnav.api.oppfolging.oppfolgingApi
-import no.nav.personbruker.dittnav.api.oppgave.OppgaveService
+import no.nav.personbruker.dittnav.api.oppgave.OppgaveConsumer
 import no.nav.personbruker.dittnav.api.oppgave.oppgave
 import no.nav.personbruker.dittnav.api.personalia.PersonaliaService
 import no.nav.personbruker.dittnav.api.personalia.personalia
@@ -54,7 +54,7 @@ fun Application.api(
     corsAllowedHeaders: List<String>,
     meldekortConsumer: MeldekortConsumer,
     oppfolgingConsumer: OppfolgingConsumer,
-    oppgaveService: OppgaveService,
+    oppgaveConsumer: OppgaveConsumer,
     beskjedMergerService: BeskjedMergerService,
     innboksConsumer: InnboksConsumer,
     sakerService: SakerService,
@@ -121,7 +121,7 @@ fun Application.api(
             authenticate {
                 meldekortApi(meldekortConsumer)
                 oppfolgingApi(oppfolgingConsumer)
-                oppgave(oppgaveService)
+                oppgave(oppgaveConsumer)
                 beskjed(beskjedMergerService)
                 innboks(innboksConsumer)
                 saker(sakerService)

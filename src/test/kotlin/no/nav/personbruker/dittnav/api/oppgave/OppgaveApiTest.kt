@@ -49,7 +49,7 @@ class OppgaveApiTest {
     @Test
     fun `aktive oppgaver`() = testApplication {
         val expectedOppgaver = oppgaverFromEventhandler.filter { it.aktiv }
-        mockApi(oppgaveService = createoppgaveService())
+        mockApi(oppgaveConsumer = createoppgaveConsumer())
         externalServiceWithJsonResponse(
             hostApiBase = eventhandlerTestHost,
             endpoint = "/fetch/oppgave/aktive",
@@ -66,7 +66,7 @@ class OppgaveApiTest {
     @Test
     fun `inaktive oppgaver`() = testApplication {
         val expectedOppgaver = oppgaverFromEventhandler.filter { !it.aktiv }
-        mockApi(oppgaveService = createoppgaveService())
+        mockApi(oppgaveConsumer = createoppgaveConsumer())
         externalServiceWithJsonResponse(
             hostApiBase = eventhandlerTestHost,
             endpoint = "/fetch/oppgave/inaktive",
@@ -82,17 +82,16 @@ class OppgaveApiTest {
 
     @Test
     fun `503 når dittnav-api feiler mot eventhandlerApi`() = testApplication {
-        mockApi(oppgaveService = createoppgaveService())
+        mockApi(oppgaveConsumer = createoppgaveConsumer())
         externalServiceWith500Response(testHost = eventhandlerTestHost, route = "dittnav-api/oppgave/inaktiv")
         client.authenticatedGet("dittnav-api/oppgave/inaktiv").status shouldBe HttpStatusCode.ServiceUnavailable
     }
 
-    private fun ApplicationTestBuilder.createoppgaveService(): OppgaveService =
-        OppgaveService(
-            oppgaveConsumer = OppgaveConsumer(
-                client = applicationHttpClient(),
-                eventHandlerBaseURL = URL(eventhandlerTestHost)
-            ), eventhandlerTokendings = mockkTokendings
+    private fun ApplicationTestBuilder.createoppgaveConsumer(): OppgaveConsumer =
+        OppgaveConsumer(
+            client = applicationHttpClient(),
+            eventHandlerBaseURL = URL(eventhandlerTestHost),
+            eventhandlerTokendings = mockkTokendings
         )
 }
 
