@@ -31,21 +31,9 @@ class OppgaveService(
     ): List<OppgaveDTO> {
         return try {
             oppgaveFetcher(exchangedToken)
-                .map { oppgave -> transformToDTO(oppgave, user.loginLevel) }
+                .map { oppgave -> oppgave.toOppgaveDTO(user.loginLevel) }
         } catch (e: Exception) {
             throw ConsumeEventException("Klarte ikke hente oppgaver", e)
         }
-    }
-
-    private fun transformToDTO(oppgave: Oppgave, operatingLoginLevel: Int): OppgaveDTO {
-        return if(userIsAllowedToViewAllDataInEvent(oppgave, operatingLoginLevel)) {
-            oppgave.toOppgaveDTO()
-        } else {
-            oppgave.toMaskedOppgaveDTO()
-        }
-    }
-
-    private fun userIsAllowedToViewAllDataInEvent(beskjed: Oppgave, operatingLoginLevel: Int): Boolean {
-        return operatingLoginLevel >= beskjed.sikkerhetsnivaa
     }
 }
