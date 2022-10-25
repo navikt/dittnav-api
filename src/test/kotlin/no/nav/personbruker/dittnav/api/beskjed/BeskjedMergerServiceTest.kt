@@ -52,12 +52,6 @@ internal class BeskjedMergerServiceTest {
             beskjedMerger.getActiveEvents(innloggetBruker)
         }
 
-        coVerify(exactly = 1) { beskjedService.getActiveBeskjedEvents(any()) }
-        coVerify(exactly = 1) { digiSosService.getPaabegynteActive(any()) }
-
-        confirmVerified(beskjedService)
-        confirmVerified(digiSosService)
-
         result.successFullSources().size shouldBe 2
         result.successFullSources() shouldBe listOf(KildeType.EVENTHANDLER, KildeType.DIGISOS)
     }
@@ -70,12 +64,6 @@ internal class BeskjedMergerServiceTest {
         val result = runBlocking {
             beskjedMerger.getInactiveEvents(innloggetBruker)
         }
-
-        coVerify(exactly = 1) { beskjedService.getInactiveBeskjedEvents(any()) }
-        coVerify(exactly = 1) { digiSosService.getPaabegynteInactive(any()) }
-
-        confirmVerified(beskjedService)
-        confirmVerified(digiSosService)
 
         result.successFullSources().size shouldBe 2
         result.successFullSources() shouldBe listOf(KildeType.EVENTHANDLER, KildeType.DIGISOS)
