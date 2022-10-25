@@ -35,7 +35,7 @@ suspend inline fun <reified T> HttpClient.get(url: URL, user: AuthenticatedUser)
     request {
         url(url)
         method = HttpMethod.Get
-        header(HttpHeaders.Authorization, user.createAuthenticationHeader())
+        header(HttpHeaders.Authorization, "Bearer ${user.token}")
     }.body()
 }
 
