@@ -13,7 +13,7 @@ import org.junit.jupiter.api.Test
 
 internal class BeskjedMergerServiceTest {
 
-    private val beskjedService = mockk<BeskjedConsumer>(relaxed = true)
+    private val beskjedConsumer = mockk<BeskjedConsumer>(relaxed = true)
     private val digiSosConsumer = mockk<DigiSosConsumer>(relaxed = true)
 
     private val innloggetBruker = TestUser.createAuthenticatedUser()
@@ -33,10 +33,10 @@ internal class BeskjedMergerServiceTest {
 
     @BeforeEach
     fun setup() {
-        clearMocks(beskjedService, digiSosConsumer)
+        clearMocks(beskjedConsumer, digiSosConsumer)
 
-        coEvery { beskjedService.getActiveBeskjedEvents(any()) } returns eventHandlerDefaultResult
-        coEvery { beskjedService.getInactiveBeskjedEvents(any()) } returns eventHandlerDefaultResult
+        coEvery { beskjedConsumer.getActiveBeskjedEvents(any()) } returns eventHandlerDefaultResult
+        coEvery { beskjedConsumer.getInactiveBeskjedEvents(any()) } returns eventHandlerDefaultResult
 
         coEvery { digiSosConsumer.getPaabegynteActive(any()) } returns digiSosDefaultResult
         coEvery { digiSosConsumer.getPaabegynteInactive(any()) } returns digiSosDefaultResult
@@ -45,7 +45,7 @@ internal class BeskjedMergerServiceTest {
     @Test
     fun `Henter aktiver beskjeder fra eventhandler og digisos`() {
 
-        val beskjedMerger = BeskjedMergerService(beskjedService, digiSosConsumer)
+        val beskjedMerger = BeskjedMergerService(beskjedConsumer, digiSosConsumer)
         val result = runBlocking {
             beskjedMerger.getActiveEvents(innloggetBruker)
         }
@@ -57,7 +57,7 @@ internal class BeskjedMergerServiceTest {
     @Test
     fun `Henter inaktive beskjeder fra eventhandler og digisos`() {
 
-        val beskjedMerger = BeskjedMergerService(beskjedService, digiSosConsumer)
+        val beskjedMerger = BeskjedMergerService(beskjedConsumer, digiSosConsumer)
 
         val result = runBlocking {
             beskjedMerger.getInactiveEvents(innloggetBruker)

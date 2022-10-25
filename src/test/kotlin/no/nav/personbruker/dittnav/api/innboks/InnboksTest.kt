@@ -1,12 +1,15 @@
 package no.nav.personbruker.dittnav.api.innboks
 
 import io.kotest.matchers.shouldBe
+import io.mockk.coEvery
+import kotlinx.coroutines.runBlocking
+import no.nav.personbruker.dittnav.api.TestUser
 import org.junit.jupiter.api.Test
 
 class InnboksTest {
 
     @Test
-    fun `should transform from Innboks to InnboksDTO`() {
+    fun `should not mask events with security level equal to the current user`() {
         val innboks1 = createInnboks(eventId = "1", fodselsnummer = "1", aktiv = true, sikkerhetsnivå = 4)
 
         innboks1.toInnboksDTO(operatingLoginLevel = 4).apply {
@@ -23,7 +26,24 @@ class InnboksTest {
     }
 
     @Test
-    fun `should mask tekst, link and produsent`() {
+    fun `should not mask events with security level lower than current user`() {
+        val innboks1 = createInnboks(eventId = "1", fodselsnummer = "1", aktiv = true, sikkerhetsnivå = 3)
+
+        innboks1.toInnboksDTO(operatingLoginLevel = 4).apply {
+            forstBehandlet shouldBe innboks1.forstBehandlet
+            eventId shouldBe innboks1.eventId
+            tekst shouldBe innboks1.tekst
+            link shouldBe innboks1.link
+            produsent shouldBe innboks1.produsent
+            sistOppdatert shouldBe innboks1.sistOppdatert
+            sikkerhetsnivaa shouldBe innboks1.sikkerhetsnivaa
+            eksternVarslingSendt shouldBe innboks1.eksternVarslingSendt
+            eksternVarslingKanaler shouldBe innboks1.eksternVarslingKanaler
+        }
+    }
+
+    @Test
+    fun `should mask events with security level higher than current user`() {
         val innboks = createInnboks(eventId = "1", fodselsnummer = "1", aktiv = true, sikkerhetsnivå = 4)
         innboks.toInnboksDTO(operatingLoginLevel = 3).apply {
             forstBehandlet shouldBe innboks.forstBehandlet
@@ -38,4 +58,5 @@ class InnboksTest {
         }
 
     }
+
 }

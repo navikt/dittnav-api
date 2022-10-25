@@ -49,50 +49,6 @@ internal class InnboksServiceTest {
     }
 
     @Test
-    fun `should mask events with security level higher than current user`() {
-        val ident = "1"
-        var innboks = createInnboks(eventId = "1", fodselsnummer = ident, aktiv = true)
-        innboks = innboks.copy(sikkerhetsnivaa = 4)
-        user = TestUser.createAuthenticatedUser(ident, 3)
-        coEvery { eventhandlerTokendings.exchangeToken(user) } returns dummyToken
-        coEvery { innboksConsumer.getExternalActiveEvents(dummyToken) } returns listOf(innboks)
-        runBlocking {
-            val innboksList = innboksService.getActiveInnboksEvents(user)
-            val innboksDTO = innboksList.first()
-            innboksDTO.tekst shouldBe "***"
-            innboksDTO.link shouldBe "***"
-            innboksDTO.sikkerhetsnivaa shouldBe 4
-        }
-    }
-
-    @Test
-    fun `should not mask events with security level lower than current user`() {
-        var innboks = createInnboks(eventId = "1", fodselsnummer = "1", aktiv = true)
-        innboks = innboks.copy(sikkerhetsnivaa = 3)
-        coEvery { innboksConsumer.getExternalActiveEvents(dummyToken) } returns listOf(innboks)
-        runBlocking {
-            val innboksList = innboksService.getActiveInnboksEvents(user)
-            val innboksDTO = innboksList.first()
-            innboksDTO.tekst shouldBe innboks.tekst
-            innboksDTO.link shouldBe innboks.link
-            innboksDTO.sikkerhetsnivaa shouldBe 3
-        }
-    }
-
-    @Test
-    fun `should not mask events with security level equal than current user`() {
-        val innboks = createInnboks(eventId = "1", fodselsnummer = "1", aktiv = true)
-        coEvery { innboksConsumer.getExternalActiveEvents(dummyToken) } returns listOf(innboks)
-        runBlocking {
-            val innboksList = innboksService.getActiveInnboksEvents(user)
-            val innboksDTO = innboksList.first()
-            innboksDTO.tekst shouldBe innboks.tekst
-            innboksDTO.link shouldBe innboks.link
-            innboksDTO.sikkerhetsnivaa shouldBe 4
-        }
-    }
-
-    @Test
     fun `should throw exception if fetching events fails`() {
         coEvery { innboksConsumer.getExternalActiveEvents(dummyToken) } throws Exception("error")
         coEvery { innboksConsumer.getExternalInactiveEvents(dummyToken) } throws Exception("error")
