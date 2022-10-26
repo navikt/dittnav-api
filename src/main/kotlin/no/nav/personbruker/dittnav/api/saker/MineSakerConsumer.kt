@@ -9,19 +9,29 @@ import io.ktor.client.request.url
 import io.ktor.http.HttpMethod
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import no.nav.personbruker.dittnav.api.authentication.AuthenticatedUser
+import no.nav.personbruker.dittnav.api.config.ConsumeSakerException
 import no.nav.personbruker.dittnav.api.tokenx.AccessToken
 import no.nav.tms.token.support.tokendings.exchange.TokenXHeader
 import java.net.URL
 
 class MineSakerConsumer(
     private val client: HttpClient,
+    private val mineSakerUrl: URL,
+    private val mineSakerTokendings: MineSakerTokendings,
     mineSakerApiURL: URL
 ) {
 
     private val sisteEndredeSakerEndpoint = URL("$mineSakerApiURL/sakstemaer/sistendret")
-
-    suspend fun hentSistEndret(user: AccessToken): SisteSakstemaerDTO =
-        client.getWithTokenx(user).toInternal()
+    suspend fun hentSistEndredeSakstemaer(user: AuthenticatedUser): SakerDTO {
+        return try {
+            val exchangedToken = mineSakerTokendings.exchangeToken(user)
+            val sisteSakstemaer = client.getWithTokenx(exchangedToken).toInternal()
+            SakerDTO(sisteSakstemaer.sakstemaer, mineSakerUrl, sisteSakstemaer.dagpengerSistEndret)
+        } catch (e: Exception) {
+            throw ConsumeSakerException("Klarte ikke å hente info om saker", e)
+        }
+    }
 
     private suspend fun HttpClient.getWithTokenx(accessToken: AccessToken): SisteSakstemaer =
         withContext(Dispatchers.IO) {

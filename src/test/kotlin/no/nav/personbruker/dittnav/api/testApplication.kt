@@ -30,7 +30,7 @@ import no.nav.personbruker.dittnav.api.meldekort.MeldekortConsumer
 import no.nav.personbruker.dittnav.api.oppfolging.OppfolgingConsumer
 import no.nav.personbruker.dittnav.api.oppgave.OppgaveConsumer
 import no.nav.personbruker.dittnav.api.personalia.PersonaliaConsumer
-import no.nav.personbruker.dittnav.api.saker.SakerService
+import no.nav.personbruker.dittnav.api.saker.MineSakerConsumer
 
 private const val testIssuer = "test-issuer"
 private val jwtStub = JwtStub(testIssuer)
@@ -45,7 +45,7 @@ internal fun TestApplicationBuilder.mockApi(
     oppgaveConsumer: OppgaveConsumer = mockk(relaxed = true),
     beskjedMergerService: BeskjedMergerService = mockk(relaxed = true),
     innboksConsumer: InnboksConsumer = mockk(relaxed = true),
-    sakerService: SakerService = mockk(relaxed = true),
+    sakerConsumer: MineSakerConsumer = mockk(relaxed = true),
     personaliaConsumer: PersonaliaConsumer = mockk(relaxed = true),
     digiSosConsumer: DigiSosConsumer = mockk(relaxed = true),
     doneProducer: DoneProducer = mockk(relaxed = true),
@@ -63,7 +63,7 @@ internal fun TestApplicationBuilder.mockApi(
             oppgaveConsumer = oppgaveConsumer,
             beskjedMergerService = beskjedMergerService,
             innboksConsumer = innboksConsumer,
-            sakerService = sakerService,
+            mineSakerConsumer = sakerConsumer,
             personaliaConsumer = personaliaConsumer,
             digiSosConsumer = digiSosConsumer,
             doneProducer = doneProducer,

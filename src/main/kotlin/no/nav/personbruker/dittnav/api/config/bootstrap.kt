@@ -45,7 +45,7 @@ import no.nav.personbruker.dittnav.api.oppgave.OppgaveConsumer
 import no.nav.personbruker.dittnav.api.oppgave.oppgave
 import no.nav.personbruker.dittnav.api.personalia.PersonaliaConsumer
 import no.nav.personbruker.dittnav.api.personalia.personalia
-import no.nav.personbruker.dittnav.api.saker.SakerService
+import no.nav.personbruker.dittnav.api.saker.MineSakerConsumer
 import no.nav.personbruker.dittnav.api.saker.saker
 
 fun Application.api(
@@ -57,7 +57,7 @@ fun Application.api(
     oppgaveConsumer: OppgaveConsumer,
     beskjedMergerService: BeskjedMergerService,
     innboksConsumer: InnboksConsumer,
-    sakerService: SakerService,
+    mineSakerConsumer: MineSakerConsumer,
     personaliaConsumer: PersonaliaConsumer,
     digiSosConsumer: DigiSosConsumer,
     doneProducer: DoneProducer,
@@ -124,7 +124,7 @@ fun Application.api(
                 oppgave(oppgaveConsumer)
                 beskjed(beskjedMergerService)
                 innboks(innboksConsumer)
-                saker(sakerService)
+                saker(mineSakerConsumer)
                 personalia(personaliaConsumer)
                 digiSos(digiSosConsumer)
                 authenticationCheck()

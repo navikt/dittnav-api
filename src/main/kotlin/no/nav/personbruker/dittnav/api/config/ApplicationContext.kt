@@ -15,7 +15,6 @@ import no.nav.personbruker.dittnav.api.personalia.PersonaliaConsumer
 import no.nav.personbruker.dittnav.api.personalia.PersonaliaTokendings
 import no.nav.personbruker.dittnav.api.saker.MineSakerConsumer
 import no.nav.personbruker.dittnav.api.saker.MineSakerTokendings
-import no.nav.personbruker.dittnav.api.saker.SakerService
 import no.nav.tms.token.support.tokendings.exchange.TokendingsServiceBuilder
 
 class ApplicationContext {
@@ -30,17 +29,20 @@ class ApplicationContext {
     private val meldekortTokendings = MeldekortTokendings(tokendingsService, environment.meldekortClientId)
     private val digiSosTokendings = DigiSosTokendings(tokendingsService, environment.digiSosClientId)
 
-    val oppgaveConsumer = OppgaveConsumer(httpClient, eventhandlerTokendings,environment.eventHandlerURL)
-    private val beskjedConsumer = BeskjedConsumer(httpClient, eventhandlerTokendings,environment.eventHandlerURL)
-    val innboksConsumer = InnboksConsumer(httpClient, eventhandlerTokendings,environment.eventHandlerURL)
-    private val mineSakerConsumer = MineSakerConsumer(httpClient, environment.sakerApiUrl)
+    val oppgaveConsumer = OppgaveConsumer(httpClient, eventhandlerTokendings, environment.eventHandlerURL)
+    private val beskjedConsumer = BeskjedConsumer(httpClient, eventhandlerTokendings, environment.eventHandlerURL)
+    val innboksConsumer = InnboksConsumer(httpClient, eventhandlerTokendings, environment.eventHandlerURL)
+    val mineSakerConsumer = MineSakerConsumer(
+        client = httpClient,
+        mineSakerUrl = environment.mineSakerURL,
+        mineSakerTokendings = mineSakerTokendings,
+        mineSakerApiURL =environment.mineSakerURL
+    )
 
     val doneProducer = DoneProducer(httpClient, eventhandlerTokendings, environment.eventHandlerURL)
-    val sakerService = SakerService(mineSakerConsumer, environment.mineSakerURL, mineSakerTokendings)
-
-    val digiSosConsumer = DigiSosConsumer(httpClient, digiSosTokendings,environment.digiSosSoknadBaseURL)
+    val digiSosConsumer = DigiSosConsumer(httpClient, digiSosTokendings, environment.digiSosSoknadBaseURL)
     val beskjedMergerService = BeskjedMergerService(beskjedConsumer, digiSosConsumer)
-    val personaliaConsumer = PersonaliaConsumer(httpClient, personaliaTokendings,environment.personaliaApiUrl)
-    val meldekortConsumer = MeldekortConsumer(httpClient, meldekortTokendings,environment.meldekortApiUrl)
+    val personaliaConsumer = PersonaliaConsumer(httpClient, personaliaTokendings, environment.personaliaApiUrl)
+    val meldekortConsumer = MeldekortConsumer(httpClient, meldekortTokendings, environment.meldekortApiUrl)
     val oppfolgingConsumer = OppfolgingConsumer(httpClient, environment.oppfolgingApiUrl)
 }
