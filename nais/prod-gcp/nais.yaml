@@ -29,6 +29,7 @@ spec:
     outbound:
       external:
         - host: person.nav.no
+        - host: sosialhjelp-soknad-api.prod-fss-pub.nais.io
       rules:
         - application: "mine-saker-api"
           namespace: "personbruker"
