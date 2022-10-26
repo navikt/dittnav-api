@@ -18,6 +18,7 @@ import kotlinx.serialization.json.JsonArray
 import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.jsonObject
 import no.nav.personbruker.dittnav.api.applicationHttpClient
+import no.nav.personbruker.dittnav.api.assert
 import no.nav.personbruker.dittnav.api.authenticatedGet
 import no.nav.personbruker.dittnav.api.bool
 import no.nav.personbruker.dittnav.api.createActiveBeskjed
@@ -76,13 +77,13 @@ class BeskjedApiTest {
     @ParameterizedTest
     @CsvSource("true, dittnav-api/beskjed", "false, dittnav-api/beskjed/inaktiv")
     fun `beskjeder fra både digisos og eventhandler`(aktive: Boolean, endpoint: String) {
-
         val expectedBeskjedContent =
             expectedBeskjedFromDigsos.filter { it.aktiv == aktive } + expectedBeskjedFromEventhandler.filter { it.aktiv == aktive }
+
         testApplication {
             setupExternalBeskjedServices()
             mockApi(beskjedMergerService = createBeskjedMergerService())
-            client.authenticatedGet(endpoint).apply {
+            client.authenticatedGet(endpoint).assert {
                 status shouldBe HttpStatusCode.OK
                 val resultArray = bodyAsText().toJsonArray()
                 resultArray shouldHaveContentEqualTo expectedBeskjedContent
@@ -95,11 +96,12 @@ class BeskjedApiTest {
     @CsvSource("true, dittnav-api/beskjed", "false, dittnav-api/beskjed/inaktiv")
     fun `beskjeder fra eventhandler hvis digisos feiler`(aktive: Boolean, endpoint: String) {
         val expectedBeskjedDTOs = expectedBeskjedFromEventhandler.filter { it.aktiv == aktive }
+
         testApplication {
             setupExternalBeskjedServices(withErrorFromDigiSos = true)
             mockApi(beskjedMergerService = createBeskjedMergerService())
 
-            client.authenticatedGet(endpoint).apply {
+            client.authenticatedGet(endpoint).assert {
                 status shouldBe HttpStatusCode.PartialContent
                 val resultArray = bodyAsText().toJsonArray()
                 resultArray shouldHaveContentEqualTo expectedBeskjedDTOs
@@ -116,7 +118,7 @@ class BeskjedApiTest {
             setupExternalBeskjedServices(withErrorFromEventhandler = true)
             mockApi(beskjedMergerService = createBeskjedMergerService())
 
-            client.authenticatedGet(endpoint).apply {
+            client.authenticatedGet(endpoint).assert {
                 status shouldBe HttpStatusCode.PartialContent
                 val resultArray = bodyAsText().toJsonArray()
                 resultArray shouldHaveContentEqualTo expectedBeskjedDTOs
@@ -221,7 +223,7 @@ private fun Beskjed.withEksternVarsling(kanaler: List<String> = listOf("SMS", "E
 
 private fun Beskjed.withDigiSosProdusent(): Beskjed =
     if (eksternVarslingSendt) {
-        throw IllegalArgumentException("Beskjeder fra digisos inneholder ikke eksterne varlinger")
+        throw IllegalArgumentException("Beskjeder fra digisos inneholder ikke eksterne varslinger")
     } else {
         this.copy(produsent = "digiSos")
     }

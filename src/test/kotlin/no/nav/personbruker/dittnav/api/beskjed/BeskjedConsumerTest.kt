@@ -2,19 +2,14 @@ package no.nav.personbruker.dittnav.api.beskjed
 
 import io.kotest.matchers.collections.shouldContain
 import io.kotest.matchers.shouldBe
-import io.ktor.http.HttpStatusCode
-import io.ktor.server.application.call
-import io.ktor.server.response.respond
-import io.ktor.server.routing.get
-import io.ktor.server.routing.route
-import io.ktor.server.routing.routing
 import io.ktor.server.testing.testApplication
 import io.mockk.coEvery
 import io.mockk.mockk
-import kotlinx.coroutines.runBlocking
 import no.nav.personbruker.dittnav.api.TestUser
 import no.nav.personbruker.dittnav.api.applicationHttpClient
+import no.nav.personbruker.dittnav.api.assert
 import no.nav.personbruker.dittnav.api.createBeskjed
+import no.nav.personbruker.dittnav.api.externalServiceWith500Response
 import no.nav.personbruker.dittnav.api.rawEventHandlerVarsel
 import no.nav.personbruker.dittnav.api.externalServiceWithJsonResponse
 import no.nav.personbruker.dittnav.api.toSpesificJsonFormat
@@ -34,7 +29,7 @@ internal class BeskjedConsumerTest {
 
 
     @Test
-    fun `Skal motta en liste over aktive Beskjeder`() {
+    fun `Skal hente en liste over aktive Beskjeder`() {
         val beskjedOject = createBeskjed(eventId = "12345", fodselsnummer = "9876543210", aktiv = true)
 
         testApplication {
@@ -44,24 +39,21 @@ internal class BeskjedConsumerTest {
                 content = listOf(beskjedOject).toSpesificJsonFormat(Beskjed::toRawEventhandlerVarsel)
             )
 
-            val beskjedConsumer =
-                BeskjedConsumer(applicationHttpClient(), eventhandlerTokendings, URL(testEventHandlerUrl))
-
-            runBlocking {
-                beskjedConsumer.getActiveBeskjedEvents(dummyUser).apply {
+            BeskjedConsumer(applicationHttpClient(), eventhandlerTokendings, URL(testEventHandlerUrl))
+                .getActiveBeskjedEvents(dummyUser)
+                .assert {
                     val result = results()
                     result.size shouldBe 1
                     result shouldContainBeskjedObject beskjedOject
-                    this.failedSources().size shouldBe 0
-                    this.successFullSources().size shouldBe 1
-                    this.successFullSources().first() shouldBe KildeType.EVENTHANDLER
+                    failedSources().size shouldBe 0
+                    successFullSources().size shouldBe 1
+                    successFullSources().first() shouldBe KildeType.EVENTHANDLER
                 }
-            }
         }
     }
 
     @Test
-    fun `Skal motta en liste over inaktive Beskjeder`() {
+    fun `Skal hente en liste over inaktive Beskjeder`() {
         val beskjedObject = createBeskjed(eventId = "1", fodselsnummer = "1", aktiv = false)
         val beskjedObject2 = createBeskjed(eventId = "1", fodselsnummer = "1", aktiv = false)
 
@@ -72,63 +64,47 @@ internal class BeskjedConsumerTest {
                 content = listOf(beskjedObject, beskjedObject2).toSpesificJsonFormat(Beskjed::toRawEventhandlerVarsel)
             )
 
-            val beskjedConsumer =
-                BeskjedConsumer(applicationHttpClient(), eventhandlerTokendings, URL(testEventHandlerUrl))
 
-            runBlocking {
-                beskjedConsumer.getInactiveBeskjedEvents(dummyUser).apply {
+            BeskjedConsumer(applicationHttpClient(), eventhandlerTokendings, URL(testEventHandlerUrl))
+                .getInactiveBeskjedEvents(dummyUser)
+                .assert {
                     val result = results()
                     result.size shouldBe 2
                     result shouldContainBeskjedObject beskjedObject2
                     result shouldContainBeskjedObject beskjedObject
-                    this.failedSources().size shouldBe 0
-                    this.successFullSources().size shouldBe 1
-                    this.successFullSources().first() shouldBe KildeType.EVENTHANDLER
+                    failedSources().size shouldBe 0
+                    successFullSources().size shouldBe 1
+                    successFullSources().first() shouldBe KildeType.EVENTHANDLER
+
                 }
-            }
         }
     }
 
     @Test
     fun `should throw exception if fetching active events fails`() = testApplication {
 
-        val beskjedConsumer = BeskjedConsumer(applicationHttpClient(), eventhandlerTokendings, URL(testEventHandlerUrl))
-        externalServices {
-            hosts(testEventHandlerUrl) {
-                routing {
-                    get("fetch/beskjed/aktive") {
-                        call.respond(HttpStatusCode.InternalServerError)
-                    }
-                }
-            }
+        externalServiceWith500Response(testEventHandlerUrl, "fetch/beskjed/aktive")
 
-            runBlocking {
-                val beskjedResult = beskjedConsumer.getActiveBeskjedEvents(dummyUser)
-                beskjedResult.hasErrors() shouldBe true
-                beskjedResult.failedSources() shouldContain KildeType.EVENTHANDLER
+        BeskjedConsumer(applicationHttpClient(), eventhandlerTokendings, URL(testEventHandlerUrl))
+            .getActiveBeskjedEvents(dummyUser)
+            .assert {
+                hasErrors() shouldBe true
+                failedSources() shouldContain KildeType.EVENTHANDLER
             }
-        }
     }
+
 
     @Test
     fun `should throw exception if fetching inactive events fails`() = testApplication {
 
-        val beskjedConsumer = BeskjedConsumer(applicationHttpClient(), eventhandlerTokendings, URL(testEventHandlerUrl))
-        externalServices {
-            hosts(testEventHandlerUrl) {
-                routing {
-                    get("fetch/beskjed/inaktive") {
-                        call.respond(HttpStatusCode.InternalServerError)
-                    }
-                }
-            }
+        externalServiceWith500Response(testEventHandlerUrl, "fetch/beskjed/aktive")
 
-            runBlocking {
-                val beskjedResult = beskjedConsumer.getActiveBeskjedEvents(dummyUser)
-                beskjedResult.hasErrors() shouldBe true
-                beskjedResult.failedSources() shouldContain KildeType.EVENTHANDLER
+        BeskjedConsumer(applicationHttpClient(), eventhandlerTokendings, URL(testEventHandlerUrl))
+            .getActiveBeskjedEvents(dummyUser)
+            .assert {
+                hasErrors() shouldBe true
+                failedSources() shouldContain KildeType.EVENTHANDLER
             }
-        }
     }
 }
 

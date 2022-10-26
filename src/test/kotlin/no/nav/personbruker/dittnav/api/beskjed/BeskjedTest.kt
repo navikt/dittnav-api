@@ -1,6 +1,7 @@
 package no.nav.personbruker.dittnav.api.beskjed
 
 import io.kotest.matchers.shouldBe
+import no.nav.personbruker.dittnav.api.assert
 import no.nav.personbruker.dittnav.api.createBeskjed
 import org.junit.jupiter.api.Test
 
@@ -9,7 +10,7 @@ class BeskjedTest {
     @Test
     fun `should mask beskjed with security level higher than current user`() {
         val beskjed = createBeskjed(eventId = "1", fodselsnummer = "1", aktiv = true, sikkerhetsnivaa = 4)
-        beskjed.toBeskjedDto(operatingLoginLevel = 3).apply {
+        beskjed.toBeskjedDto(operatingLoginLevel = 3).assert {
             forstBehandlet shouldBe beskjed.forstBehandlet
             eventId shouldBe beskjed.eventId
             tekst shouldBe "***"
@@ -26,7 +27,7 @@ class BeskjedTest {
     @Test
     fun `should not mask beskjed with security level lower than current user`() {
         val beskjed = createBeskjed(eventId = "1", fodselsnummer = "1", aktiv = true, sikkerhetsnivaa = 3)
-        beskjed.toBeskjedDto(4).apply {
+        beskjed.toBeskjedDto(4).assert {
             forstBehandlet shouldBe beskjed.forstBehandlet
             eventId shouldBe beskjed.eventId
             tekst shouldBe beskjed.tekst
@@ -43,7 +44,7 @@ class BeskjedTest {
     @Test
     fun `should not mask beskjed with security level equal to the current user`() {
         val beskjed1 = createBeskjed(eventId = "1", fodselsnummer = "1", aktiv = true, sikkerhetsnivaa = 4)
-        beskjed1.toBeskjedDto(4).apply {
+        beskjed1.toBeskjedDto(4).assert {
             forstBehandlet shouldBe beskjed1.forstBehandlet
             eventId shouldBe beskjed1.eventId
             tekst shouldBe beskjed1.tekst

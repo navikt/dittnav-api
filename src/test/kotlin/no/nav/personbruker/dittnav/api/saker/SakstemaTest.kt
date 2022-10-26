@@ -1,6 +1,5 @@
 package no.nav.personbruker.dittnav.api.saker
 
-import io.kotest.matchers.nulls.shouldNotBeNull
 import io.kotest.matchers.shouldBe
 import kotlinx.serialization.decodeFromString
 import no.nav.personbruker.dittnav.api.config.jsonConfig
@@ -10,28 +9,27 @@ import java.time.ZonedDateTime
 
 internal class SakstemaTest {
 
-    private val response = """
+
+    @Test
+    fun `Deserialiserer respons fra mine saker`() {
+        """
         {
           "navn": "Generell",
           "kode": "GEN",
           "sistEndret": "2021-09-15T10:57:56Z",
           "detaljvisningUrl": "https://person.dev.nav.no/mine-saker/tema/GEN"
-        }
-    """.trimIndent()
-
-    @Test
-    fun `Skal kunne deserialisere responsen fra mine saker`() {
-        val objectMapper = jsonConfig()
-
-        val deserialized = objectMapper.decodeFromString<Sakstema>(response)
-
-        deserialized.shouldNotBeNull()
+        }"""
+            .let { jsonConfig().decodeFromString<Sakstema>(it) }
+            .apply {
+                kode shouldBe "GEN"
+                navn shouldBe "Generell"
+                detaljvisningUrl shouldBe "https://person.dev.nav.no/mine-saker/tema/GEN"
+            }
     }
 
     @Test
-    fun `Skal kunne konvertere fra eksterne Sakstema til intern modell`() {
+    fun `Konverterer fra eksterne Sakstema til intern modell`() {
         val external = sakstemaDagpenger()
-
         val internal = external.toInternal()
 
         internal.kode shouldBe external.kode
@@ -41,14 +39,12 @@ internal class SakstemaTest {
     }
 
     @Test
-    fun `Skal kunne konvertere eksterne SisteSakstemaer til intern modell`() {
+    fun `Konverterer eksterne SisteSakstemaer til intern modell`() {
         val external = SisteSakstemaer(
             listOf(sakstemaDagpenger(), sakstemaSosialhjelp()),
             ZonedDateTime.now()
         )
-
         val internal = external.toInternal()
-
         internal.sakstemaer.size shouldBe external.sistEndrede.size
         internal.dagpengerSistEndret shouldBe external.dagpengerSistEndret
     }

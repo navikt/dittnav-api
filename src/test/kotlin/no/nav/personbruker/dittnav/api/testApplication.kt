@@ -123,3 +123,7 @@ internal suspend fun ApplicationCall.respondRawJson(content: String) =
         provider = { content.toByteArray() })
 
 
+internal inline fun <T> T.assert(block: T.() -> Unit): T =
+    apply {
+        block()
+    }
