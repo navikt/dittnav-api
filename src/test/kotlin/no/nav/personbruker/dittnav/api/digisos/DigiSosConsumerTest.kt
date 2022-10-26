@@ -19,6 +19,7 @@ import kotlinx.coroutines.runBlocking
 import kotlinx.serialization.json.jsonObject
 import no.nav.personbruker.dittnav.api.TestUser
 import no.nav.personbruker.dittnav.api.applicationHttpClient
+import no.nav.personbruker.dittnav.api.assert
 import no.nav.personbruker.dittnav.api.beskjed.BeskjedDTO
 import no.nav.personbruker.dittnav.api.beskjed.KildeType
 import no.nav.personbruker.dittnav.api.config.jsonConfig
@@ -59,7 +60,7 @@ internal class DigiSosConsumerTest {
 
             DigiSosConsumer(applicationHttpClient(), mockTokendings, URL(digiSosSoknadBaseURL))
                 .getPaabegynteActive(dummyUser)
-                .apply {
+                .assert {
                     successFullSources().shouldContainExactly(KildeType.DIGISOS)
                     failedSources().size shouldBe 0
                     val results = results()
@@ -91,7 +92,7 @@ internal class DigiSosConsumerTest {
 
             DigiSosConsumer(applicationHttpClient(), mockTokendings, URL(digiSosSoknadBaseURL))
                 .getPaabegynteInactive(dummyUser)
-                .apply {
+                .assert {
                     successFullSources().shouldContainExactly(KildeType.DIGISOS)
                     failedSources().size shouldBe 0
                     val results = results()

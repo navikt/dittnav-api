@@ -9,6 +9,7 @@ import io.ktor.server.routing.get
 import io.ktor.server.routing.routing
 import io.ktor.server.testing.testApplication
 import no.nav.personbruker.dittnav.api.applicationHttpClient
+import no.nav.personbruker.dittnav.api.assert
 import no.nav.personbruker.dittnav.api.authenticatedGet
 import no.nav.personbruker.dittnav.api.bool
 import no.nav.personbruker.dittnav.api.mockApi
@@ -38,7 +39,7 @@ class OppfolgingApiTest {
             apiEndpoint,
             content = externalOppfølgingJson(forventetOppfølgingStaus)
         )
-        client.authenticatedGet("dittnav-api/oppfolging").apply {
+        client.authenticatedGet("dittnav-api/oppfolging").assert {
             status shouldBe HttpStatusCode.OK
             val jsonBody = bodyAsText().toJsonObject().bool("erBrukerUnderOppfolging")
             jsonBody shouldBe forventetOppfølgingStaus

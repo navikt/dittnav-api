@@ -10,9 +10,9 @@ import io.ktor.server.routing.routing
 import io.ktor.server.testing.testApplication
 import io.mockk.coEvery
 import io.mockk.mockk
-import kotlinx.coroutines.runBlocking
 import no.nav.personbruker.dittnav.api.TestUser
 import no.nav.personbruker.dittnav.api.applicationHttpClient
+import no.nav.personbruker.dittnav.api.assert
 import no.nav.personbruker.dittnav.api.config.ConsumeEventException
 import no.nav.personbruker.dittnav.api.externalServiceWithJsonResponse
 import no.nav.personbruker.dittnav.api.toSpesificJsonFormat
@@ -41,15 +41,14 @@ internal class InnboksConsumerTest {
                 endpoint = "/fetch/innboks/aktive",
                 content = listOf(innboksObject1, innboksObject2).toSpesificJsonFormat(Innboks::toEventHandlerJson)
             )
-            val innboksConsumer =
-                InnboksConsumer(applicationHttpClient(), eventhandlerTokendings, URL(testEventHandlerURL))
 
-            runBlocking {
-                val externalActiveEvents = innboksConsumer.getActiveInnboksEvents(dummyUser)
-                externalActiveEvents.size shouldBe 2
-                externalActiveEvents shouldContainInnboksObject innboksObject1
-                externalActiveEvents shouldContainInnboksObject innboksObject2
-            }
+            InnboksConsumer(applicationHttpClient(), eventhandlerTokendings, URL(testEventHandlerURL))
+                .getActiveInnboksEvents(dummyUser)
+                .assert {
+                    size shouldBe 2
+                    this shouldContainInnboksObject innboksObject1
+                    this shouldContainInnboksObject innboksObject2
+                }
         }
     }
 
@@ -60,8 +59,6 @@ internal class InnboksConsumerTest {
         val innboksObject3 = createInnboks(eventId = "6", fodselsnummer = "22", aktiv = false)
 
         testApplication {
-            val innboksConsumer =
-                InnboksConsumer(applicationHttpClient(), eventhandlerTokendings, URL(testEventHandlerURL))
             externalServiceWithJsonResponse(
                 hostApiBase = testEventHandlerURL,
                 endpoint = "/fetch/innboks/inaktive",
@@ -72,12 +69,13 @@ internal class InnboksConsumerTest {
                 ).toSpesificJsonFormat(Innboks::toEventHandlerJson)
             )
 
-            runBlocking {
-                val externalInactiveEvents = innboksConsumer.getInactiveInnboksEvents(dummyUser)
-                externalInactiveEvents shouldContainInnboksObject innboksObject1
-                externalInactiveEvents shouldContainInnboksObject innboksObject2
-                externalInactiveEvents shouldContainInnboksObject innboksObject3
-            }
+            InnboksConsumer(applicationHttpClient(), eventhandlerTokendings, URL(testEventHandlerURL))
+                .getInactiveInnboksEvents(dummyUser)
+                .assert {
+                    this shouldContainInnboksObject innboksObject1
+                    this shouldContainInnboksObject innboksObject2
+                    this shouldContainInnboksObject innboksObject3
+                }
         }
     }
 

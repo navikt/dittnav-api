@@ -45,14 +45,8 @@ internal class SisteSakstemaerTest {
 
     @Test
     fun `Skal kunne deserialisere ekstern respons`() {
-        val deserialized = objectMapper.decodeFromString<SisteSakstemaer>(mineSakerRespons)
-        deserialized.shouldNotBeNull()
-    }
-
-    @Test
-    fun `Skal kunne deserialisere ekstern respons med nullable zoneddatetime`() {
-        val deserialized = objectMapper.decodeFromString<SisteSakstemaer>(mineSakerResponsUtenDagpengerSistEndret)
-        deserialized.shouldNotBeNull()
+        objectMapper.decodeFromString<SisteSakstemaer>(mineSakerRespons).shouldNotBeNull()
+        objectMapper.decodeFromString<SisteSakstemaer>(mineSakerResponsUtenDagpengerSistEndret).shouldNotBeNull()
     }
 
 }

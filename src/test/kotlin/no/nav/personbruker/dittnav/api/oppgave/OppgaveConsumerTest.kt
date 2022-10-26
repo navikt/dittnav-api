@@ -13,6 +13,7 @@ import io.mockk.mockk
 import kotlinx.coroutines.runBlocking
 import no.nav.personbruker.dittnav.api.TestUser
 import no.nav.personbruker.dittnav.api.applicationHttpClient
+import no.nav.personbruker.dittnav.api.assert
 import no.nav.personbruker.dittnav.api.config.ConsumeEventException
 import no.nav.personbruker.dittnav.api.rawEventHandlerVarsel
 import no.nav.personbruker.dittnav.api.externalServiceWithJsonResponse
@@ -33,8 +34,8 @@ internal class OppgaveConsumerTest {
 
     @Test
     fun `should get list of aktive oppgavevarsler`() {
-        val oppgaveObject1 = createOppgave(eventId = "1", fødselsnummer = "1", aktiv=true)
-        val oppgaveObject2 = createOppgave(eventId = "2", fødselsnummer = "2", aktiv=true)
+        val oppgaveObject1 = createOppgave(eventId = "1", fødselsnummer = "1", aktiv = true)
+        val oppgaveObject2 = createOppgave(eventId = "2", fødselsnummer = "2", aktiv = true)
 
         testApplication {
             externalServiceWithJsonResponse(
@@ -43,13 +44,12 @@ internal class OppgaveConsumerTest {
                 content = listOf(oppgaveObject1, oppgaveObject2).toSpesificJsonFormat(Oppgave::toEventHandlerJson)
             )
 
-            val oppgaveConsumer = OppgaveConsumer(applicationHttpClient(), mockkTokendings,URL(testEventHandlerURL))
-
-            runBlocking {
-                val externalActiveEvents = oppgaveConsumer.getActiveOppgaver(dummyUser)
-                externalActiveEvents shouldContainOppgaveObject oppgaveObject1
-                externalActiveEvents shouldContainOppgaveObject oppgaveObject2
-            }
+            OppgaveConsumer(applicationHttpClient(), mockkTokendings, URL(testEventHandlerURL))
+                .getActiveOppgaver(dummyUser)
+                .assert {
+                    this shouldContainOppgaveObject oppgaveObject1
+                    this shouldContainOppgaveObject oppgaveObject2
+                }
         }
     }
 
@@ -71,14 +71,12 @@ internal class OppgaveConsumerTest {
                 ).toSpesificJsonFormat(Oppgave::toEventHandlerJson)
             )
 
-            val oppgaveConsumer = OppgaveConsumer(applicationHttpClient(), mockkTokendings,URL(testEventHandlerURL))
-
-            runBlocking {
-                val externalInactiveEvents = oppgaveConsumer.getInactiveOppgaver(dummyUser)
-                externalInactiveEvents.size shouldBe 3
-                externalInactiveEvents shouldContainOppgaveObject oppgaveObject
-                externalInactiveEvents shouldContainOppgaveObject oppgaveObject2
-                externalInactiveEvents shouldContainOppgaveObject oppgaveObject3
+            OppgaveConsumer(applicationHttpClient(), mockkTokendings, URL(testEventHandlerURL))
+                .getInactiveOppgaver(dummyUser)
+                .assert {
+                this shouldContainOppgaveObject oppgaveObject
+                this shouldContainOppgaveObject oppgaveObject2
+                this shouldContainOppgaveObject oppgaveObject3
             }
         }
     }

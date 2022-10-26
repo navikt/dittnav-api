@@ -7,6 +7,7 @@ import io.ktor.server.testing.testApplication
 import io.mockk.coEvery
 import io.mockk.mockk
 import no.nav.personbruker.dittnav.api.applicationHttpClient
+import no.nav.personbruker.dittnav.api.assert
 import no.nav.personbruker.dittnav.api.authenticatedGet
 import no.nav.personbruker.dittnav.api.mockApi
 import no.nav.personbruker.dittnav.api.externalServiceWithJsonResponse
@@ -40,7 +41,7 @@ class SakerApiTest {
         testApplication {
             mockApi(sakerConsumer = mineSakerConsumer())
             externalServiceWithJsonResponse(sakerBaseUrl, saksteamaerEndpoint, expectedSakerDTO.mapToEksternJson())
-            client.authenticatedGet("dittnav-api/saker").apply {
+            client.authenticatedGet("dittnav-api/saker").assert {
                 status shouldBe HttpStatusCode.OK
             }
         }

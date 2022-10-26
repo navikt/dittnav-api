@@ -13,6 +13,7 @@ import kotlinx.serialization.json.JsonArray
 import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.jsonObject
 import no.nav.personbruker.dittnav.api.applicationHttpClient
+import no.nav.personbruker.dittnav.api.assert
 import no.nav.personbruker.dittnav.api.authenticatedGet
 import no.nav.personbruker.dittnav.api.bool
 import no.nav.personbruker.dittnav.api.externalServiceWithJsonResponse
@@ -55,7 +56,7 @@ class InnboksApiTest {
                 innboksFraEventhandler.filter { it.aktiv == expectedAktivStatus }
                     .toSpesificJsonFormat(Innboks::toEventHandlerJson)
             )
-            client.authenticatedGet(dittnavApiEndpoint).apply {
+            client.authenticatedGet(dittnavApiEndpoint).assert {
                 status shouldBe HttpStatusCode.OK
                 val resultArray = bodyAsText().toJsonArray()
                 resultArray shouldHaveContentEqualTo innboksFraEventhandler.filter { it.aktiv == expectedAktivStatus }

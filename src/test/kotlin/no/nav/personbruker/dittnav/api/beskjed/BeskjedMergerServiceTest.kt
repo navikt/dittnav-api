@@ -7,7 +7,7 @@ import io.mockk.mockk
 import kotlinx.coroutines.runBlocking
 import no.nav.personbruker.dittnav.api.TestUser
 import no.nav.personbruker.dittnav.api.digisos.DigiSosConsumer
-import no.nav.personbruker.dittnav.api.getNumberOfSuccessfulBeskjedEventsForSource
+import no.nav.personbruker.dittnav.api.createSuccsessfullMultiSourceResult
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 
@@ -19,13 +19,13 @@ internal class BeskjedMergerServiceTest {
     private val innloggetBruker = TestUser.createAuthenticatedUser()
 
     private val eventHandlerDefaultResult =
-        getNumberOfSuccessfulBeskjedEventsForSource(
+        createSuccsessfullMultiSourceResult(
             1,
             KildeType.EVENTHANDLER,
             "handler"
         )
 
-    private val digiSosDefaultResult = getNumberOfSuccessfulBeskjedEventsForSource(
+    private val digiSosDefaultResult = createSuccsessfullMultiSourceResult(
         3,
         KildeType.DIGISOS,
         "digiSos"

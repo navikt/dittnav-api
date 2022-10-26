@@ -29,8 +29,8 @@ internal class SakerDTOTest {
             URL("https://person.dev.nav.no/mine-saker"),
             ZonedDateTime.now().minusDays(2)
         )
-        val json = jsonConfig().encodeToString(dto)
-        json.shouldNotBeNull()
+        jsonConfig().encodeToString(dto).shouldNotBeNull()
+
     }
 }
 

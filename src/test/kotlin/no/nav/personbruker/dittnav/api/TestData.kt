@@ -93,7 +93,7 @@ private fun createBeskjedDto(
         eksternVarslingKanaler = listOf()
     )
 
-fun getNumberOfSuccessfulBeskjedEventsForSource(
+fun createSuccsessfullMultiSourceResult(
     numberOfEvents: Int,
     source: KildeType,
     baseEventId: String = "beskjed"

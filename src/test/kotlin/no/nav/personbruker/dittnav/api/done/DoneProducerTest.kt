@@ -30,20 +30,18 @@ internal class DoneProducerTest {
         coEvery { eventhandlerTokendings.exchangeToken(user) } returns AccessToken("<access_token>")
         val done = DoneDTO(eventId = "dummyEventId")
         testApplication {
-                externalServices {
-                    hosts(testEventHandler){
-                        routing {
-                            post("/produce/done"){
-                                call.respond(HttpStatusCode.OK)
-                            }
+            externalServices {
+                hosts(testEventHandler) {
+                    routing {
+                        post("/produce/done") {
+                            call.respond(HttpStatusCode.OK)
                         }
                     }
                 }
-            val doneProducer = DoneProducer(applicationHttpClient(), eventhandlerTokendings, URL(testEventHandler))
-            runBlocking {
-                doneProducer.postDoneEvents(done, user).status shouldBe HttpStatusCode.OK
-                doneProducer.postDoneEvents(done, user).request.method shouldBe HttpMethod.Post
             }
+            val doneProducer = DoneProducer(applicationHttpClient(), eventhandlerTokendings, URL(testEventHandler))
+            doneProducer.postDoneEvents(done, user).status shouldBe HttpStatusCode.OK
+            doneProducer.postDoneEvents(done, user).request.method shouldBe HttpMethod.Post
         }
     }
 

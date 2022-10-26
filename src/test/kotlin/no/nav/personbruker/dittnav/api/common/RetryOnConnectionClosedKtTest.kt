@@ -22,11 +22,9 @@ internal class RetryOnConnectionLostKtTest {
             resourceCall.invoke()
         } throws ConnectionClosedException("") andThen resourceValue
 
-        val result = runBlocking {
+      runBlocking {
             retryOnConnectionClosed(retries = 2,outgoingCall = resourceCall)
-        }
-
-        result shouldBe resourceValue
+        } shouldBe  resourceValue
     }
 
     @Test

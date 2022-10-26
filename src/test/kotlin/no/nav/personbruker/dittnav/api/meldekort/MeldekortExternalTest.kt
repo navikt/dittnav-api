@@ -1,6 +1,7 @@
 package no.nav.personbruker.dittnav.api.meldekort
 
 import io.kotest.matchers.shouldBe
+import no.nav.personbruker.dittnav.api.assert
 import org.junit.jupiter.api.Test
 import java.time.LocalDate
 
@@ -9,13 +10,12 @@ internal class MeldekortExternalTest {
     @Test
     fun `should handle empty answer from meldekort`() {
         val meldekortstatus = MeldekortstatusExternal()
-
-        val result = meldekortstatus.toInternal()
-
-        result.nyeMeldekort.nesteMeldekort shouldBe null
-        result.etterregistrerteMeldekort shouldBe 0
-        result.resterendeFeriedager shouldBe 0
-        result.meldekortbruker shouldBe false
+        meldekortstatus.toInternal().assert {
+            nyeMeldekort.nesteMeldekort shouldBe null
+            etterregistrerteMeldekort shouldBe 0
+            resterendeFeriedager shouldBe 0
+            meldekortbruker shouldBe false
+        }
     }
 
     @Test
