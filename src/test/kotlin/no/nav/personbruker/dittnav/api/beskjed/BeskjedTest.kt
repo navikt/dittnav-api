@@ -10,7 +10,7 @@ class BeskjedTest {
     @Test
     fun `should mask beskjed with security level higher than current user`() {
         val beskjed = createBeskjed(eventId = "1", fodselsnummer = "1", aktiv = true, sikkerhetsnivaa = 4)
-        beskjed.toBeskjedDto(operatingLoginLevel = 3).assert {
+        beskjed.toBeskjedDto(loginLevel = 3).assert {
             forstBehandlet shouldBe beskjed.forstBehandlet
             eventId shouldBe beskjed.eventId
             tekst shouldBe "***"

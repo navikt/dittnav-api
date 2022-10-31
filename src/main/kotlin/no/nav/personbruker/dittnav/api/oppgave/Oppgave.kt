@@ -42,8 +42,8 @@ data class Oppgave(
         )
 
 
-    internal fun toOppgaveDTO(operatingLoginLevel: Int): OppgaveDTO {
-        return if (operatingLoginLevel >= sikkerhetsnivaa) {
+    internal fun toOppgaveDTO(loginLevel: Int): OppgaveDTO {
+        return if (loginLevel >= sikkerhetsnivaa) {
             toOppgaveDTO()
         } else {
             toMaskedOppgaveDTO()

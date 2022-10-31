@@ -42,8 +42,8 @@ data class Beskjed(
         toBeskjedDTO().copy(tekst = "***", link = "***", produsent = "***")
 
 
-    internal fun toBeskjedDto(operatingLoginLevel: Int) =
-        if (operatingLoginLevel >= sikkerhetsnivaa) {
+    internal fun toBeskjedDto(loginLevel: Int) =
+        if (loginLevel >= sikkerhetsnivaa) {
             toBeskjedDTO()
         } else {
             toMaskedBeskjedDTO()

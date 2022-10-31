@@ -40,8 +40,8 @@ data class Innboks(
         toInnboksDTO().copy(tekst = "***", link = "***", produsent = "***")
 
 
-    fun toInnboksDTO(operatingLoginLevel: Int): InnboksDTO {
-        return if(operatingLoginLevel >= sikkerhetsnivaa) {
+    fun toInnboksDTO(loginLevel: Int): InnboksDTO {
+        return if(loginLevel >= sikkerhetsnivaa) {
             toInnboksDTO()
         } else {
             toMaskedInnboksDTO()

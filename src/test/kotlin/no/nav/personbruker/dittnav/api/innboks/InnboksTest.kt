@@ -1,9 +1,6 @@
 package no.nav.personbruker.dittnav.api.innboks
 
 import io.kotest.matchers.shouldBe
-import io.mockk.coEvery
-import kotlinx.coroutines.runBlocking
-import no.nav.personbruker.dittnav.api.TestUser
 import no.nav.personbruker.dittnav.api.assert
 import org.junit.jupiter.api.Test
 
@@ -13,7 +10,7 @@ class InnboksTest {
     fun `should not mask events with security level equal to the current user`() {
         val innboks1 = createInnboks(eventId = "1", fodselsnummer = "1", aktiv = true, sikkerhetsnivå = 4)
 
-        innboks1.toInnboksDTO(operatingLoginLevel = 4).assert {
+        innboks1.toInnboksDTO(loginLevel = 4).assert {
             forstBehandlet shouldBe innboks1.forstBehandlet
             eventId shouldBe innboks1.eventId
             tekst shouldBe innboks1.tekst
@@ -30,7 +27,7 @@ class InnboksTest {
     fun `should not mask events with security level lower than current user`() {
         val innboks1 = createInnboks(eventId = "1", fodselsnummer = "1", aktiv = true, sikkerhetsnivå = 3)
 
-        innboks1.toInnboksDTO(operatingLoginLevel = 4).assert {
+        innboks1.toInnboksDTO(loginLevel = 4).assert {
             forstBehandlet shouldBe innboks1.forstBehandlet
             eventId shouldBe innboks1.eventId
             tekst shouldBe innboks1.tekst
@@ -46,7 +43,7 @@ class InnboksTest {
     @Test
     fun `should mask events with security level higher than current user`() {
         val innboks = createInnboks(eventId = "1", fodselsnummer = "1", aktiv = true, sikkerhetsnivå = 4)
-        innboks.toInnboksDTO(operatingLoginLevel = 3).assert {
+        innboks.toInnboksDTO(loginLevel = 3).assert {
             forstBehandlet shouldBe innboks.forstBehandlet
             eventId shouldBe innboks.eventId
             tekst shouldBe "***"
