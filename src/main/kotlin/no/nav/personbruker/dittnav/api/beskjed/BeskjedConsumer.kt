@@ -5,7 +5,7 @@ import io.ktor.client.HttpClient
 import mu.KotlinLogging
 import no.nav.personbruker.dittnav.api.authentication.AuthenticatedUser
 import no.nav.personbruker.dittnav.api.common.MultiSourceResult
-import no.nav.personbruker.dittnav.api.common.retryOnConnectionClosed
+
 import no.nav.personbruker.dittnav.api.config.get
 import no.nav.personbruker.dittnav.api.tokenx.EventhandlerTokendings
 import java.net.URL
@@ -37,14 +37,12 @@ class BeskjedConsumer(
         completePathToEndpoint: URL,
     ): MultiSourceResult<BeskjedDTO, KildeType> =
         try {
-            val externalEvents = retryOnConnectionClosed<List<Beskjed>> {
-                client.get(completePathToEndpoint, exchangedToken)
+            client.get<List<Beskjed>>(completePathToEndpoint, exchangedToken).let { externalEvents ->
+                MultiSourceResult.createSuccessfulResult(
+                    results = externalEvents.map { beskjed -> beskjed.toBeskjedDto(user.loginLevel) },
+                    source = kilde
+                )
             }
-
-            MultiSourceResult.createSuccessfulResult(
-                results = externalEvents.map { beskjed -> beskjed.toBeskjedDto(user.loginLevel) },
-                source = kilde
-            )
 
         } catch (e: Exception) {
             log.warn("Klarte ikke å hente data fra $kilde: $e", e)

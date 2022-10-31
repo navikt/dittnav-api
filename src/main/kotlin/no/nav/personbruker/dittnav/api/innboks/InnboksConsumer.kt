@@ -1,17 +1,17 @@
 package no.nav.personbruker.dittnav.api.innboks
 
-import io.ktor.client.*
+
+import io.ktor.client.HttpClient
 import no.nav.personbruker.dittnav.api.authentication.AuthenticatedUser
-import no.nav.personbruker.dittnav.api.common.retryOnConnectionClosed
 import no.nav.personbruker.dittnav.api.config.ConsumeEventException
 import no.nav.personbruker.dittnav.api.config.get
 import no.nav.personbruker.dittnav.api.tokenx.EventhandlerTokendings
 import java.net.URL
 
 class InnboksConsumer(
-        private val client: HttpClient,
-        private val eventhandlerTokenDings: EventhandlerTokendings,
-        eventHandlerBaseURL: URL
+    private val client: HttpClient,
+    private val eventhandlerTokenDings: EventhandlerTokendings,
+    eventHandlerBaseURL: URL
 ) {
 
     private val activeEventsEndpoint = URL("$eventHandlerBaseURL/fetch/innboks/aktive")
@@ -20,34 +20,25 @@ class InnboksConsumer(
 
     suspend fun getActiveInnboksEvents(user: AuthenticatedUser): List<InnboksDTO> {
         val exchangedToken = eventhandlerTokenDings.exchangeToken(user)
-        return getInnboksEvents(user, exchangedToken) {
-            getExternalEvents(exchangedToken, activeEventsEndpoint)
-        }
+        return getInnboksEvents(user, exchangedToken, activeEventsEndpoint)
     }
 
     suspend fun getInactiveInnboksEvents(user: AuthenticatedUser): List<InnboksDTO> {
         val exchangedToken = eventhandlerTokenDings.exchangeToken(user)
-        return getInnboksEvents(user, exchangedToken) {
-            getExternalEvents(exchangedToken, inactiveEventsEndpoint)
-        }
+        return getInnboksEvents(user, exchangedToken, inactiveEventsEndpoint)
     }
 
-
-    private suspend fun getExternalEvents(accessToken:String, completePathToEndpoint: URL): List<Innboks> {
-        return retryOnConnectionClosed {
-            client.get(completePathToEndpoint, accessToken)
-        }
-    }
     private suspend fun getInnboksEvents(
         user: AuthenticatedUser,
         exchangedToken: String,
-        getEvents: suspend (String) -> List<Innboks>
-    ): List<InnboksDTO> {
-        return try {
-            val externalEvents = getEvents(exchangedToken)
-            externalEvents.map { innboks -> innboks.toInnboksDTO(user.loginLevel) }
+        completePathToEndpoint: URL
+    ): List<InnboksDTO> =
+        try {
+            client.get<List<Innboks>>(completePathToEndpoint, exchangedToken).map { innboks ->
+                innboks.toInnboksDTO(user.loginLevel)
+            }
         } catch (exception: Exception) {
             throw ConsumeEventException("Klarte ikke hente eventer av type Innboks", exception)
         }
-    }
+
 }

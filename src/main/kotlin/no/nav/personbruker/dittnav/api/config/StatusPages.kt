@@ -7,7 +7,6 @@ import io.ktor.server.application.install
 import io.ktor.server.plugins.statuspages.StatusPages
 import io.ktor.server.response.respond
 import mu.KotlinLogging
-import no.nav.personbruker.dittnav.api.common.ConnectionFailedException
 
 private val log = KotlinLogging.logger {  }
 
@@ -27,8 +26,6 @@ internal fun Application.installStatusPages() {
                     call.respondServiceUnavailable("Klarte ikke å hente personalia", cause)
                 is ProduceEventException ->
                     call.respondServiceUnavailable("Kunne ikke markere varsel som lest", cause)
-                is ConnectionFailedException ->
-                    call.respondServiceUnavailable(cause.message?: "ConnectionFailedException",cause)
                 else ->
                     call.respondServiceUnavailable("Ukjent feil",cause)
             }

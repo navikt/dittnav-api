@@ -2,7 +2,6 @@ package no.nav.personbruker.dittnav.api.oppgave
 
 import io.ktor.client.HttpClient
 import no.nav.personbruker.dittnav.api.authentication.AuthenticatedUser
-import no.nav.personbruker.dittnav.api.common.retryOnConnectionClosed
 import no.nav.personbruker.dittnav.api.config.ConsumeEventException
 import no.nav.personbruker.dittnav.api.config.get
 import no.nav.personbruker.dittnav.api.tokenx.EventhandlerTokendings
@@ -31,19 +30,13 @@ class OppgaveConsumer(
         user: AuthenticatedUser,
         exchangedToken: String,
         url: URL
-    ): List<OppgaveDTO> {
-        return try {
-            getExternalEvents(exchangedToken,url)
-                .map { oppgave -> oppgave.toOppgaveDTO(user.loginLevel) }
+    ): List<OppgaveDTO> =
+        try {
+            client.get<List<Oppgave>>(url, exchangedToken).map { oppgave ->
+                oppgave.toOppgaveDTO(user.loginLevel)
+            }
         } catch (e: Exception) {
             throw ConsumeEventException("Klarte ikke hente oppgaver", e)
         }
-    }
 
-
-    private suspend fun getExternalEvents(accessToken: String, completePathToEndpoint: URL): List<Oppgave> {
-        return retryOnConnectionClosed {
-            client.get(completePathToEndpoint, accessToken)
-        }
-    }
 }
