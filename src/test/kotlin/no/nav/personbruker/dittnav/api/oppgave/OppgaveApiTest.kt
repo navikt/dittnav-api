@@ -25,7 +25,6 @@ import no.nav.personbruker.dittnav.api.string
 import no.nav.personbruker.dittnav.api.stringArray
 import no.nav.personbruker.dittnav.api.toJsonArray
 import no.nav.personbruker.dittnav.api.toSpesificJsonFormat
-import no.nav.personbruker.dittnav.api.tokenx.AccessToken
 import no.nav.personbruker.dittnav.api.tokenx.EventhandlerTokendings
 import no.nav.personbruker.dittnav.api.zonedDateTime
 import org.junit.jupiter.api.Test
@@ -36,7 +35,7 @@ class OppgaveApiTest {
 
     private val eventhandlerTestHost = "https://digisos.test"
     private val mockkTokendings = mockk<EventhandlerTokendings>().also {
-        coEvery { it.exchangeToken(any()) } returns AccessToken("Access!")
+        coEvery { it.exchangeToken(any()) } returns "Access!"
     }
     private val oppgaverFromEventhandler = listOf(
         createInactiveOppgave("evhASAF"),

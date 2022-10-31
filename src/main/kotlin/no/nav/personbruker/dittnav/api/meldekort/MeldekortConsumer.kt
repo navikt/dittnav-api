@@ -10,7 +10,6 @@ import io.ktor.http.HttpMethod
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import no.nav.personbruker.dittnav.api.authentication.AuthenticatedUser
-import no.nav.personbruker.dittnav.api.tokenx.AccessToken
 import java.net.URL
 
 class MeldekortConsumer(
@@ -33,17 +32,17 @@ class MeldekortConsumer(
     }
 
 
-    suspend fun getMeldekortStatus(accessToken: AccessToken): MeldekortstatusExternal {
+    suspend fun getMeldekortStatus(accessToken: String): MeldekortstatusExternal {
         return client.getWithMeldekortTokenx(meldekortStatusEndpoint, accessToken)
     }
 }
 
-private suspend inline fun <reified T> HttpClient.getWithMeldekortTokenx(url: URL, accessToken: AccessToken): T =
+private suspend inline fun <reified T> HttpClient.getWithMeldekortTokenx(url: URL, accessToken: String): T =
     withContext(Dispatchers.IO) {
         request {
             url(url)
             method = HttpMethod.Get
-            header("TokenXAuthorization", "Bearer ${accessToken.value}")
+            header("TokenXAuthorization", "Bearer $accessToken")
             timeout {
                 socketTimeoutMillis = 30000
                 connectTimeoutMillis = 10000

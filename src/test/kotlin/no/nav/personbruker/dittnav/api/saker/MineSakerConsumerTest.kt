@@ -1,23 +1,16 @@
 package no.nav.personbruker.dittnav.api.saker
 
 import io.kotest.assertions.throwables.shouldThrow
-import io.kotest.matchers.nulls.shouldNotBeNull
 import io.kotest.matchers.shouldBe
-import io.kotest.matchers.string.shouldContain
 import io.ktor.server.testing.ApplicationTestBuilder
 import io.ktor.server.testing.testApplication
 import io.mockk.coEvery
-import io.mockk.coVerify
-import io.mockk.confirmVerified
 import io.mockk.mockk
-import kotlinx.coroutines.runBlocking
 import no.nav.personbruker.dittnav.api.TestUser
 import no.nav.personbruker.dittnav.api.applicationHttpClient
 import no.nav.personbruker.dittnav.api.config.ConsumeSakerException
 import no.nav.personbruker.dittnav.api.externalServiceWith500Response
 import no.nav.personbruker.dittnav.api.externalServiceWithJsonResponse
-import no.nav.personbruker.dittnav.api.mockApi
-import no.nav.personbruker.dittnav.api.tokenx.AccessToken
 import org.junit.jupiter.api.Test
 import java.net.URL
 
@@ -28,7 +21,7 @@ internal class MineSakerConsumerTest {
     private val dummyUser = TestUser.createAuthenticatedUser()
     private val saksteamaerEndpoint = "/sakstemaer/sistendret"
     private val tokendingsMock = mockk<MineSakerTokendings>().also {
-        coEvery { it.exchangeToken(any()) } returns AccessToken("123")
+        coEvery { it.exchangeToken(any()) } returns "123"
     }
 
 

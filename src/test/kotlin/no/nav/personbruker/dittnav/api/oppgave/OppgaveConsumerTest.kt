@@ -10,7 +10,6 @@ import io.ktor.server.routing.routing
 import io.ktor.server.testing.testApplication
 import io.mockk.coEvery
 import io.mockk.mockk
-import kotlinx.coroutines.runBlocking
 import no.nav.personbruker.dittnav.api.TestUser
 import no.nav.personbruker.dittnav.api.applicationHttpClient
 import no.nav.personbruker.dittnav.api.assert
@@ -18,7 +17,6 @@ import no.nav.personbruker.dittnav.api.config.ConsumeEventException
 import no.nav.personbruker.dittnav.api.rawEventHandlerVarsel
 import no.nav.personbruker.dittnav.api.externalServiceWithJsonResponse
 import no.nav.personbruker.dittnav.api.toSpesificJsonFormat
-import no.nav.personbruker.dittnav.api.tokenx.AccessToken
 import no.nav.personbruker.dittnav.api.tokenx.EventhandlerTokendings
 import org.junit.jupiter.api.Test
 
@@ -29,7 +27,7 @@ internal class OppgaveConsumerTest {
     private val dummyUser = TestUser.createAuthenticatedUser()
     private val testEventHandlerURL = "https://eventhandler.no"
     private val mockkTokendings = mockk<EventhandlerTokendings>().also {
-        coEvery { it.exchangeToken(any()) } returns AccessToken("Access!")
+        coEvery { it.exchangeToken(any()) } returns "Access!"
     }
 
     @Test

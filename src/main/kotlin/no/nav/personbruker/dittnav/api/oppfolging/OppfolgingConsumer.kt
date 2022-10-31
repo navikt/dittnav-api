@@ -10,7 +10,6 @@ import io.ktor.http.HttpMethod
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import no.nav.personbruker.dittnav.api.authentication.AuthenticatedUser
-import no.nav.personbruker.dittnav.api.tokenx.AccessToken
 import java.net.URL
 
 const val consumerIdHeaderName = "Nav-Consumer-Id"
@@ -22,14 +21,14 @@ class OppfolgingConsumer(
     private val oppfolgingStatusEndpoint = URL("$oppfolgingApiBaseURL/api/niva3/underoppfolging")
 
     suspend fun getOppfolging(user: AuthenticatedUser): Oppfolging =
-        client.getWithConsumerId(AccessToken(user.token)).toInternal()
+        client.getWithConsumerId(user.token).toInternal()
 
-    private suspend  fun HttpClient.getWithConsumerId(accessToken: AccessToken): OppfolgingExternal =
+    private suspend  fun HttpClient.getWithConsumerId(accessToken: String): OppfolgingExternal =
         withContext(Dispatchers.IO) {
             request {
                 url(oppfolgingStatusEndpoint)
                 method = HttpMethod.Get
-                header(HttpHeaders.Authorization, "Bearer ${accessToken.value}")
+                header(HttpHeaders.Authorization, "Bearer $accessToken")
                 header(consumerIdHeaderName, consumerIdHeaderValue)
             }.body()
         }

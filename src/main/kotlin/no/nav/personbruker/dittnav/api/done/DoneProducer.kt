@@ -2,7 +2,6 @@ package no.nav.personbruker.dittnav.api.done
 
 
 import io.ktor.client.HttpClient
-import io.ktor.client.call.body
 import io.ktor.client.request.header
 import io.ktor.client.request.post
 import io.ktor.client.request.setBody
@@ -18,7 +17,6 @@ import kotlinx.coroutines.withContext
 import kotlinx.serialization.Serializable
 import mu.KotlinLogging
 import no.nav.personbruker.dittnav.api.authentication.AuthenticatedUser
-import no.nav.personbruker.dittnav.api.tokenx.AccessToken
 import no.nav.personbruker.dittnav.api.tokenx.EventhandlerTokendings
 
 import java.net.URL
@@ -41,12 +39,12 @@ class DoneProducer(
         }
     }
 
-    private suspend fun HttpClient.post(done: DoneDTO, accessToken: AccessToken) =
+    private suspend fun HttpClient.post(done: DoneDTO, accessToken: String) =
         withContext(Dispatchers.IO) {
             post {
                 url(completePathToEndpoint)
                 method = HttpMethod.Post
-                header(HttpHeaders.Authorization, "Bearer ${accessToken.value}")
+                header(HttpHeaders.Authorization, "Bearer $accessToken")
                 contentType(ContentType.Application.Json)
                 setBody(done)
             }

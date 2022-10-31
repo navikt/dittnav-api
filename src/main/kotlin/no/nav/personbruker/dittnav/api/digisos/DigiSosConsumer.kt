@@ -2,7 +2,6 @@ package no.nav.personbruker.dittnav.api.digisos
 
 
 import io.ktor.client.HttpClient
-import io.ktor.client.call.body
 import io.ktor.client.request.header
 import io.ktor.client.request.post
 import io.ktor.client.request.setBody
@@ -22,7 +21,6 @@ import no.nav.personbruker.dittnav.api.beskjed.KildeType
 import no.nav.personbruker.dittnav.api.common.MultiSourceResult
 import no.nav.personbruker.dittnav.api.config.ProduceEventException
 import no.nav.personbruker.dittnav.api.config.get
-import no.nav.personbruker.dittnav.api.tokenx.AccessToken
 
 import java.net.URL
 
@@ -84,12 +82,12 @@ class DigiSosConsumer(
         }
     }
 
-    private suspend fun post(url: URL, done: DoneDTO, token: AccessToken) =
+    private suspend fun post(url: URL, done: DoneDTO, token: String) =
         withContext(Dispatchers.IO) {
             client.post {
                 url(url)
                 method = HttpMethod.Post
-                header(HttpHeaders.Authorization, "Bearer ${token.value}")
+                header(HttpHeaders.Authorization, "Bearer $token")
                 contentType(ContentType.Application.Json)
                 setBody(done)
             }

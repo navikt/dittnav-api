@@ -15,7 +15,6 @@ import io.ktor.serialization.kotlinx.json.json
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import no.nav.personbruker.dittnav.api.authentication.AuthenticatedUser
-import no.nav.personbruker.dittnav.api.tokenx.AccessToken
 import java.net.URL
 
 object HttpClientBuilder {
@@ -39,11 +38,11 @@ suspend inline fun <reified T> HttpClient.get(url: URL, user: AuthenticatedUser)
     }.body()
 }
 
-suspend inline fun <reified T> HttpClient.get(url: URL, accessToken: AccessToken): T = withContext(Dispatchers.IO) {
+suspend inline fun <reified T> HttpClient.get(url: URL, accessToken: String): T = withContext(Dispatchers.IO) {
     request {
         url(url)
         method = HttpMethod.Get
-        header(HttpHeaders.Authorization, "Bearer ${accessToken.value}")
+        header(HttpHeaders.Authorization, "Bearer $accessToken")
     }.body()
 }
 

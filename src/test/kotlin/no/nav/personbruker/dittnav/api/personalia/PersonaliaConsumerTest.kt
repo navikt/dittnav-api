@@ -1,22 +1,16 @@
 package no.nav.personbruker.dittnav.api.personalia
 
 import io.kotest.assertions.throwables.shouldThrow
-import io.kotest.matchers.nulls.shouldNotBeNull
 import io.kotest.matchers.shouldBe
-import io.kotest.matchers.types.shouldBeSameInstanceAs
 import io.ktor.server.testing.ApplicationTestBuilder
 import io.ktor.server.testing.testApplication
 import io.mockk.coEvery
-import io.mockk.coVerify
-import io.mockk.confirmVerified
 import io.mockk.mockk
-import kotlinx.coroutines.runBlocking
 import no.nav.personbruker.dittnav.api.TestUser
 import no.nav.personbruker.dittnav.api.applicationHttpClient
 import no.nav.personbruker.dittnav.api.config.ConsumePersonaliaException
 import no.nav.personbruker.dittnav.api.externalServiceWith500Response
 import no.nav.personbruker.dittnav.api.externalServiceWithJsonResponse
-import no.nav.personbruker.dittnav.api.tokenx.AccessToken
 import org.junit.jupiter.api.Test
 import java.net.URL
 
@@ -24,7 +18,7 @@ internal class PersonaliaConsumerTest {
 
     private val tokendings = mockk<PersonaliaTokendings>()
     private val dummyUser = TestUser.createAuthenticatedUser()
-    private val dummyAccessToken = AccessToken("123")
+    private val dummyAccessToken = "123"
     private val personaliaApiTestUrl = "http://personalia.test"
     //
 

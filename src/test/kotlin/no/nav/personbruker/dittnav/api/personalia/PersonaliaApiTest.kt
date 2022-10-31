@@ -14,7 +14,6 @@ import no.nav.personbruker.dittnav.api.toJsonObject
 import no.nav.personbruker.dittnav.api.mockApi
 import no.nav.personbruker.dittnav.api.externalServiceWithJsonResponse
 import no.nav.personbruker.dittnav.api.string
-import no.nav.personbruker.dittnav.api.tokenx.AccessToken
 import org.junit.jupiter.api.Test
 import java.net.URL
 
@@ -60,7 +59,7 @@ class PersonaliaApiTest {
         client = applicationHttpClient(),
         personaliaApiURL = URL(testhostBaseApi),
         personaliaTokendings = mockk<PersonaliaTokendings>().also {
-            coEvery { it.exchangeToken(any()) } returns AccessToken("dummytoken")
+            coEvery { it.exchangeToken(any()) } returns "dummytoken"
         }
     )
 }

@@ -22,7 +22,6 @@ import no.nav.personbruker.dittnav.api.mockApi
 import no.nav.personbruker.dittnav.api.externalServiceWithJsonResponse
 import no.nav.personbruker.dittnav.api.string
 import no.nav.personbruker.dittnav.api.toJsonObject
-import no.nav.personbruker.dittnav.api.tokenx.AccessToken
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import java.lang.AssertionError
@@ -37,7 +36,7 @@ class MeldekortApiTest {
 
     @BeforeEach()
     fun `mock tokendings`() {
-        coEvery { meldekortTokendings.exchangeToken(any()) } returns AccessToken("1236")
+        coEvery { meldekortTokendings.exchangeToken(any()) } returns "1236"
     }
 
     @Test

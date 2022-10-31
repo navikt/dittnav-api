@@ -5,7 +5,6 @@ import no.nav.personbruker.dittnav.api.authentication.AuthenticatedUser
 import no.nav.personbruker.dittnav.api.common.retryOnConnectionClosed
 import no.nav.personbruker.dittnav.api.config.ConsumeEventException
 import no.nav.personbruker.dittnav.api.config.get
-import no.nav.personbruker.dittnav.api.tokenx.AccessToken
 import no.nav.personbruker.dittnav.api.tokenx.EventhandlerTokendings
 import java.net.URL
 
@@ -30,7 +29,7 @@ class OppgaveConsumer(
 
     private suspend fun getOppgaveEvents(
         user: AuthenticatedUser,
-        exchangedToken: AccessToken,
+        exchangedToken: String,
         url: URL
     ): List<OppgaveDTO> {
         return try {
@@ -42,7 +41,7 @@ class OppgaveConsumer(
     }
 
 
-    private suspend fun getExternalEvents(accessToken: AccessToken, completePathToEndpoint: URL): List<Oppgave> {
+    private suspend fun getExternalEvents(accessToken: String, completePathToEndpoint: URL): List<Oppgave> {
         return retryOnConnectionClosed {
             client.get(completePathToEndpoint, accessToken)
         }

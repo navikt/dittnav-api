@@ -4,7 +4,6 @@ import io.ktor.client.HttpClient
 import no.nav.personbruker.dittnav.api.authentication.AuthenticatedUser
 import no.nav.personbruker.dittnav.api.config.ConsumePersonaliaException
 import no.nav.personbruker.dittnav.api.config.get
-import no.nav.personbruker.dittnav.api.tokenx.AccessToken
 import java.net.URL
 
 class PersonaliaConsumer(

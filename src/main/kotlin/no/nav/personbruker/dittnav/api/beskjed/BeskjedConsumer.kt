@@ -7,7 +7,6 @@ import no.nav.personbruker.dittnav.api.authentication.AuthenticatedUser
 import no.nav.personbruker.dittnav.api.common.MultiSourceResult
 import no.nav.personbruker.dittnav.api.common.retryOnConnectionClosed
 import no.nav.personbruker.dittnav.api.config.get
-import no.nav.personbruker.dittnav.api.tokenx.AccessToken
 import no.nav.personbruker.dittnav.api.tokenx.EventhandlerTokendings
 import java.net.URL
 
@@ -34,7 +33,7 @@ class BeskjedConsumer(
 
     private suspend fun getBeskjedEvents(
         user: AuthenticatedUser,
-        exchangedToken: AccessToken,
+        exchangedToken: String,
         completePathToEndpoint: URL,
     ): MultiSourceResult<BeskjedDTO, KildeType> =
         try {

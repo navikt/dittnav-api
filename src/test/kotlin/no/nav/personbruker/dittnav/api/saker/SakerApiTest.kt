@@ -11,7 +11,6 @@ import no.nav.personbruker.dittnav.api.assert
 import no.nav.personbruker.dittnav.api.authenticatedGet
 import no.nav.personbruker.dittnav.api.mockApi
 import no.nav.personbruker.dittnav.api.externalServiceWithJsonResponse
-import no.nav.personbruker.dittnav.api.tokenx.AccessToken
 import org.junit.jupiter.api.Test
 import java.net.URL
 import java.time.ZonedDateTime
@@ -22,7 +21,7 @@ class SakerApiTest {
     private val saksteamaerEndpoint = "/sakstemaer/sistendret"
     private val mockToken = "mocktoken"
     private val tokendingsMock: MineSakerTokendings = mockk<MineSakerTokendings>().also {
-        coEvery { it.exchangeToken(any()) } returns AccessToken(mockToken)
+        coEvery { it.exchangeToken(any()) } returns mockToken
     }
 
 

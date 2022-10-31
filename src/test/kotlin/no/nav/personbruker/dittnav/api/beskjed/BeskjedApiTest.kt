@@ -33,7 +33,6 @@ import no.nav.personbruker.dittnav.api.string
 import no.nav.personbruker.dittnav.api.stringArray
 import no.nav.personbruker.dittnav.api.toJsonArray
 import no.nav.personbruker.dittnav.api.toSpesificJsonFormat
-import no.nav.personbruker.dittnav.api.tokenx.AccessToken
 import no.nav.personbruker.dittnav.api.tokenx.EventhandlerTokendings
 import no.nav.personbruker.dittnav.api.zonedDateTime
 import org.junit.jupiter.params.ParameterizedTest
@@ -47,10 +46,10 @@ class BeskjedApiTest {
     private val digisosTestHost = "https://digisos.test"
     private val eventhandlerTestHost = "https://digisos.test"
     private val mockkHandlerTokendings = mockk<EventhandlerTokendings>().also {
-        coEvery { it.exchangeToken(any()) } returns AccessToken("Access!")
+        coEvery { it.exchangeToken(any()) } returns "Access!"
     }
     private val mockkDigiSosTokendings = mockk<DigiSosTokendings>().also {
-        coEvery { it.exchangeToken(any()) } returns AccessToken("Access!")
+        coEvery { it.exchangeToken(any()) } returns "Access!"
     }
 
     private val expectedBeskjedFromDigsos =

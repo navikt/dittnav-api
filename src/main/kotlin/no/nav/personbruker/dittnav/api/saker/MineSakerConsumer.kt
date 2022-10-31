@@ -11,7 +11,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import no.nav.personbruker.dittnav.api.authentication.AuthenticatedUser
 import no.nav.personbruker.dittnav.api.config.ConsumeSakerException
-import no.nav.personbruker.dittnav.api.tokenx.AccessToken
 import no.nav.tms.token.support.tokendings.exchange.TokenXHeader
 import java.net.URL
 
@@ -33,12 +32,12 @@ class MineSakerConsumer(
         }
     }
 
-    private suspend fun HttpClient.getWithTokenx(accessToken: AccessToken): SisteSakstemaer =
+    private suspend fun HttpClient.getWithTokenx(accessToken: String): SisteSakstemaer =
         withContext(Dispatchers.IO) {
             request {
                 url(sisteEndredeSakerEndpoint)
                 method = HttpMethod.Get
-                header(TokenXHeader.Authorization, "Bearer ${accessToken.value}")
+                header(TokenXHeader.Authorization, "Bearer $accessToken")
                 timeout {
                     socketTimeoutMillis = 30000
                     connectTimeoutMillis = 10000

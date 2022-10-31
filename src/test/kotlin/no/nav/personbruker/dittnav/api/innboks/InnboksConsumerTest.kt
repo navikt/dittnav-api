@@ -16,7 +16,6 @@ import no.nav.personbruker.dittnav.api.assert
 import no.nav.personbruker.dittnav.api.config.ConsumeEventException
 import no.nav.personbruker.dittnav.api.externalServiceWithJsonResponse
 import no.nav.personbruker.dittnav.api.toSpesificJsonFormat
-import no.nav.personbruker.dittnav.api.tokenx.AccessToken
 import no.nav.personbruker.dittnav.api.tokenx.EventhandlerTokendings
 import org.junit.jupiter.api.Test
 import java.net.URL
@@ -27,7 +26,7 @@ internal class InnboksConsumerTest {
     private val dummyUser = TestUser.createAuthenticatedUser()
     private val testEventHandlerURL = "http://event-handler"
     private val eventhandlerTokendings = mockk<EventhandlerTokendings>().also {
-        coEvery { it.exchangeToken(any()) } returns AccessToken("<access-token>")
+        coEvery { it.exchangeToken(any()) } returns "<access-token>"
     }
 
     @Test

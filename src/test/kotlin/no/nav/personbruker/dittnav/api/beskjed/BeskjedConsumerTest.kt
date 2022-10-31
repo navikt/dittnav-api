@@ -13,7 +13,6 @@ import no.nav.personbruker.dittnav.api.externalServiceWith500Response
 import no.nav.personbruker.dittnav.api.rawEventHandlerVarsel
 import no.nav.personbruker.dittnav.api.externalServiceWithJsonResponse
 import no.nav.personbruker.dittnav.api.toSpesificJsonFormat
-import no.nav.personbruker.dittnav.api.tokenx.AccessToken
 import no.nav.personbruker.dittnav.api.tokenx.EventhandlerTokendings
 import org.junit.jupiter.api.Test
 import java.net.URL
@@ -24,7 +23,7 @@ internal class BeskjedConsumerTest {
     private val testEventHandlerUrl = "https://test.eventhandler.no"
     private val dummyUser = TestUser.createAuthenticatedUser()
     private val eventhandlerTokendings = mockk<EventhandlerTokendings>().also {
-        coEvery { it.exchangeToken(any()) } returns AccessToken("tokensmoken")
+        coEvery { it.exchangeToken(any()) } returns "tokensmoken"
     }
 
 

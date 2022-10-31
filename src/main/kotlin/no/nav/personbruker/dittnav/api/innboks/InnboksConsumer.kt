@@ -5,7 +5,6 @@ import no.nav.personbruker.dittnav.api.authentication.AuthenticatedUser
 import no.nav.personbruker.dittnav.api.common.retryOnConnectionClosed
 import no.nav.personbruker.dittnav.api.config.ConsumeEventException
 import no.nav.personbruker.dittnav.api.config.get
-import no.nav.personbruker.dittnav.api.tokenx.AccessToken
 import no.nav.personbruker.dittnav.api.tokenx.EventhandlerTokendings
 import java.net.URL
 
@@ -34,15 +33,15 @@ class InnboksConsumer(
     }
 
 
-    private suspend fun getExternalEvents(accessToken: AccessToken, completePathToEndpoint: URL): List<Innboks> {
+    private suspend fun getExternalEvents(accessToken:String, completePathToEndpoint: URL): List<Innboks> {
         return retryOnConnectionClosed {
             client.get(completePathToEndpoint, accessToken)
         }
     }
     private suspend fun getInnboksEvents(
         user: AuthenticatedUser,
-        exchangedToken: AccessToken,
-        getEvents: suspend (AccessToken) -> List<Innboks>
+        exchangedToken: String,
+        getEvents: suspend (String) -> List<Innboks>
     ): List<InnboksDTO> {
         return try {
             val externalEvents = getEvents(exchangedToken)

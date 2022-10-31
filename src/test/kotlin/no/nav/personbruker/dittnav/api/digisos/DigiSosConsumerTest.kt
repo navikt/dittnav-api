@@ -1,6 +1,5 @@
 package no.nav.personbruker.dittnav.api.digisos
 
-import io.kotest.matchers.collections.shouldContain
 import io.kotest.matchers.collections.shouldContainExactly
 import io.kotest.matchers.nulls.shouldNotBeNull
 import io.kotest.matchers.shouldBe
@@ -15,7 +14,6 @@ import io.ktor.server.routing.routing
 import io.ktor.server.testing.testApplication
 import io.mockk.coEvery
 import io.mockk.mockk
-import kotlinx.coroutines.runBlocking
 import kotlinx.serialization.json.jsonObject
 import no.nav.personbruker.dittnav.api.TestUser
 import no.nav.personbruker.dittnav.api.applicationHttpClient
@@ -25,19 +23,15 @@ import no.nav.personbruker.dittnav.api.beskjed.KildeType
 import no.nav.personbruker.dittnav.api.config.jsonConfig
 import no.nav.personbruker.dittnav.api.externalServiceWithJsonResponse
 import no.nav.personbruker.dittnav.api.string
-import no.nav.personbruker.dittnav.api.tokenx.AccessToken
-import org.eclipse.jetty.http.HttpStatus
 import org.intellij.lang.annotations.Language
 import org.junit.jupiter.api.Test
-import org.junit.jupiter.params.ParameterizedTest
-import org.junit.jupiter.params.provider.ValueSource
 import java.net.URL
 
 internal class DigiSosConsumerTest {
 
     private val dummyUser = TestUser.createAuthenticatedUser()
     private val mockTokendings = mockk<DigiSosTokendings>().also {
-        coEvery { it.exchangeToken(any()) } returns AccessToken("Access!")
+        coEvery { it.exchangeToken(any()) } returns "Access!"
     }
     private val digiSosSoknadBaseURL = "https://soknad"
 

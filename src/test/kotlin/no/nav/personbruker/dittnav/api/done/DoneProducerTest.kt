@@ -11,9 +11,7 @@ import io.ktor.server.routing.routing
 import io.ktor.server.testing.testApplication
 import io.mockk.coEvery
 import io.mockk.mockk
-import kotlinx.coroutines.runBlocking
 import no.nav.personbruker.dittnav.api.TestUser
-import no.nav.personbruker.dittnav.api.tokenx.AccessToken
 import no.nav.personbruker.dittnav.api.tokenx.EventhandlerTokendings
 import no.nav.personbruker.dittnav.api.applicationHttpClient
 import org.junit.jupiter.api.Test
@@ -27,7 +25,7 @@ internal class DoneProducerTest {
         val testEventHandler = "http://event-handler"
         val eventhandlerTokendings = mockk<EventhandlerTokendings>()
 
-        coEvery { eventhandlerTokendings.exchangeToken(user) } returns AccessToken("<access_token>")
+        coEvery { eventhandlerTokendings.exchangeToken(user) } returns "<access_token>"
         val done = DoneDTO(eventId = "dummyEventId")
         testApplication {
             externalServices {
