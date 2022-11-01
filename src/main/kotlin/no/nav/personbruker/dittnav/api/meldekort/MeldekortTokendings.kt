@@ -1,7 +1,6 @@
 package no.nav.personbruker.dittnav.api.meldekort
 
 import no.nav.personbruker.dittnav.api.authentication.AuthenticatedUser
-import no.nav.personbruker.dittnav.api.tokenx.AccessToken
 import no.nav.tms.token.support.tokendings.exchange.TokendingsService
 
 class MeldekortTokendings(
@@ -9,7 +8,6 @@ class MeldekortTokendings(
     private val meldekortClientId: String
 ) {
 
-    suspend fun exchangeToken(authenticatedUser: AuthenticatedUser): AccessToken {
-        return AccessToken(tokendingsService.exchangeToken(authenticatedUser.token, meldekortClientId))
-    }
+    suspend fun exchangeToken(authenticatedUser: AuthenticatedUser) =
+        tokendingsService.exchangeToken(authenticatedUser.token, meldekortClientId)
 }

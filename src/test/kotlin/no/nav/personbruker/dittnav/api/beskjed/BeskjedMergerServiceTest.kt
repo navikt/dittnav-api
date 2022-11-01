@@ -3,33 +3,29 @@ package no.nav.personbruker.dittnav.api.beskjed
 import io.kotest.matchers.shouldBe
 import io.mockk.clearMocks
 import io.mockk.coEvery
-import io.mockk.coVerify
-import io.mockk.confirmVerified
 import io.mockk.mockk
 import kotlinx.coroutines.runBlocking
-import no.finn.unleash.FakeUnleash
-import no.nav.personbruker.dittnav.api.authentication.AuthenticatedUserTestData
-import no.nav.personbruker.dittnav.api.common.getNumberOfSuccessfulBeskjedEventsForSource
-import no.nav.personbruker.dittnav.api.digisos.DigiSosService
-import no.nav.personbruker.dittnav.api.unleash.UnleashService
+import no.nav.personbruker.dittnav.api.TestUser
+import no.nav.personbruker.dittnav.api.digisos.DigiSosConsumer
+import no.nav.personbruker.dittnav.api.createSuccsessfullMultiSourceResult
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 
 internal class BeskjedMergerServiceTest {
 
-    private val beskjedService = mockk<BeskjedService>(relaxed = true)
-    private val digiSosService = mockk<DigiSosService>(relaxed = true)
+    private val beskjedConsumer = mockk<BeskjedConsumer>(relaxed = true)
+    private val digiSosConsumer = mockk<DigiSosConsumer>(relaxed = true)
 
-    private val innloggetBruker = AuthenticatedUserTestData.createAuthenticatedUser()
+    private val innloggetBruker = TestUser.createAuthenticatedUser()
 
     private val eventHandlerDefaultResult =
-       getNumberOfSuccessfulBeskjedEventsForSource(
+        createSuccsessfullMultiSourceResult(
             1,
             KildeType.EVENTHANDLER,
             "handler"
         )
 
-    private val digiSosDefaultResult = getNumberOfSuccessfulBeskjedEventsForSource(
+    private val digiSosDefaultResult = createSuccsessfullMultiSourceResult(
         3,
         KildeType.DIGISOS,
         "digiSos"
@@ -37,136 +33,35 @@ internal class BeskjedMergerServiceTest {
 
     @BeforeEach
     fun setup() {
-        clearMocks(beskjedService, digiSosService)
+        clearMocks(beskjedConsumer, digiSosConsumer)
 
-        coEvery { beskjedService.getActiveBeskjedEvents(any()) } returns eventHandlerDefaultResult
-        coEvery { beskjedService.getInactiveBeskjedEvents(any()) } returns eventHandlerDefaultResult
+        coEvery { beskjedConsumer.getActiveBeskjedEvents(any()) } returns eventHandlerDefaultResult
+        coEvery { beskjedConsumer.getInactiveBeskjedEvents(any()) } returns eventHandlerDefaultResult
 
-        coEvery { digiSosService.getPaabegynteActive(any()) } returns digiSosDefaultResult
-        coEvery { digiSosService.getPaabegynteInactive(any()) } returns digiSosDefaultResult
+        coEvery { digiSosConsumer.getPaabegynteActive(any()) } returns digiSosDefaultResult
+        coEvery { digiSosConsumer.getPaabegynteInactive(any()) } returns digiSosDefaultResult
     }
 
     @Test
-    fun `Hent aktive alltid fra event-handler`() {
-        val unleashService = UnleashService(FakeUnleash())
-        val beskjedMerger = BeskjedMergerService(beskjedService, digiSosService, unleashService)
+    fun `Henter aktiver beskjeder fra eventhandler og digisos`() {
 
+        val beskjedMerger = BeskjedMergerService(beskjedConsumer, digiSosConsumer)
         val result = runBlocking {
             beskjedMerger.getActiveEvents(innloggetBruker)
         }
-
-        coVerify(exactly = 1) { beskjedService.getActiveBeskjedEvents(any()) }
-        coVerify(exactly = 0) { digiSosService.getPaabegynteActive(any()) }
-
-        confirmVerified(beskjedService)
-        confirmVerified(digiSosService)
-
-        result.successFullSources().size shouldBe 1
-        result.successFullSources() shouldBe listOf(KildeType.EVENTHANDLER)
-    }
-
-    @Test
-    fun `Hent påbegynte søknader fra DigiSos hvis aktivert`() {
-        val unleashService = UnleashService(
-            FakeUnleash().apply { enable(UnleashService.digisosPaabegynteToggleName) }
-        )
-
-        val beskjedMerger = BeskjedMergerService(beskjedService, digiSosService, unleashService)
-
-        val result = runBlocking {
-            beskjedMerger.getActiveEvents(innloggetBruker)
-        }
-
-        coVerify(exactly = 1) { beskjedService.getActiveBeskjedEvents(any()) }
-        coVerify(exactly = 1) { digiSosService.getPaabegynteActive(any()) }
-
-        confirmVerified(beskjedService)
-        confirmVerified(digiSosService)
 
         result.successFullSources().size shouldBe 2
         result.successFullSources() shouldBe listOf(KildeType.EVENTHANDLER, KildeType.DIGISOS)
     }
 
     @Test
-    fun `Hent aktive fra alle kilder hvis aktivert`() {
-        val unleashService = UnleashService(
-            FakeUnleash().apply { enable(UnleashService.digisosPaabegynteToggleName) }
-        )
+    fun `Henter inaktive beskjeder fra eventhandler og digisos`() {
 
-        val beskjedMerger = BeskjedMergerService(beskjedService, digiSosService, unleashService)
-
-        val result = runBlocking {
-            beskjedMerger.getActiveEvents(innloggetBruker)
-        }
-
-        coVerify(exactly = 1) { beskjedService.getActiveBeskjedEvents(any()) }
-        coVerify(exactly = 1) { digiSosService.getPaabegynteActive(any()) }
-
-        confirmVerified(beskjedService)
-        confirmVerified(digiSosService)
-
-        result.successFullSources().size shouldBe 2
-        result.successFullSources() shouldBe listOf(KildeType.EVENTHANDLER, KildeType.DIGISOS)
-    }
-
-    @Test
-    fun `Hent inaktive alltid fra event-handler`() {
-        val unleashService = UnleashService(FakeUnleash())
-
-        val beskjedMerger = BeskjedMergerService(beskjedService, digiSosService, unleashService)
+        val beskjedMerger = BeskjedMergerService(beskjedConsumer, digiSosConsumer)
 
         val result = runBlocking {
             beskjedMerger.getInactiveEvents(innloggetBruker)
         }
-
-        coVerify(exactly = 1) { beskjedService.getInactiveBeskjedEvents(any()) }
-        coVerify(exactly = 0) { digiSosService.getPaabegynteInactive(any()) }
-
-        confirmVerified(beskjedService)
-        confirmVerified(digiSosService)
-
-        result.successFullSources().size shouldBe 1
-        result.successFullSources() shouldBe listOf(KildeType.EVENTHANDLER)
-    }
-
-    @Test
-    fun `Hent inaktive fra DigiSos hvis aktivert`() {
-        val unleashService = UnleashService(
-            FakeUnleash().apply { enable(UnleashService.digisosPaabegynteToggleName) }
-        )
-
-        val beskjedMerger = BeskjedMergerService(beskjedService, digiSosService, unleashService)
-
-        val result = runBlocking {
-            beskjedMerger.getInactiveEvents(innloggetBruker)
-        }
-
-        coVerify(exactly = 1) { beskjedService.getInactiveBeskjedEvents(any()) }
-        coVerify(exactly = 1) { digiSosService.getPaabegynteInactive(any()) }
-
-        confirmVerified(beskjedService)
-        confirmVerified(digiSosService)
-
-        result.successFullSources().size shouldBe 2
-        result.successFullSources() shouldBe listOf(KildeType.EVENTHANDLER, KildeType.DIGISOS)
-    }
-
-    @Test
-    fun `Hent inaktive fra alle kilder hvis aktivert`() {
-        val unleashService = UnleashService(
-            FakeUnleash().apply { enable(UnleashService.digisosPaabegynteToggleName) }
-        )
-        val beskjedMerger = BeskjedMergerService(beskjedService, digiSosService, unleashService)
-
-        val result = runBlocking {
-            beskjedMerger.getInactiveEvents(innloggetBruker)
-        }
-
-        coVerify(exactly = 1) { beskjedService.getInactiveBeskjedEvents(any()) }
-        coVerify(exactly = 1) { digiSosService.getPaabegynteInactive(any()) }
-
-        confirmVerified(beskjedService)
-        confirmVerified(digiSosService)
 
         result.successFullSources().size shouldBe 2
         result.successFullSources() shouldBe listOf(KildeType.EVENTHANDLER, KildeType.DIGISOS)

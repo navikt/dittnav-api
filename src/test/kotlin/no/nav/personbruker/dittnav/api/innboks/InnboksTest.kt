@@ -1,40 +1,60 @@
 package no.nav.personbruker.dittnav.api.innboks
 
 import io.kotest.matchers.shouldBe
+import no.nav.personbruker.dittnav.api.assert
 import org.junit.jupiter.api.Test
 
 class InnboksTest {
 
     @Test
-    fun `should transform from Innboks to InnboksDTO`() {
-        val innboks1 = createInnboks(eventId = "1", fodselsnummer = "1", aktiv =  true)
-        val innboks2 = createInnboks(eventId = "2", fodselsnummer =  "2", aktiv = true)
-        val innboksDTOList = listOf(innboks1, innboks2).map { toInnboksDTO(it) }
-        val innboksDTO = innboksDTOList.first()
+    fun `should not mask events with security level equal to the current user`() {
+        val innboks1 = createInnboks(eventId = "1", fodselsnummer = "1", aktiv = true, sikkerhetsnivå = 4)
 
-        innboksDTO.forstBehandlet shouldBe innboks1.forstBehandlet
-        innboksDTO.eventId shouldBe innboks1.eventId
-        innboksDTO.tekst shouldBe innboks1.tekst
-        innboksDTO.link shouldBe innboks1.link
-        innboksDTO.produsent shouldBe innboks1.produsent
-        innboksDTO.sistOppdatert shouldBe innboks1.sistOppdatert
-        innboksDTO.sikkerhetsnivaa shouldBe innboks1.sikkerhetsnivaa
-        innboksDTO.eksternVarslingSendt shouldBe innboks1.eksternVarslingSendt
-        innboksDTO.eksternVarslingKanaler shouldBe innboks1.eksternVarslingKanaler
+        innboks1.toInnboksDTO(loginLevel = 4).assert {
+            forstBehandlet shouldBe innboks1.forstBehandlet
+            eventId shouldBe innboks1.eventId
+            tekst shouldBe innboks1.tekst
+            link shouldBe innboks1.link
+            produsent shouldBe innboks1.produsent
+            sistOppdatert shouldBe innboks1.sistOppdatert
+            sikkerhetsnivaa shouldBe innboks1.sikkerhetsnivaa
+            eksternVarslingSendt shouldBe innboks1.eksternVarslingSendt
+            eksternVarslingKanaler shouldBe innboks1.eksternVarslingKanaler
+        }
     }
 
     @Test
-    fun `should mask tekst, link and produsent`() {
-        val innboks = createInnboks(eventId = "1", fodselsnummer = "1", aktiv = true)
-        val innboksDTO = toMaskedInnboksDTO(innboks)
-        innboksDTO.forstBehandlet shouldBe innboks.forstBehandlet
-        innboksDTO.eventId shouldBe innboks.eventId
-        innboksDTO.tekst shouldBe "***"
-        innboksDTO.link shouldBe "***"
-        innboksDTO.produsent shouldBe "***"
-        innboksDTO.sistOppdatert shouldBe innboks.sistOppdatert
-        innboksDTO.sikkerhetsnivaa shouldBe innboks.sikkerhetsnivaa
-        innboksDTO.eksternVarslingSendt shouldBe innboks.eksternVarslingSendt
-        innboksDTO.eksternVarslingKanaler shouldBe innboks.eksternVarslingKanaler
+    fun `should not mask events with security level lower than current user`() {
+        val innboks1 = createInnboks(eventId = "1", fodselsnummer = "1", aktiv = true, sikkerhetsnivå = 3)
+
+        innboks1.toInnboksDTO(loginLevel = 4).assert {
+            forstBehandlet shouldBe innboks1.forstBehandlet
+            eventId shouldBe innboks1.eventId
+            tekst shouldBe innboks1.tekst
+            link shouldBe innboks1.link
+            produsent shouldBe innboks1.produsent
+            sistOppdatert shouldBe innboks1.sistOppdatert
+            sikkerhetsnivaa shouldBe innboks1.sikkerhetsnivaa
+            eksternVarslingSendt shouldBe innboks1.eksternVarslingSendt
+            eksternVarslingKanaler shouldBe innboks1.eksternVarslingKanaler
+        }
     }
+
+    @Test
+    fun `should mask events with security level higher than current user`() {
+        val innboks = createInnboks(eventId = "1", fodselsnummer = "1", aktiv = true, sikkerhetsnivå = 4)
+        innboks.toInnboksDTO(loginLevel = 3).assert {
+            forstBehandlet shouldBe innboks.forstBehandlet
+            eventId shouldBe innboks.eventId
+            tekst shouldBe "***"
+            link shouldBe "***"
+            produsent shouldBe "***"
+            sistOppdatert shouldBe innboks.sistOppdatert
+            sikkerhetsnivaa shouldBe innboks.sikkerhetsnivaa
+            eksternVarslingSendt shouldBe innboks.eksternVarslingSendt
+            eksternVarslingKanaler shouldBe innboks.eksternVarslingKanaler
+        }
+
+    }
+
 }

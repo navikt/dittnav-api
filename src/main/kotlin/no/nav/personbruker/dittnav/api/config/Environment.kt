@@ -23,7 +23,7 @@ data class Environment(
     val digiSosSoknadBaseURL: URL = getEnvVarAsURL("DIGISOS_API_URL", trimTrailingSlash = true),
     val digiSosClientId: String = getEnvVar("DIGISOS_API_CLIENT_ID"),
     val mineSakerURL: URL = getEnvVarAsURL("MINE_SAKER_URL", trimTrailingSlash = true),
-    val sakerApiUrl: URL = getEnvVarAsURL("MINE_SAKER_API_URL", trimTrailingSlash = true),
+    val mineSakerApiUrl: URL = getEnvVarAsURL("MINE_SAKER_API_URL", trimTrailingSlash = true),
     val mineSakerApiClientId: String = getEnvVar("MINE_SAKER_API_CLIENT_ID"),
     val personaliaApiUrl: URL = getEnvVarAsURL("PERSONALIA_API_URL"),
     val personaliaApiClientId: String = getEnvVar("PERSONALIA_API_CLIENT_ID"),
@@ -43,4 +43,19 @@ data class LoginserviceMetadata(val jwks_uri: String, val issuer: String) {
             httpClient.get { url(discoveryUrl) }.body()
         }
     }
+}
+
+object NaisEnvironment {
+
+    fun currentClusterName() : String? = System.getenv("NAIS_CLUSTER_NAME")
+
+    fun isRunningInProd(): Boolean {
+        val clusterName = currentClusterName()
+        return clusterName == "prod-sbs" || clusterName == "prod-gcp"
+    }
+
+    fun isRunningInDev(): Boolean {
+        return !isRunningInProd()
+    }
+
 }

@@ -1,6 +1,6 @@
 package no.nav.personbruker.dittnav.api.common
 
-import io.ktor.http.*
+import io.ktor.http.HttpStatusCode
 import no.nav.personbruker.dittnav.api.beskjed.KildeType
 
 /**

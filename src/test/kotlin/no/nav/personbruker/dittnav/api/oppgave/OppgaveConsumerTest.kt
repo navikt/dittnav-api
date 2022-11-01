@@ -1,41 +1,53 @@
 package no.nav.personbruker.dittnav.api.oppgave
 
+import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.matchers.shouldBe
+import io.ktor.http.HttpStatusCode
+import io.ktor.server.application.call
+import io.ktor.server.response.respond
+import io.ktor.server.routing.get
+import io.ktor.server.routing.routing
 import io.ktor.server.testing.testApplication
-import kotlinx.coroutines.runBlocking
+import io.mockk.coEvery
+import io.mockk.mockk
+import no.nav.personbruker.dittnav.api.TestUser
 import no.nav.personbruker.dittnav.api.applicationHttpClient
+import no.nav.personbruker.dittnav.api.assert
+import no.nav.personbruker.dittnav.api.config.ConsumeEventException
 import no.nav.personbruker.dittnav.api.rawEventHandlerVarsel
 import no.nav.personbruker.dittnav.api.externalServiceWithJsonResponse
 import no.nav.personbruker.dittnav.api.toSpesificJsonFormat
-import no.nav.personbruker.dittnav.api.tokenx.AccessToken
+import no.nav.personbruker.dittnav.api.tokenx.EventhandlerTokendings
 import org.junit.jupiter.api.Test
 
 import java.net.URL
 
 internal class OppgaveConsumerTest {
 
-    private val dummyToken = AccessToken("<access_token>")
-    private val testEventHandlerEndpoint = "https://eventhandler.no"
+    private val dummyUser = TestUser.createAuthenticatedUser()
+    private val testEventHandlerURL = "https://eventhandler.no"
+    private val mockkTokendings = mockk<EventhandlerTokendings>().also {
+        coEvery { it.exchangeToken(any()) } returns "Access!"
+    }
 
     @Test
     fun `should get list of aktive oppgavevarsler`() {
-        val oppgaveObject1 = createOppgave(eventId = "1", fødselsnummer = "1", aktiv=true)
-        val oppgaveObject2 = createOppgave(eventId = "2", fødselsnummer = "2", aktiv=true)
+        val oppgaveObject1 = createOppgave(eventId = "1", fødselsnummer = "1", aktiv = true)
+        val oppgaveObject2 = createOppgave(eventId = "2", fødselsnummer = "2", aktiv = true)
 
         testApplication {
             externalServiceWithJsonResponse(
-                hostApiBase = testEventHandlerEndpoint,
+                hostApiBase = testEventHandlerURL,
                 endpoint = "/fetch/oppgave/aktive",
                 content = listOf(oppgaveObject1, oppgaveObject2).toSpesificJsonFormat(Oppgave::toEventHandlerJson)
             )
 
-            val oppgaveConsumer = OppgaveConsumer(applicationHttpClient(), URL(testEventHandlerEndpoint))
-
-            runBlocking {
-                val externalActiveEvents = oppgaveConsumer.getExternalActiveEvents(dummyToken)
-                externalActiveEvents shouldContainOppgaveObject oppgaveObject1
-                externalActiveEvents shouldContainOppgaveObject oppgaveObject2
-            }
+            OppgaveConsumer(applicationHttpClient(), mockkTokendings, URL(testEventHandlerURL))
+                .getActiveOppgaver(dummyUser)
+                .assert {
+                    this shouldContainOppgaveObject oppgaveObject1
+                    this shouldContainOppgaveObject oppgaveObject2
+                }
         }
     }
 
@@ -48,7 +60,7 @@ internal class OppgaveConsumerTest {
         testApplication {
 
             externalServiceWithJsonResponse(
-                hostApiBase = testEventHandlerEndpoint,
+                hostApiBase = testEventHandlerURL,
                 endpoint = "/fetch/oppgave/inaktive",
                 content = listOf(
                     oppgaveObject,
@@ -57,17 +69,36 @@ internal class OppgaveConsumerTest {
                 ).toSpesificJsonFormat(Oppgave::toEventHandlerJson)
             )
 
-            val oppgaveConsumer = OppgaveConsumer(applicationHttpClient(), URL(testEventHandlerEndpoint))
-
-            runBlocking {
-                val externalInactiveEvents = oppgaveConsumer.getExternalInactiveEvents(dummyToken)
-                externalInactiveEvents.size shouldBe 3
-                externalInactiveEvents shouldContainOppgaveObject oppgaveObject
-                externalInactiveEvents shouldContainOppgaveObject oppgaveObject2
-                externalInactiveEvents shouldContainOppgaveObject oppgaveObject3
+            OppgaveConsumer(applicationHttpClient(), mockkTokendings, URL(testEventHandlerURL))
+                .getInactiveOppgaver(dummyUser)
+                .assert {
+                this shouldContainOppgaveObject oppgaveObject
+                this shouldContainOppgaveObject oppgaveObject2
+                this shouldContainOppgaveObject oppgaveObject3
             }
         }
     }
+
+    @Test
+    fun `should throw exception if fetching events fails`() =
+        testApplication {
+            val oppgaveConsumer =
+                OppgaveConsumer(applicationHttpClient(), mockkTokendings, URL(testEventHandlerURL))
+            externalServices {
+                hosts(testEventHandlerURL) {
+                    routing {
+                        get("fetch/oppgave/inaktive") {
+                            call.respond(HttpStatusCode.InternalServerError)
+                        }
+                        get("fetch/oppgave/aktive") {
+                            call.respond(HttpStatusCode.InternalServerError)
+                        }
+                    }
+                }
+            }
+            shouldThrow<ConsumeEventException> { oppgaveConsumer.getActiveOppgaver(dummyUser) }
+            shouldThrow<ConsumeEventException> { oppgaveConsumer.getInactiveOppgaver(dummyUser) }
+        }
 }
 
 private fun Oppgave.toEventHandlerJson(): String = rawEventHandlerVarsel(
@@ -85,9 +116,8 @@ private fun Oppgave.toEventHandlerJson(): String = rawEventHandlerVarsel(
     aktiv = aktiv
 )
 
-private infix fun List<Oppgave>.shouldContainOppgaveObject(expected: Oppgave) =
+private infix fun List<OppgaveDTO>.shouldContainOppgaveObject(expected: Oppgave) =
     find { it.eventId == expected.eventId }?.let { event ->
         event.tekst shouldBe expected.tekst
-        event.fodselsnummer shouldBe expected.fodselsnummer
         event.aktiv shouldBe expected.aktiv
     }

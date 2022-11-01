@@ -22,24 +22,34 @@ data class Oppgave(
     val eksternVarslingSendt: Boolean,
     val eksternVarslingKanaler: List<String>
 ) {
-    fun toMaskedOppgaveDTO(): OppgaveDTO =
+    private fun toMaskedOppgaveDTO(): OppgaveDTO =
         this.toOppgaveDTO()
             .copy(tekst = "***", link = "***", produsent = "***")
 
-    fun toOppgaveDTO(): OppgaveDTO =
-            OppgaveDTO(
-                forstBehandlet = forstBehandlet,
-                eventId = eventId,
-                tekst = tekst,
-                link = link,
-                produsent = produsent,
-                sistOppdatert = sistOppdatert,
-                sikkerhetsnivaa = sikkerhetsnivaa,
-                aktiv = aktiv,
-                grupperingsId = grupperingsId,
-                eksternVarslingSendt = eksternVarslingSendt,
-                eksternVarslingKanaler = eksternVarslingKanaler
-            )
+    private fun toOppgaveDTO(): OppgaveDTO =
+        OppgaveDTO(
+            forstBehandlet = forstBehandlet,
+            eventId = eventId,
+            tekst = tekst,
+            link = link,
+            produsent = produsent,
+            sistOppdatert = sistOppdatert,
+            sikkerhetsnivaa = sikkerhetsnivaa,
+            aktiv = aktiv,
+            grupperingsId = grupperingsId,
+            eksternVarslingSendt = eksternVarslingSendt,
+            eksternVarslingKanaler = eksternVarslingKanaler
+        )
+
+
+    internal fun toOppgaveDTO(loginLevel: Int): OppgaveDTO {
+        return if (loginLevel >= sikkerhetsnivaa) {
+            toOppgaveDTO()
+        } else {
+            toMaskedOppgaveDTO()
+        }
+    }
+
 
 }
 

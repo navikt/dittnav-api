@@ -1,20 +1,33 @@
 package no.nav.personbruker.dittnav.api.innboks
 
+import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.matchers.shouldBe
+import io.ktor.http.HttpStatusCode
+import io.ktor.server.application.call
+import io.ktor.server.response.respond
+import io.ktor.server.routing.get
+import io.ktor.server.routing.routing
 import io.ktor.server.testing.testApplication
-import kotlinx.coroutines.runBlocking
-import no.nav.personbruker.dittnav.api.rawEventHandlerVarsel
-import no.nav.personbruker.dittnav.api.tokenx.AccessToken
+import io.mockk.coEvery
+import io.mockk.mockk
+import no.nav.personbruker.dittnav.api.TestUser
 import no.nav.personbruker.dittnav.api.applicationHttpClient
+import no.nav.personbruker.dittnav.api.assert
+import no.nav.personbruker.dittnav.api.config.ConsumeEventException
 import no.nav.personbruker.dittnav.api.externalServiceWithJsonResponse
 import no.nav.personbruker.dittnav.api.toSpesificJsonFormat
+import no.nav.personbruker.dittnav.api.tokenx.EventhandlerTokendings
 import org.junit.jupiter.api.Test
 import java.net.URL
 
 internal class InnboksConsumerTest {
 
-    private val dummyToken = AccessToken("<access_token>")
-    private val testEventHandlerEndpoint = "http://event-handler"
+
+    private val dummyUser = TestUser.createAuthenticatedUser()
+    private val testEventHandlerURL = "http://event-handler"
+    private val eventhandlerTokendings = mockk<EventhandlerTokendings>().also {
+        coEvery { it.exchangeToken(any()) } returns "<access-token>"
+    }
 
     @Test
     fun `should get list of active Innboks`() {
@@ -23,18 +36,18 @@ internal class InnboksConsumerTest {
         testApplication {
 
             externalServiceWithJsonResponse(
-                hostApiBase = testEventHandlerEndpoint,
+                hostApiBase = testEventHandlerURL,
                 endpoint = "/fetch/innboks/aktive",
                 content = listOf(innboksObject1, innboksObject2).toSpesificJsonFormat(Innboks::toEventHandlerJson)
             )
-            val innboksConsumer = InnboksConsumer(applicationHttpClient(), URL(testEventHandlerEndpoint))
 
-            runBlocking {
-                val externalActiveEvents = innboksConsumer.getExternalActiveEvents(dummyToken)
-                externalActiveEvents.size shouldBe 2
-                externalActiveEvents shouldContainInnboksObject innboksObject1
-                externalActiveEvents shouldContainInnboksObject innboksObject2
-            }
+            InnboksConsumer(applicationHttpClient(), eventhandlerTokendings, URL(testEventHandlerURL))
+                .getActiveInnboksEvents(dummyUser)
+                .assert {
+                    size shouldBe 2
+                    this shouldContainInnboksObject innboksObject1
+                    this shouldContainInnboksObject innboksObject2
+                }
         }
     }
 
@@ -45,9 +58,8 @@ internal class InnboksConsumerTest {
         val innboksObject3 = createInnboks(eventId = "6", fodselsnummer = "22", aktiv = false)
 
         testApplication {
-            val innboksConsumer = InnboksConsumer(applicationHttpClient(), URL(testEventHandlerEndpoint))
             externalServiceWithJsonResponse(
-                hostApiBase = testEventHandlerEndpoint,
+                hostApiBase = testEventHandlerURL,
                 endpoint = "/fetch/innboks/inaktive",
                 content = listOf(
                     innboksObject1,
@@ -56,19 +68,41 @@ internal class InnboksConsumerTest {
                 ).toSpesificJsonFormat(Innboks::toEventHandlerJson)
             )
 
-            runBlocking {
-                val externalInactiveEvents = innboksConsumer.getExternalInactiveEvents(dummyToken)
-                externalInactiveEvents shouldContainInnboksObject innboksObject1
-                externalInactiveEvents shouldContainInnboksObject innboksObject2
-                externalInactiveEvents shouldContainInnboksObject innboksObject3
-            }
+            InnboksConsumer(applicationHttpClient(), eventhandlerTokendings, URL(testEventHandlerURL))
+                .getInactiveInnboksEvents(dummyUser)
+                .assert {
+                    this shouldContainInnboksObject innboksObject1
+                    this shouldContainInnboksObject innboksObject2
+                    this shouldContainInnboksObject innboksObject3
+                }
         }
     }
+
+    @Test
+    fun `should throw exception if fetching events fails`() =
+        testApplication {
+            val innboksConsumer =
+                InnboksConsumer(applicationHttpClient(), eventhandlerTokendings, URL(testEventHandlerURL))
+            externalServices {
+                hosts(testEventHandlerURL) {
+                    routing {
+                        get("fetch/innboks/inaktive") {
+                            call.respond(HttpStatusCode.InternalServerError)
+                        }
+                        get("fetch/innboks/aktive") {
+                            call.respond(HttpStatusCode.InternalServerError)
+                        }
+                    }
+                }
+            }
+            shouldThrow<ConsumeEventException> { innboksConsumer.getActiveInnboksEvents(dummyUser) }
+            shouldThrow<ConsumeEventException> { innboksConsumer.getInactiveInnboksEvents(dummyUser) }
+        }
+
 }
 
-private infix fun List<Innboks>.shouldContainInnboksObject(expectedInnboks: Innboks) =
+private infix fun List<InnboksDTO>.shouldContainInnboksObject(expectedInnboks: Innboks) =
     find { it.eventId == expectedInnboks.eventId }?.let { event ->
         event.tekst shouldBe expectedInnboks.tekst
-        event.fodselsnummer shouldBe expectedInnboks.fodselsnummer
-        event.aktiv shouldBe expectedInnboks.aktiv
+        event.produsent shouldBe event.produsent
     } ?: throw AssertionError("Fant ikke innboksvarsel med eventid ${expectedInnboks.eventId}")

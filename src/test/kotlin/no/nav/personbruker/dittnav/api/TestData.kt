@@ -1,5 +1,10 @@
-package no.nav.personbruker.dittnav.api.beskjed
+package no.nav.personbruker.dittnav.api
 
+
+import no.nav.personbruker.dittnav.api.beskjed.Beskjed
+import no.nav.personbruker.dittnav.api.beskjed.BeskjedDTO
+import no.nav.personbruker.dittnav.api.beskjed.KildeType
+import no.nav.personbruker.dittnav.api.common.MultiSourceResult
 import java.time.ZoneId
 import java.time.ZonedDateTime
 
@@ -87,3 +92,18 @@ private fun createBeskjedDto(
         eksternVarslingSendt = false,
         eksternVarslingKanaler = listOf()
     )
+
+fun createSuccsessfullMultiSourceResult(
+    numberOfEvents: Int,
+    source: KildeType,
+    baseEventId: String = "beskjed"
+): MultiSourceResult<BeskjedDTO, KildeType> {
+    val events = mutableListOf<BeskjedDTO>()
+    for (lopenummer in 0 until numberOfEvents) {
+        events.add(createActiveBeskjedDto("$baseEventId-$lopenummer"))
+    }
+    return MultiSourceResult.createSuccessfulResult(
+        events,
+        source
+    )
+}
