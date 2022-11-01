@@ -15,10 +15,8 @@ internal fun Application.installStatusPages() {
         exception<Throwable> { call, cause ->
             when (cause) {
                 is CookieNotSetException -> {
-                    log.info("401: fant ikke selvbetjening-idtoken")
                     call.respond(HttpStatusCode.Unauthorized)
                 }
-
                 is ConsumeEventException ->
                     call.respondServiceUnavailable("Klarte ikke å hente eventer", cause)
 
