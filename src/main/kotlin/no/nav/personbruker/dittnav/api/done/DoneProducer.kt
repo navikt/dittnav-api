@@ -17,21 +17,22 @@ import kotlinx.coroutines.withContext
 import kotlinx.serialization.Serializable
 import mu.KotlinLogging
 import no.nav.personbruker.dittnav.api.authentication.AuthenticatedUser
+import no.nav.personbruker.dittnav.api.tokenx.EventaggregatorTokendings
 import no.nav.personbruker.dittnav.api.tokenx.EventhandlerTokendings
 
 import java.net.URL
 
 class DoneProducer(
     private val httpClient: HttpClient,
-    private val eventhandlerTokendings: EventhandlerTokendings,
-    dittNAVBaseURL: URL
+    private val eventaggregatorTokendings: EventaggregatorTokendings,
+    aggregatorBaseURL: URL
 ) {
 
     private val log = KotlinLogging.logger { }
-    private val completePathToEndpoint = URL("$dittNAVBaseURL/produce/done")
+    private val completePathToEndpoint = URL("$aggregatorBaseURL/beskjed/done")
 
     suspend fun postDoneEvents(done: DoneDTO, user: AuthenticatedUser): HttpResponse {
-        val exchangedToken = eventhandlerTokendings.exchangeToken(user)
+        val exchangedToken = eventaggregatorTokendings.exchangeToken(user)
         return httpClient.post(done, exchangedToken). also { response ->
             if (response.status != HttpStatusCode.OK) {
                 log.warn("Feil mot $completePathToEndpoint: ${response.status.value} ${response.status.description}")

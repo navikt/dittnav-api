@@ -15,6 +15,7 @@ import java.net.URL
 
 data class Environment(
     val eventHandlerURL: URL = getEnvVarAsURL("EVENT_HANDLER_URL", trimTrailingSlash = true),
+    val eventAggregatorURL: URL = getEnvVarAsURL("EVENT_AGGREGATOR_URL", trimTrailingSlash = true),
     val corsAllowedOrigins: String = getEnvVar("CORS_ALLOWED_ORIGINS"),
     val corsAllowedSchemes: String = getEnvVar("CORS_ALLOWED_SCHEMES", "https"),
     val corsAllowedHeaders: List<String> = getEnvVarAsList("CORS_ALLOWED_HEADERS"),
@@ -28,6 +29,7 @@ data class Environment(
     val personaliaApiUrl: URL = getEnvVarAsURL("PERSONALIA_API_URL"),
     val personaliaApiClientId: String = getEnvVar("PERSONALIA_API_CLIENT_ID"),
     val eventhandlerClientId: String = getEnvVar("EVENTHANDLER_CLIENT_ID"),
+    val eventaggregatorClientId: String = getEnvVar("EVENTAGGREGATOR_CLIENT_ID"),
     val meldekortApiUrl: URL = getEnvVarAsURL("MELDEKORT_API_URL"),
     val meldekortClientId: String = getEnvVar("MELDEKORT_CLIENT_ID"),
     val oppfolgingApiUrl: URL = getEnvVarAsURL("OPPFOLGING_API_URL"),

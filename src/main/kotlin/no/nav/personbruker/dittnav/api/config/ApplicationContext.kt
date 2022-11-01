@@ -15,6 +15,7 @@ import no.nav.personbruker.dittnav.api.personalia.PersonaliaConsumer
 import no.nav.personbruker.dittnav.api.personalia.PersonaliaTokendings
 import no.nav.personbruker.dittnav.api.saker.MineSakerConsumer
 import no.nav.personbruker.dittnav.api.saker.MineSakerTokendings
+import no.nav.personbruker.dittnav.api.tokenx.EventaggregatorTokendings
 import no.nav.tms.token.support.tokendings.exchange.TokendingsServiceBuilder
 
 class ApplicationContext {
@@ -24,6 +25,7 @@ class ApplicationContext {
 
     private val tokendingsService = TokendingsServiceBuilder.buildTokendingsService()
     private val eventhandlerTokendings = EventhandlerTokendings(tokendingsService, environment.eventhandlerClientId)
+    private val eventaggregatorTokendings = EventaggregatorTokendings(tokendingsService, environment.eventaggregatorClientId)
     private val mineSakerTokendings = MineSakerTokendings(tokendingsService, environment.mineSakerApiClientId)
     private val personaliaTokendings = PersonaliaTokendings(tokendingsService, environment.personaliaApiClientId)
     private val meldekortTokendings = MeldekortTokendings(tokendingsService, environment.meldekortClientId)
@@ -39,7 +41,7 @@ class ApplicationContext {
         mineSakerApiURL =environment.mineSakerApiUrl
     )
 
-    val doneProducer = DoneProducer(httpClient, eventhandlerTokendings, environment.eventHandlerURL)
+    val doneProducer = DoneProducer(httpClient, eventaggregatorTokendings, environment.eventAggregatorURL)
     val digiSosConsumer = DigiSosConsumer(httpClient, digiSosTokendings, environment.digiSosSoknadBaseURL)
     val beskjedMergerService = BeskjedMergerService(beskjedConsumer, digiSosConsumer)
     val personaliaConsumer = PersonaliaConsumer(httpClient, personaliaTokendings, environment.personaliaApiUrl)

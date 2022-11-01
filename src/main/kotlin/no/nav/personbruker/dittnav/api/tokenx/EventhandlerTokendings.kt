@@ -12,3 +12,12 @@ class EventhandlerTokendings(
         tokendingsService.exchangeToken(authenticatedUser.token, eventhandlerClientId)
 
 }
+
+class EventaggregatorTokendings(
+    private val tokendingsService: TokendingsService,
+    private val eventaggregatorClientId: String
+) {
+    suspend fun exchangeToken(authenticatedUser: AuthenticatedUser)=
+        tokendingsService.exchangeToken(authenticatedUser.token, eventaggregatorClientId)
+
+}
