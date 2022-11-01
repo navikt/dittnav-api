@@ -44,3 +44,18 @@ data class LoginserviceMetadata(val jwks_uri: String, val issuer: String) {
         }
     }
 }
+
+object NaisEnvironment {
+
+    fun currentClusterName() : String? = System.getenv("NAIS_CLUSTER_NAME")
+
+    fun isRunningInProd(): Boolean {
+        val clusterName = currentClusterName()
+        return clusterName == "prod-sbs" || clusterName == "prod-gcp"
+    }
+
+    fun isRunningInDev(): Boolean {
+        return !isRunningInProd()
+    }
+
+}

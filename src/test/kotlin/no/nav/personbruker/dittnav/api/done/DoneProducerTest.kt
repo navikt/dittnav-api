@@ -11,9 +11,7 @@ import io.ktor.server.routing.routing
 import io.ktor.server.testing.testApplication
 import io.mockk.coEvery
 import io.mockk.mockk
-import kotlinx.coroutines.runBlocking
-import no.nav.personbruker.dittnav.api.authentication.AuthenticatedUserTestData
-import no.nav.personbruker.dittnav.api.tokenx.AccessToken
+import no.nav.personbruker.dittnav.api.TestUser
 import no.nav.personbruker.dittnav.api.tokenx.EventhandlerTokendings
 import no.nav.personbruker.dittnav.api.applicationHttpClient
 import org.junit.jupiter.api.Test
@@ -23,27 +21,26 @@ internal class DoneProducerTest {
 
     @Test
     fun `should call post endpoint on event handler`() {
-        val user = AuthenticatedUserTestData.createAuthenticatedUser()
+        val user = TestUser.createAuthenticatedUser()
         val testEventHandler = "http://event-handler"
         val eventhandlerTokendings = mockk<EventhandlerTokendings>()
 
-        coEvery { eventhandlerTokendings.exchangeToken(user) } returns AccessToken("<access_token>")
+        coEvery { eventhandlerTokendings.exchangeToken(user) } returns "<access_token>"
         val done = DoneDTO(eventId = "dummyEventId")
         testApplication {
-                externalServices {
-                    hosts(testEventHandler){
-                        routing {
-                            post("/produce/done"){
-                                call.respond(HttpStatusCode.OK)
-                            }
+            externalServices {
+                hosts(testEventHandler) {
+                    routing {
+                        post("/produce/done") {
+                            call.respond(HttpStatusCode.OK)
                         }
                     }
                 }
-            val doneProducer = DoneProducer(applicationHttpClient(), eventhandlerTokendings, URL(testEventHandler))
-            runBlocking {
-                doneProducer.postDoneEvents(done, user).status shouldBe HttpStatusCode.OK
-                doneProducer.postDoneEvents(done, user).request.method shouldBe HttpMethod.Post
             }
+            val doneProducer = DoneProducer(applicationHttpClient(), eventhandlerTokendings, URL(testEventHandler))
+            doneProducer.postDoneEvents(done, user).status shouldBe HttpStatusCode.OK
+            doneProducer.postDoneEvents(done, user).request.method shouldBe HttpMethod.Post
         }
     }
+
 }

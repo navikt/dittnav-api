@@ -8,7 +8,7 @@ class EventhandlerTokendings(
     private val tokendingsService: TokendingsService,
     private val eventhandlerClientId: String
 ) {
-    suspend fun exchangeToken(authenticatedUser: AuthenticatedUser): AccessToken {
-        return AccessToken(tokendingsService.exchangeToken(authenticatedUser.token, eventhandlerClientId))
-    }
+    suspend fun exchangeToken(authenticatedUser: AuthenticatedUser)=
+        tokendingsService.exchangeToken(authenticatedUser.token, eventhandlerClientId)
+
 }

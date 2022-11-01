@@ -8,9 +8,8 @@ import io.ktor.server.response.respond
 import io.ktor.server.routing.get
 import io.ktor.server.routing.routing
 import io.ktor.server.testing.testApplication
-import kotlinx.serialization.json.Json
-import kotlinx.serialization.json.jsonObject
 import no.nav.personbruker.dittnav.api.applicationHttpClient
+import no.nav.personbruker.dittnav.api.assert
 import no.nav.personbruker.dittnav.api.authenticatedGet
 import no.nav.personbruker.dittnav.api.bool
 import no.nav.personbruker.dittnav.api.mockApi
@@ -30,11 +29,9 @@ class OppfolgingApiTest {
     @ValueSource(booleans = [true, false])
     fun `Under oppfølging`(forventetOppfølgingStaus: Boolean) = testApplication {
         mockApi(
-            oppfolgingService = OppfolgingService(
-                oppfolgingConsumer = OppfolgingConsumer(
-                    client = applicationHttpClient(),
-                    oppfolgingApiBaseURL = URL(testHost)
-                )
+            oppfolgingConsumer = OppfolgingConsumer(
+                client = applicationHttpClient(),
+                oppfolgingApiBaseURL = URL(testHost)
             )
         )
         externalServiceWithJsonResponse(
@@ -42,7 +39,7 @@ class OppfolgingApiTest {
             apiEndpoint,
             content = externalOppfølgingJson(forventetOppfølgingStaus)
         )
-        client.authenticatedGet("dittnav-api/oppfolging").apply {
+        client.authenticatedGet("dittnav-api/oppfolging").assert {
             status shouldBe HttpStatusCode.OK
             val jsonBody = bodyAsText().toJsonObject().bool("erBrukerUnderOppfolging")
             jsonBody shouldBe forventetOppfølgingStaus
@@ -52,18 +49,16 @@ class OppfolgingApiTest {
     @Test
     fun `500 når dittnav-api feiler mot eventhandlerApi`() = testApplication {
         mockApi(
-            oppfolgingService = OppfolgingService(
-                oppfolgingConsumer = OppfolgingConsumer(
-                    client = applicationHttpClient(),
-                    oppfolgingApiBaseURL = URL(testHost)
-                )
+            oppfolgingConsumer = OppfolgingConsumer(
+                client = applicationHttpClient(),
+                oppfolgingApiBaseURL = URL(testHost)
             )
         )
 
         externalServices {
-            hosts(testHost){
+            hosts(testHost) {
                 routing {
-                    get(apiEndpoint){
+                    get(apiEndpoint) {
                         call.respond(HttpStatusCode.InternalServerError)
                     }
                 }

@@ -13,6 +13,7 @@ import kotlinx.serialization.json.JsonArray
 import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.jsonObject
 import no.nav.personbruker.dittnav.api.applicationHttpClient
+import no.nav.personbruker.dittnav.api.assert
 import no.nav.personbruker.dittnav.api.authenticatedGet
 import no.nav.personbruker.dittnav.api.bool
 import no.nav.personbruker.dittnav.api.externalServiceWith500Response
@@ -24,7 +25,6 @@ import no.nav.personbruker.dittnav.api.string
 import no.nav.personbruker.dittnav.api.stringArray
 import no.nav.personbruker.dittnav.api.toJsonArray
 import no.nav.personbruker.dittnav.api.toSpesificJsonFormat
-import no.nav.personbruker.dittnav.api.tokenx.AccessToken
 import no.nav.personbruker.dittnav.api.tokenx.EventhandlerTokendings
 import no.nav.personbruker.dittnav.api.zonedDateTime
 import org.junit.jupiter.api.Test
@@ -35,7 +35,7 @@ class OppgaveApiTest {
 
     private val eventhandlerTestHost = "https://digisos.test"
     private val mockkTokendings = mockk<EventhandlerTokendings>().also {
-        coEvery { it.exchangeToken(any()) } returns AccessToken("Access!")
+        coEvery { it.exchangeToken(any()) } returns "Access!"
     }
     private val oppgaverFromEventhandler = listOf(
         createInactiveOppgave("evhASAF"),
@@ -49,14 +49,14 @@ class OppgaveApiTest {
     @Test
     fun `aktive oppgaver`() = testApplication {
         val expectedOppgaver = oppgaverFromEventhandler.filter { it.aktiv }
-        mockApi(oppgaveService = createoppgaveService())
+        mockApi(oppgaveConsumer = oppgaveConsumer())
         externalServiceWithJsonResponse(
             hostApiBase = eventhandlerTestHost,
             endpoint = "/fetch/oppgave/aktive",
             content = expectedOppgaver.filter { it.aktiv }.toSpesificJsonFormat(Oppgave::toEventhandlerJson)
         )
 
-        client.authenticatedGet("dittnav-api/oppgave").apply {
+        client.authenticatedGet("dittnav-api/oppgave").assert {
             status shouldBe HttpStatusCode.OK
             val resultArray = bodyAsText().toJsonArray()
             resultArray shouldHaveContentEqualTo expectedOppgaver.filter { it.aktiv }
@@ -66,14 +66,14 @@ class OppgaveApiTest {
     @Test
     fun `inaktive oppgaver`() = testApplication {
         val expectedOppgaver = oppgaverFromEventhandler.filter { !it.aktiv }
-        mockApi(oppgaveService = createoppgaveService())
+        mockApi(oppgaveConsumer = oppgaveConsumer())
         externalServiceWithJsonResponse(
             hostApiBase = eventhandlerTestHost,
             endpoint = "/fetch/oppgave/inaktive",
             content = expectedOppgaver.filter { !it.aktiv }.toSpesificJsonFormat(Oppgave::toEventhandlerJson)
         )
 
-        client.authenticatedGet("dittnav-api/oppgave/inaktiv").apply {
+        client.authenticatedGet("dittnav-api/oppgave/inaktiv").assert {
             status shouldBe HttpStatusCode.OK
             val resultArray = bodyAsText().toJsonArray()
             resultArray shouldHaveContentEqualTo expectedOppgaver.filter { !it.aktiv }
@@ -82,17 +82,16 @@ class OppgaveApiTest {
 
     @Test
     fun `503 når dittnav-api feiler mot eventhandlerApi`() = testApplication {
-        mockApi(oppgaveService = createoppgaveService())
+        mockApi(oppgaveConsumer = oppgaveConsumer())
         externalServiceWith500Response(testHost = eventhandlerTestHost, route = "dittnav-api/oppgave/inaktiv")
         client.authenticatedGet("dittnav-api/oppgave/inaktiv").status shouldBe HttpStatusCode.ServiceUnavailable
     }
 
-    private fun ApplicationTestBuilder.createoppgaveService(): OppgaveService =
-        OppgaveService(
-            oppgaveConsumer = OppgaveConsumer(
-                client = applicationHttpClient(),
-                eventHandlerBaseURL = URL(eventhandlerTestHost)
-            ), eventhandlerTokendings = mockkTokendings
+    private fun ApplicationTestBuilder.oppgaveConsumer(): OppgaveConsumer =
+        OppgaveConsumer(
+            client = applicationHttpClient(),
+            eventHandlerBaseURL = URL(eventhandlerTestHost),
+            eventhandlerTokendings = mockkTokendings
         )
 }
 

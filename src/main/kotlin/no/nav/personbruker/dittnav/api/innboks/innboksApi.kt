@@ -1,34 +1,21 @@
 package no.nav.personbruker.dittnav.api.innboks
 
-
 import io.ktor.http.HttpStatusCode
 import io.ktor.server.application.call
 import io.ktor.server.response.respond
 import io.ktor.server.routing.Route
 import io.ktor.server.routing.get
-import mu.KotlinLogging
-import no.nav.personbruker.dittnav.api.common.respondWithError
 import no.nav.personbruker.dittnav.api.config.authenticatedUser
 
-fun Route.innboks(innboksService: InnboksService) {
-
-    val log = KotlinLogging.logger { }
+fun Route.innboks(innboksConsumer: InnboksConsumer) {
 
     get("/innboks") {
-        try {
-            val innboksEvents = innboksService.getActiveInnboksEvents(authenticatedUser)
-            call.respond(HttpStatusCode.OK, innboksEvents)
-        } catch (exception: Exception) {
-            respondWithError(call, log, exception)
-        }
+        val innboksEvents = innboksConsumer.getActiveInnboksEvents(authenticatedUser)
+        call.respond(HttpStatusCode.OK, innboksEvents)
     }
 
     get("/innboks/inaktiv") {
-        try {
-            val innboksEvents = innboksService.getInactiveInnboksEvents(authenticatedUser)
-            call.respond(HttpStatusCode.OK, innboksEvents)
-        } catch (exception: Exception) {
-            respondWithError(call, log, exception)
-        }
+        val innboksEvents = innboksConsumer.getInactiveInnboksEvents(authenticatedUser)
+        call.respond(HttpStatusCode.OK, innboksEvents)
     }
 }
