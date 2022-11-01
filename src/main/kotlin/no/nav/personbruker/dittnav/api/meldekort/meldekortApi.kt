@@ -8,13 +8,13 @@ import io.ktor.server.routing.get
 import mu.KotlinLogging
 import no.nav.personbruker.dittnav.api.config.authenticatedUser
 
-fun Route.meldekortApi(meldekortConsumer: MeldekortConsumer) {
+fun Route.meldekortApi(meldekortService: MeldekortService) {
 
     val log = KotlinLogging.logger { }
 
     get("/meldekortinfo") {
         try {
-            val meldekortInfo = meldekortConsumer.getMeldekortInfo(authenticatedUser)
+            val meldekortInfo = meldekortService.getMeldekortInfo(authenticatedUser)
 
             call.respond(meldekortInfo)
         } catch (e: Exception) {
@@ -25,7 +25,7 @@ fun Route.meldekortApi(meldekortConsumer: MeldekortConsumer) {
 
     get("/meldekortstatus") {
         try {
-            val meldekortStatus = meldekortConsumer.getMeldekortStatus(authenticatedUser)
+            val meldekortStatus = meldekortService.getMeldekortStatus(authenticatedUser)
 
             call.respond(meldekortStatus)
         } catch (e: Exception) {
@@ -34,4 +34,3 @@ fun Route.meldekortApi(meldekortConsumer: MeldekortConsumer) {
         }
     }
 }
-

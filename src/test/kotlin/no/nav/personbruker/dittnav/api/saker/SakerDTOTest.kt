@@ -9,28 +9,25 @@ import java.time.ZonedDateTime
 
 internal class SakerDTOTest {
 
+    private val objectMapper = jsonConfig()
+
     @Test
     fun `Skal kunne serialiseres til JSON`() {
-        val dto = SakerDTO(
-            listOf(
-                SakstemaDTO(
-                    "Dagpenger",
-                    "DAG",
-                    ZonedDateTime.now().minusDays(9),
-                    URL("https://dummy/DAG")
-                ),
-                SakstemaDTO(
-                    "Bil",
-                    "BIL",
-                    ZonedDateTime.now().minusDays(2),
-                    URL("https://dummy/BIL")
-                )
-            ),
-            URL("https://person.dev.nav.no/mine-saker"),
-            ZonedDateTime.now().minusDays(2)
-        )
-        jsonConfig().encodeToString(dto).shouldNotBeNull()
+        val dto = sisteSakstemaForDev()
 
+        val json = objectMapper.encodeToString(dto)
+
+        json.shouldNotBeNull()
     }
+
 }
+
+private fun sisteSakstemaForDev() = SakerDTO(
+    listOf(
+        SakstemaTestData.temaDagpenger(),
+        SakstemaTestData.temaBil()
+    ),
+    URL("https://person.dev.nav.no/mine-saker"),
+    ZonedDateTime.now().minusDays(2)
+)
 

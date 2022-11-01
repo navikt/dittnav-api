@@ -1,19 +1,13 @@
 package no.nav.personbruker.dittnav.api.beskjed
 
-import io.kotest.matchers.collections.shouldContain
 import io.kotest.matchers.shouldBe
 import io.ktor.server.testing.testApplication
-import io.mockk.coEvery
-import io.mockk.mockk
-import no.nav.personbruker.dittnav.api.TestUser
+import kotlinx.coroutines.runBlocking
 import no.nav.personbruker.dittnav.api.applicationHttpClient
-import no.nav.personbruker.dittnav.api.assert
-import no.nav.personbruker.dittnav.api.createBeskjed
-import no.nav.personbruker.dittnav.api.externalServiceWith500Response
 import no.nav.personbruker.dittnav.api.rawEventHandlerVarsel
 import no.nav.personbruker.dittnav.api.externalServiceWithJsonResponse
 import no.nav.personbruker.dittnav.api.toSpesificJsonFormat
-import no.nav.personbruker.dittnav.api.tokenx.EventhandlerTokendings
+import no.nav.personbruker.dittnav.api.tokenx.AccessToken
 import org.junit.jupiter.api.Test
 import java.net.URL
 import kotlin.AssertionError
@@ -21,14 +15,10 @@ import kotlin.AssertionError
 internal class BeskjedConsumerTest {
 
     private val testEventHandlerUrl = "https://test.eventhandler.no"
-    private val dummyUser = TestUser.createAuthenticatedUser()
-    private val eventhandlerTokendings = mockk<EventhandlerTokendings>().also {
-        coEvery { it.exchangeToken(any()) } returns "tokensmoken"
-    }
-
+    private val dummyToken = AccessToken("<access_token>")
 
     @Test
-    fun `Skal hente en liste over aktive Beskjeder`() {
+    fun `Skal motta en liste over aktive Beskjeder`() {
         val beskjedOject = createBeskjed(eventId = "12345", fodselsnummer = "9876543210", aktiv = true)
 
         testApplication {
@@ -38,21 +28,19 @@ internal class BeskjedConsumerTest {
                 content = listOf(beskjedOject).toSpesificJsonFormat(Beskjed::toRawEventhandlerVarsel)
             )
 
-            BeskjedConsumer(applicationHttpClient(), eventhandlerTokendings, URL(testEventHandlerUrl))
-                .getActiveBeskjedEvents(dummyUser)
-                .assert {
-                    val result = results()
-                    result.size shouldBe 1
-                    result shouldContainBeskjedObject beskjedOject
-                    failedSources().size shouldBe 0
-                    successFullSources().size shouldBe 1
-                    successFullSources().first() shouldBe KildeType.EVENTHANDLER
-                }
+            val beskjedConsumer = BeskjedConsumer(applicationHttpClient(), URL(testEventHandlerUrl))
+
+            runBlocking {
+                val externalActiveEvents = beskjedConsumer.getExternalActiveEvents(dummyToken)
+                externalActiveEvents.size shouldBe 1
+                externalActiveEvents shouldContainBeskjedObject beskjedOject
+                externalActiveEvents.size shouldBe 1
+            }
         }
     }
 
     @Test
-    fun `Skal hente en liste over inaktive Beskjeder`() {
+    fun `Skal motta en liste over inaktive Beskjeder`() {
         val beskjedObject = createBeskjed(eventId = "1", fodselsnummer = "1", aktiv = false)
         val beskjedObject2 = createBeskjed(eventId = "1", fodselsnummer = "1", aktiv = false)
 
@@ -63,55 +51,24 @@ internal class BeskjedConsumerTest {
                 content = listOf(beskjedObject, beskjedObject2).toSpesificJsonFormat(Beskjed::toRawEventhandlerVarsel)
             )
 
+            val beskjedConsumer = BeskjedConsumer(applicationHttpClient(), URL(testEventHandlerUrl))
 
-            BeskjedConsumer(applicationHttpClient(), eventhandlerTokendings, URL(testEventHandlerUrl))
-                .getInactiveBeskjedEvents(dummyUser)
-                .assert {
-                    val result = results()
-                    result.size shouldBe 2
-                    result shouldContainBeskjedObject beskjedObject2
-                    result shouldContainBeskjedObject beskjedObject
-                    failedSources().size shouldBe 0
-                    successFullSources().size shouldBe 1
-                    successFullSources().first() shouldBe KildeType.EVENTHANDLER
-
-                }
+            runBlocking {
+                val externalInactiveEvents = beskjedConsumer.getExternalInactiveEvents(dummyToken)
+                externalInactiveEvents.size shouldBe 2
+                externalInactiveEvents shouldContainBeskjedObject beskjedObject
+                externalInactiveEvents shouldContainBeskjedObject beskjedObject2
+            }
         }
     }
 
-    @Test
-    fun `should throw exception if fetching active events fails`() = testApplication {
-
-        externalServiceWith500Response(testEventHandlerUrl, "fetch/beskjed/aktive")
-
-        BeskjedConsumer(applicationHttpClient(), eventhandlerTokendings, URL(testEventHandlerUrl))
-            .getActiveBeskjedEvents(dummyUser)
-            .assert {
-                hasErrors() shouldBe true
-                failedSources() shouldContain KildeType.EVENTHANDLER
-            }
-    }
-
-
-    @Test
-    fun `should throw exception if fetching inactive events fails`() = testApplication {
-
-        externalServiceWith500Response(testEventHandlerUrl, "fetch/beskjed/aktive")
-
-        BeskjedConsumer(applicationHttpClient(), eventhandlerTokendings, URL(testEventHandlerUrl))
-            .getActiveBeskjedEvents(dummyUser)
-            .assert {
-                hasErrors() shouldBe true
-                failedSources() shouldContain KildeType.EVENTHANDLER
-            }
-    }
 }
 
-private infix fun List<BeskjedDTO>.shouldContainBeskjedObject(expected: Beskjed) =
-    find { it.eventId == expected.eventId }?.let { result ->
-        result.tekst shouldBe expected.tekst
-        result.aktiv shouldBe expected.aktiv
-        result.eksternVarslingSendt shouldBe expected.eksternVarslingSendt
+private infix fun List<Beskjed>.shouldContainBeskjedObject(expected: Beskjed) =
+    find { it.eventId == expected.eventId }?.let { event ->
+        event.tekst shouldBe expected.tekst
+        event.fodselsnummer shouldBe expected.fodselsnummer
+        event.aktiv shouldBe expected.aktiv
     } ?: throw AssertionError("Fant ikke beskjed med eventId ${expected.eventId}")
 
 private fun Beskjed.toRawEventhandlerVarsel(): String = rawEventHandlerVarsel(

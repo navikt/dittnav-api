@@ -23,14 +23,14 @@ import io.mockk.mockk
 import no.nav.personbruker.dittnav.api.beskjed.BeskjedMergerService
 import no.nav.personbruker.dittnav.api.config.api
 import no.nav.personbruker.dittnav.api.config.jsonConfig
-import no.nav.personbruker.dittnav.api.digisos.DigiSosConsumer
+import no.nav.personbruker.dittnav.api.digisos.DigiSosService
 import no.nav.personbruker.dittnav.api.done.DoneProducer
-import no.nav.personbruker.dittnav.api.innboks.InnboksConsumer
-import no.nav.personbruker.dittnav.api.meldekort.MeldekortConsumer
-import no.nav.personbruker.dittnav.api.oppfolging.OppfolgingConsumer
-import no.nav.personbruker.dittnav.api.oppgave.OppgaveConsumer
-import no.nav.personbruker.dittnav.api.personalia.PersonaliaConsumer
-import no.nav.personbruker.dittnav.api.saker.MineSakerConsumer
+import no.nav.personbruker.dittnav.api.innboks.InnboksService
+import no.nav.personbruker.dittnav.api.meldekort.MeldekortService
+import no.nav.personbruker.dittnav.api.oppfolging.OppfolgingService
+import no.nav.personbruker.dittnav.api.oppgave.OppgaveService
+import no.nav.personbruker.dittnav.api.personalia.PersonaliaService
+import no.nav.personbruker.dittnav.api.saker.SakerService
 
 private const val testIssuer = "test-issuer"
 private val jwtStub = JwtStub(testIssuer)
@@ -40,14 +40,14 @@ internal fun TestApplicationBuilder.mockApi(
     corsAllowedOrigins: String = "*.nav.no",
     corsAllowedSchemes: String = "https",
     corsAllowedHeaders: List<String> = emptyList(),
-    meldekortConsumer: MeldekortConsumer = mockk(relaxed = true),
-    oppfolgingConsumer: OppfolgingConsumer = mockk(relaxed = true),
-    oppgaveConsumer: OppgaveConsumer = mockk(relaxed = true),
+    meldekortService: MeldekortService = mockk(relaxed = true),
+    oppfolgingService: OppfolgingService = mockk(relaxed = true),
+    oppgaveService: OppgaveService = mockk(relaxed = true),
     beskjedMergerService: BeskjedMergerService = mockk(relaxed = true),
-    innboksConsumer: InnboksConsumer = mockk(relaxed = true),
-    sakerConsumer: MineSakerConsumer = mockk(relaxed = true),
-    personaliaConsumer: PersonaliaConsumer = mockk(relaxed = true),
-    digiSosConsumer: DigiSosConsumer = mockk(relaxed = true),
+    innboksService: InnboksService = mockk(relaxed = true),
+    sakerService: SakerService = mockk(relaxed = true),
+    personaliaService: PersonaliaService = mockk(relaxed = true),
+    digiSosService: DigiSosService = mockk(relaxed = true),
     doneProducer: DoneProducer = mockk(relaxed = true),
     httpClientIgnoreUnknownKeys: HttpClient = mockk(relaxed = true),
 
@@ -58,14 +58,14 @@ internal fun TestApplicationBuilder.mockApi(
             corsAllowedOrigins = corsAllowedOrigins,
             corsAllowedSchemes = corsAllowedSchemes,
             corsAllowedHeaders = corsAllowedHeaders,
-            meldekortConsumer = meldekortConsumer,
-            oppfolgingConsumer = oppfolgingConsumer,
-            oppgaveConsumer = oppgaveConsumer,
+            meldekortService = meldekortService,
+            oppfolgingService = oppfolgingService,
+            oppgaveService = oppgaveService,
             beskjedMergerService = beskjedMergerService,
-            innboksConsumer = innboksConsumer,
-            mineSakerConsumer = sakerConsumer,
-            personaliaConsumer = personaliaConsumer,
-            digiSosConsumer = digiSosConsumer,
+            innboksService = innboksService,
+            sakerService = sakerService,
+            personaliaService = personaliaService,
+            digiSosService = digiSosService,
             doneProducer = doneProducer,
             httpClient = httpClientIgnoreUnknownKeys,
             jwtAudience = "audience",
@@ -123,7 +123,3 @@ internal suspend fun ApplicationCall.respondRawJson(content: String) =
         provider = { content.toByteArray() })
 
 
-internal inline fun <T> T.assert(block: T.() -> Unit): T =
-    apply {
-        block()
-    }

@@ -11,7 +11,6 @@ import kotlinx.serialization.json.JsonElement
 import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.jsonObject
 import no.nav.personbruker.dittnav.api.applicationHttpClient
-import no.nav.personbruker.dittnav.api.assert
 import no.nav.personbruker.dittnav.api.authenticatedGet
 import no.nav.personbruker.dittnav.api.bool
 import no.nav.personbruker.dittnav.api.int
@@ -22,6 +21,7 @@ import no.nav.personbruker.dittnav.api.mockApi
 import no.nav.personbruker.dittnav.api.externalServiceWithJsonResponse
 import no.nav.personbruker.dittnav.api.string
 import no.nav.personbruker.dittnav.api.toJsonObject
+import no.nav.personbruker.dittnav.api.tokenx.AccessToken
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import java.lang.AssertionError
@@ -36,7 +36,7 @@ class MeldekortApiTest {
 
     @BeforeEach()
     fun `mock tokendings`() {
-        coEvery { meldekortTokendings.exchangeToken(any()) } returns "1236"
+        coEvery { meldekortTokendings.exchangeToken(any()) } returns AccessToken("1236")
     }
 
     @Test
@@ -51,7 +51,7 @@ class MeldekortApiTest {
         )
 
         testApplication {
-            mockApi(meldekortConsumer = meldekortConsumer())
+            mockApi(meldekortService = MeldekortService(meldekortConsumer(), meldekortTokendings))
 
             externalServiceWithJsonResponse(
                 hostApiBase = meldekortApiBase,
@@ -59,7 +59,7 @@ class MeldekortApiTest {
                 content = externalStatusJson(expectedMeldekortInfo)
             )
 
-            client.authenticatedGet("dittnav-api/meldekortinfo").assert {
+            client.authenticatedGet("dittnav-api/meldekortinfo").apply {
                 status shouldBe HttpStatusCode.OK
                 val jsonResponse = bodyAsText().toJsonObject()
                 jsonResponse.int("resterendeFeriedager") shouldBe expectedMeldekortInfo.resterendeFeriedager
@@ -86,7 +86,7 @@ class MeldekortApiTest {
 
     @Test
     fun `henter meldekortinfo for bruker som ikke har meldekort`() = testApplication {
-        mockApi(meldekortConsumer = meldekortConsumer())
+        mockApi(meldekortService = MeldekortService(meldekortConsumer(), meldekortTokendings))
 
         externalServiceWithJsonResponse(
             hostApiBase = meldekortApiBase,
@@ -94,16 +94,16 @@ class MeldekortApiTest {
             content = emptyExternalStatusJson
         )
 
-        client.authenticatedGet("dittnav-api/meldekortinfo").assert {
+        client.authenticatedGet("dittnav-api/meldekortinfo").apply {
             status shouldBe HttpStatusCode.OK
             val jsonResponse = bodyAsText().toJsonObject()
             jsonResponse.int("resterendeFeriedager") shouldBe 0
             jsonResponse.int("etterregistrerteMeldekort") shouldBe 0
             jsonResponse.bool("meldekortbruker") shouldBe false
             jsonResponse["nyeMeldekort"]?.jsonObject?.apply {
-                int("antallNyeMeldekort") shouldBe 0
-                localdateOrNull("nesteInnsendingAvMeldekort") shouldBe null
-                meldekort("nesteMeldekort") shouldBe null
+                this.int("antallNyeMeldekort") shouldBe 0
+                this.localdateOrNull("nesteInnsendingAvMeldekort") shouldBe null
+                this.meldekort("nesteMeldekort") shouldBe null
 
             } ?: throw AssertionError("Fant ikke meldekort object med nøkkel nyeMeldekort i jsonrespons")
         }
@@ -126,14 +126,14 @@ class MeldekortApiTest {
         )
 
         testApplication {
-            mockApi(meldekortConsumer = meldekortConsumer())
+            mockApi(meldekortService = MeldekortService(meldekortConsumer(), meldekortTokendings))
             externalServiceWithJsonResponse(
                 hostApiBase = meldekortApiBase,
                 endpoint = medlekortStatusEndpoint,
                 content = meldekortStatusJson(expectedStatus)
             )
 
-            client.authenticatedGet("dittnav-api/meldekortstatus").assert {
+            client.authenticatedGet("dittnav-api/meldekortstatus").apply {
                 status shouldBe HttpStatusCode.OK
                 val jsonResponse = bodyAsText().toJsonObject()
                 jsonResponse.int("meldekort") shouldBe expectedStatus.meldekort
@@ -150,11 +150,7 @@ class MeldekortApiTest {
     }
 
     private fun ApplicationTestBuilder.meldekortConsumer(): MeldekortConsumer =
-        MeldekortConsumer(
-            client = applicationHttpClient(),
-            meldekortApiBaseURL = URL(meldekortApiBase),
-            meldekortTokendings = meldekortTokendings
-        )
+        MeldekortConsumer(client = applicationHttpClient(), meldekortApiBaseURL = URL(meldekortApiBase))
 
 }
 

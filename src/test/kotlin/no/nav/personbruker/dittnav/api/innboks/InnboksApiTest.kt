@@ -13,7 +13,6 @@ import kotlinx.serialization.json.JsonArray
 import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.jsonObject
 import no.nav.personbruker.dittnav.api.applicationHttpClient
-import no.nav.personbruker.dittnav.api.assert
 import no.nav.personbruker.dittnav.api.authenticatedGet
 import no.nav.personbruker.dittnav.api.bool
 import no.nav.personbruker.dittnav.api.externalServiceWithJsonResponse
@@ -23,6 +22,7 @@ import no.nav.personbruker.dittnav.api.string
 import no.nav.personbruker.dittnav.api.stringArray
 import no.nav.personbruker.dittnav.api.toJsonArray
 import no.nav.personbruker.dittnav.api.toSpesificJsonFormat
+import no.nav.personbruker.dittnav.api.tokenx.AccessToken
 import no.nav.personbruker.dittnav.api.tokenx.EventhandlerTokendings
 import no.nav.personbruker.dittnav.api.zonedDateTime
 import org.junit.jupiter.params.ParameterizedTest
@@ -42,36 +42,32 @@ class InnboksApiTest {
     )
 
     @ParameterizedTest
-    @CsvSource(
-        "true, /fetch/innboks/aktive, dittnav-api/innboks",
-        "false, /fetch/innboks/inaktive, dittnav-api/innboks/inaktiv"
-    )
-    fun `innboks-varsler`(expectedAktivStatus: Boolean, eventhandlerEndpoint: String, dittnavApiEndpoint: String) =
-        testApplication {
-            mockApi(innboksConsumer = createInnboksConsumer())
-            externalServiceWithJsonResponse(
-                eventhandlerTestHost,
-                eventhandlerEndpoint,
-                innboksFraEventhandler.filter { it.aktiv == expectedAktivStatus }
-                    .toSpesificJsonFormat(Innboks::toEventHandlerJson)
-            )
-            client.authenticatedGet(dittnavApiEndpoint).assert {
-                status shouldBe HttpStatusCode.OK
-                val resultArray = bodyAsText().toJsonArray()
-                resultArray shouldHaveContentEqualTo innboksFraEventhandler.filter { it.aktiv == expectedAktivStatus }
-            }
+    @CsvSource("true, /fetch/innboks/aktive, dittnav-api/innboks", "false, /fetch/innboks/inaktive, dittnav-api/innboks/inaktiv")
+    fun `innboks-varsler`(expectedAktivStatus:Boolean, eventhandlerEndpoint:String, dittnavApiEndpoint: String) = testApplication {
+        mockApi(innboksService = createInnboksService())
+        externalServiceWithJsonResponse(
+            eventhandlerTestHost,
+            eventhandlerEndpoint,
+            innboksFraEventhandler.filter { it.aktiv == expectedAktivStatus }.toSpesificJsonFormat(Innboks::toEventHandlerJson)
+        )
+        client.authenticatedGet(dittnavApiEndpoint).apply {
+            status shouldBe HttpStatusCode.OK
+            val resultArray = bodyAsText().toJsonArray()
+            resultArray shouldHaveContentEqualTo innboksFraEventhandler.filter { it.aktiv == expectedAktivStatus }
         }
+    }
 
-    private fun ApplicationTestBuilder.createInnboksConsumer(): InnboksConsumer = InnboksConsumer(
-        client = applicationHttpClient(),
-        eventHandlerBaseURL = URL(eventhandlerTestHost),
+    private fun ApplicationTestBuilder.createInnboksService(): InnboksService = InnboksService(
+        innboksConsumer = InnboksConsumer(
+            client = applicationHttpClient(),
+            eventHandlerBaseURL = URL(eventhandlerTestHost)
+        ),
         eventhandlerTokenDings = mockk<EventhandlerTokendings>().also {
-            coEvery { it.exchangeToken(any()) } returns "duumyToken"
-        })
-
+            coEvery { it.exchangeToken(any()) } returns AccessToken("duumyToken")
+        }
+    )
 
 }
-
 private infix fun JsonArray.shouldHaveContentEqualTo(expected: List<Innboks>) {
     withClue("Feil antall elementer i liste") { size shouldBe expected.size }
     val resultObjects = this.map { it.jsonObject }

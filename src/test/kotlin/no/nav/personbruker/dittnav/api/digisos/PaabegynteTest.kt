@@ -3,7 +3,6 @@ package no.nav.personbruker.dittnav.api.digisos
 import io.kotest.matchers.nulls.shouldNotBeNull
 import io.kotest.matchers.shouldBe
 import kotlinx.serialization.decodeFromString
-import no.nav.personbruker.dittnav.api.assert
 import no.nav.personbruker.dittnav.api.config.jsonConfig
 import org.junit.jupiter.api.Test
 import java.time.LocalDateTime
@@ -26,46 +25,44 @@ internal class PaabegynteTest {
 
     @Test
     fun `Skal kunne deserialisere en respons fra DigiSos`() {
-        jsonConfig().decodeFromString<Paabegynte>(respons).assert {
-            shouldNotBeNull()
-        }
+        val paabegynte = jsonConfig().decodeFromString<Paabegynte>(respons)
+        paabegynte.shouldNotBeNull()
     }
 
     @Test
     fun `Skal kunne konvertere til intern modell`() {
-        val external = createPåbegyntSøknad()
-        external.toInternal().assert {
-            eventId shouldBe external.eventId
-            forstBehandlet shouldBe external.eventTidspunkt.toPaabegynteZonedDateTime()
-            grupperingsId shouldBe external.grupperingsId
-            tekst shouldBe external.tekst
-            link shouldBe external.link
-            aktiv shouldBe external.isAktiv
-            sistOppdatert shouldBe external.sistOppdatert.toPaabegynteZonedDateTime()
-            produsent shouldBe "digiSos"
-        }
+        val external = påbegyntSøknad()
+
+        val internal = external.toInternal()
+
+        internal.eventId shouldBe external.eventId
+        internal.forstBehandlet shouldBe external.eventTidspunkt.toPaabegynteZonedDateTime()
+        internal.grupperingsId shouldBe external.grupperingsId
+        internal.tekst shouldBe external.tekst
+        internal.link shouldBe external.link
+        internal.aktiv shouldBe external.isAktiv
+        internal.sistOppdatert shouldBe external.sistOppdatert.toPaabegynteZonedDateTime()
+        internal.produsent shouldBe "digiSos"
     }
 
     @Test
     fun `Skal konvertere flere eksterne til interne samtidig`() {
         val externals = listOf(
-            createPåbegyntSøknad(true),
-            createPåbegyntSøknad(false)
+            påbegyntSøknad(true),
+            påbegyntSøknad(false)
         )
 
-        externals.toInternals().assert {
-            shouldNotBeNull()
-            size shouldBe externals.size
-            this[0].shouldNotBeNull()
-            this[1].shouldNotBeNull()
-        }
+        val internals = externals.toInternals()
 
-
+        internals.shouldNotBeNull()
+        internals.size shouldBe externals.size
+        internals[0].shouldNotBeNull()
+        internals[1].shouldNotBeNull()
     }
 
     @Test
     fun `Skal kappe tekster som er for lange`() {
-        val eventMedForLangTekst = createPåbegyntSøknad().copy(
+        val eventMedForLangTekst = påbegyntSøknad().copy(
             tekst = "A".repeat(Paabegynte.maxBeskjedTextLength + 1)
         )
 
@@ -77,7 +74,7 @@ internal class PaabegynteTest {
 
 }
 
-private fun createPåbegyntSøknad(active: Boolean = false) = Paabegynte(
+private fun påbegyntSøknad(active: Boolean = false) = Paabegynte(
     LocalDateTime.now(),
     "123",
     "987",

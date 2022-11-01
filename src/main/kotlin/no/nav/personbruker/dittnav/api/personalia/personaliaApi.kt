@@ -6,21 +6,37 @@ import io.ktor.server.application.call
 import io.ktor.server.response.respond
 import io.ktor.server.routing.Route
 import io.ktor.server.routing.get
+import mu.KotlinLogging
+import no.nav.personbruker.dittnav.api.common.respondWithError
 import no.nav.personbruker.dittnav.api.config.authenticatedUser
 
 
 fun Route.personalia(
-    consumer: PersonaliaConsumer
+    service: PersonaliaService
 ) {
+    val log = KotlinLogging.logger { }
 
     get("/navn") {
-        val result = consumer.hentNavn(authenticatedUser)
-        call.respond(HttpStatusCode.OK, result)
+        try {
+            val result = service.hentNavn(authenticatedUser)
+            call.respond(HttpStatusCode.OK, result)
+
+        } catch (exception: Exception) {
+            respondWithError(call, log, exception)
+        }
+
     }
 
     get("/ident") {
-        val result = consumer.hentIdent(authenticatedUser)
-        call.respond(HttpStatusCode.OK, result)
+        try {
+            val result = service.hentIdent(authenticatedUser)
+            call.respond(HttpStatusCode.OK, result)
+
+        } catch (exception: Exception) {
+            respondWithError(call, log, exception)
+        }
+
     }
+
 
 }

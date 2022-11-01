@@ -31,6 +31,7 @@ class ApiAuthenticationTest {
 
         }
 
+
     @Test
     fun `henter loginservice credentials`() =
         testApplication {

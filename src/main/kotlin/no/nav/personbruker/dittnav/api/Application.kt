@@ -3,6 +3,7 @@ package no.nav.personbruker.dittnav.api
 import com.auth0.jwk.JwkProviderBuilder
 import io.ktor.server.engine.embeddedServer
 import io.ktor.server.netty.Netty
+import mu.KotlinLogging
 import no.nav.personbruker.dittnav.api.config.ApplicationContext
 import no.nav.personbruker.dittnav.api.config.LoginserviceMetadata
 import no.nav.personbruker.dittnav.api.config.api
@@ -23,14 +24,14 @@ fun main() {
             corsAllowedOrigins = appContext.environment.corsAllowedOrigins,
             corsAllowedSchemes = appContext.environment.corsAllowedSchemes,
             corsAllowedHeaders = appContext.environment.corsAllowedHeaders,
-            meldekortConsumer = appContext.meldekortConsumer,
-            oppfolgingConsumer = appContext.oppfolgingConsumer,
-            oppgaveConsumer = appContext.oppgaveConsumer,
+            meldekortService = appContext.meldekortService,
+            oppfolgingService = appContext.oppfolgingService,
+            oppgaveService = appContext.oppgaveService,
             beskjedMergerService = appContext.beskjedMergerService,
-            innboksConsumer = appContext.innboksConsumer,
-            mineSakerConsumer = appContext.mineSakerConsumer,
-            personaliaConsumer = appContext.personaliaConsumer,
-            digiSosConsumer = appContext.digiSosConsumer,
+            innboksService = appContext.innboksService,
+            sakerService = appContext.sakerService,
+            personaliaService = appContext.personaliaService,
+            digiSosService = appContext.digiSosService,
             doneProducer = appContext.doneProducer,
             httpClient = appContext.httpClient,
             jwtAudience = appContext.environment.loginserviceIdportenAudience,
