@@ -36,7 +36,7 @@ class ApplicationContext {
         client = httpClient,
         mineSakerUrl = environment.mineSakerURL,
         mineSakerTokendings = mineSakerTokendings,
-        mineSakerApiURL =environment.mineSakerURL
+        mineSakerApiURL =environment.mineSakerApiUrl
     )
 
     val doneProducer = DoneProducer(httpClient, eventhandlerTokendings, environment.eventHandlerURL)
