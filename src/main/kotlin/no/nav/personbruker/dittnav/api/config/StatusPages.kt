@@ -8,7 +8,7 @@ import io.ktor.server.plugins.statuspages.StatusPages
 import io.ktor.server.response.respond
 import mu.KotlinLogging
 
-private val log = KotlinLogging.logger {  }
+private val log = KotlinLogging.logger { }
 
 internal fun Application.installStatusPages() {
     install(StatusPages) {
@@ -18,30 +18,41 @@ internal fun Application.installStatusPages() {
                     log.info("401: fant ikke selvbetjening-idtoken")
                     call.respond(HttpStatusCode.Unauthorized)
                 }
+
                 is ConsumeEventException ->
                     call.respondServiceUnavailable("Klarte ikke å hente eventer", cause)
+
                 is ConsumeSakerException ->
                     call.respondServiceUnavailable("Klarte ikke å hente saker", cause)
+
                 is ConsumePersonaliaException ->
                     call.respondServiceUnavailable("Klarte ikke å hente personalia", cause)
+
                 is ProduceEventException ->
                     call.respondServiceUnavailable("Kunne ikke markere varsel som lest", cause)
-                else ->
-                    call.respondServiceUnavailable("Ukjent feil",cause)
+
+                else -> {
+                    call.respond(HttpStatusCode.ServiceUnavailable)
+                    log.warn("${cause.message}", cause)
+                }
             }
         }
     }
 }
 
-suspend fun ApplicationCall.respondServiceUnavailable(message: String, cause: Throwable) {
+suspend fun ApplicationCall.respondServiceUnavailable(message: String, cause: ConsumeException) {
     respond(HttpStatusCode.ServiceUnavailable)
-    log.warn("$message. $cause", cause)
+    log.warn("$message. ${cause.details}", cause)
 }
 
-class ConsumeSakerException(message: String, cause: Throwable) : Exception(message, cause)
+open class ConsumeException(message: String, cause: Throwable) : Exception(message, cause) {
+    val details = "Caused by ${cause::class} with original error message: ${cause.message}"
+}
 
-class ConsumePersonaliaException(message: String, cause: Throwable) : Exception(message, cause)
+class ConsumeSakerException(message: String, cause: Throwable) : ConsumeException(message, cause)
 
-class ConsumeEventException(message: String, cause: Throwable) : Exception(message, cause)
+class ConsumePersonaliaException(message: String, cause: Throwable) : ConsumeException(message, cause)
 
-class ProduceEventException(message: String, cause: Throwable) : Exception(message, cause)
+class ConsumeEventException(message: String, cause: Throwable) : ConsumeException(message, cause)
+
+class ProduceEventException(message: String, cause: Throwable) : ConsumeException(message, cause)
