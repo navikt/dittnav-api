@@ -24,20 +24,38 @@ suspend fun respondWithError(call: ApplicationCall, log: KLogger, exception: Exc
             log.warn("Klarte ikke å hente saker. Returnerer feilkoden '$feilkode' til frontend. $exception", exception)
         }
 
-        is ConsumePersonaliaException -> {
-            val feilkode = HttpStatusCode.ServiceUnavailable
-            call.respond(feilkode)
-            log.warn(
-                "Klarte ikke å hente personalia. Returnerer feilkoden '$feilkode' til frontend. $exception",
-                exception
-            )
-        }
-
         is ProduceEventException -> {
             val feilkode = HttpStatusCode.ServiceUnavailable
             call.respond(feilkode)
             log.warn(
                 "Klarte ikke å produsere done-event. Returnerer feilkoden '$feilkode' til frontend. $exception",
+                exception
+            )
+        }
+
+        is QueryResponseException -> {
+            val feilkode = HttpStatusCode.ServiceUnavailable
+            call.respond(feilkode)
+            log.warn(
+                "Klarte ikke å hente navn. Returnerer feilkoden $feilkode. $exception",
+                exception
+            )
+        }
+
+        is QueryRequestException -> {
+            val feilkode = HttpStatusCode.ServiceUnavailable
+            call.respond(feilkode)
+            log.warn(
+                "Klarte ikke å hente navn. Returnerer feilkoden $feilkode. $exception",
+                exception
+            )
+        }
+
+        is TransformationException -> {
+            val feilkode = HttpStatusCode.InternalServerError
+            call.respond(feilkode)
+            log.warn(
+                "Mottok verdi som ikke kunne konverteres til den interne-modellen. Returnerer feilkoden $feilkode. $exception",
                 exception
             )
         }
@@ -51,8 +69,6 @@ suspend fun respondWithError(call: ApplicationCall, log: KLogger, exception: Exc
 }
 
 class ConsumeSakerException(message: String, cause: Throwable) : Exception(message,cause)
-
-class ConsumePersonaliaException(message: String, cause: Throwable) : Exception(message, cause)
 
 class ConsumeEventException(message: String, cause: Throwable) : Exception(message, cause)
 
