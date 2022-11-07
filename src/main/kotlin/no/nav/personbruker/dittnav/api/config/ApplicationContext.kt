@@ -1,5 +1,6 @@
 package no.nav.personbruker.dittnav.api.config
 
+import com.expediagroup.graphql.client.ktor.GraphQLKtorClient
 import no.finn.unleash.DefaultUnleash
 import no.finn.unleash.FakeUnleash
 import no.finn.unleash.Unleash
@@ -29,6 +30,7 @@ import no.nav.personbruker.dittnav.api.saker.SakerService
 import no.nav.personbruker.dittnav.api.unleash.ByEnvironmentStrategy
 import no.nav.personbruker.dittnav.api.unleash.UnleashService
 import no.nav.tms.token.support.tokendings.exchange.TokendingsServiceBuilder
+import java.net.URL
 
 class ApplicationContext {
 
@@ -59,7 +61,7 @@ class ApplicationContext {
 
     val beskjedMergerService = BeskjedMergerService(beskjedService, digiSosService, unleashService)
 
-    private val personaliaConsumer = PersonaliaConsumer(httpClient, environment.personaliaApiUrl)
+    private val personaliaConsumer = PersonaliaConsumer(GraphQLKtorClient(URL(environment.pdlUrl), httpClient), environment.pdlUrl)
     val personaliaService = PersonaliaService(personaliaConsumer, personaliaTokendings)
 
     private val meldekortConsumer = MeldekortConsumer(httpClient, environment.meldekortApiUrl)

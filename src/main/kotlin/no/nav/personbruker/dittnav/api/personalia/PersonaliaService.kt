@@ -1,7 +1,6 @@
 package no.nav.personbruker.dittnav.api.personalia
 
 import no.nav.personbruker.dittnav.api.authentication.AuthenticatedUser
-import no.nav.personbruker.dittnav.api.common.ConsumePersonaliaException
 
 
 class PersonaliaService (
@@ -9,23 +8,15 @@ class PersonaliaService (
     val personaliaTokendings: PersonaliaTokendings
 ){
 
-    suspend fun hentNavn(user: AuthenticatedUser): PersonaliaNavnDTO {
-        try {
-            val exchangedToken = personaliaTokendings.exchangeToken(user)
+    suspend fun hentNavn(user: AuthenticatedUser): NavnDTO {
+        val exchangedToken = personaliaTokendings.exchangeToken(user)
+        val response = personaliaConsumer.hentNavn(user.ident, exchangedToken.value)
+        val external = toExternalNavn(response).first()
 
-            return personaliaConsumer.hentNavn(exchangedToken)
-        } catch (e: Exception) {
-            throw ConsumePersonaliaException("Klarte ikke å hente navn", e)
-        }
+        return external.toInternalNavnDTO()
     }
 
-    suspend fun hentIdent(user: AuthenticatedUser): PersonaliaIdentDTO {
-        try {
-            val exchangedToken = personaliaTokendings.exchangeToken(user)
-
-            return personaliaConsumer.hentIdent(exchangedToken)
-        } catch (e: Exception) {
-            throw ConsumePersonaliaException("Klarte ikke å hente ident", e)
-        }
+    fun hentIdent(user: AuthenticatedUser): IdentDTO {
+        return IdentDTO(user.ident)
     }
 }

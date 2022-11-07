@@ -15,8 +15,7 @@ import io.ktor.server.application.ApplicationCall
 import io.ktor.server.application.call
 import io.ktor.server.response.respond
 import io.ktor.server.response.respondBytes
-import io.ktor.server.routing.get
-import io.ktor.server.routing.routing
+import io.ktor.server.routing.*
 import io.ktor.server.testing.ApplicationTestBuilder
 import io.ktor.server.testing.TestApplicationBuilder
 import io.mockk.mockk

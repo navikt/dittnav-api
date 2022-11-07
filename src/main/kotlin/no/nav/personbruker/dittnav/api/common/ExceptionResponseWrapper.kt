@@ -57,3 +57,9 @@ class ConsumePersonaliaException(message: String, cause: Throwable) : Exception(
 class ConsumeEventException(message: String, cause: Throwable) : Exception(message, cause)
 
 class ProduceEventException(message: String, cause: Throwable) : Exception(message, cause)
+
+class QueryRequestException(message: String, cause: Throwable) : Exception(message, cause)
+
+class QueryResponseException(message: String) : Exception(message)
+
+class TransformationException(message: String) : Exception(message)

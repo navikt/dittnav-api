@@ -28,7 +28,7 @@ internal fun JsonObject.bool(key: String): Boolean =
     this[key]?.jsonPrimitive?.boolean ?: throw IllegalArgumentException("Fant ikke boolean med nøkkel $key")
 
 internal fun JsonObject.string(key: String): String =
-    this[key]?.jsonPrimitive?.content ?: throw IllegalArgumentException("Fant ikke boolean med nøkkel $key")
+    this[key]?.jsonPrimitive?.content ?: throw IllegalArgumentException("Fant ikke string med nøkkel $key")
 
 internal fun JsonObject.localdate(key: String, datePattern: String? = null) =
     this.localdateOrNull(key,datePattern) ?: throw IllegalArgumentException("Fant ikke localdate med nøkkel $key")

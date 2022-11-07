@@ -30,6 +30,8 @@ data class Environment(
     val meldekortApiUrl: URL = getEnvVarAsURL("MELDEKORT_API_URL"),
     val meldekortClientId: String = getEnvVar("MELDEKORT_CLIENT_ID"),
     val oppfolgingApiUrl: URL = getEnvVarAsURL("OPPFOLGING_API_URL"),
+    val pdlUrl: String = getEnvVar("PDL_URL"),
+    val pdlClientId: String = getEnvVar("PDL_CLIENT_ID"),
     val loginservicDiscoveryUrl: String = getEnvVar("LOGINSERVICE_IDPORTEN_DISCOVERY_URL"),
     val loginserviceIdportenAudience: String = getEnvVar("LOGINSERVICE_IDPORTEN_AUDIENCE")
 

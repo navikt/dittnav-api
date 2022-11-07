@@ -1,6 +1,5 @@
 package no.nav.personbruker.dittnav.api.personalia
 
-
 import io.ktor.http.HttpStatusCode
 import io.ktor.server.application.call
 import io.ktor.server.response.respond
@@ -9,7 +8,6 @@ import io.ktor.server.routing.get
 import mu.KotlinLogging
 import no.nav.personbruker.dittnav.api.common.respondWithError
 import no.nav.personbruker.dittnav.api.config.authenticatedUser
-
 
 fun Route.personalia(
     service: PersonaliaService
