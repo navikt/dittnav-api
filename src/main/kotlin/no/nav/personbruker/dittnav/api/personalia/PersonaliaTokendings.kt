@@ -7,10 +7,10 @@ import no.nav.tms.token.support.tokendings.exchange.TokendingsService
 
 class PersonaliaTokendings(
     private val tokendingsService: TokendingsService,
-    private val personaliaClientId: String
+    private val pdlClientId: String
 ) {
 
     suspend fun exchangeToken(authenticatedUser: AuthenticatedUser): AccessToken {
-        return AccessToken(tokendingsService.exchangeToken(authenticatedUser.token, personaliaClientId))
+        return AccessToken(tokendingsService.exchangeToken(authenticatedUser.token, pdlClientId))
     }
 }

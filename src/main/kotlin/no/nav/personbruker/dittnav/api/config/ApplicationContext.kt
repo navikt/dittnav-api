@@ -40,7 +40,7 @@ class ApplicationContext {
     private val tokendingsService = TokendingsServiceBuilder.buildTokendingsService()
     private val eventhandlerTokendings = EventhandlerTokendings(tokendingsService, environment.eventhandlerClientId)
     private val mineSakerTokendings = MineSakerTokendings(tokendingsService, environment.mineSakerApiClientId)
-    private val personaliaTokendings = PersonaliaTokendings(tokendingsService, environment.personaliaApiClientId)
+    private val personaliaTokendings = PersonaliaTokendings(tokendingsService, environment.pdlClientId)
 
     private val oppgaveConsumer = OppgaveConsumer(httpClient, environment.eventHandlerURL)
     private val beskjedConsumer = BeskjedConsumer(httpClient, environment.eventHandlerURL)

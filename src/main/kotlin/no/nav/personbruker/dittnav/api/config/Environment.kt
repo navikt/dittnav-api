@@ -24,8 +24,6 @@ data class Environment(
     val mineSakerURL: URL = getEnvVarAsURL("MINE_SAKER_URL", trimTrailingSlash = true),
     val sakerApiUrl: URL = getEnvVarAsURL("MINE_SAKER_API_URL", trimTrailingSlash = true),
     val mineSakerApiClientId: String = getEnvVar("MINE_SAKER_API_CLIENT_ID"),
-    val personaliaApiUrl: URL = getEnvVarAsURL("PERSONALIA_API_URL"),
-    val personaliaApiClientId: String = getEnvVar("PERSONALIA_API_CLIENT_ID"),
     val eventhandlerClientId: String = getEnvVar("EVENTHANDLER_CLIENT_ID"),
     val meldekortApiUrl: URL = getEnvVarAsURL("MELDEKORT_API_URL"),
     val meldekortClientId: String = getEnvVar("MELDEKORT_CLIENT_ID"),
