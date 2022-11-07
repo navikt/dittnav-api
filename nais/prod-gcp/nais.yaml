@@ -35,6 +35,7 @@ spec:
           namespace: "personbruker"
         - application: "mine-saker-api"
         - application: dittnav-event-handler
+        - application: dittnav-event-aggregator
         - application: tms-personalia-api
         - application: pto-proxy
           namespace: pto
