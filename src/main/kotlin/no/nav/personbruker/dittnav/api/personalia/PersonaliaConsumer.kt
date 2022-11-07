@@ -6,16 +6,16 @@ import com.expediagroup.graphql.client.types.GraphQLClientResponse
 import no.nav.pdl.generated.dto.HentNavn
 import io.ktor.client.request.*
 import io.ktor.http.*
+import mu.KotlinLogging
 import no.nav.personbruker.dittnav.api.common.QueryRequestException
 import no.nav.personbruker.dittnav.api.common.QueryResponseException
-import org.slf4j.LoggerFactory
 
 class PersonaliaConsumer (
     private val client: GraphQLKtorClient,
     private val pdlUrl: String
 ) {
 
-    val log = LoggerFactory.getLogger(PersonaliaConsumer::class.java)
+    val log = KotlinLogging.logger { }
 
     suspend fun hentNavn(ident: String, token: String): GraphQLClientResponse<HentNavn.Result> {
         val response: GraphQLClientResponse<HentNavn.Result> = sendQuery(ident, token)

@@ -21,7 +21,7 @@ fun Route.personalia(
             call.respond(HttpStatusCode.OK, result)
 
         } catch (exception: Exception) {
-            log.warn { "Klarte ikke å hente navn fra pdl" }
+            log.info { "Klarte ikke å hente navn fra pdl" }
             respondWithError(call, log, exception)
         }
 
