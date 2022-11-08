@@ -3,12 +3,12 @@ package no.nav.personbruker.dittnav.api.personalia
 import com.expediagroup.graphql.client.ktor.GraphQLKtorClient
 import com.expediagroup.graphql.client.types.GraphQLClientError
 import com.expediagroup.graphql.client.types.GraphQLClientResponse
-import no.nav.pdl.generated.dto.HentNavn
 import io.ktor.client.request.*
 import io.ktor.http.*
 import mu.KotlinLogging
 import no.nav.personbruker.dittnav.api.common.QueryRequestException
 import no.nav.personbruker.dittnav.api.common.QueryResponseException
+import no.nav.personbruker.dittnav.api.pdl.generated.dto.HentNavn
 
 class PersonaliaConsumer (
     private val client: GraphQLKtorClient,

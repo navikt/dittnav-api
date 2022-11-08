@@ -45,7 +45,8 @@ dependencies {
     implementation(Ktor2.Server.htmlDsl)
     implementation(Ktor2.Server.metricsMicrometer)
     implementation(Micrometer.registryPrometheus)
-    implementation(GraphQL.kotlinKtorClient)
+    implementation("com.expediagroup:graphql-kotlin-ktor-client:6.2.5")
+
 
     implementation(Logback.classic)
     implementation(Logstash.logbackEncoder)
@@ -113,7 +114,7 @@ tasks {
 
 graphql {
     client {
-        packageName = "no.nav.pdl.generated.dto"
+        packageName = "no.nav.personbruker.dittnav.api.pdl.generated.dto"
         schemaFile = file("${project.projectDir}/src/main/resources/graphql/schema.graphql")
         queryFileDirectory = "${project.projectDir}/src/main/resources/graphql"
         serializer = GraphQLSerializer.KOTLINX

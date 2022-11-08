@@ -1,8 +1,8 @@
 package no.nav.personbruker.dittnav.api.personalia
 
 import com.expediagroup.graphql.client.types.GraphQLClientResponse
-import no.nav.pdl.generated.dto.HentNavn
 import no.nav.personbruker.dittnav.api.common.TransformationException
+import no.nav.personbruker.dittnav.api.pdl.generated.dto.HentNavn
 
 fun Navn.toInternalNavnDTO(): NavnDTO {
     return NavnDTO(
