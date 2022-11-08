@@ -20,9 +20,10 @@ fun Route.personalia(
             val result = service.hentNavn(authenticatedUser)
             call.respond(HttpStatusCode.OK, result)
 
-        } catch (exception: Exception) {
-            log.info { "Klarte ikke å hente navn fra pdl" }
-            respondWithError(call, log, exception)
+        } catch (throwable: Throwable) {
+            log.warn("Klarte ikke å hente navn fra pdl")
+            log.error("Catchet throwable $throwable med stacktrace: ${throwable.stackTraceToString()}")
+            // respondWithError(call, log, exception)
         }
 
     }
