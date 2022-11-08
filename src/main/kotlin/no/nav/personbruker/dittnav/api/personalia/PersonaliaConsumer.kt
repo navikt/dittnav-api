@@ -25,8 +25,6 @@ class PersonaliaConsumer (
     }
 
     private suspend fun sendQuery(ident: String, token: String): GraphQLClientResponse<HentNavn.Result> {
-        log.info("Henter navn fra url: $pdlUrl")
-
         try {
             val hentNavnQuery = HentNavn(HentNavn.Variables(ident = ident))
             return client.execute(hentNavnQuery) {
