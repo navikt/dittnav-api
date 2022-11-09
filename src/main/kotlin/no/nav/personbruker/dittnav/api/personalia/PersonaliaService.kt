@@ -4,19 +4,16 @@ import no.nav.personbruker.dittnav.api.authentication.AuthenticatedUser
 
 
 class PersonaliaService (
-    val personaliaConsumer: PersonaliaConsumer,
-    val personaliaTokendings: PersonaliaTokendings
+    val navnConsumer: NavnConsumer,
+    val navnTokendings: NavnTokendings
 ){
 
     suspend fun hentNavn(user: AuthenticatedUser): NavnDTO {
-        val exchangedToken = personaliaTokendings.exchangeToken(user)
-        val response = personaliaConsumer.hentNavn(user.ident, exchangedToken.value)
-        val external = toExternalNavn(response).first()
+        val exchangedToken = navnTokendings.exchangeToken(user)
+        val response = navnConsumer.hentNavn(user.ident, exchangedToken.value)
+        val externalNavn = toExternalNavn(response).first()
 
-        return external.toInternalNavnDTO()
+        return externalNavn.toInternalNavnDTO()
     }
 
-    fun hentIdent(user: AuthenticatedUser): IdentDTO {
-        return IdentDTO(user.ident)
-    }
 }

@@ -10,7 +10,7 @@ import no.nav.personbruker.dittnav.api.common.QueryRequestException
 import no.nav.personbruker.dittnav.api.common.QueryResponseException
 import no.nav.personbruker.dittnav.api.pdl.generated.dto.HentNavn
 
-class PersonaliaConsumer (
+class NavnConsumer (
     private val client: GraphQLKtorClient,
     private val pdlUrl: String
 ) {

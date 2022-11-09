@@ -21,9 +21,9 @@ import no.nav.personbruker.dittnav.api.oppfolging.OppfolgingService
 import no.nav.personbruker.dittnav.api.oppgave.OppgaveConsumer
 import no.nav.personbruker.dittnav.api.oppgave.OppgaveService
 import no.nav.personbruker.dittnav.api.tokenx.EventhandlerTokendings
-import no.nav.personbruker.dittnav.api.personalia.PersonaliaConsumer
+import no.nav.personbruker.dittnav.api.personalia.NavnConsumer
 import no.nav.personbruker.dittnav.api.personalia.PersonaliaService
-import no.nav.personbruker.dittnav.api.personalia.PersonaliaTokendings
+import no.nav.personbruker.dittnav.api.personalia.NavnTokendings
 import no.nav.personbruker.dittnav.api.saker.MineSakerConsumer
 import no.nav.personbruker.dittnav.api.saker.MineSakerTokendings
 import no.nav.personbruker.dittnav.api.saker.SakerService
@@ -40,7 +40,7 @@ class ApplicationContext {
     private val tokendingsService = TokendingsServiceBuilder.buildTokendingsService()
     private val eventhandlerTokendings = EventhandlerTokendings(tokendingsService, environment.eventhandlerClientId)
     private val mineSakerTokendings = MineSakerTokendings(tokendingsService, environment.mineSakerApiClientId)
-    private val personaliaTokendings = PersonaliaTokendings(tokendingsService, environment.pdlClientId)
+    private val navnTokendings = NavnTokendings(tokendingsService, environment.pdlClientId)
 
     private val oppgaveConsumer = OppgaveConsumer(httpClient, environment.eventHandlerURL)
     private val beskjedConsumer = BeskjedConsumer(httpClient, environment.eventHandlerURL)
@@ -61,8 +61,8 @@ class ApplicationContext {
 
     val beskjedMergerService = BeskjedMergerService(beskjedService, digiSosService, unleashService)
 
-    private val personaliaConsumer = PersonaliaConsumer(GraphQLKtorClient(URL(environment.pdlUrl), httpClient), environment.pdlUrl)
-    val personaliaService = PersonaliaService(personaliaConsumer, personaliaTokendings)
+    private val navnConsumer = NavnConsumer(GraphQLKtorClient(URL(environment.pdlUrl), httpClient), environment.pdlUrl)
+    val personaliaService = PersonaliaService(navnConsumer, navnTokendings)
 
     private val meldekortConsumer = MeldekortConsumer(httpClient, environment.meldekortApiUrl)
     private val meldekortTokendings = MeldekortTokendings(tokendingsService, environment.meldekortClientId)

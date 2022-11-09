@@ -3,7 +3,6 @@ package no.nav.personbruker.dittnav.api
 import com.auth0.jwk.JwkProviderBuilder
 import io.ktor.server.engine.embeddedServer
 import io.ktor.server.netty.Netty
-import mu.KotlinLogging
 import no.nav.personbruker.dittnav.api.config.ApplicationContext
 import no.nav.personbruker.dittnav.api.config.LoginserviceMetadata
 import no.nav.personbruker.dittnav.api.config.api

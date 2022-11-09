@@ -5,7 +5,7 @@ import no.nav.personbruker.dittnav.api.tokenx.AccessToken
 
 import no.nav.tms.token.support.tokendings.exchange.TokendingsService
 
-class PersonaliaTokendings(
+class NavnTokendings(
     private val tokendingsService: TokendingsService,
     private val pdlClientId: String
 ) {

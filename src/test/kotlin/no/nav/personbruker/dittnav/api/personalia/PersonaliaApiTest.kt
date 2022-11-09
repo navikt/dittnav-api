@@ -31,10 +31,10 @@ class PersonaliaApiTest {
     }
 
     private fun ApplicationTestBuilder.createPersonaliaService(): PersonaliaService = PersonaliaService(
-        personaliaConsumer = PersonaliaConsumer(
+        navnConsumer = NavnConsumer(
             client = GraphQLKtorClient(URL("$testhostBaseApi/graphql")),
             pdlUrl = "$testhostBaseApi/graphql"
-        ), personaliaTokendings = mockk<PersonaliaTokendings>().also {
+        ), navnTokendings = mockk<NavnTokendings>().also {
             coEvery { it.exchangeToken(any()) } returns AccessToken("dummytoken")
         }
     )

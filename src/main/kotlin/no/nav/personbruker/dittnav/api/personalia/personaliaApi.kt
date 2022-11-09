@@ -27,7 +27,7 @@ fun Route.personalia(
 
     get("/ident") {
         try {
-            val result = service.hentIdent(authenticatedUser)
+            val result = IdentDTO(authenticatedUser.ident)
             call.respond(HttpStatusCode.OK, result)
 
         } catch (exception: Exception) {
