@@ -23,12 +23,13 @@ data class Paabegynte(
 ) {
     companion object {
         const val maxBeskjedTextLength = 150
+        const val maxUtkastTittelLength = 120
     }
 
     fun toInternal() = BeskjedDTO(
         forstBehandlet = eventTidspunkt.toZonedDateTime(),
         eventId = eventId,
-        tekst = cropTextIfOverMaxLengthOfBeskjed(tekst),
+        tekst = cropTextIfLongerThan(tekst, maxBeskjedTextLength),
         link = link,
         produsent = "digiSos",
         sistOppdatert = sistOppdatert.toZonedDateTime(),
@@ -39,11 +40,18 @@ data class Paabegynte(
         eksternVarslingKanaler = emptyList()
     )
 
-    private fun cropTextIfOverMaxLengthOfBeskjed(text: String): String {
-        return if (text.length <= maxBeskjedTextLength) {
+    fun toUtkast() = DigisosUtkast(
+        utkastId = eventId,
+        tittel = cropTextIfLongerThan(tekst, maxUtkastTittelLength),
+        link = link,
+        opprettet = eventTidspunkt
+    )
+
+    private fun cropTextIfLongerThan(text: String, length: Int): String {
+        return if (text.length <= length) {
             text
         } else {
-            text.substring(0, maxBeskjedTextLength - 3) + "..."
+            text.substring(0, length - 3) + "..."
         }
     }
 
