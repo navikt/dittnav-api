@@ -67,6 +67,10 @@ class DigiSosConsumer(
             }
     }
 
+    suspend fun getPaabegynt(user: AuthenticatedUser): List<Paabegynte> {
+        val token = tokendings.exchangeToken(user)
+        return client.get(aktivePaabegynteEndpoint, token)
+    }
 
     private suspend fun <T> wrapAsMultiSourceResult(
         user: AuthenticatedUser,

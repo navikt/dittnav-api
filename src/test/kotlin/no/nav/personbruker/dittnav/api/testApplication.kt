@@ -2,14 +2,9 @@ package no.nav.personbruker.dittnav.api
 
 import io.ktor.client.HttpClient
 import io.ktor.client.plugins.HttpTimeout
-import io.ktor.client.request.header
-import io.ktor.client.request.request
-import io.ktor.client.request.url
+import io.ktor.client.request.*
 import io.ktor.client.statement.HttpResponse
-import io.ktor.http.ContentType
-import io.ktor.http.HttpHeaders
-import io.ktor.http.HttpMethod
-import io.ktor.http.HttpStatusCode
+import io.ktor.http.*
 import io.ktor.serialization.kotlinx.json.json
 import io.ktor.server.application.ApplicationCall
 import io.ktor.server.application.call
@@ -86,6 +81,14 @@ internal fun ApplicationTestBuilder.applicationHttpClient() =
 internal suspend fun HttpClient.authenticatedGet(urlString: String, token: String = stubToken): HttpResponse = request {
     url(urlString)
     method = HttpMethod.Get
+    header(HttpHeaders.Cookie, "selvbetjening-idtoken=$token")
+}
+
+internal suspend fun HttpClient.authenticatedPost(content: String, urlString: String, token: String = stubToken): HttpResponse = request {
+    url(urlString)
+    method = HttpMethod.Post
+    contentType(ContentType.Application.Json)
+    setBody(content)
     header(HttpHeaders.Cookie, "selvbetjening-idtoken=$token")
 }
 

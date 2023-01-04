@@ -5,6 +5,8 @@ import no.nav.personbruker.dittnav.api.beskjed.Beskjed
 import no.nav.personbruker.dittnav.api.beskjed.BeskjedDTO
 import no.nav.personbruker.dittnav.api.beskjed.KildeType
 import no.nav.personbruker.dittnav.api.common.MultiSourceResult
+import no.nav.personbruker.dittnav.api.digisos.Paabegynte
+import java.time.LocalDateTime
 import java.time.ZoneId
 import java.time.ZonedDateTime
 
@@ -107,3 +109,23 @@ fun createSuccsessfullMultiSourceResult(
         source
     )
 }
+
+fun createPaabegynte(
+    eventId: String,
+    eventTidspunkt: LocalDateTime = LocalDateTime.now(),
+    grupperingsId: String = "gruppedringsId",
+    tekst: String = "tekst",
+    link: String = "https://link",
+    sikkerhetsnivaa: Int = 3,
+    sistOppdatert: LocalDateTime = LocalDateTime.now(),
+    isAktiv: Boolean = true,
+) = Paabegynte(
+    eventTidspunkt = eventTidspunkt,
+    eventId = eventId,
+    grupperingsId = grupperingsId,
+    tekst = tekst,
+    link = link,
+    sikkerhetsnivaa = sikkerhetsnivaa,
+    sistOppdatert = sistOppdatert,
+    isAktiv = isAktiv
+)
