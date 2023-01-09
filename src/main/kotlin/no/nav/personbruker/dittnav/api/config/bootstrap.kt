@@ -47,6 +47,7 @@ import no.nav.personbruker.dittnav.api.personalia.PersonaliaConsumer
 import no.nav.personbruker.dittnav.api.personalia.personalia
 import no.nav.personbruker.dittnav.api.saker.MineSakerConsumer
 import no.nav.personbruker.dittnav.api.saker.saker
+import no.nav.personbruker.dittnav.api.varsel.varsel
 
 fun Application.api(
     corsAllowedOrigins: String,
@@ -129,6 +130,7 @@ fun Application.api(
                 digiSos(digiSosConsumer)
                 authenticationCheck()
                 doneApi(doneProducer)
+                varsel(beskjedMergerService, oppgaveService, innboksService)
             }
         }
     }
