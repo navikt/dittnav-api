@@ -50,6 +50,7 @@ import no.nav.personbruker.dittnav.api.personalia.PersonaliaService
 import no.nav.personbruker.dittnav.api.personalia.personalia
 import no.nav.personbruker.dittnav.api.saker.SakerService
 import no.nav.personbruker.dittnav.api.saker.saker
+import no.nav.personbruker.dittnav.api.varsel.varsel
 
 private val log = KotlinLogging.logger {  }
 fun Application.api(
@@ -147,6 +148,7 @@ fun Application.api(
                 digiSos(digiSosService)
                 authenticationCheck()
                 doneApi(doneProducer)
+                varsel(beskjedMergerService, oppgaveService, innboksService)
             }
         }
     }
