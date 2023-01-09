@@ -130,7 +130,7 @@ fun Application.api(
                 digiSos(digiSosConsumer)
                 authenticationCheck()
                 doneApi(doneProducer)
-                varsel(beskjedMergerService, oppgaveService, innboksService)
+                varsel(beskjedMergerService, oppgaveConsumer, innboksConsumer)
             }
         }
     }
