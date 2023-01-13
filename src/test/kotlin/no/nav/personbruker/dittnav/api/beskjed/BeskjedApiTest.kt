@@ -75,9 +75,8 @@ class BeskjedApiTest {
 
     @ParameterizedTest
     @CsvSource("true, dittnav-api/beskjed", "false, dittnav-api/beskjed/inaktiv")
-    fun `beskjeder fra både digisos og eventhandler`(aktive: Boolean, endpoint: String) {
-        val expectedBeskjedContent =
-            expectedBeskjedFromDigsos.filter { it.aktiv == aktive } + expectedBeskjedFromEventhandler.filter { it.aktiv == aktive }
+    fun `beskjeder fra både eventhandler`(aktive: Boolean, endpoint: String) {
+        val expectedBeskjedContent = expectedBeskjedFromEventhandler.filter { it.aktiv == aktive }
 
         testApplication {
             setupExternalBeskjedServices()
@@ -87,42 +86,6 @@ class BeskjedApiTest {
                 val resultArray = bodyAsText().toJsonArray()
                 resultArray shouldHaveContentEqualTo expectedBeskjedContent
             }
-        }
-    }
-
-
-    @ParameterizedTest
-    @CsvSource("true, dittnav-api/beskjed", "false, dittnav-api/beskjed/inaktiv")
-    fun `beskjeder fra eventhandler hvis digisos feiler`(aktive: Boolean, endpoint: String) {
-        val expectedBeskjedDTOs = expectedBeskjedFromEventhandler.filter { it.aktiv == aktive }
-
-        testApplication {
-            setupExternalBeskjedServices(withErrorFromDigiSos = true)
-            mockApi(beskjedMergerService = createBeskjedMergerService())
-
-            client.authenticatedGet(endpoint).assert {
-                status shouldBe HttpStatusCode.PartialContent
-                val resultArray = bodyAsText().toJsonArray()
-                resultArray shouldHaveContentEqualTo expectedBeskjedDTOs
-            }
-
-        }
-    }
-
-    @ParameterizedTest
-    @CsvSource("true, dittnav-api/beskjed", "false, dittnav-api/beskjed/inaktiv")
-    fun `beskjeder fra digisos hvis eventhandler feiler`(aktive: Boolean, endpoint: String) {
-        val expectedBeskjedDTOs = expectedBeskjedFromDigsos.filter { it.aktiv == aktive }
-        testApplication {
-            setupExternalBeskjedServices(withErrorFromEventhandler = true)
-            mockApi(beskjedMergerService = createBeskjedMergerService())
-
-            client.authenticatedGet(endpoint).assert {
-                status shouldBe HttpStatusCode.PartialContent
-                val resultArray = bodyAsText().toJsonArray()
-                resultArray shouldHaveContentEqualTo expectedBeskjedDTOs
-            }
-
         }
     }
 
