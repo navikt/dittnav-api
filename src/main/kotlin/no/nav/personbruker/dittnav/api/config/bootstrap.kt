@@ -37,8 +37,6 @@ import no.nav.personbruker.dittnav.api.health.authenticationCheck
 import no.nav.personbruker.dittnav.api.health.healthApi
 import no.nav.personbruker.dittnav.api.innboks.InnboksConsumer
 import no.nav.personbruker.dittnav.api.innboks.innboks
-import no.nav.personbruker.dittnav.api.meldekort.MeldekortConsumer
-import no.nav.personbruker.dittnav.api.meldekort.meldekortApi
 import no.nav.personbruker.dittnav.api.oppfolging.OppfolgingConsumer
 import no.nav.personbruker.dittnav.api.oppfolging.oppfolgingApi
 import no.nav.personbruker.dittnav.api.oppgave.OppgaveConsumer
@@ -53,7 +51,6 @@ fun Application.api(
     corsAllowedOrigins: String,
     corsAllowedSchemes: String,
     corsAllowedHeaders: List<String>,
-    meldekortConsumer: MeldekortConsumer,
     oppfolgingConsumer: OppfolgingConsumer,
     oppgaveConsumer: OppgaveConsumer,
     beskjedMergerService: BeskjedMergerService,
@@ -120,7 +117,6 @@ fun Application.api(
         route("/dittnav-api") {
             healthApi(collectorRegistry)
             authenticate {
-                meldekortApi(meldekortConsumer)
                 oppfolgingApi(oppfolgingConsumer)
                 oppgave(oppgaveConsumer)
                 beskjed(beskjedMergerService)

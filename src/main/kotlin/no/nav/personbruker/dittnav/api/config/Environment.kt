@@ -30,8 +30,6 @@ data class Environment(
     val personaliaApiClientId: String = getEnvVar("PERSONALIA_API_CLIENT_ID"),
     val eventhandlerClientId: String = getEnvVar("EVENTHANDLER_CLIENT_ID"),
     val eventaggregatorClientId: String = getEnvVar("EVENTAGGREGATOR_CLIENT_ID"),
-    val meldekortApiUrl: URL = getEnvVarAsURL("MELDEKORT_API_URL"),
-    val meldekortClientId: String = getEnvVar("MELDEKORT_CLIENT_ID"),
     val oppfolgingApiUrl: URL = getEnvVarAsURL("OPPFOLGING_API_URL"),
     val loginservicDiscoveryUrl: String = getEnvVar("LOGINSERVICE_IDPORTEN_DISCOVERY_URL"),
     val loginserviceIdportenAudience: String = getEnvVar("LOGINSERVICE_IDPORTEN_AUDIENCE")
