@@ -41,8 +41,6 @@ spec:
         - application: tms-personalia-api
         - application: pto-proxy
           namespace: pto
-        - application: meldekort-api
-          namespace: meldekort
   ingresses:
     - "https://www.nav.no/dittnav-api"
   resources:
