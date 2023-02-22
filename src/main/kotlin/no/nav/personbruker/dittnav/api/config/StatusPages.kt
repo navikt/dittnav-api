@@ -31,7 +31,7 @@ internal fun Application.installStatusPages() {
 
                 else -> {
                     call.respond(HttpStatusCode.ServiceUnavailable)
-                    log.warn("${cause.message}", cause)
+                    log.warn("${cause.message}", cause.stackTrace)
                 }
             }
         }
