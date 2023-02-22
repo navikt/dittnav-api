@@ -8,7 +8,9 @@ import io.ktor.server.plugins.statuspages.StatusPages
 import io.ktor.server.response.respond
 import mu.KotlinLogging
 
-private val log = KotlinLogging.logger ( "secureLog" )
+private val secureLog = KotlinLogging.logger ( "secureLog" )
+private val log = KotlinLogging.logger{}
+
 
 internal fun Application.installStatusPages() {
     install(StatusPages) {
@@ -32,7 +34,8 @@ internal fun Application.installStatusPages() {
 
                 else -> {
                     call.respond(HttpStatusCode.ServiceUnavailable)
-                    log.warn("${cause.message}", cause.stackTrace)
+                    secureLog.warn("${cause.message}", cause.stackTrace)
+                    log.warn("feil i dittnavapi: ${cause.message}. Sjekk sikkerlogg for detaljer")
                 }
             }
         }
@@ -41,7 +44,7 @@ internal fun Application.installStatusPages() {
 
 suspend fun ApplicationCall.respondServiceUnavailable(message: String, cause: ConsumeException) {
     respond(HttpStatusCode.ServiceUnavailable)
-    log.warn("$message. ${cause.message}", cause.details,cause)
+    secureLog.warn("$message. ${cause.message}", cause.details,cause)
 }
 
 open class ConsumeException(message: String, cause: Throwable) : Exception(message, cause) {
