@@ -23,6 +23,8 @@ spec:
   replicas:
     min: 2
     max: 4
+  secureLogs:
+    enabled: true
   tokenx:
     enabled: true
   accessPolicy:
