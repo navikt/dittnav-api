@@ -14,10 +14,12 @@
         <triggeringPolicy class="ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy">
             <maxFileSize>50MB</maxFileSize>
         </triggeringPolicy>
-        <encoder class="net.logstash.logback.encoder.LogstashEncoder" />
+        <encoder class="net.logstash.logback.encoder.LogstashEncoder"/>
     </appender>
     <root level="INFO">
         <appender-ref ref="stdout_json"/>
-        <appender-ref ref="secureLog"/>
     </root>
+    <logger name="secureLogger" level="INFO" additivity="false">
+        <appender-ref ref="secureLog"/>
+    </logger>
 </configuration>
