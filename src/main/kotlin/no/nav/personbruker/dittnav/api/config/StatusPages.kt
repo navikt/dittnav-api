@@ -8,7 +8,7 @@ import io.ktor.server.plugins.statuspages.StatusPages
 import io.ktor.server.response.respond
 import mu.KotlinLogging
 
-private val log = KotlinLogging.logger { }
+private val log = KotlinLogging.logger ( "secureLog" )
 
 internal fun Application.installStatusPages() {
     install(StatusPages) {
@@ -27,6 +27,7 @@ internal fun Application.installStatusPages() {
                     call.respondServiceUnavailable("Klarte ikke å hente personalia", cause)
 
                 is ProduceEventException ->
+
                     call.respondServiceUnavailable("Kunne ikke markere varsel som lest", cause)
 
                 else -> {
@@ -40,7 +41,7 @@ internal fun Application.installStatusPages() {
 
 suspend fun ApplicationCall.respondServiceUnavailable(message: String, cause: ConsumeException) {
     respond(HttpStatusCode.ServiceUnavailable)
-    log.warn("$message. ${cause.details}", cause)
+    log.warn("$message. ${cause.message}", cause.details,cause)
 }
 
 open class ConsumeException(message: String, cause: Throwable) : Exception(message, cause) {
