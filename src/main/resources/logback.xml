@@ -19,7 +19,7 @@
     <root level="INFO">
         <appender-ref ref="stdout_json"/>
     </root>
-    <logger name="secureLogger" level="INFO" additivity="false">
+    <logger name="secureLog" level="INFO" additivity="false">
         <appender-ref ref="secureLog"/>
     </logger>
 </configuration>
