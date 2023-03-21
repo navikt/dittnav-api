@@ -19,7 +19,7 @@ fun Route.oppfolgingApi(oppfolgingConsumer: OppfolgingConsumer) {
 
             call.respond(oppfolgingInfo)
         } catch (e: Exception) {
-            log.warn("Det skjedde en feil mot oppfølging. Feilmelding: [${e.message}]. $authenticatedUser", e)
+            log.warn("Det skjedde en feil mot oppfølging. Feilmelding: [${e.message}.", e)
             call.respond(HttpStatusCode.InternalServerError)
         }
     }
