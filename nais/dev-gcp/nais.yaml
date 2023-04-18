@@ -43,8 +43,7 @@ spec:
         - application: pto-proxy
           namespace: pto
   ingresses:
-    - "https://person.dev.nav.no/dittnav-api"
-    - "https://www.dev.nav.no/dittnav-api"
+    - "https://www.intern.dev.nav.no/dittnav-api"
   resources:
     limits:
       cpu: "3"
